@@ -1,0 +1,33 @@
+// ============================================================================
+//
+// = CONTEXT
+//    TANGO Project - ImgBeamAnalyzer DeviceServer - Data class
+//
+// = File
+//    Data.i
+//
+// = AUTHOR
+//    Julien Malik
+//
+// ============================================================================
+
+namespace ImgBeamAnalyzer_ns
+{
+
+// ============================================================================
+// Data::duplicate
+// ============================================================================
+INLINE_IMPL BIAData *BIAData::duplicate (void)
+{
+  return reinterpret_cast < BIAData * >(SharedObject::duplicate ());
+}
+
+// ============================================================================
+// Data::release
+// ============================================================================
+INLINE_IMPL void BIAData::release (void)
+{
+  SharedObject::release ();
+}
+
+} // namespace

@@ -1,0 +1,40 @@
+#
+device_server= ImgBeamAnalyzer
+
+INCUSER =	/I$(SOLEIL_ROOT)/sw-support/OpenCV/include \
+			/I$(SOLEIL_ROOT)/sw-support/ISL/include \
+			/I$(SOLEIL_ROOT)/sw-support/adtb/include
+
+LIBUSER= $(SOLEIL_ROOT)/sw-support/OpenCV/lib/libOpenCV_cx.lib \
+		 $(SOLEIL_ROOT)/sw-support/OpenCV/lib/libOpenCV_cv.lib \
+		 $(SOLEIL_ROOT)/sw-support/OpenCV/lib/libOpenCV_highgui.lib \
+		 $(SOLEIL_ROOT)/sw-support/GraphicFiles/libjpeg/lib/libjpeg.lib \
+		 $(SOLEIL_ROOT)/sw-support/GraphicFiles/libtiff/lib/libtiff.lib \
+		 $(SOLEIL_ROOT)/sw-support/GraphicFiles/libpng/lib/libpng.lib \
+		 $(SOLEIL_ROOT)/sw-support/Zlib/lib/libz.lib \
+		 $(SOLEIL_ROOT)/sw-support/ISL/lib/libISL.lib \
+		 $(SOLEIL_ROOT)/sw-support/adtb/lib/libADTB.lib
+
+
+CPPDIRUSER=
+
+make_dir=$(SOLEIL_ROOT)\env
+
+!include $(make_dir)\tango.opt
+
+exe_device_server= $(EXEDIR)\ds_$(device_server).exe
+pdb_name= $(TEMPLIBDIR)\$(device_server).pdb
+
+LISTEOBJ = \
+   $(OBJDIR)\$(device_server).OBJ\
+   $(OBJDIR)\ClassFactory.OBJ\
+   $(OBJDIR)\$(device_server)StateMachine.OBJ\
+   $(OBJDIR)\main.OBJ\
+   $(OBJDIR)\$(device_server)Class.OBJ \
+   $(OBJDIR)\BIAConfig.OBJ \
+   $(OBJDIR)\BIAData.OBJ \
+   $(OBJDIR)\BIAProcessor.OBJ \
+   $(OBJDIR)\BIATask.OBJ
+
+!include $(make_dir)\common_target.opt
+
