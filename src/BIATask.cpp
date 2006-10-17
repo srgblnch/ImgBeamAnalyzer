@@ -406,6 +406,18 @@ void BIATask::handle_message (const adtb::Message& _msg)
         this->status_ = kSTANDBY_STATUS_MSG;
   		}
   		break;
+		case kMSG_START_LEARN_NOISE:
+		  {
+  		  DEBUG_STREAM << "BIATask::handle_message::handling kMSG_START_LEARN_NOISE" << std::endl;
+        this->proc_.start_learn_noise();
+  		}
+  		break;
+		case kMSG_STOP_LEARN_NOISE:
+		  {
+  		  DEBUG_STREAM << "BIATask::handle_message::handling kMSG_STOP_LEARN_NOISE" << std::endl;
+        this->proc_.stop_learn_noise();
+  		}
+  		break;
   	default:
   		DEBUG_STREAM << "BIATask::handle_message::unhandled msg type received"<< std::endl;
   		break;

@@ -1,4 +1,4 @@
-static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzer.cpp,v 1.1 2006-10-16 16:19:16 stephle Exp $";
+static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzer.cpp,v 1.2 2006-10-17 14:24:48 julien_malik Exp $";
 //+=============================================================================
 //
 // file :         ImgBeamAnalyzer.cpp
@@ -11,9 +11,9 @@ static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/Im
 //
 // project :      TANGO Device Server
 //
-// $Author: stephle $
+// $Author: julien_malik $
 //
-// $Revision: 1.1 $
+// $Revision: 1.2 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -44,6 +44,8 @@ static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/Im
 //  Stop                 |  stop()
 //  Process              |  process()
 //  SaveCurrentSettings  |  save_current_settings()
+//  StartLearnNoise      |  start_learn_noise()
+//  StopLearnNoise       |  stop_learn_noise()
 //
 //===================================================================
 
@@ -545,6 +547,30 @@ void ImgBeamAnalyzer::read_attr_hardware(vector<long> &attr_list)
   this->update_state();
 
 }
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_NbNoiseImage
+// 
+// description : 	Extract real attribute values for NbNoiseImage acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_NbNoiseImage(Tango::Attribute &attr)
+{
+  READ_OUTPUT_SCALAR_ATTR_ALWAYSACTIV(nb_noise_image, Tango::DevLong);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_MeanNoiseImage
+// 
+// description : 	Extract real attribute values for MeanNoiseImage acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_MeanNoiseImage(Tango::Attribute &attr)
+{
+  READ_OUTPUT_IMAGE_ATTR_ALWAYSACTIV(mean_noise_image, Tango::DevUShort);
+}
+
 //+----------------------------------------------------------------------------
 //
 // method : 		ImgBeamAnalyzer::read_BitsPerPixel
@@ -1767,7 +1793,7 @@ void ImgBeamAnalyzer::start()
   {
     Tango::Except::throw_exception (_CPTC ("OPERATION_NOT_ALLOWED"),
                                     _CPTC ("In ONESHOT mode, the 'Start' command is disabled"),
-                                    _CPTC ("ImgBeamAnalyzer::stop()"));
+                                    _CPTC ("ImgBeamAnalyzer::start()"));
   }
 
   if (this->properly_initialized_)
@@ -2050,6 +2076,124 @@ void ImgBeamAnalyzer::save_current_settings()
 				    static_cast<const char*>("ImgBeamAnalyzer::set_device_property"));
   }
 
+}
+
+//+------------------------------------------------------------------
+/**
+ *	method:	ImgBeamAnalyzer::start_learn_noise
+ *
+ *	description:	method to execute "StartLearnNoise"
+ *
+ *
+ */
+//+------------------------------------------------------------------
+void ImgBeamAnalyzer::start_learn_noise()
+{
+  if (this->device_mode_ == MODE_ONESHOT)
+  {
+    Tango::Except::throw_exception (_CPTC ("OPERATION_NOT_ALLOWED"),
+                                    _CPTC ("In ONESHOT mode, the 'StartLearnNoise' command is disabled"),
+                                    _CPTC ("ImgBeamAnalyzer::start_learn_noise()"));
+  }
+
+  if (this->properly_initialized_)
+  {
+    //- try to send a START_LEARN_NOISE message
+    adtb::Message* msg = 0;
+    try
+    {
+      msg = new adtb::Message(kMSG_START_LEARN_NOISE);
+      if (msg == 0)
+        throw std::bad_alloc();
+    }
+    catch(...)
+    {
+      Tango::Except::throw_exception (_CPTC ("OUT_OF_MEMORY"),
+                                      _CPTC ("Error while creating a START_LEARN_NOISE message"),
+                                      _CPTC ("ImgBeamAnalyzer::start_learn_noise()"));
+    }
+
+
+    //- post the message
+    try
+    {
+      this->task_->post(msg);
+    }
+	  catch (const Tango::DevFailed &ex)
+    {
+      ERROR_STREAM << ex << std::endl;
+      SAFE_DELETE_PTR( msg ); //- will automatically delete the associated image
+      Tango::Except::throw_exception (_CPTC ("SOFTWARE_FAILURE"),
+                                      _CPTC ("The START_LEARN_NOISE message has not been properly handled"),
+                                      _CPTC ("ImgBeamAnalyzer::start_learn_noise()"));
+    }
+    catch(...)
+    {
+      SAFE_DELETE_PTR( msg ); //- will automatically delete the associated image
+      Tango::Except::throw_exception (_CPTC ("SOFTWARE_FAILURE"),
+                                      _CPTC ("The START_LEARN_NOISE message has not been properly handled"),
+                                      _CPTC ("ImgBeamAnalyzer::start_learn_noise()"));
+    }   
+  }
+}
+
+//+------------------------------------------------------------------
+/**
+ *	method:	ImgBeamAnalyzer::stop_learn_noise
+ *
+ *	description:	method to execute "StopLearnNoise"
+ *
+ *
+ */
+//+------------------------------------------------------------------
+void ImgBeamAnalyzer::stop_learn_noise()
+{
+  if (this->device_mode_ == MODE_ONESHOT)
+  {
+    Tango::Except::throw_exception (_CPTC ("OPERATION_NOT_ALLOWED"),
+                                    _CPTC ("In ONESHOT mode, the 'StartLearnNoise' command is disabled"),
+                                    _CPTC ("ImgBeamAnalyzer::stop_learn_noise()"));
+  }
+
+  if (this->properly_initialized_)
+  {
+    //- try to send a STOP_LEARN_NOISE message
+    adtb::Message* msg = 0;
+    try
+    {
+      msg = new adtb::Message(kMSG_STOP_LEARN_NOISE);
+      if (msg == 0)
+        throw std::bad_alloc();
+    }
+    catch(...)
+    {
+      Tango::Except::throw_exception (_CPTC ("OUT_OF_MEMORY"),
+                                      _CPTC ("Error while creating a STOP_LEARN_NOISE message"),
+                                      _CPTC ("ImgBeamAnalyzer::stop_learn_noise()"));
+    }
+
+
+    //- post the message
+    try
+    {
+      this->task_->post(msg);
+    }
+	  catch (const Tango::DevFailed &ex)
+    {
+      ERROR_STREAM << ex << std::endl;
+      SAFE_DELETE_PTR( msg ); //- will automatically delete the associated image
+      Tango::Except::throw_exception (_CPTC ("SOFTWARE_FAILURE"),
+                                      _CPTC ("The STOP_LEARN_NOISE message has not been properly handled"),
+                                      _CPTC ("ImgBeamAnalyzer::stop_learn_noise()"));
+    }
+    catch(...)
+    {
+      SAFE_DELETE_PTR( msg ); //- will automatically delete the associated image
+      Tango::Except::throw_exception (_CPTC ("SOFTWARE_FAILURE"),
+                                      _CPTC ("The STOP_LEARN_NOISE message has not been properly handled"),
+                                      _CPTC ("ImgBeamAnalyzer::stop_learn_noise()"));
+    }   
+  }
 }
 
 }	//	namespace

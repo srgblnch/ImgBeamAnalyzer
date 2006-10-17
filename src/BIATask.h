@@ -26,10 +26,12 @@ namespace ImgBeamAnalyzer_ns
 const int MODE_ONESHOT = 0;
 const int MODE_CONTINUOUS = 1;
 
-#define kMSG_CONFIG  (adtb::FIRST_USER_MSG)
-#define kMSG_PROCESS (adtb::FIRST_USER_MSG + 1)
-#define kMSG_START   (adtb::FIRST_USER_MSG + 2)
-#define kMSG_STOP    (adtb::FIRST_USER_MSG + 3)
+#define kMSG_CONFIG            (adtb::FIRST_USER_MSG)
+#define kMSG_PROCESS           (adtb::FIRST_USER_MSG + 1)
+#define kMSG_START             (adtb::FIRST_USER_MSG + 2)
+#define kMSG_STOP              (adtb::FIRST_USER_MSG + 3)
+#define kMSG_START_LEARN_NOISE (adtb::FIRST_USER_MSG + 4)
+#define kMSG_STOP_LEARN_NOISE  (adtb::FIRST_USER_MSG + 5)
 
 
 // ============================================================================

@@ -1,4 +1,4 @@
-static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzerStateMachine.cpp,v 1.1 2006-10-16 16:19:16 stephle Exp $";
+static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzerStateMachine.cpp,v 1.2 2006-10-17 14:24:49 julien_malik Exp $";
 //+=============================================================================
 //
 // file :         ImgBeamAnalyzerStateMachine.cpp
@@ -8,9 +8,9 @@ static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/Im
 //
 // project :      TANGO Device Server
 //
-// $Author: stephle $
+// $Author: julien_malik $
 //
-// $Revision: 1.1 $
+// $Revision: 1.2 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -1434,6 +1434,42 @@ bool ImgBeamAnalyzer::is_BitsPerPixel_allowed(Tango::AttReqType type)
 	}
 	return true;
 }
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_NbNoiseImage_allowed
+// 
+// description : 	Read/Write allowed for NbNoiseImage attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_NbNoiseImage_allowed(Tango::AttReqType type)
+{
+	if (get_state() == Tango::FAULT)
+	{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+		return false;
+	}
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_MeanNoiseImage_allowed
+// 
+// description : 	Read/Write allowed for MeanNoiseImage attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_MeanNoiseImage_allowed(Tango::AttReqType type)
+{
+	if (get_state() == Tango::FAULT)
+	{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+		return false;
+	}
+	return true;
+}
 
 //=================================================
 //		Commands Allowed Methods
@@ -1507,6 +1543,42 @@ bool ImgBeamAnalyzer::is_SaveCurrentSettings_allowed(const CORBA::Any &any)
 		//	End of Generated Code
 
 		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_StartLearnNoise_allowed
+// 
+// description : 	Execution allowed for StartLearnNoise command.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_StartLearnNoise_allowed(const CORBA::Any &any)
+{
+	if (get_state() == Tango::FAULT)
+	{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+		return false;
+	}
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_StopLearnNoise_allowed
+// 
+// description : 	Execution allowed for StopLearnNoise command.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_StopLearnNoise_allowed(const CORBA::Any &any)
+{
+	if (get_state() == Tango::FAULT)
+	{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+		return false;
+	}
 	return true;
 }
 

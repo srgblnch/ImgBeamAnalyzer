@@ -136,6 +136,10 @@ public:
   BIAImage<Tango::DevUShort>     roi_image;
   Tango::DevBoolean              bb_found;
 
+  //- noise
+  Tango::DevLong                 nb_noise_image;
+  BIAImage<Tango::DevUShort>     mean_noise_image;
+
   //- moments inside beam box
   Tango::DevDouble               max_intensity;
   Tango::DevDouble               mean_intensity;

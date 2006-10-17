@@ -24,6 +24,7 @@
 #include <isl/BeamBox.h>
 #include <isl/statistics/GaussianFit1D.h>
 #include <isl/statistics/GaussianFit2D.h>
+#include <isl/statistics/NoiseEstimator.h>
 #include <isl/Exception.h>
 #include <isl/ErrorHandler.h>
 
@@ -64,6 +65,12 @@ private:
 
   const BIAConfig& 
     get_config(void);
+
+  void
+    start_learn_noise(void);
+  
+  void
+    stop_learn_noise(void);
   
   Tango::DeviceImpl * host_device_;
  
@@ -74,10 +81,16 @@ private:
   isl::GaussianFit1D  gauss1d_fitter_;
   isl::Moments1D      moments1d_;
   isl::GaussianFit2D  gauss2d_fitter_;
+  isl::NoiseEstimator noise_estim_;
+  
+
 
   BIAData*            data_;
   BIATask&            task_;
   BIAConfig           config_;
+
+  bool learn_noise_;
+  isl::Image mean_noise_image_;
 };
 
 }  // namespace

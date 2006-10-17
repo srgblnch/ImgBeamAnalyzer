@@ -6,9 +6,9 @@
 //
 // project :	Image Analyzer
 //
-// $Author: stephle $
+// $Author: julien_malik $
 //
-// $Revision: 1.1 $
+// $Revision: 1.2 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -29,8 +29,8 @@
 //using namespace Tango;
 
 /**
- * @author	$Author: stephle $
- * @version	$Revision: 1.1 $
+ * @author	$Author: julien_malik $
+ * @version	$Revision: 1.2 $
  */
 
  //	Add your own constants definitions here.
@@ -51,7 +51,7 @@ const size_t kTIMEOUT_MESSAGE_MS = 2500;
 
 /**
  * Class Description:
- * The device analyzes images accessible on another remote device, 
+ * The device analyzes images accessible on another remote device,
  *	and proposes the following (selectable) features :
  *	- in preprocessing : rotation, mirroring, gamma correction
  *	- ROI (Region Of Interest), either user-defined or automatic by blob analysis
@@ -134,8 +134,11 @@ public :
 		Tango::DevLong	*attr_AutoROIOriginY_read;
 		Tango::DevLong	*attr_AutoROIWidth_read;
 		Tango::DevLong	*attr_AutoROIHeight_read;
+		Tango::DevLong	*attr_NbNoiseImage_read;
 		Tango::DevUShort	*attr_InputImage_read;
 		Tango::DevUShort	attr_InputImage_write;
+		Tango::DevUShort	*attr_ROIImage_read;
+		Tango::DevUShort	*attr_MeanNoiseImage_read;
 		Tango::DevUChar	*attr_ThresholdedImage_read;
 		Tango::DevDouble	*attr_MaxIntensity_read;
 		Tango::DevDouble	*attr_MeanIntensity_read;
@@ -172,7 +175,6 @@ public :
 		Tango::DevDouble	*attr_YProfileFWHM_read;
 		Tango::DevDouble	*attr_YProfileBG_read;
 		Tango::DevDouble	*attr_YProfileChi2_read;
-		Tango::DevUShort	*attr_ROIImage_read;
 		Tango::DevDouble	*attr_GaussianFitMagnitude_read;
 		Tango::DevDouble	*attr_GaussianFitCenterX_read;
 		Tango::DevDouble	*attr_GaussianFitCenterY_read;
@@ -494,6 +496,10 @@ public :
  */
 	virtual void read_AutoROIHeight(Tango::Attribute &attr);
 /**
+ *	Extract real attribute values for NbNoiseImage acquisition result.
+ */
+	virtual void read_NbNoiseImage(Tango::Attribute &attr);
+/**
  *	Extract real attribute values for InputImage acquisition result.
  */
 	virtual void read_InputImage(Tango::Attribute &attr);
@@ -501,6 +507,14 @@ public :
  *	Write InputImage attribute values to hardware.
  */
 	virtual void write_InputImage(Tango::WAttribute &attr);
+/**
+ *	Extract real attribute values for ROIImage acquisition result.
+ */
+	virtual void read_ROIImage(Tango::Attribute &attr);
+/**
+ *	Extract real attribute values for MeanNoiseImage acquisition result.
+ */
+	virtual void read_MeanNoiseImage(Tango::Attribute &attr);
 /**
  *	Extract real attribute values for ThresholdedImage acquisition result.
  */
@@ -645,10 +659,6 @@ public :
  *	Extract real attribute values for YProfileChi2 acquisition result.
  */
 	virtual void read_YProfileChi2(Tango::Attribute &attr);
-/**
- *	Extract real attribute values for ROIImage acquisition result.
- */
-	virtual void read_ROIImage(Tango::Attribute &attr);
 /**
  *	Extract real attribute values for GaussianFitMagnitude acquisition result.
  */
@@ -822,9 +832,21 @@ public :
  */
 	virtual bool is_AutoROIHeight_allowed(Tango::AttReqType type);
 /**
+ *	Read/Write allowed for NbNoiseImage attribute.
+ */
+	virtual bool is_NbNoiseImage_allowed(Tango::AttReqType type);
+/**
  *	Read/Write allowed for InputImage attribute.
  */
 	virtual bool is_InputImage_allowed(Tango::AttReqType type);
+/**
+ *	Read/Write allowed for ROIImage attribute.
+ */
+	virtual bool is_ROIImage_allowed(Tango::AttReqType type);
+/**
+ *	Read/Write allowed for MeanNoiseImage attribute.
+ */
+	virtual bool is_MeanNoiseImage_allowed(Tango::AttReqType type);
 /**
  *	Read/Write allowed for ThresholdedImage attribute.
  */
@@ -970,10 +992,6 @@ public :
  */
 	virtual bool is_YProfileChi2_allowed(Tango::AttReqType type);
 /**
- *	Read/Write allowed for ROIImage attribute.
- */
-	virtual bool is_ROIImage_allowed(Tango::AttReqType type);
-/**
  *	Read/Write allowed for GaussianFitMagnitude attribute.
  */
 	virtual bool is_GaussianFitMagnitude_allowed(Tango::AttReqType type);
@@ -1054,6 +1072,14 @@ public :
  */
 	virtual bool is_SaveCurrentSettings_allowed(const CORBA::Any &any);
 /**
+ *	Execution allowed for StartLearnNoise command.
+ */
+	virtual bool is_StartLearnNoise_allowed(const CORBA::Any &any);
+/**
+ *	Execution allowed for StopLearnNoise command.
+ */
+	virtual bool is_StopLearnNoise_allowed(const CORBA::Any &any);
+/**
  * [CONTINUOUS mode only] When the device is in STANDBY, this command starts the computation
  *	@exception DevFailed
  */
@@ -1073,6 +1099,16 @@ public :
  *	@exception DevFailed
  */
 	void	save_current_settings();
+/**
+ * 
+ *	@exception DevFailed
+ */
+	void	start_learn_noise();
+/**
+ * 
+ *	@exception DevFailed
+ */
+	void	stop_learn_noise();
 
 /**
  *	Read the device properties from database

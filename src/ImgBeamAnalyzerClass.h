@@ -10,9 +10,9 @@
 //			
 // project :      TANGO Device Server
 //
-// $Author: stephle $
+// $Author: julien_malik $
 //
-// $Revision: 1.1 $
+// $Revision: 1.2 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -237,18 +237,6 @@ public:
 	{(static_cast<ImgBeamAnalyzer *>(dev))->read_GaussianFitMagnitude(att);}
 	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
 	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_GaussianFitMagnitude_allowed(ty);}
-};
-
-class ROIImageAttrib: public Tango::ImageAttr
-{
-public:
-	ROIImageAttrib():ImageAttr("ROIImage", Tango::DEV_USHORT, Tango::READ, 131072, 131072) {};
-	~ROIImageAttrib() {};
-	
-	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
-	{(static_cast<ImgBeamAnalyzer *>(dev))->read_ROIImage(att);}
-	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
-	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_ROIImage_allowed(ty);}
 };
 
 class YProfileChi2Attrib: public Tango::Attr
@@ -683,6 +671,30 @@ public:
 	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_ThresholdedImage_allowed(ty);}
 };
 
+class MeanNoiseImageAttrib: public Tango::ImageAttr
+{
+public:
+	MeanNoiseImageAttrib():ImageAttr("MeanNoiseImage", Tango::DEV_USHORT, Tango::READ, 131072, 131072) {};
+	~MeanNoiseImageAttrib() {};
+	
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_MeanNoiseImage(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_MeanNoiseImage_allowed(ty);}
+};
+
+class ROIImageAttrib: public Tango::ImageAttr
+{
+public:
+	ROIImageAttrib():ImageAttr("ROIImage", Tango::DEV_USHORT, Tango::READ, 131072, 131072) {};
+	~ROIImageAttrib() {};
+	
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_ROIImage(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_ROIImage_allowed(ty);}
+};
+
 class InputImageAttrib: public Tango::ImageAttr
 {
 public:
@@ -695,6 +707,18 @@ public:
 	{(static_cast<ImgBeamAnalyzer *>(dev))->write_InputImage(att);}
 	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
 	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_InputImage_allowed(ty);}
+};
+
+class NbNoiseImageAttrib: public Tango::Attr
+{
+public:
+	NbNoiseImageAttrib():Attr("NbNoiseImage", Tango::DEV_LONG, Tango::READ) {};
+	~NbNoiseImageAttrib() {};
+	
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_NbNoiseImage(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_NbNoiseImage_allowed(ty);}
 };
 
 class AutoROIHeightAttrib: public Tango::Attr
@@ -1012,6 +1036,54 @@ public:
 //=========================================
 //	Define classes for commands
 //=========================================
+class StopLearnNoiseCmd : public Tango::Command
+{
+public:
+	StopLearnNoiseCmd(const char   *name,
+	               Tango::CmdArgType in,
+				   Tango::CmdArgType out,
+				   const char        *in_desc,
+				   const char        *out_desc,
+				   Tango::DispLevel  level)
+	:Command(name,in,out,in_desc,out_desc, level)	{};
+
+	StopLearnNoiseCmd(const char   *name,
+	               Tango::CmdArgType in,
+				   Tango::CmdArgType out)
+	:Command(name,in,out)	{};
+	~StopLearnNoiseCmd() {};
+	
+	virtual CORBA::Any *execute (Tango::DeviceImpl *dev, const CORBA::Any &any);
+	virtual bool is_allowed (Tango::DeviceImpl *dev, const CORBA::Any &any)
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_StopLearnNoise_allowed(any);}
+};
+
+
+
+class StartLearnNoiseCmd : public Tango::Command
+{
+public:
+	StartLearnNoiseCmd(const char   *name,
+	               Tango::CmdArgType in,
+				   Tango::CmdArgType out,
+				   const char        *in_desc,
+				   const char        *out_desc,
+				   Tango::DispLevel  level)
+	:Command(name,in,out,in_desc,out_desc, level)	{};
+
+	StartLearnNoiseCmd(const char   *name,
+	               Tango::CmdArgType in,
+				   Tango::CmdArgType out)
+	:Command(name,in,out)	{};
+	~StartLearnNoiseCmd() {};
+	
+	virtual CORBA::Any *execute (Tango::DeviceImpl *dev, const CORBA::Any &any);
+	virtual bool is_allowed (Tango::DeviceImpl *dev, const CORBA::Any &any)
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_StartLearnNoise_allowed(any);}
+};
+
+
+
 class SaveCurrentSettingsCmd : public Tango::Command
 {
 public:

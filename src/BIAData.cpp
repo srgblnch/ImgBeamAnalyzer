@@ -43,6 +43,8 @@ BIAData::BIAData (void)
     auto_roi_height(0),
     roi_image(0,0),
     bb_found(false),
+    nb_noise_image(0),
+    mean_noise_image(0,0),
     max_intensity (0),
     mean_intensity (0),
     centroid_x (0),

@@ -1,4 +1,4 @@
-static const char *RcsId     = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzerClass.cpp,v 1.1 2006-10-16 16:19:16 stephle Exp $";
+static const char *RcsId     = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzerClass.cpp,v 1.2 2006-10-17 14:24:49 julien_malik Exp $";
 static const char *TagName   = "$Name: not supported by cvs2svn $";
 static const char *HttpServer= "http://www.esrf.fr/computing/cs/tango/tango_doc/ds_doc/";
 //+=============================================================================
@@ -12,9 +12,9 @@ static const char *HttpServer= "http://www.esrf.fr/computing/cs/tango/tango_doc/
 //
 // project :     TANGO Device Server
 //
-// $Author: stephle $
+// $Author: julien_malik $
 //
-// $Revision: 1.1 $
+// $Revision: 1.2 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -37,6 +37,50 @@ static const char *HttpServer= "http://www.esrf.fr/computing/cs/tango/tango_doc/
 
 namespace ImgBeamAnalyzer_ns
 {
+//+----------------------------------------------------------------------------
+//
+// method : 		StopLearnNoiseCmd::execute()
+// 
+// description : 	method to trigger the execution of the command.
+//                PLEASE DO NOT MODIFY this method core without pogo   
+//
+// in : - device : The device on which the command must be excuted
+//		- in_any : The command input data
+//
+// returns : The command output data (packed in the Any object)
+//
+//-----------------------------------------------------------------------------
+CORBA::Any *StopLearnNoiseCmd::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
+{
+
+	cout2 << "StopLearnNoiseCmd::execute(): arrived" << endl;
+
+	((static_cast<ImgBeamAnalyzer *>(device))->stop_learn_noise());
+	return new CORBA::Any();
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		StartLearnNoiseCmd::execute()
+// 
+// description : 	method to trigger the execution of the command.
+//                PLEASE DO NOT MODIFY this method core without pogo   
+//
+// in : - device : The device on which the command must be excuted
+//		- in_any : The command input data
+//
+// returns : The command output data (packed in the Any object)
+//
+//-----------------------------------------------------------------------------
+CORBA::Any *StartLearnNoiseCmd::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
+{
+
+	cout2 << "StartLearnNoiseCmd::execute(): arrived" << endl;
+
+	((static_cast<ImgBeamAnalyzer *>(device))->start_learn_noise());
+	return new CORBA::Any();
+}
+
 //+----------------------------------------------------------------------------
 //
 // method : 		ProcessCmd::execute()
@@ -229,6 +273,16 @@ void ImgBeamAnalyzerClass::command_factory()
 		"",
 		Tango::OPERATOR));
 	command_list.push_back(new SaveCurrentSettingsCmd("SaveCurrentSettings",
+		Tango::DEV_VOID, Tango::DEV_VOID,
+		"",
+		"",
+		Tango::OPERATOR));
+	command_list.push_back(new StartLearnNoiseCmd("StartLearnNoise",
+		Tango::DEV_VOID, Tango::DEV_VOID,
+		"",
+		"",
+		Tango::OPERATOR));
+	command_list.push_back(new StopLearnNoiseCmd("StopLearnNoise",
 		Tango::DEV_VOID, Tango::DEV_VOID,
 		"",
 		"",
@@ -551,6 +605,16 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	auto_roiheight->set_default_properties(auto_roiheight_prop);
 	att_list.push_back(auto_roiheight);
 
+	//	Attribute : NbNoiseImage
+	NbNoiseImageAttrib	*nb_noise_image = new NbNoiseImageAttrib();
+	Tango::UserDefaultAttrProp	nb_noise_image_prop;
+	nb_noise_image_prop.set_label("NbNoiseImage");
+	nb_noise_image_prop.set_unit(" ");
+	nb_noise_image_prop.set_format("%3d");
+	nb_noise_image_prop.set_description("the number of noise image used to estimate the mean noise image");
+	nb_noise_image->set_default_properties(nb_noise_image_prop);
+	att_list.push_back(nb_noise_image);
+
 	//	Attribute : InputImage
 	InputImageAttrib	*input_image = new InputImageAttrib();
 	Tango::UserDefaultAttrProp	input_image_prop;
@@ -558,6 +622,24 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	input_image_prop.set_description("raw copy of the input image");
 	input_image->set_default_properties(input_image_prop);
 	att_list.push_back(input_image);
+
+	//	Attribute : ROIImage
+	ROIImageAttrib	*roiimage = new ROIImageAttrib();
+	Tango::UserDefaultAttrProp	roiimage_prop;
+	roiimage_prop.set_label("ROI Image");
+	roiimage_prop.set_unit(" ");
+	roiimage_prop.set_description("the effective image on which are done all the calculation");
+	roiimage->set_default_properties(roiimage_prop);
+	att_list.push_back(roiimage);
+
+	//	Attribute : MeanNoiseImage
+	MeanNoiseImageAttrib	*mean_noise_image = new MeanNoiseImageAttrib();
+	Tango::UserDefaultAttrProp	mean_noise_image_prop;
+	mean_noise_image_prop.set_label("Mean Noise Image");
+	mean_noise_image_prop.set_unit(" ");
+	mean_noise_image_prop.set_description("the mean noise image, which is substracted from every processed image");
+	mean_noise_image->set_default_properties(mean_noise_image_prop);
+	att_list.push_back(mean_noise_image);
 
 	//	Attribute : ThresholdedImage
 	ThresholdedImageAttrib	*thresholded_image = new ThresholdedImageAttrib();
@@ -917,15 +999,6 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	yprofile_chi2_prop.set_description("the chi-2 of  fitted gaussian corresponding to the Y profile");
 	yprofile_chi2->set_default_properties(yprofile_chi2_prop);
 	att_list.push_back(yprofile_chi2);
-
-	//	Attribute : ROIImage
-	ROIImageAttrib	*roiimage = new ROIImageAttrib();
-	Tango::UserDefaultAttrProp	roiimage_prop;
-	roiimage_prop.set_label("ROI Image");
-	roiimage_prop.set_unit(" ");
-	roiimage_prop.set_description("the effective image on which are done all the calculation");
-	roiimage->set_default_properties(roiimage_prop);
-	att_list.push_back(roiimage);
 
 	//	Attribute : GaussianFitMagnitude
 	GaussianFitMagnitudeAttrib	*gaussian_fit_magnitude = new GaussianFitMagnitudeAttrib();
@@ -1396,7 +1469,7 @@ void ImgBeamAnalyzerClass::write_class_property()
 	//	Put Description
 	Tango::DbDatum	description("Description");
 	vector<string>	str_desc;
-	str_desc.push_back("The device analyzes images accessible on another remote device, ");
+	str_desc.push_back("The device analyzes images accessible on another remote device,");
 	str_desc.push_back("and proposes the following (selectable) features :");
 	str_desc.push_back("- in preprocessing : rotation, mirroring, gamma correction");
 	str_desc.push_back("- ROI (Region Of Interest), either user-defined or automatic by blob analysis");
