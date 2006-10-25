@@ -56,11 +56,6 @@ INC_DIR_USER=-I $(SOLEIL_ROOT)/sw-support/ISL/include \
 # ...etc
 #
 LIB_DIR_USER=-L $(SOLEIL_ROOT)/sw-support/ISL/lib \
-		-L $(SOLEIL_ROOT)/sw-support/OpenCV/lib \
-		-L $(SOLEIL_ROOT)/sw-support/GraphicFiles/libjpeg/lib \
-		-L $(SOLEIL_ROOT)/sw-support/GraphicFiles/libtiff/lib \
-		-L $(SOLEIL_ROOT)/sw-support/GraphicFiles/libpng/lib \
-		-L $(SOLEIL_ROOT)/sw-support/Zlib/lib \
 		-L $(SOLEIL_ROOT)/sw-support/adtb/lib
 
 
@@ -80,15 +75,7 @@ LIB_DIR_USER=-L $(SOLEIL_ROOT)/sw-support/ISL/lib \
 # -lASL for ASL
 # -lHKL for HKL
 #
-LFLAGS_USR=	-lISL \
-		-lOpenCV_highgui \
-		-lOpenCV_cv \
-		-lOpenCV_cx \
-		-ljpeg \
-		-ltiff \
-		-lpng \
-		-lz \
-		-lADTB
+LFLAGS_USR=	-lISL -lADTB
 
 
 
