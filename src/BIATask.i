@@ -15,18 +15,20 @@ namespace ImgBeamAnalyzer_ns
 {
 
 INLINE_IMPL
-Tango::DevState 
-BIATask::state (void)
+void
+BIATask::get_state (Tango::DevState& state)
 {
-  return( this->state_ );
+  adtb::DeviceMutexLock guard(this->state_status_mutex_);
+  state = this->state_;
 }
 
 
 INLINE_IMPL
-const std::string& 
-BIATask::status(void)
+void 
+BIATask::get_status(std::string& status)
 {
-  return( this->status_ );
+  adtb::DeviceMutexLock guard(this->state_status_mutex_);
+  status = this->status_;
 }
 
 } // namespace

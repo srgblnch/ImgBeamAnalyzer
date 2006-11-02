@@ -15,24 +15,27 @@ namespace ImgBeamAnalyzer_ns
 {
 
 INLINE_IMPL
-BIAData*
-BIAProcessor::get_data (void)
+void
+BIAProcessor::get_data (BIAData*& data)
 {
-  return( this->data_ ? this->data_->duplicate() : 0);
+  adtb::DeviceMutexLock(this->data_mutex_);
+  data = this->data_ ? this->data_->duplicate() : 0;
 }
 
 
 INLINE_IMPL
-const BIAConfig&
-BIAProcessor::get_config (void)
+void
+BIAProcessor::get_config (BIAConfig& c)
 {
-  return( this->config_ );
+  adtb::DeviceMutexLock(this->config_mutex_);
+  c = this->config_;
 }
 
 INLINE_IMPL
 void
 BIAProcessor::configure(const BIAConfig& config)
 {
+  adtb::DeviceMutexLock(this->config_mutex_);
   this->config_ = config;
 }
 

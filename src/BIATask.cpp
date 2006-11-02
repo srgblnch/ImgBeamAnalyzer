@@ -71,6 +71,8 @@ BIATask::~BIATask()
 
 void BIATask::fault(const char* description)
 {
+  adtb::DeviceMutexLock guard(this->state_status_mutex_);
+
   this->state_  = Tango::FAULT;
   this->status_ = description;
   ERROR_STREAM << description << std::endl;
@@ -78,32 +80,32 @@ void BIATask::fault(const char* description)
 
 void BIATask::clear_error()
 {
-  //- this function is only used in the CONTINUOUS_MODE, before processing a new image.
+  adtb::DeviceMutexLock guard(this->state_status_mutex_);
+
+    //- this function is only used in the CONTINUOUS_MODE, before processing a new image.
   //- it resets the internal state of the task
   //- any error that can happen during the processing is reported by setting the state to FAULT
   this->state_  = Tango::RUNNING;
   this->status_ = kRUNNING_STATUS_MSG;
 }
 
-BIAData* BIATask::get_data (void)
+void BIATask::get_data (BIAData*& data)
   throw (Tango::DevFailed)
 {
   //- enter critical section
-  adtb::DeviceMutexLock guard(this->lock_);
+  //adtb::DeviceMutexLock guard(this->lock_);
 
   if (this->mode_ == MODE_CONTINUOUS && this->state_ == Tango::STANDBY)
-    return(0);
+    data = 0;
   else
-    return( this->proc_.get_data() );
+    this->proc_.get_data(data);
+    //return( this->proc_.get_data() );
 }
 
 
-const BIAConfig& BIATask::get_config(void)
+void BIATask::get_config(BIAConfig& c)
 {
-  //- enter critical section
-  adtb::DeviceMutexLock guard(this->lock_);
-
-  return( this->proc_.get_config() );
+  this->proc_.get_config(c);
 }
 
 
@@ -201,8 +203,8 @@ void BIATask::handle_message (const adtb::Message& _msg)
 
   //- The DeviceTask's lock_ is locked
 	//-------------------------------------------------------------------
-  DEBUG_TRACE("BIATask::handle_message::message_handler");
-	DEBUG_STREAM << "BIATask::handle_message::receiving msg " << _msg.to_string() << std::endl;
+  //DEBUG_TRACE("BIATask::handle_message::message_handler");
+	//DEBUG_STREAM << "BIATask::handle_message::receiving msg " << _msg.to_string() << std::endl;
 
 	//- handle msg
   switch (_msg.type())
@@ -253,7 +255,7 @@ void BIATask::handle_message (const adtb::Message& _msg)
 		//- THREAD_PERIODIC -----------------
 		case adtb::THREAD_PERIODIC:
 		  {
-  		  DEBUG_STREAM << "BIATask::handle_message::task wokenup on timeout" << std::endl;
+  		  //DEBUG_STREAM << "BIATask::handle_message::task wokenup on timeout" << std::endl;
         
         if (this->initialized_ == false)
         {
@@ -423,7 +425,7 @@ void BIATask::handle_message (const adtb::Message& _msg)
   		break;
 	}
 
-	DEBUG_STREAM << "BIATask::handle_message::message_handler:msg " << _msg.to_string() << " successfully handled" << std::endl;
+	//DEBUG_STREAM << "BIATask::handle_message::message_handler:msg " << _msg.to_string() << " successfully handled" << std::endl;
 }
 
 

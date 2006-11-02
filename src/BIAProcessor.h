@@ -28,6 +28,8 @@
 #include <isl/Exception.h>
 #include <isl/ErrorHandler.h>
 
+#include <DeviceTask.h>
+
 #include "BIAData.h"
 #include "BIAConfig.h"
 // ============================================================================
@@ -60,11 +62,11 @@ private:
   void 
     configure(const BIAConfig& config);
 
-  BIAData* 
-    get_data(void);
+  void
+    get_data(BIAData*& data);
 
-  const BIAConfig& 
-    get_config(void);
+  void
+    get_config(BIAConfig& c);
 
   void
     start_learn_noise(void);
@@ -85,8 +87,12 @@ private:
   
 
 
+  adtb::DeviceMutex   data_mutex_;
   BIAData*            data_;
+  
   BIATask&            task_;
+  
+  adtb::DeviceMutex   config_mutex_;
   BIAConfig           config_;
 
   bool learn_noise_;

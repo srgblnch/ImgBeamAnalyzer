@@ -8,7 +8,7 @@
 //
 // $Author: julien_malik $
 //
-// $Revision: 1.2 $
+// $Revision: 1.3 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -30,7 +30,7 @@
 
 /**
  * @author	$Author: julien_malik $
- * @version	$Revision: 1.2 $
+ * @version	$Revision: 1.3 $
  */
 
  //	Add your own constants definitions here.
@@ -1147,8 +1147,14 @@ protected :
     }
     else if (this->task_)
     {
-      this->set_state (this->task_->state());
-      this->set_status(this->task_->status());
+      Tango::DevState state;
+      std::string status;
+      
+      this->task_->get_state(state);
+      this->task_->get_status(status);
+      
+      this->set_state (state);
+      this->set_status(status);
     }
   };
 
@@ -1286,7 +1292,7 @@ protected :
    	                                                                                            \
 		TangoType value;                                                                            \
 		attr.get_write_value (value);                                                               \
-		this->current_config_ = this->task_->get_config();                                          \
+		this->task_->get_config(this->current_config_);                                          \
 	 	if (value !=	this->current_config_.config_member_name)                                     \
     {                                                                                           \
       BIAConfig new_config(this->current_config_);                                              \

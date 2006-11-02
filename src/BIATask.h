@@ -59,15 +59,15 @@ public:
 	virtual ~BIATask (void);
 
   //- returns the last available data ------
-  BIAData* get_data (void)
+  void get_data (BIAData*& data)
     throw (Tango::DevFailed);
 
-  const BIAConfig& get_config(void);
+  void get_config(BIAConfig&);
 
   void configure(const BIAConfig&);
 
-  Tango::DevState    state (void);
-  const std::string& status(void);
+  void get_state (Tango::DevState& state);
+  void get_status(std::string& status);
   
   //- retrieves an isl::Image from the remote device
   isl::Image* get_remote_image(bool throws = false);
@@ -90,8 +90,11 @@ private:
   //- Error handling
   void clear_error();
   void fault(const char* description);
-  Tango::DevState state_;
-  std::string     status_;
+
+  adtb::DeviceMutex state_status_mutex_;
+  Tango::DevState   state_;
+  std::string       status_;
+
   bool initialized_;
 
 };

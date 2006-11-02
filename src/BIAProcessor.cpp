@@ -95,18 +95,23 @@ BIAProcessor::process (const isl::Image& image)
   isl::Image* roi_image = 0;
   isl::Image* roi_image_d = 0;
   isl::Image* noise_roi_image = 0;
+  BIAConfig   config;
 
   try
   {
     //- make a raw copy of the configuration
-    data->config = this->config_;
+    {
+      adtb::DeviceMutexLock guard(this->config_mutex_);
+      config = this->config_;  
+    }
     
+    data->config = config;
     input_image = new isl::Image(image);
     
     //- Preprocess the input image (rotation & flip)
     int operation;
-    bool flip = this->config_.horizontal_flip;
-    long rotation = this->config_.rotation % 360;
+    bool flip = config.horizontal_flip;
+    long rotation = config.rotation % 360;
     rotation = rotation < 0 ? rotation + 360 : rotation;
 
     switch (rotation)
@@ -144,20 +149,19 @@ BIAProcessor::process (const isl::Image& image)
       this->mean_noise_image_.serialize(data->mean_noise_image.base());
 
       data->nb_noise_image = this->noise_estim_.nb_image();
-      
       data->user_roi_alarm = true;
     }
     else
     {
-      double pixel_size = this->config_.pixel_size;
+      double pixel_size = config.pixel_size;
     
       //- Determine the ROI
       isl::Rectangle roi;
-      if (this->config_.enable_user_roi)
+      if (config.enable_user_roi)
       {
-        if ( this->config_.is_user_roi_empty()
-             || this->config_.user_roi_origin_x >=  input_image->width()
-             || this->config_.user_roi_origin_y >=  input_image->height() )
+        if ( config.is_user_roi_empty()
+             || config.user_roi_origin_x >=  input_image->width()
+             || config.user_roi_origin_y >=  input_image->height() )
         {
           roi = isl::Rectangle(0,
                                0,
@@ -167,26 +171,26 @@ BIAProcessor::process (const isl::Image& image)
         }
         else
         {
-          roi = isl::Rectangle(this->config_.user_roi_origin_x,
-                               this->config_.user_roi_origin_y,
-                               this->config_.user_roi_width,
-                               this->config_.user_roi_height);
+          roi = isl::Rectangle(config.user_roi_origin_x,
+                               config.user_roi_origin_y,
+                               config.user_roi_width,
+                               config.user_roi_height);
         }
         roi_image = input_image->get_roi(roi);
       }
-      else if (this->config_.enable_auto_roi)
+      else if (config.enable_auto_roi)
       {
         //- try to determine the beam box automatically
         isl::Image thresholded_image(*input_image);
         thresholded_image.convert(isl::ISL_STORAGE_FLOAT);
-        thresholded_image.threshold(this->config_.threshold, 255, isl::ISL_THRESH_BINARY);
+        thresholded_image.threshold(config.threshold, 255, isl::ISL_THRESH_BINARY);
         thresholded_image.convert(isl::ISL_STORAGE_UCHAR);
         thresholded_image.morphology(isl::ISL_MORPHO_ERODE, 3, 3, 1, 1, isl::ISL_SHAPE_ELLIPSE, 1);
       
         data->thresholded_image.dimensions(input_image->width(), input_image->height());
         thresholded_image.serialize(data->thresholded_image.base());
 
-        data->bb_found = this->beam_box_.compute(thresholded_image, this->config_.auto_roi_mag_factor);
+        data->bb_found = this->beam_box_.compute(thresholded_image, config.auto_roi_mag_factor);
 
         if (data->bb_found)
         {
@@ -251,8 +255,8 @@ BIAProcessor::process (const isl::Image& image)
       roi_image->convert(*roi_image_d);
 
       //- apply the gamma correction
-      double max_pixel_value = ::pow(2, this->config_.pixel_depth);
-      roi_image_d->gamma_correction(this->config_.gamma_correction, max_pixel_value);
+      double max_pixel_value = ::pow(2, config.pixel_depth);
+      roi_image_d->gamma_correction(config.gamma_correction, max_pixel_value);
 
       //- convert the floating point values back to the integer image
       roi_image_d->convert(*roi_image);
@@ -262,7 +266,7 @@ BIAProcessor::process (const isl::Image& image)
 
 
       //- Compute image statistics
-      if (this->config_.enable_image_stats)
+      if (config.enable_image_stats)
       {
         //- moments calculation
         this->moments2d_.compute(*roi_image);
@@ -315,7 +319,7 @@ BIAProcessor::process (const isl::Image& image)
 
 
 
-      if (this->config_.enable_profile)
+      if (config.enable_profile)
       {
         this->profiles_.compute(*roi_image_d);
 
@@ -398,8 +402,8 @@ BIAProcessor::process (const isl::Image& image)
           {
             double covar = this->moments1d_.get_central_moment(2) / this->moments1d_.get_spatial_moment(0);
     
-            this->gauss1d_fitter_.nb_iter(this->config_.fit1d_nb_iter);
-            this->gauss1d_fitter_.epsilon(this->config_.fit1d_max_rel_change);
+            this->gauss1d_fitter_.nb_iter(config.fit1d_nb_iter);
+            this->gauss1d_fitter_.epsilon(config.fit1d_max_rel_change);
 
             this->gauss1d_fitter_.compute(y_profile, 
                                           y_profile_size,
@@ -423,7 +427,7 @@ BIAProcessor::process (const isl::Image& image)
         }
       }
 
-      if (this->config_.enable_image_stats && this->config_.enable_2d_gaussian_fit)
+      if (config.enable_image_stats && config.enable_2d_gaussian_fit)
       {
         double m00 = this->moments2d_.get_spatial_moment(0,0);
 
@@ -449,8 +453,8 @@ BIAProcessor::process (const isl::Image& image)
           double initial_magnitude = roi_image_d->value(static_cast<int>(this->moments2d_.get_spatial_moment(1,0) / m00),
                                                         static_cast<int>(this->moments2d_.get_spatial_moment(0,1) / m00));
 
-          this->gauss2d_fitter_.nb_iter(this->config_.fit2d_nb_iter);
-          this->gauss2d_fitter_.epsilon(this->config_.fit2d_max_rel_change);
+          this->gauss2d_fitter_.nb_iter(config.fit2d_nb_iter);
+          this->gauss2d_fitter_.epsilon(config.fit2d_max_rel_change);
 
           this->gauss2d_fitter_.compute(*roi_image_d,
                                         initial_magnitude,
@@ -530,13 +534,16 @@ BIAProcessor::process (const isl::Image& image)
     return;
   }
 
-  //- Release any existing data and assign the new ones
-  if (this->data_)
   {
-    this->data_->release ();
-    this->data_ = 0;
+    adtb::DeviceMutexLock(this->data_mutex_);
+    //- Release any existing data and assign the new ones
+    if (this->data_)
+    {
+      this->data_->release ();
+      this->data_ = 0;
+    }
+    this->data_ = data;
   }
-  this->data_ = data;
 }
 
 

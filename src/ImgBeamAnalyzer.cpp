@@ -1,4 +1,4 @@
-static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzer.cpp,v 1.2 2006-10-17 14:24:48 julien_malik Exp $";
+static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzer.cpp,v 1.3 2006-11-02 13:26:32 julien_malik Exp $";
 //+=============================================================================
 //
 // file :         ImgBeamAnalyzer.cpp
@@ -13,7 +13,7 @@ static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/Im
 //
 // $Author: julien_malik $
 //
-// $Revision: 1.2 $
+// $Revision: 1.3 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -515,6 +515,8 @@ void ImgBeamAnalyzer::always_executed_hook()
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_attr_hardware(vector<long> &attr_list)
 {
+#define VERBOSE_RW_ATTRIBUTE
+
 #ifdef VERBOSE_RW_ATTRIBUTE
 	DEBUG_STREAM << "ImgBeamAnalyzer::read_attr_hardware(vector<long> &attr_list) entering... "<< endl;
 #endif
@@ -534,7 +536,7 @@ void ImgBeamAnalyzer::read_attr_hardware(vector<long> &attr_list)
     //- if not available, return value will be 0
     //- we DON'T put the device in a FAULT state if data is not available
     //- but we update the status...
-    this->available_data_ = this->task_->get_data ();
+    this->task_->get_data (this->available_data_);
   }
   catch(...)
   {
