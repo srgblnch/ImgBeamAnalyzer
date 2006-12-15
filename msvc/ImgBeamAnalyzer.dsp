@@ -42,7 +42,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /MD /W3 /GR /GX /Z7 /Ox /Gy /X /I "C:\soleil_root\sw-support\adtb\include" /I "C:\soleil_root\sw-support\OpenCV\include" /I "D:\dev\Libraries\ISL\include" /I "C:\PROGRA~1\Microsoft Visual Studio\VC98\INCLUDE" /I "..\src" /I "..\include" /I "$(SOLEIL_ROOT)\omniorb\include" /I "$(SOLEIL_ROOT)\tango\include" /I "$(SOLEIL_ROOT)\dev\include" /D "WIN32" /D "DEBUG" /D "INTEL86" /D "STRICT" /D "WIN32_LEAN_AND_MEAN" /D "VC_EXTRALEAN" /FR /FD /Zm1000 /c
+# ADD CPP /nologo /MD /W3 /GR /GX /Z7 /Ox /Gy /X /I "C:\soleil_root\sw-support\adtb\include" /I "C:\soleil_root\sw-support\OpenCV\include" /I "D:\dev\Libraries\ISL\include" /I "C:\PROGRA~1\Microsoft Visual Studio\VC98\INCLUDE" /I "..\src" /I "..\include" /I "$(SOLEIL_ROOT)\omniorb\include" /I "$(SOLEIL_ROOT)\tango\include" /I "$(SOLEIL_ROOT)\dev\include" /D "WIN32" /D "NDEBUG" /D "INTEL86" /D "STRICT" /D "WIN32_LEAN_AND_MEAN" /D "VC_EXTRALEAN" /FR /FD /Zm1000 /c
 # ADD BASE RSC /l 0x40c /d "NDEBUG"
 # ADD RSC /l 0x40c /d "NDEBUG"
 BSC32=bscmake.exe

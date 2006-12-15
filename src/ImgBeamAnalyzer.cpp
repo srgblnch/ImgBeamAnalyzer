@@ -1,4 +1,4 @@
-static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzer.cpp,v 1.3 2006-11-02 13:26:32 julien_malik Exp $";
+static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzer.cpp,v 1.4 2006-12-15 09:58:57 julien_malik Exp $";
 //+=============================================================================
 //
 // file :         ImgBeamAnalyzer.cpp
@@ -13,7 +13,7 @@ static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/Im
 //
 // $Author: julien_malik $
 //
-// $Revision: 1.3 $
+// $Revision: 1.4 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -93,8 +93,20 @@ ImgBeamAnalyzer::ImgBeamAnalyzer(Tango::DeviceClass *cl,const char *s,const char
 void ImgBeamAnalyzer::delete_device()
 {
 	//	Delete device's allocated object
-  this->task_->abort();
-  this->task_ = 0;
+  try
+  {
+    this->task_->exit();
+    this->task_ = 0;
+  }
+  catch(Tango::DevFailed& ex)
+  {
+    ERROR_STREAM << ex << std::endl;
+    //- ignore error cause we are in destructor
+  }
+  catch(...)
+  {
+    //- ignore error cause we are in destructor
+  }
 
   if (this->available_data_)
   {
@@ -515,8 +527,6 @@ void ImgBeamAnalyzer::always_executed_hook()
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_attr_hardware(vector<long> &attr_list)
 {
-#define VERBOSE_RW_ATTRIBUTE
-
 #ifdef VERBOSE_RW_ATTRIBUTE
 	DEBUG_STREAM << "ImgBeamAnalyzer::read_attr_hardware(vector<long> &attr_list) entering... "<< endl;
 #endif

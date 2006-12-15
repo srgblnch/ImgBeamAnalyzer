@@ -18,7 +18,7 @@ INLINE_IMPL
 void
 BIATask::get_state (Tango::DevState& state)
 {
-  adtb::DeviceMutexLock guard(this->state_status_mutex_);
+  adtb::DeviceMutexLock<> guard(this->state_status_mutex_);
   state = this->state_;
 }
 
@@ -27,7 +27,7 @@ INLINE_IMPL
 void 
 BIATask::get_status(std::string& status)
 {
-  adtb::DeviceMutexLock guard(this->state_status_mutex_);
+  adtb::DeviceMutexLock<> guard(this->state_status_mutex_);
   status = this->status_;
 }
 

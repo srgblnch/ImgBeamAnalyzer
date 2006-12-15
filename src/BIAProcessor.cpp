@@ -101,7 +101,7 @@ BIAProcessor::process (const isl::Image& image)
   {
     //- make a raw copy of the configuration
     {
-      adtb::DeviceMutexLock guard(this->config_mutex_);
+      adtb::DeviceMutexLock<> guard(this->config_mutex_);
       config = this->config_;  
     }
     
@@ -535,7 +535,7 @@ BIAProcessor::process (const isl::Image& image)
   }
 
   {
-    adtb::DeviceMutexLock(this->data_mutex_);
+    adtb::DeviceMutexLock<>(this->data_mutex_);
     //- Release any existing data and assign the new ones
     if (this->data_)
     {

@@ -35,7 +35,8 @@ BIATask::BIATask(Tango::DeviceImpl* _host_device,
                  bool               _auto_start,
                  int                _mode)
 
-: adtb::DeviceTask(_host_device),
+: adtb::DeviceTask(),
+  Tango::LogAdapter(_host_device),
   dev_proxy_(0),
   dev_proxy_allowed_(_dev_proxy_allowed),
   image_dev_name_(_image_dev_name),
@@ -71,7 +72,7 @@ BIATask::~BIATask()
 
 void BIATask::fault(const char* description)
 {
-  adtb::DeviceMutexLock guard(this->state_status_mutex_);
+  adtb::DeviceMutexLock<> guard(this->state_status_mutex_);
 
   this->state_  = Tango::FAULT;
   this->status_ = description;
@@ -80,7 +81,7 @@ void BIATask::fault(const char* description)
 
 void BIATask::clear_error()
 {
-  adtb::DeviceMutexLock guard(this->state_status_mutex_);
+  adtb::DeviceMutexLock<> guard(this->state_status_mutex_);
 
     //- this function is only used in the CONTINUOUS_MODE, before processing a new image.
   //- it resets the internal state of the task
@@ -93,7 +94,7 @@ void BIATask::get_data (BIAData*& data)
   throw (Tango::DevFailed)
 {
   //- enter critical section
-  //adtb::DeviceMutexLock guard(this->lock_);
+  //adtb::DeviceMutexLock<> guard(this->lock_);
 
   if (this->mode_ == MODE_CONTINUOUS && this->state_ == Tango::STANDBY)
     data = 0;
@@ -197,7 +198,7 @@ void BIATask::configure(const BIAConfig& config)
 }
 
 
-void BIATask::handle_message (const adtb::Message& _msg)
+void BIATask::handle_message (adtb::Message& _msg)
   throw (Tango::DevFailed)
 {
 

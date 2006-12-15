@@ -41,7 +41,7 @@ const int MODE_CONTINUOUS = 1;
 //! detailed description to be written
 //!
 // ============================================================================
-class BIATask : public adtb::DeviceTask
+class BIATask : public adtb::DeviceTask , public Tango::LogAdapter
 {
   friend class BIAProcessor;
 
@@ -74,7 +74,7 @@ public:
 
 protected:
 	//- handle_message -----------------------
-	virtual void handle_message (const adtb::Message& msg)
+	virtual void handle_message (adtb::Message& msg)
 		throw (Tango::DevFailed);
 
 private:
