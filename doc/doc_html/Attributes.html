@@ -18,11 +18,14 @@
 			<IMG SRC="http://www.esrf.fr/computing/cs/tango/elettra_logo.gif" BORDER=0></A>
 
 		</Td>
-        <TD ALIGN="right">
+        <TD ALIGN="center">
 			<A HREF="http://www.synchrotron-soleil.fr/" TARGET=new>
 			<IMG SRC="http://www.esrf.fr/computing/cs/tango/soleil_logo.gif" BORDER=0></A>
 		</Td>
-    	 <Td>
+        <TD ALIGN="right">
+			<A HREF="http://www.cells.es/" TARGET=new>
+			<IMG SRC="http://www.esrf.fr/computing/cs/tango/alba.jpg" BORDER=0></A>
+		</Td>
     	 <Td>
 			<H2><FONT COLOR="#7F00FF">
 			<Center><A HREF="http://www.esrf.fr/Infrastructure/Computing/tango/" TARGET="_top">
@@ -55,206 +58,277 @@ Revision:  - Author:
 <Td><Center><b>Data Type</b></td></Center>
 <Td><Center><b>R/W Type</b></td></Center>
 <Td><Center><b>Expert</b></td></Center>
-<Tr><Td><b><Center>EnableImageStats</b><Br>( enables the computation of image moments (centroid, variance, skew) and maximal intensity )</Center></Td>
-<Td><Center>DEV_BOOLEAN</Center></Td><Td><Center>READ_WRITE</Center></Td><Td><Center>No</Center></Td></Tr>
-
-<Tr><Td><b><Center>EnableProfiles</b><Br>( enables the computation of the X and Y profiles, and the corresponding gaussian fit )</Center></Td>
-<Td><Center>DEV_BOOLEAN</Center></Td><Td><Center>READ_WRITE</Center></Td><Td><Center>No</Center></Td></Tr>
-
-<Tr><Td><b><Center>EnableUserROI</b><Br>( enables the use of the UserROIOriginX, UserROIOriginY, UserROIWidth, UserROIHeight to define the ROI that will be processed )</Center></Td>
-<Td><Center>DEV_BOOLEAN</Center></Td><Td><Center>READ_WRITE</Center></Td><Td><Center>No</Center></Td></Tr>
-
-<Tr><Td><b><Center>EnableAutoROI</b><Br>( if true, the ROI is detected automatically to encompass the biggest particle in the image )</Center></Td>
-<Td><Center>DEV_BOOLEAN</Center></Td><Td><Center>READ_WRITE</Center></Td><Td><Center>No</Center></Td></Tr>
-
-<Tr><Td><b><Center>Enable2DGaussianFit</b><Br>( enables the 2D gaussian fitting )</Center></Td>
-<Td><Center>DEV_BOOLEAN</Center></Td><Td><Center>READ_WRITE</Center></Td><Td><Center>No</Center></Td></Tr>
-
-<Tr><Td><b><Center>ComputationPeriod</b><Br>( period in millisecond at which a new image is read and processed )</Center></Td>
-<Td><Center>DEV_LONG</Center></Td><Td><Center>READ_WRITE</Center></Td><Td><Center>No</Center></Td></Tr>
-
-<Tr><Td><b><Center>EstimComputTime</b><Br>( time spent, in ms, to process the image )</Center></Td>
-<Td><Center>DEV_LONG</Center></Td><Td><Center>READ</Center></Td><Td><Center>No</Center></Td></Tr>
-
-<Tr><Td><b><Center>Rotation</b><Br>( the rotation applied in preprocessing. only multiple of 90 are recognized as valid values )</Center></Td>
-<Td><Center>DEV_LONG</Center></Td><Td><Center>READ_WRITE</Center></Td><Td><Center>No</Center></Td></Tr>
-
-<Tr><Td><b><Center>HorizontalFlip</b><Br>( if true, the image is flipped horizontally in preprocessing, after having been rotated )</Center></Td>
-<Td><Center>DEV_BOOLEAN</Center></Td><Td><Center>READ_WRITE</Center></Td><Td><Center>No</Center></Td></Tr>
-
-<Tr><Td><b><Center>BitsPerPixel</b><Br>( the pixel depth for significative information in the image (usually 8 or 10). it is used only in the gamma correction to keep a constant dynamic range of pixel values when raising these values to a power )</Center></Td>
-<Td><Center>DEV_LONG</Center></Td><Td><Center>READ_WRITE</Center></Td><Td><Center>No</Center></Td></Tr>
-
-<Tr><Td><b><Center>GammaCorrection</b><Br>( the gamma value of the camera, used to correct the ROI image by raising to its inverse power )</Center></Td>
-<Td><Center>DEV_DOUBLE</Center></Td><Td><Center>READ_WRITE</Center></Td><Td><Center>No</Center></Td></Tr>
-
-<Tr><Td><b><Center>Threshold</b><Br>( the threshold level, used to binarize the image )</Center></Td>
-<Td><Center>DEV_DOUBLE</Center></Td><Td><Center>READ_WRITE</Center></Td><Td><Center>No</Center></Td></Tr>
-
-<Tr><Td><b><Center>AutoROIMagFactor</b><Br>( the scaling factor applied to the bounding rectangle of the longest contour to define the ROI automatically )</Center></Td>
-<Td><Center>DEV_DOUBLE</Center></Td><Td><Center>READ_WRITE</Center></Td><Td><Center>No</Center></Td></Tr>
-
-<Tr><Td><b><Center>AlarmZone</b><Br>( if EnableAutoROI is set to true and if the distance between a beam box corner and the border of the image falls below this threshold, attributes quality are set to ALARM )</Center></Td>
-<Td><Center>DEV_LONG</Center></Td><Td><Center>READ_WRITE</Center></Td><Td><Center>No</Center></Td></Tr>
-
-<Tr><Td><b><Center>PixelSize</b><Br>( The correspondence between pixel and mm )</Center></Td>
-<Td><Center>DEV_DOUBLE</Center></Td><Td><Center>READ_WRITE</Center></Td><Td><Center>No</Center></Td></Tr>
-
-<Tr><Td><b><Center>UserROIOriginX</b><Br>( the X coordinate of the origin of the ROI (up-left corner) in pixels )</Center></Td>
-<Td><Center>DEV_LONG</Center></Td><Td><Center>READ_WRITE</Center></Td><Td><Center>No</Center></Td></Tr>
-
-<Tr><Td><b><Center>UserROIOriginY</b><Br>( the Y coordinate of the origin of the ROI (up-left corner) )</Center></Td>
-<Td><Center>DEV_LONG</Center></Td><Td><Center>READ_WRITE</Center></Td><Td><Center>No</Center></Td></Tr>
-
-<Tr><Td><b><Center>UserROIWidth</b><Br>( the width of the ROI in pixels )</Center></Td>
-<Td><Center>DEV_LONG</Center></Td><Td><Center>READ_WRITE</Center></Td><Td><Center>No</Center></Td></Tr>
-
-<Tr><Td><b><Center>UserROIHeight</b><Br>( the height of the ROI in pixels )</Center></Td>
-<Td><Center>DEV_LONG</Center></Td><Td><Center>READ_WRITE</Center></Td><Td><Center>No</Center></Td></Tr>
-
-<Tr><Td><b><Center>AutoROIOriginX</b><Br>( the X coordinate of the origin of the ROI (up-left corner) in pixels )</Center></Td>
-<Td><Center>DEV_LONG</Center></Td><Td><Center>READ</Center></Td><Td><Center>No</Center></Td></Tr>
-
-<Tr><Td><b><Center>AutoROIOriginY</b><Br>( the Y coordinate of the origin of the ROI (up-left corner) in pixels )</Center></Td>
-<Td><Center>DEV_LONG</Center></Td><Td><Center>READ</Center></Td><Td><Center>No</Center></Td></Tr>
-
-<Tr><Td><b><Center>AutoROIWidth</b><Br>( the width of the automatically detected ROI )</Center></Td>
-<Td><Center>DEV_LONG</Center></Td><Td><Center>READ</Center></Td><Td><Center>No</Center></Td></Tr>
-
-<Tr><Td><b><Center>AutoROIHeight</b><Br>( the height of the automatically detected ROI )</Center></Td>
-<Td><Center>DEV_LONG</Center></Td><Td><Center>READ</Center></Td><Td><Center>No</Center></Td></Tr>
-
-<Tr><Td><b><Center>MaxIntensity</b><Br>( the maximal intensity inside the ROI )</Center></Td>
-<Td><Center>DEV_DOUBLE</Center></Td><Td><Center>READ</Center></Td><Td><Center>No</Center></Td></Tr>
-
-<Tr><Td><b><Center>MeanIntensity</b><Br>( the mean intensity inside the beam box )</Center></Td>
-<Td><Center>DEV_DOUBLE</Center></Td><Td><Center>READ</Center></Td><Td><Center>No</Center></Td></Tr>
-
-<Tr><Td><b><Center>CentroidX</b><Br>( the X coordinate of the centroid )</Center></Td>
-<Td><Center>DEV_DOUBLE</Center></Td><Td><Center>READ</Center></Td><Td><Center>No</Center></Td></Tr>
-
-<Tr><Td><b><Center>CentroidY</b><Br>( the Y coordinate of the centroid )</Center></Td>
-<Td><Center>DEV_DOUBLE</Center></Td><Td><Center>READ</Center></Td><Td><Center>No</Center></Td></Tr>
-
-<Tr><Td><b><Center>VarianceX</b><Br>( the variance along the X axis )</Center></Td>
-<Td><Center>DEV_DOUBLE</Center></Td><Td><Center>READ</Center></Td><Td><Center>No</Center></Td></Tr>
-
-<Tr><Td><b><Center>VarianceY</b><Br>( the variance along the Y axis )</Center></Td>
-<Td><Center>DEV_DOUBLE</Center></Td><Td><Center>READ</Center></Td><Td><Center>No</Center></Td></Tr>
-
-<Tr><Td><b><Center>CovarianceXY</b><Br>( the covariance with respect to the X and Y axis )</Center></Td>
-<Td><Center>DEV_DOUBLE</Center></Td><Td><Center>READ</Center></Td><Td><Center>No</Center></Td></Tr>
-
-<Tr><Td><b><Center>CorrelationXY</b><Br>( the correlation coefficient between the X and Y axises )</Center></Td>
-<Td><Center>DEV_DOUBLE</Center></Td><Td><Center>READ</Center></Td><Td><Center>No</Center></Td></Tr>
-
-<Tr><Td><b><Center>SkewX</b><Br>( the skew along the X axis )</Center></Td>
-<Td><Center>DEV_DOUBLE</Center></Td><Td><Center>READ</Center></Td><Td><Center>No</Center></Td></Tr>
-
-<Tr><Td><b><Center>SkewY</b><Br>( the skew along the Y axis )</Center></Td>
-<Td><Center>DEV_DOUBLE</Center></Td><Td><Center>READ</Center></Td><Td><Center>No</Center></Td></Tr>
-
-<Tr><Td><b><Center>SkewX2Y</b><Br>( the skew cross coefficient for X².Y )</Center></Td>
-<Td><Center>DEV_DOUBLE</Center></Td><Td><Center>READ</Center></Td><Td><Center>No</Center></Td></Tr>
-
-<Tr><Td><b><Center>SkewXY2</b><Br>( the skew cross coefficient for X.Y² )</Center></Td>
-<Td><Center>DEV_DOUBLE</Center></Td><Td><Center>READ</Center></Td><Td><Center>No</Center></Td></Tr>
-
-<Tr><Td><b><Center>EllipseCentroidX</b><Br>( the X coordinate of the centroid of the fitted ellipse )</Center></Td>
-<Td><Center>DEV_DOUBLE</Center></Td><Td><Center>READ</Center></Td><Td><Center>No</Center></Td></Tr>
-
-<Tr><Td><b><Center>EllipseCentroidY</b><Br>( the Y coordinate of the centroid of the fitted ellipse )</Center></Td>
-<Td><Center>DEV_DOUBLE</Center></Td><Td><Center>READ</Center></Td><Td><Center>No</Center></Td></Tr>
-
-<Tr><Td><b><Center>EllipseMajorAxis</b><Br>( the major axis (full axis, not half) of the beam ellipse )</Center></Td>
-<Td><Center>DEV_DOUBLE</Center></Td><Td><Center>READ</Center></Td><Td><Center>No</Center></Td></Tr>
-
-<Tr><Td><b><Center>EllipseMinorAxis</b><Br>( the minor axis (full axis, not half) of the beam ellipse )</Center></Td>
-<Td><Center>DEV_DOUBLE</Center></Td><Td><Center>READ</Center></Td><Td><Center>No</Center></Td></Tr>
-
-<Tr><Td><b><Center>EllipseTilt</b><Br>( the orientation of the beam ellipse from the X axis )</Center></Td>
-<Td><Center>DEV_DOUBLE</Center></Td><Td><Center>READ</Center></Td><Td><Center>No</Center></Td></Tr>
-
-<Tr><Td><b><Center>XProfileCenter</b><Br>( the X position of the center of the fitted gaussian corresponding to the X profile )</Center></Td>
-<Td><Center>DEV_DOUBLE</Center></Td><Td><Center>READ</Center></Td><Td><Center>No</Center></Td></Tr>
-
-<Tr><Td><b><Center>XProfileMag</b><Br>( the magnitude of  fitted gaussian corresponding to the X profile )</Center></Td>
-<Td><Center>DEV_DOUBLE</Center></Td><Td><Center>READ</Center></Td><Td><Center>No</Center></Td></Tr>
-
-<Tr><Td><b><Center>XProfileSigma</b><Br>( the standard deviation of  fitted gaussian corresponding to the X profile )</Center></Td>
-<Td><Center>DEV_DOUBLE</Center></Td><Td><Center>READ</Center></Td><Td><Center>No</Center></Td></Tr>
-
-<Tr><Td><b><Center>XProfileFWHM</b><Br>( the full width at half maximum of the fitted gaussian corresponding to the X profile, calculated approximately as 2.35 * XProfileSigma )</Center></Td>
-<Td><Center>DEV_DOUBLE</Center></Td><Td><Center>READ</Center></Td><Td><Center>No</Center></Td></Tr>
-
-<Tr><Td><b><Center>XProfileBG</b><Br>( the background of  fitted gaussian corresponding to the X profile )</Center></Td>
-<Td><Center>DEV_DOUBLE</Center></Td><Td><Center>READ</Center></Td><Td><Center>No</Center></Td></Tr>
-
-<Tr><Td><b><Center>XProfileChi2</b><Br>( the chi-2 of  fitted gaussian corresponding to the X profile )</Center></Td>
-<Td><Center>DEV_DOUBLE</Center></Td><Td><Center>READ</Center></Td><Td><Center>No</Center></Td></Tr>
-
-<Tr><Td><b><Center>YProfileCenter</b><Br>( the Y position of the center of the fitted gaussian corresponding to the Y profile )</Center></Td>
-<Td><Center>DEV_DOUBLE</Center></Td><Td><Center>READ</Center></Td><Td><Center>No</Center></Td></Tr>
-
-<Tr><Td><b><Center>YProfileMag</b><Br>( the magnitude of  fitted gaussian corresponding to the Y profile )</Center></Td>
-<Td><Center>DEV_DOUBLE</Center></Td><Td><Center>READ</Center></Td><Td><Center>No</Center></Td></Tr>
-
-<Tr><Td><b><Center>YProfileSigma</b><Br>( the standard deviation of  fitted gaussian corresponding to the Y profile )</Center></Td>
-<Td><Center>DEV_DOUBLE</Center></Td><Td><Center>READ</Center></Td><Td><Center>No</Center></Td></Tr>
-
-<Tr><Td><b><Center>YProfileFWHM</b><Br>( the full width at half maximum of the fitted gaussian corresponding to the Y profile, calculated approximately as 2.35 * YProfileSigma )</Center></Td>
-<Td><Center>DEV_DOUBLE</Center></Td><Td><Center>READ</Center></Td><Td><Center>No</Center></Td></Tr>
-
-<Tr><Td><b><Center>YProfileBG</b><Br>( the background of  fitted gaussian corresponding to the Y profile )</Center></Td>
-<Td><Center>DEV_DOUBLE</Center></Td><Td><Center>READ</Center></Td><Td><Center>No</Center></Td></Tr>
-
-<Tr><Td><b><Center>YProfileChi2</b><Br>( the chi-2 of  fitted gaussian corresponding to the Y profile )</Center></Td>
-<Td><Center>DEV_DOUBLE</Center></Td><Td><Center>READ</Center></Td><Td><Center>No</Center></Td></Tr>
-
-<Tr><Td><b><Center>GaussianFitMagnitude</b><Br>( the magnitude of the fitted gaussian )</Center></Td>
-<Td><Center>DEV_DOUBLE</Center></Td><Td><Center>READ</Center></Td><Td><Center>No</Center></Td></Tr>
-
-<Tr><Td><b><Center>GaussianFitCenterX</b><Br>( the X coordinate of the centroid of the 2D gaussian fitted to the image )</Center></Td>
-<Td><Center>DEV_DOUBLE</Center></Td><Td><Center>READ</Center></Td><Td><Center>No</Center></Td></Tr>
-
-<Tr><Td><b><Center>GaussianFitCenterY</b><Br>( the Y coordinate of the centroid of the 2D gaussian fitted to the image )</Center></Td>
-<Td><Center>DEV_DOUBLE</Center></Td><Td><Center>READ</Center></Td><Td><Center>No</Center></Td></Tr>
-
-<Tr><Td><b><Center>GaussianFitVarianceX</b><Br>( the variance of the 2D gaussian along the X axis )</Center></Td>
-<Td><Center>DEV_DOUBLE</Center></Td><Td><Center>READ</Center></Td><Td><Center>No</Center></Td></Tr>
-
-<Tr><Td><b><Center>GaussianFitVarianceY</b><Br>( the variance of the 2D gaussian along the Y axis )</Center></Td>
-<Td><Center>DEV_DOUBLE</Center></Td><Td><Center>READ</Center></Td><Td><Center>No</Center></Td></Tr>
-
-<Tr><Td><b><Center>GaussianFitCovarianceXY</b><Br>( the covariance of the 2D gaussian )</Center></Td>
-<Td><Center>DEV_DOUBLE</Center></Td><Td><Center>READ</Center></Td><Td><Center>No</Center></Td></Tr>
-
-<Tr><Td><b><Center>GaussianFitMajorAxisFWHM</b><Br>( the FWHM along the major axis of the fitted gaussian, calculated approximately as 2.35 * sqrt(GaussianFitVarianceX) )</Center></Td>
-<Td><Center>DEV_DOUBLE</Center></Td><Td><Center>READ</Center></Td><Td><Center>No</Center></Td></Tr>
-
-<Tr><Td><b><Center>GaussianFitMinorAxisFWHM</b><Br>( the FWHM along the minor axis of the fitted gaussian, calculated approximately as 2.35 * sqrt(GaussianFitVarianceY) )</Center></Td>
-<Td><Center>DEV_DOUBLE</Center></Td><Td><Center>READ</Center></Td><Td><Center>No</Center></Td></Tr>
-
-<Tr><Td><b><Center>GaussianFitTilt</b><Br>( the angle made by the major axis of the gaussian and the X axis )</Center></Td>
-<Td><Center>DEV_DOUBLE</Center></Td><Td><Center>READ</Center></Td><Td><Center>No</Center></Td></Tr>
-
-<Tr><Td><b><Center>GaussianFitBG</b><Br>( the background of the fitted gaussian )</Center></Td>
-<Td><Center>DEV_DOUBLE</Center></Td><Td><Center>READ</Center></Td><Td><Center>No</Center></Td></Tr>
-
-<Tr><Td><b><Center>GaussianFitChi2</b><Br>( the chi-2 of the fitted gaussian )</Center></Td>
-<Td><Center>DEV_DOUBLE</Center></Td><Td><Center>READ</Center></Td><Td><Center>No</Center></Td></Tr>
-
-<Tr><Td><b><Center>Fit2DNbIterMax</b><Br>( the maximal number of iteration to converge to a solution )</Center></Td>
-<Td><Center>DEV_LONG</Center></Td><Td><Center>READ_WRITE</Center></Td><Td><Center>Yes</Center></Td></Tr>
-
-<Tr><Td><b><Center>Fit2DMaxRelChange</b><Br>( optimization stops when the relative change between 2 iterations falls below this threshold )</Center></Td>
-<Td><Center>DEV_DOUBLE</Center></Td><Td><Center>READ_WRITE</Center></Td><Td><Center>Yes</Center></Td></Tr>
-
-<Tr><Td><b><Center>Fit1DNbIterMax</b><Br>( the maximal number of iteration to converge to a solution )</Center></Td>
-<Td><Center>DEV_LONG</Center></Td><Td><Center>READ_WRITE</Center></Td><Td><Center>Yes</Center></Td></Tr>
-
-<Tr><Td><b><Center>Fit1DMaxRelChange</b><Br>( optimization stops when the relative change between 2 iterations falls below this threshold )</Center></Td>
-<Td><Center>DEV_DOUBLE</Center></Td><Td><Center>READ_WRITE</Center></Td><Td><Center>Yes</Center></Td></Tr>
+<Font Size=-1>
+<Tr><Td><b>EnableImageStats</b>: <Font Size=-1>enables the computation of image moments (centroid, variance, skew) and maximal intensity</Font></Td>
+<Td><Center><Font Size=-1>DEV_BOOLEAN</Font></Center></Td><Td><Center><Font Size=-1>READ_WRITE</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>EnableProfiles</b>: <Font Size=-1>enables the computation of the X and Y profiles, and the corresponding gaussian fit</Font></Td>
+<Td><Center><Font Size=-1>DEV_BOOLEAN</Font></Center></Td><Td><Center><Font Size=-1>READ_WRITE</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>EnableUserROI</b>: <Font Size=-1>enables the use of the UserROIOriginX, UserROIOriginY, UserROIWidth, UserROIHeight to define the ROI that will be processed</Font></Td>
+<Td><Center><Font Size=-1>DEV_BOOLEAN</Font></Center></Td><Td><Center><Font Size=-1>READ_WRITE</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>EnableAutoROI</b>: <Font Size=-1>if true, the ROI is detected automatically to encompass the biggest particle in the image</Font></Td>
+<Td><Center><Font Size=-1>DEV_BOOLEAN</Font></Center></Td><Td><Center><Font Size=-1>READ_WRITE</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>Enable2DGaussianFit</b>: <Font Size=-1>enables the 2D gaussian fitting</Font></Td>
+<Td><Center><Font Size=-1>DEV_BOOLEAN</Font></Center></Td><Td><Center><Font Size=-1>READ_WRITE</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>ComputationPeriod</b>: <Font Size=-1>period in millisecond at which a new image is read and processed</Font></Td>
+<Td><Center><Font Size=-1>DEV_LONG</Font></Center></Td><Td><Center><Font Size=-1>READ_WRITE</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>EstimComputTime</b>: <Font Size=-1>time spent, in ms, to process the image</Font></Td>
+<Td><Center><Font Size=-1>DEV_LONG</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>Rotation</b>: <Font Size=-1>the rotation applied in preprocessing. only multiple of 90 are recognized as valid values</Font></Td>
+<Td><Center><Font Size=-1>DEV_LONG</Font></Center></Td><Td><Center><Font Size=-1>READ_WRITE</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>HorizontalFlip</b>: <Font Size=-1>if true, the image is flipped horizontally in preprocessing, after having been rotated</Font></Td>
+<Td><Center><Font Size=-1>DEV_BOOLEAN</Font></Center></Td><Td><Center><Font Size=-1>READ_WRITE</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>BitsPerPixel</b>: <Font Size=-1>the pixel depth for significative information in the image (usually 8 or 10). it is used only in the gamma correction to keep a constant dynamic range of pixel values when raising these values to a power</Font></Td>
+<Td><Center><Font Size=-1>DEV_LONG</Font></Center></Td><Td><Center><Font Size=-1>READ_WRITE</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>GammaCorrection</b>: <Font Size=-1>the gamma value of the camera, used to correct the ROI image by raising to its inverse power</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ_WRITE</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>Threshold</b>: <Font Size=-1>the threshold level, used to binarize the image</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ_WRITE</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>AutoROIMagFactor</b>: <Font Size=-1>the scaling factor applied to the bounding rectangle of the longest contour to define the ROI automatically</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ_WRITE</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>AlarmZone</b>: <Font Size=-1>if EnableAutoROI is set to true and if the distance between a beam box corner and the border of the image falls below this threshold, attributes quality are set to ALARM</Font></Td>
+<Td><Center><Font Size=-1>DEV_LONG</Font></Center></Td><Td><Center><Font Size=-1>READ_WRITE</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>PixelSize</b>: <Font Size=-1>The correspondence between pixel and mm</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ_WRITE</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>UserROIOriginX</b>: <Font Size=-1>the X coordinate of the origin of the ROI (up-left corner) in pixels</Font></Td>
+<Td><Center><Font Size=-1>DEV_LONG</Font></Center></Td><Td><Center><Font Size=-1>READ_WRITE</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>UserROIOriginY</b>: <Font Size=-1>the Y coordinate of the origin of the ROI (up-left corner)</Font></Td>
+<Td><Center><Font Size=-1>DEV_LONG</Font></Center></Td><Td><Center><Font Size=-1>READ_WRITE</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>UserROIWidth</b>: <Font Size=-1>the width of the ROI in pixels</Font></Td>
+<Td><Center><Font Size=-1>DEV_LONG</Font></Center></Td><Td><Center><Font Size=-1>READ_WRITE</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>UserROIHeight</b>: <Font Size=-1>the height of the ROI in pixels</Font></Td>
+<Td><Center><Font Size=-1>DEV_LONG</Font></Center></Td><Td><Center><Font Size=-1>READ_WRITE</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>AutoROIOriginX</b>: <Font Size=-1>the X coordinate of the origin of the ROI (up-left corner) in pixels</Font></Td>
+<Td><Center><Font Size=-1>DEV_LONG</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>AutoROIOriginY</b>: <Font Size=-1>the Y coordinate of the origin of the ROI (up-left corner) in pixels</Font></Td>
+<Td><Center><Font Size=-1>DEV_LONG</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>AutoROIWidth</b>: <Font Size=-1>the width of the automatically detected ROI</Font></Td>
+<Td><Center><Font Size=-1>DEV_LONG</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>AutoROIHeight</b>: <Font Size=-1>the height of the automatically detected ROI</Font></Td>
+<Td><Center><Font Size=-1>DEV_LONG</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>NbNoiseImage</b>: <Font Size=-1>the number of noise image used to estimate the mean noise image</Font></Td>
+<Td><Center><Font Size=-1>DEV_LONG</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>MaxIntensity</b>: <Font Size=-1>the maximal intensity inside the ROI</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>MeanIntensity</b>: <Font Size=-1>the mean intensity inside the beam box</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>CentroidX</b>: <Font Size=-1>the X coordinate of the centroid</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>CentroidY</b>: <Font Size=-1>the Y coordinate of the centroid</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>VarianceX</b>: <Font Size=-1>the variance along the X axis</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>VarianceY</b>: <Font Size=-1>the variance along the Y axis</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>CovarianceXY</b>: <Font Size=-1>the covariance with respect to the X and Y axis</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>CorrelationXY</b>: <Font Size=-1>the correlation coefficient between the X and Y axises</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>SkewX</b>: <Font Size=-1>the skew along the X axis</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>SkewY</b>: <Font Size=-1>the skew along the Y axis</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>SkewX2Y</b>: <Font Size=-1>the skew cross coefficient for X².Y</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>SkewXY2</b>: <Font Size=-1>the skew cross coefficient for X.Y²</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>EllipseCentroidX</b>: <Font Size=-1>the X coordinate of the centroid of the fitted ellipse</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>EllipseCentroidY</b>: <Font Size=-1>the Y coordinate of the centroid of the fitted ellipse</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>EllipseMajorAxis</b>: <Font Size=-1>the major axis (full axis, not half) of the beam ellipse</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>EllipseMinorAxis</b>: <Font Size=-1>the minor axis (full axis, not half) of the beam ellipse</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>EllipseTilt</b>: <Font Size=-1>the orientation of the beam ellipse from the X axis</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>XProfileCenter</b>: <Font Size=-1>the X position of the center of the fitted gaussian corresponding to the X profile</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>XProfileMag</b>: <Font Size=-1>the magnitude of  fitted gaussian corresponding to the X profile</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>XProfileSigma</b>: <Font Size=-1>the standard deviation of  fitted gaussian corresponding to the X profile</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>XProfileFWHM</b>: <Font Size=-1>the full width at half maximum of the fitted gaussian corresponding to the X profile, calculated approximately as 2.35 * XProfileSigma</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>XProfileBG</b>: <Font Size=-1>the background of  fitted gaussian corresponding to the X profile</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>XProfileChi2</b>: <Font Size=-1>the chi-2 of  fitted gaussian corresponding to the X profile</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>YProfileCenter</b>: <Font Size=-1>the Y position of the center of the fitted gaussian corresponding to the Y profile</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>YProfileMag</b>: <Font Size=-1>the magnitude of  fitted gaussian corresponding to the Y profile</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>YProfileSigma</b>: <Font Size=-1>the standard deviation of  fitted gaussian corresponding to the Y profile</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>YProfileFWHM</b>: <Font Size=-1>the full width at half maximum of the fitted gaussian corresponding to the Y profile, calculated approximately as 2.35 * YProfileSigma</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>YProfileBG</b>: <Font Size=-1>the background of  fitted gaussian corresponding to the Y profile</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>YProfileChi2</b>: <Font Size=-1>the chi-2 of  fitted gaussian corresponding to the Y profile</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>GaussianFitMagnitude</b>: <Font Size=-1>the magnitude of the fitted gaussian</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>GaussianFitCenterX</b>: <Font Size=-1>the X coordinate of the centroid of the 2D gaussian fitted to the image</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>GaussianFitCenterY</b>: <Font Size=-1>the Y coordinate of the centroid of the 2D gaussian fitted to the image</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>GaussianFitVarianceX</b>: <Font Size=-1>the variance of the 2D gaussian along the X axis</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>GaussianFitVarianceY</b>: <Font Size=-1>the variance of the 2D gaussian along the Y axis</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>GaussianFitCovarianceXY</b>: <Font Size=-1>the covariance of the 2D gaussian</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>GaussianFitMajorAxisFWHM</b>: <Font Size=-1>the FWHM along the major axis of the fitted gaussian, calculated approximately as 2.35 * sqrt(GaussianFitVarianceX)</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>GaussianFitMinorAxisFWHM</b>: <Font Size=-1>the FWHM along the minor axis of the fitted gaussian, calculated approximately as 2.35 * sqrt(GaussianFitVarianceY)</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>GaussianFitTilt</b>: <Font Size=-1>the angle made by the major axis of the gaussian and the X axis</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>GaussianFitBG</b>: <Font Size=-1>the background of the fitted gaussian</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>GaussianFitChi2</b>: <Font Size=-1>the chi-2 of the fitted gaussian</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>Fit2DNbIterMax</b>: <Font Size=-1>the maximal number of iteration to converge to a solution</Font></Td>
+<Td><Center><Font Size=-1>DEV_LONG</Font></Center></Td><Td><Center><Font Size=-1>READ_WRITE</Font></Center></Td><Td><Center><Font Size=-1>Yes</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>Fit2DMaxRelChange</b>: <Font Size=-1>optimization stops when the relative change between 2 iterations falls below this threshold</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ_WRITE</Font></Center></Td><Td><Center><Font Size=-1>Yes</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>Fit1DNbIterMax</b>: <Font Size=-1>the maximal number of iteration to converge to a solution</Font></Td>
+<Td><Center><Font Size=-1>DEV_LONG</Font></Center></Td><Td><Center><Font Size=-1>READ_WRITE</Font></Center></Td><Td><Center><Font Size=-1>Yes</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>Fit1DMaxRelChange</b>: <Font Size=-1>optimization stops when the relative change between 2 iterations falls below this threshold</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ_WRITE</Font></Center></Td><Td><Center><Font Size=-1>Yes</Font></Center></Td></Tr>
 
 </Table>
 </Center>
@@ -267,23 +341,23 @@ Revision:  - Author:
 <Td><Center><b>Data Type</b></td></Center>
 <Td><Center><b>X Data Length</b></td></Center>
 <Td><Center><b>Expert</b></td></Center>
-<Tr><Td><b><Center>XProfile</b><Br>( the cumulative sum along the X axis )</Center></Td>
-<Td><Center>DEV_DOUBLE</Center></Td><Td><Center>131072</Center></Td><Td><Center>No</Center></Td></Tr>
+<Tr><Td><b>XProfile</b>: <Font Size=-1>the cumulative sum along the X axis</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>131072</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
 
-<Tr><Td><b><Center>XProfileFitted</b><Br>( the fitted profile along the X axis )</Center></Td>
-<Td><Center>DEV_DOUBLE</Center></Td><Td><Center>131072</Center></Td><Td><Center>No</Center></Td></Tr>
+<Tr><Td><b>XProfileFitted</b>: <Font Size=-1>the fitted profile along the X axis</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>131072</Font></Center></Td><Td><Center><Font Size=-1>Yes</Font></Center></Td></Tr>
 
-<Tr><Td><b><Center>XProfileError</b><Br>( the fitted profile error along the X axis )</Center></Td>
-<Td><Center>DEV_DOUBLE</Center></Td><Td><Center>131072</Center></Td><Td><Center>No</Center></Td></Tr>
+<Tr><Td><b>XProfileError</b>: <Font Size=-1>the fitted profile error along the X axis</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>131072</Font></Center></Td><Td><Center><Font Size=-1>Yes</Font></Center></Td></Tr>
 
-<Tr><Td><b><Center>YProfile</b><Br>( the cumulative sum along the Y axis )</Center></Td>
-<Td><Center>DEV_DOUBLE</Center></Td><Td><Center>131072</Center></Td><Td><Center>No</Center></Td></Tr>
+<Tr><Td><b>YProfile</b>: <Font Size=-1>the cumulative sum along the Y axis</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>131072</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
 
-<Tr><Td><b><Center>YProfileFitted</b><Br>( the fitted profile along the Y axis )</Center></Td>
-<Td><Center>DEV_DOUBLE</Center></Td><Td><Center>131072</Center></Td><Td><Center>No</Center></Td></Tr>
+<Tr><Td><b>YProfileFitted</b>: <Font Size=-1>the fitted profile along the Y axis</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>131072</Font></Center></Td><Td><Center><Font Size=-1>Yes</Font></Center></Td></Tr>
 
-<Tr><Td><b><Center>YProfileError</b><Br>( the fitted profile error along the Y axis )</Center></Td>
-<Td><Center>DEV_DOUBLE</Center></Td><Td><Center>131072</Center></Td><Td><Center>No</Center></Td></Tr>
+<Tr><Td><b>YProfileError</b>: <Font Size=-1>the fitted profile error along the Y axis</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>131072</Font></Center></Td><Td><Center><Font Size=-1>Yes</Font></Center></Td></Tr>
 
 </Table>
 </Center>
@@ -297,17 +371,20 @@ Revision:  - Author:
 <Td><Center><b>X Data Length</b></td></Center>
 <Td><Center><b>Y Data Length</b></td></Center>
 <Td><Center><b>Expert</b></td></Center>
-<Tr><Td><b><Center>InputImage</b><Br>( raw copy of the input image )</Center></Td>
-<Td><Center>DEV_USHORT</Center></Td><Td><Center>131072</Center></Td><Td><Center>131072</Center></Td><Td><Center>No</Center></Td></Tr>
+<Tr><Td><b>InputImage</b>: <Font Size=-1>raw copy of the input image</Font></Td>
+<Td><Center><Font Size=-1>DEV_USHORT</Font></Center></Td><Td><Center><Font Size=-1>131072</Font></Center></Td><Td><Center><Font Size=-1>131072</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
 
-<Tr><Td><b><Center>ThresholdedImage</b><Br>( the binarized image after applying the threshold )</Center></Td>
-<Td><Center>DEV_UCHAR</Center></Td><Td><Center>131072</Center></Td><Td><Center>131072</Center></Td><Td><Center>No</Center></Td></Tr>
+<Tr><Td><b>ROIImage</b>: <Font Size=-1>the effective image on which are done all the calculation</Font></Td>
+<Td><Center><Font Size=-1>DEV_USHORT</Font></Center></Td><Td><Center><Font Size=-1>131072</Font></Center></Td><Td><Center><Font Size=-1>131072</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
 
-<Tr><Td><b><Center>ROIImage</b><Br>( the effective image on which are done all the calculation )</Center></Td>
-<Td><Center>DEV_USHORT</Center></Td><Td><Center>131072</Center></Td><Td><Center>131072</Center></Td><Td><Center>No</Center></Td></Tr>
+<Tr><Td><b>MeanNoiseImage</b>: <Font Size=-1>the mean noise image, which is substracted from every processed image</Font></Td>
+<Td><Center><Font Size=-1>DEV_USHORT</Font></Center></Td><Td><Center><Font Size=-1>131072</Font></Center></Td><Td><Center><Font Size=-1>131072</Font></Center></Td><Td><Center><Font Size=-1>Yes</Font></Center></Td></Tr>
 
-<Tr><Td><b><Center>GaussianFitParameterCovariance</b><Br>( the covariance matrix of the best fit parameters (7x7). the 7 parameters are ordered as [A, x_c, y_c, s_xx, s_xy, s_yy, b] )</Center></Td>
-<Td><Center>DEV_DOUBLE</Center></Td><Td><Center>7</Center></Td><Td><Center>7</Center></Td><Td><Center>No</Center></Td></Tr>
+<Tr><Td><b>ThresholdedImage</b>: <Font Size=-1>the binarized image after applying the threshold</Font></Td>
+<Td><Center><Font Size=-1>DEV_UCHAR</Font></Center></Td><Td><Center><Font Size=-1>131072</Font></Center></Td><Td><Center><Font Size=-1>131072</Font></Center></Td><Td><Center><Font Size=-1>Yes</Font></Center></Td></Tr>
+
+<Tr><Td><b>GaussianFitParameterCovariance</b>: <Font Size=-1>the covariance matrix of the best fit parameters (7x7). the 7 parameters are ordered as [A, x_c, y_c, s_xx, s_xy, s_yy, b]</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>7</Font></Center></Td><Td><Center><Font Size=-1>7</Font></Center></Td><Td><Center><Font Size=-1>Yes</Font></Center></Td></Tr>
 
 </Table>
 </Center>
@@ -315,7 +392,7 @@ Revision:  - Author:
 <Center>
 <Br>
 <HR WIDTH="100%"></H5>
-<H3> ESRF - Software Engineering Group </H33>
+<H3> ESRF - Software Engineering Group </H3>
 </Center>
 </body>
 </html>

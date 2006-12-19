@@ -18,11 +18,14 @@
 			<IMG SRC="http://www.esrf.fr/computing/cs/tango/elettra_logo.gif" BORDER=0></A>
 
 		</Td>
-        <TD ALIGN="right">
+        <TD ALIGN="center">
 			<A HREF="http://www.synchrotron-soleil.fr/" TARGET=new>
 			<IMG SRC="http://www.esrf.fr/computing/cs/tango/soleil_logo.gif" BORDER=0></A>
 		</Td>
-    	 <Td>
+        <TD ALIGN="right">
+			<A HREF="http://www.cells.es/" TARGET=new>
+			<IMG SRC="http://www.esrf.fr/computing/cs/tango/alba.jpg" BORDER=0></A>
+		</Td>
     	 <Td>
 			<H2><FONT COLOR="#7F00FF">
 			<Center><A HREF="http://www.esrf.fr/Infrastructure/Computing/tango/" TARGET="_top">
@@ -54,22 +57,21 @@ Revision:  - Author:
 <TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
 <Td><Center><b>Names</b></td></Center>
 <Td><Center><b>Descriptions</b></td></Center>
-<Tr><Td>FAULT</Td>
-<Td>an error has been caught either :
+<Tr><Td><b>FAULT</b></Td>
+<Td><Font Size=-1>an error has been caught either :
 - at initialisation
 - when reading the image attribute in the corresponding remote device
 - when configuring
-- when processing the image</Td></Tr>
+- when processing the image</Font></Td></Tr>
 
-<Tr><Td>RUNNING</Td>
-<Td>the device is correctly initialized, configured, and is currently analysing images</Td></Tr>
+<Tr><Td><b>RUNNING</b></Td>
+<Td><Font Size=-1>the device is correctly initialized, configured, and is currently analysing images</Font></Td></Tr>
 
-<Tr><Td>STANDBY</Td>
-<Td> the device is ready for processing and is waiting.
+<Tr><Td><b>STANDBY</b></Td>
+<Td><Font Size=-1>the device is ready for processing and is waiting.
 In 'CONTINUOUS' mode, it waits for the START command to begin analysis
 In 'ONESHOT' mode, it waits either for the PROCESS command if a remote device is specified,
-either for the InputImage attribute to be written
-</Td></Tr>
+either for the InputImage attribute to be written</Font></Td></Tr>
 
 
 
@@ -80,7 +82,7 @@ either for the InputImage attribute to be written
 <Center>
 <Br>
 <HR WIDTH="100%"></H5>
-<H3> ESRF - Software Engineering Group </H33>
+<H3> ESRF - Software Engineering Group </H3>
 </Center>
 </body>
 </html>
