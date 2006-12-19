@@ -71,6 +71,8 @@ void BIATask::handle_message (adtb::Message& _msg)
 	    {
         this->initialized_ = false;
 
+        isl::Errorhandler::init();
+
         if (this->dev_proxy_allowed_ == true)
         {
           try
