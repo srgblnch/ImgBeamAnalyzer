@@ -211,8 +211,7 @@ void BIATask::handle_message (adtb::Message& _msg)
 
         if (this->mode_ == MODE_ONESHOT)
         {
-          this->state_  = Tango::RUNNING;
-          this->status_ = kRUNNING_STATUS_MSG;
+          this->set_state_status(Tango::RUNNING, kRUNNING_STATUS_MSG);
         }
 
         isl::Image* image = 0;
@@ -325,8 +324,7 @@ void BIATask::handle_message (adtb::Message& _msg)
         }
         if (this->mode_ == MODE_ONESHOT)
         {
-          this->state_  = Tango::STANDBY;
-          this->status_ = kSTANDBY_STATUS_MSG;
+          this->set_state_status(Tango::STANDBY, kSTANDBY_STATUS_MSG);
         }
   		}
   		break;
@@ -341,8 +339,7 @@ void BIATask::handle_message (adtb::Message& _msg)
 		  {
   		  DEBUG_STREAM << "BIATask::handle_message::handling STOP" << std::endl;
         this->enable_periodic_msg(false);
-        this->state_  = Tango::STANDBY;
-        this->status_ = kSTANDBY_STATUS_MSG;
+        this->set_state_status(Tango::STANDBY, kSTANDBY_STATUS_MSG);
   		}
   		break;
 		case kMSG_START_LEARN_NOISE:
