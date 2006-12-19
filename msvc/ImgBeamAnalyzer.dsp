@@ -88,10 +88,6 @@ LINK32=link.exe
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\src\BIACommon.h
-# End Source File
-# Begin Source File
-
 SOURCE=..\src\BIAConfig.cpp
 # End Source File
 # Begin Source File
@@ -117,10 +113,6 @@ SOURCE=..\src\BIAProcessor.cpp
 # Begin Source File
 
 SOURCE=..\src\BIAProcessor.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\BIAProcessor.i
 # End Source File
 # Begin Source File
 
