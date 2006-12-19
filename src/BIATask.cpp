@@ -4,7 +4,7 @@
 //    TANGO Project - ImgBeamAnalyzer DeviceServer - Data class
 //
 // = File
-//    Data.cpp
+//    BIATask.cpp
 //
 // = AUTHOR
 //    Julien Malik
@@ -42,7 +42,7 @@ BIATask::BIATask(Tango::DeviceImpl* _host_device,
   image_dev_name_(_image_dev_name),
   image_attr_name_(_image_attr_name),
   mode_(_mode),
-  proc_(_host_device, *this, _config),
+  data_(0),
   state_(Tango::RUNNING),
   status_(kRUNNING_STATUS_MSG),
   initialized_(false)
@@ -51,169 +51,24 @@ BIATask::BIATask(Tango::DeviceImpl* _host_device,
   {
     this->enable_periodic_msg(_auto_start);
     this->set_periodic_timeout(_config.comput_period);
+  }
 
-		if (_auto_start == false)
-    {
-  		this->state_ = Tango::STANDBY;
-      this->status_ = kSTANDBY_STATUS_MSG;
-    }
-  }
-  else if (this->mode_ == MODE_ONESHOT)
-  {
-    //- the "normal" state in ONE SHOT mode is STANDBY
-    this->state_ = Tango::STANDBY;
-    this->status_ = kSTANDBY_STATUS_MSG;
-  }
+  this->set_state_status(Tango::STANDBY, kSTANDBY_STATUS_MSG);
 }
 
 BIATask::~BIATask()
 {
 }
 
-void BIATask::fault(const char* description)
-{
-  adtb::DeviceMutexLock<> guard(this->state_status_mutex_);
-
-  this->state_  = Tango::FAULT;
-  this->status_ = description;
-  ERROR_STREAM << description << std::endl;
-}
-
-void BIATask::clear_error()
-{
-  adtb::DeviceMutexLock<> guard(this->state_status_mutex_);
-
-    //- this function is only used in the CONTINUOUS_MODE, before processing a new image.
-  //- it resets the internal state of the task
-  //- any error that can happen during the processing is reported by setting the state to FAULT
-  this->state_  = Tango::RUNNING;
-  this->status_ = kRUNNING_STATUS_MSG;
-}
-
-void BIATask::get_data (BIAData*& data)
-  throw (Tango::DevFailed)
-{
-  //- enter critical section
-  //adtb::DeviceMutexLock<> guard(this->lock_);
-
-  if (this->mode_ == MODE_CONTINUOUS && this->state_ == Tango::STANDBY)
-    data = 0;
-  else
-    this->proc_.get_data(data);
-    //return( this->proc_.get_data() );
-}
-
-
-void BIATask::get_config(BIAConfig& c)
-{
-  this->proc_.get_config(c);
-}
-
-
-void BIATask::configure(const BIAConfig& config)
-{
-  DEBUG_TRACE("BIATask::configure");
-  
-  //- try to send a CONFIG message
-  adtb::Message* msg = 0;
-  try
-  {
-	  msg = new adtb::Message(kMSG_CONFIG);
-	  if (msg == 0)
-		  throw std::bad_alloc();
-  }
-  catch(...)
-  {
-	  Tango::Except::throw_exception (_CPTC ("OUT_OF_MEMORY"),
-																	  _CPTC ("Error while creating a CONFIG message"),
-																	  _CPTC ("BIATask::configure"));
-  }
-
-
-  BIAConfig* sent_config = 0;
-  try
-  {
-	  sent_config = new BIAConfig(config);
-	  if (sent_config == 0)
-		  throw std::bad_alloc();
-  }
-  catch (const std::bad_alloc &)
-  {
-	  SAFE_DELETE( msg );
-	  Tango::Except::throw_exception (_CPTC ("OUT_OF_MEMORY"),
-																	  _CPTC ("Error while creating a CONFIG instance"),
-																	  _CPTC ("BIATask::configure"));
-  }
-  catch(...)
-  {
-	  SAFE_DELETE( msg );
-	  Tango::Except::throw_exception (_CPTC ("UNKNOWN_ERROR"),
-																	  _CPTC ("Error while creating a CONFIG instance"),
-																	  _CPTC ("BIATask::configure"));
-  }
-
-  try
-  {
-	  msg->attach_data(sent_config);
-  }
-  catch (const Tango::DevFailed &ex)
-  {
-	  SAFE_DELETE( sent_config );
-	  SAFE_DELETE( msg );
-	  Tango::Except::re_throw_exception (const_cast<Tango::DevFailed &>(ex),
-																		   _CPTC ("SOFTWARE_FAILURE"),
-																		   _CPTC ("Error while attaching the Config instance to the CONFIG message"),
-																		   _CPTC ("BIATask::configure"));
-  }
-  catch(...)
-  {
-	  SAFE_DELETE( sent_config );
-	  SAFE_DELETE( msg );
-	  Tango::Except::throw_exception (_CPTC ("SOFTWARE_FAILURE"),
-																	  _CPTC ("Error while attaching the Config instance to the CONFIG message"),
-																	  _CPTC ("BIATask::configure"));
-  }
-
-
-  //- post the message
-  try
-  {
-	  this->post(msg);
-  }
-  catch (const Tango::DevFailed &ex)
-  {
-	  SAFE_DELETE( msg ); //- will automatically delete the associated sent_config instance
-	  Tango::Except::re_throw_exception (const_cast<Tango::DevFailed &>(ex),
-																		   _CPTC ("SOFTWARE_FAILURE"),
-																		   _CPTC ("Error while posting the CONFIG message"),
-																		   _CPTC ("BIATask::configure"));
-  }
-  catch(...)
-  {
-	  SAFE_DELETE( msg ); //- will automatically delete the associated sent_config instance
-	  Tango::Except::throw_exception (_CPTC ("SOFTWARE_FAILURE"),
-																	  _CPTC ("Error while posting the CONFIG message"),
-																	  _CPTC ("BIATask::configure"));
-  }
-}
-
-
 void BIATask::handle_message (adtb::Message& _msg)
   throw (Tango::DevFailed)
 {
-
-  //- The DeviceTask's lock_ is locked
-	//-------------------------------------------------------------------
-  //DEBUG_TRACE("BIATask::handle_message::message_handler");
-	//DEBUG_STREAM << "BIATask::handle_message::receiving msg " << _msg.to_string() << std::endl;
-
 	//- handle msg
   switch (_msg.type())
 	{
 	  //- THREAD_INIT ----------------------
 	  case adtb::THREAD_INIT:
 	    {
-        //- Create the DeviceProxy
         this->initialized_ = false;
 
         if (this->dev_proxy_allowed_ == true)
@@ -226,19 +81,22 @@ void BIATask::handle_message (adtb::Message& _msg)
           }
           catch (const std::bad_alloc&)
           {
-            this->fault("Allocation error during DeviceProxy initialization");
-            return;
+            THROW_DEVFAILED("OUT_OF_MEMORY",
+                            "DeviceProxy allocation failed",
+                            "BIATask::handle_message");
           }
-          catch (const Tango::DevFailed& ex)
+          catch (Tango::DevFailed& ex)
           {
-            ERROR_STREAM << ex << std::endl;
-            this->fault("Allocation error during DeviceProxy initialization");
-            return;
+            RETHROW_DEVFAILED(ex,
+                              "OUT_OF_MEMORY",
+                              "DeviceProxy allocation failed",
+                              "BIATask::handle_message");
           }
           catch (...)
           {
-            this->fault("Allocation error during DeviceProxy initialization");
-            return;
+            THROW_DEVFAILED("UNKNOWN_ERROR",
+                            "DeviceProxy allocation failed",
+                            "BIATask::handle_message");
           }
         }
 
@@ -270,14 +128,26 @@ void BIATask::handle_message (adtb::Message& _msg)
           return;
         }
 
-        this->clear_error();
+        this->set_state_status(Tango::RUNNING, kRUNNING_STATUS_MSG);
 
         //- get a new image and send a kMSG_PROCESS message with it.
         isl::Image* image = 0;
-        image = this->get_remote_image();
 
-        if (image == 0)
+        try
+        {
+          image = this->get_remote_image();
+        }
+        catch(const Tango::DevFailed& ex)
+        {
+          ERROR_STREAM << ex << std::endl;
+          this->set_state_status(Tango::FAULT, ex.errors[0].desc);
           return;
+        }
+        catch(...)
+        {
+          this->set_state_status(Tango::FAULT, "Unknown error while getting remote image");
+          return;
+        }
 
         adtb::Message* msg = 0;
         try
@@ -288,7 +158,7 @@ void BIATask::handle_message (adtb::Message& _msg)
         }
         catch(...)
         {
-	        this->fault("Allocation of a adtb::Message failed");
+          this->set_state_status(Tango::FAULT, "Allocation of a adtb::Message failed");
           SAFE_DELETE_PTR( image );
           return;
         }
@@ -300,16 +170,16 @@ void BIATask::handle_message (adtb::Message& _msg)
         catch (const Tango::DevFailed &ex)
         {
           ERROR_STREAM << ex << std::endl;
-	        this->fault("Attaching data to a adtb::Message failed");
+          this->set_state_status(Tango::FAULT, "Attaching data to a adtb::Message failed");
           SAFE_DELETE_PTR( image );
-          SAFE_DELETE_PTR( msg );
+          SAFE_RELEASE( msg );
           return;
         }
         catch(...)
         {
-	        this->fault("Attaching data to a adtb::Message failed");
+          this->set_state_status(Tango::FAULT, "Attaching data to a adtb::Message failed");
           SAFE_DELETE_PTR( image );
-          SAFE_DELETE_PTR( msg );
+          SAFE_RELEASE( msg );
           return;
         }
 
@@ -321,46 +191,21 @@ void BIATask::handle_message (adtb::Message& _msg)
 	      catch (const Tango::DevFailed &ex)
         {
           ERROR_STREAM << ex << std::endl;
-          this->fault("The posting of a adtb::Message failed");
+          this->set_state_status(Tango::FAULT, "The posting of a adtb::Message failed");
           SAFE_DELETE_PTR( msg ); //- will automatically delete the associated image
           return;
         }
         catch(...)
         {
-          this->fault("The posting of a adtb::Message failed");
+          this->set_state_status(Tango::FAULT, "The posting of a adtb::Message failed");
           SAFE_DELETE_PTR( msg ); //- will automatically delete the associated image
           return;
         }
       }
 		  break;
-		//- USER_DEFINED_MSG -----------------
-		case kMSG_CONFIG:
-		  {
-  		  DEBUG_STREAM << "BIATask::handle_message::handling kMSG_CONFIG" << std::endl;
-
-        BIAConfig* config = 0;
-        try
-        {
-          _msg.dettach_data(config);
-        }
-        catch(const Tango::DevFailed& ex)
-        {
-          ERROR_STREAM << ex << std::endl;
-	        this->fault("Error during configuration [Tango exception caught when dettaching config from CONFIG message]");
-        }
-        catch(...)
-        {
-	        this->fault("Error during configuration [Unknown exception caught when dettaching config from CONFIG message]");
-        }
-
-        this->proc_.configure(*config);
-        this->set_periodic_timeout(config->comput_period);
-        SAFE_DELETE_PTR(config);
-  		}
-  		break;
 		case kMSG_PROCESS:
 		  {
-  		  DEBUG_STREAM << "BIATask::handle_message::handling kMSG_PROCESS" << std::endl;
+  		  DEBUG_STREAM << "BIATask::handle_message::handling PROCESS" << std::endl;
 
         if (this->mode_ == MODE_ONESHOT)
         {
@@ -369,41 +214,130 @@ void BIATask::handle_message (adtb::Message& _msg)
         }
 
         isl::Image* image = 0;
+        BIAData* data = 0;
         try
         {
-          _msg.dettach_data(image);
+          try
+          {
+            _msg.dettach_data(image);
+          }
+          catch(Tango::DevFailed& ex)
+          {
+            RETHROW_DEVFAILED(ex,
+                              "SOFTWARE_FAILURE",
+                              "Unable to dettach image from a PROCESS message",
+                              "BIATask::handle_message");
+          }
+          catch(...)
+          {
+            THROW_DEVFAILED("UNKNOWN_ERROR",
+                            "Unable to dettach image from a PROCESS message",
+                            "BIATask::handle_message");
+          }
+
+          try
+          {
+            //- allocate the new Data
+            try
+            {
+              data = new BIAData ();
+              if (data == 0)
+                throw std::bad_alloc ();
+            }
+            catch(...)
+            {
+              THROW_DEVFAILED("OUT_OF_MEMORY",
+                              "Allocation of BIAData failed",
+                              "BIATask::handle_message");
+            }
+
+            //- get the current config
+            BIAConfig config;
+            {
+              adtb::DeviceMutexLock<> guard(this->config_mutex_);
+              config = this->config_;
+            }
+
+            data->config = config;
+            
+            this->proc_.process(*image, config, *data);
+
+            //- update the available data
+            BIAData* last_data = this->data_;
+            {
+              adtb::DeviceMutexLock<> guard(this->data_mutex_);
+              this->data_ = data;
+            }
+            if (last_data)
+            {
+              last_data->release();
+              last_data = 0;
+            }
+          }
+          catch(Tango::DevFailed& ex)
+          {
+            RETHROW_DEVFAILED(ex,
+                              "SOFTWARE_FAILURE",
+                              "Error when processing an image",
+                              "BIATask::handle_message");
+          }
+          catch(...)
+          {
+            THROW_DEVFAILED("UNKNOWN_ERROR",
+                            "Error when processing an image",
+                            "BIATask::handle_message");
+          }
+          SAFE_DELETE_PTR(image);
         }
-        catch(const Tango::DevFailed& ex)
+        catch(Tango::DevFailed& ex)
         {
-          ERROR_STREAM << ex << std::endl;
-	        this->fault("Error during image processing [Tango exception caught when dettaching image from PROCESS message]");
+          SAFE_RELEASE(data);
+          SAFE_DELETE_PTR(image);
+          if (this->mode_ == MODE_ONESHOT)
+          {
+            this->set_state_status(Tango::STANDBY, kSTANDBY_STATUS_MSG);
+            throw;
+          }
+          else
+          {
+            this->set_state_status(Tango::FAULT, ex.errors[0].desc);
+            return;
+          }
         }
         catch(...)
         {
-	        this->fault("Error during image processing [Unknown exception caught when dettaching image from PROCESS message]");
+          SAFE_RELEASE(data);
+          SAFE_DELETE_PTR(image);
+          if (this->mode_ == MODE_ONESHOT)
+          {
+            this->set_state_status(Tango::STANDBY, kSTANDBY_STATUS_MSG);
+            THROW_DEVFAILED("UNKNOWN_ERROR",
+                            "Error when processing an image",
+                            "BIATask::handle_message");
+          }
+          else
+          {
+            this->set_state_status(Tango::FAULT, "Unknown error while processing an image");
+            return;
+          }
         }
-
-        this->proc_.process(*image);
-        SAFE_DELETE_PTR(image);
-
         if (this->mode_ == MODE_ONESHOT)
         {
           this->state_  = Tango::STANDBY;
           this->status_ = kSTANDBY_STATUS_MSG;
         }
-
   		}
   		break;
 		case kMSG_START:
 		  {
-  		  DEBUG_STREAM << "BIATask::handle_message::handling kMSG_START" << std::endl;
+  		  DEBUG_STREAM << "BIATask::handle_message::handling START" << std::endl;
         this->enable_periodic_msg(true);
         //- the state/status will be updated when entering in the PERIODIC message handling routine
   		}
   		break;
 		case kMSG_STOP:
 		  {
-  		  DEBUG_STREAM << "BIATask::handle_message::handling kMSG_STOP" << std::endl;
+  		  DEBUG_STREAM << "BIATask::handle_message::handling STOP" << std::endl;
         this->enable_periodic_msg(false);
         this->state_  = Tango::STANDBY;
         this->status_ = kSTANDBY_STATUS_MSG;
@@ -411,13 +345,13 @@ void BIATask::handle_message (adtb::Message& _msg)
   		break;
 		case kMSG_START_LEARN_NOISE:
 		  {
-  		  DEBUG_STREAM << "BIATask::handle_message::handling kMSG_START_LEARN_NOISE" << std::endl;
+  		  DEBUG_STREAM << "BIATask::handle_message::handling START_LEARN_NOISE" << std::endl;
         this->proc_.start_learn_noise();
   		}
   		break;
 		case kMSG_STOP_LEARN_NOISE:
 		  {
-  		  DEBUG_STREAM << "BIATask::handle_message::handling kMSG_STOP_LEARN_NOISE" << std::endl;
+  		  DEBUG_STREAM << "BIATask::handle_message::handling STOP_LEARN_NOISE" << std::endl;
         this->proc_.stop_learn_noise();
   		}
   		break;
@@ -430,10 +364,10 @@ void BIATask::handle_message (adtb::Message& _msg)
 }
 
 
-isl::Image* BIATask::get_remote_image(bool throws)
+isl::Image* BIATask::get_remote_image()
+  throw (Tango::DevFailed)
 {
   isl::Image* image = 0;
-
 
   //-	Read the attribute
 	//------------------------------------------
@@ -447,69 +381,23 @@ isl::Image* BIATask::get_remote_image(bool throws)
     dim_x = dev_attr.get_dim_x();
     dim_y = dev_attr.get_dim_y();
 
-		//- try to get the attribute type to test if the dev_attr is empty 
-    //- : if the attr is empty, an exception will be thrown
+		//- just make a call to get_type() to test if the dev_attr is empty 
+    //- if the attr is empty, a Tango::DevFailed will be thrown
     dev_attr.get_type();
 
   }
-	catch (Tango::ConnectionFailed &ex)
-  {
-    if (throws)
-    {
-      Tango::Except::re_throw_exception (ex,
-                                         _CPTC ("SOFTWARE_FAILURE"),
-                                         _CPTC ("Error while getting remote image"),
-                                         _CPTC ("BIATask::get_remote_image"));
-    }
-    else
-    {
-      this->fault("Tango::ConnectionFailed exception caught while reading remote attribute");
-      return(0);
-    }
-  }
-	catch (Tango::CommunicationFailed &ex)
-  {
-    if (throws)
-    {
-      Tango::Except::re_throw_exception (ex,
-                                         _CPTC ("SOFTWARE_FAILURE"),
-                                         _CPTC ("Error while getting remote image"),
-                                         _CPTC ("BIATask::get_remote_image"));
-    }
-    else
-    {
-      this->fault("Tango::CommunicationFailed exception caught while reading remote attribute");
-      return(0);
-    }
-  }
 	catch (Tango::DevFailed &ex)
   {
-    if (throws)
-    {
-      Tango::Except::re_throw_exception (ex,
-                                         _CPTC ("SOFTWARE_FAILURE"),
-                                         _CPTC ("Error while getting remote image"),
-                                         _CPTC ("BIATask::get_remote_image"));
-    }
-    else
-    {
-      this->fault("Tango::DevFailed exception caught while reading remote attribute");
-      return(0);
-    }
+    RETHROW_DEVFAILED(ex,
+                      "SOFTWARE_FAILURE",
+                      "Error while getting remote image",
+                      "BIATask::get_remote_image");
   }
   catch(...)
   {
-    if (throws)
-    {
-      Tango::Except::throw_exception (_CPTC ("SOFTWARE_FAILURE"),
-                                      _CPTC ("Error while getting remote image"),
-                                      _CPTC ("BIATask::get_remote_image"));
-    }
-    else
-    {
-      this->fault("Unknown exception caught while reading remote attribute");
-      return(0);
-    }
+    THROW_DEVFAILED("UNKNOWN_ERROR",
+                    "Error while getting remote image",
+                    "BIATask::get_remote_image");
   }
 
 
@@ -521,66 +409,29 @@ isl::Image* BIATask::get_remote_image(bool throws)
   }
   catch(std::bad_alloc &)
   {
-    if (throws)
-    {
-      Tango::Except::throw_exception (_CPTC ("OUT_OF_MEMORY"),
-                                      _CPTC ("Allocation of isl::Image failed [std::bad_alloc]"),
-                                      _CPTC ("BIATask::get_remote_image"));
-    }
-    else
-    {
-      this->fault("An allocation of isl::Image failed while reading remote attribute [std::bad_alloc]");
-      return(0);
-    }
+    THROW_DEVFAILED("OUT_OF_MEMORY",
+                    "Allocation of isl::Image failed [std::bad_alloc]",
+                    "BIATask::get_remote_image");
   }
   catch(isl::Exception & ex)
   {
-    ERROR_STREAM << ex;
+    Tango::DevFailed df = isl_to_tango_exception(ex);
     isl::ErrorHandler::reset();
-    if (throws)
-    {
-      Tango::Except::throw_exception (_CPTC ("OUT_OF_MEMORY"),
-                                      _CPTC ("Allocation of isl::Image failed [isl::Exception]"),
-                                      _CPTC ("BIATask::get_remote_image"));
-    }
-    else
-    {
-      this->fault("An allocation of isl::Image failed while reading remote attribute [isl::Exception]");
-      return(0);
-    }
+    throw df;
   }
-  catch(Tango::DevFailed & df)
+  catch(Tango::DevFailed & ex)
   {
-    if (throws)
-    {
-      Tango::Except::re_throw_exception (df,
-                                         _CPTC ("OUT_OF_MEMORY"),
-                                         _CPTC ("Allocation of isl::Image failed"),
-                                         _CPTC ("BIATask::get_remote_image"));
-    }
-    else
-    {
-      this->fault("An allocation of isl::Image failed while reading remote attribute [Tango::DevFailed]");
-      return(0);
-    }
+    RETHROW_DEVFAILED(ex,
+                      "SOFTWARE_FAILURE",
+                      "Allocation of isl::Image failed [Tango::DevFailed]",
+                      "BIATask::get_remote_image");
   }
   catch(...)
   {
-    if (throws)
-    {
-      Tango::Except::throw_exception (_CPTC ("OUT_OF_MEMORY"),
-                                      _CPTC ("Allocation of isl::Image failed [unknown exception]"),
-                                      _CPTC ("BIATask::get_remote_image"));
-    }
-    else
-    {
-      this->fault("An allocation of isl::Image failed while reading remote attribute [unknown exception]");
-      return(0);
-    }
+    THROW_DEVFAILED("UNKNOWN_ERROR",
+                    "Allocation of isl::Image failed [Tango::DevFailed]",
+                    "BIATask::get_remote_image");
   }
-
-
-  int attr_elem_size = 0;
 
   switch(dev_attr.get_type())
   {
@@ -593,79 +444,89 @@ isl::Image* BIATask::get_remote_image(bool throws)
         if ((dev_attr >> serialized_image) == false)
         {
           SAFE_DELETE_PTR(image);
-          if (throws)
-          {
-            Tango::Except::throw_exception (_CPTC ("SOFTWARE_FAILURE"),
-                                            _CPTC ("Extraction of data from remote attribute failed"),
-                                            _CPTC ("BIATask::get_remote_image"));
-          }
-          else
-          {
-            this->fault("Extraction of data from remote attribute failed");
-            return(0);
-          }
+          THROW_DEVFAILED("OUT_OF_MEMORY",
+                          "Extraction of data from Tango::Attribute failed",
+                          "BIATask::get_remote_image");
         }
       }
       catch(std::bad_alloc &)
       {
         SAFE_DELETE_PTR(image);
-        if (throws)
-        {
-          Tango::Except::throw_exception (_CPTC ("SOFTWARE_FAILURE"),
-                                          _CPTC ("Extraction of data from remote attribute failed [std::bad_alloc]"),
-                                          _CPTC ("BIATask::get_remote_image"));
-        }
-        else
-        {
-          this->fault("Extraction of data from remote attribute failed [std::bad_alloc]");
-          return(0);
-        }
+        THROW_DEVFAILED("OUT_OF_MEMORY",
+                        "Extraction of data from Tango::Attribute failed [std::bad_alloc]",
+                        "BIATask::get_remote_image");
       }
       catch(Tango::DevFailed & ex)
       {
         SAFE_DELETE_PTR(image);
-        if (throws)
-        {
-          Tango::Except::re_throw_exception (ex,
-                                             _CPTC ("SOFTWARE_FAILURE"),
-                                             _CPTC ("Extraction of data from remote attribute failed [Tango::DevFailed]"),
-                                             _CPTC ("BIATask::get_remote_image"));
-        }
-        else
-        {
-          this->fault("Extraction of data from remote attribute failed [Tango::DevFailed]");
-          return(0);
-        }
+        RETHROW_DEVFAILED(ex,
+                          "SOFTWARE_FAILURE",
+                          "Extraction of data from Tango::Attribute failed [Tango::DevFailed]",
+                          "BIATask::get_remote_image");
       }
       catch(...)
       {
         SAFE_DELETE_PTR(image);
-        if (throws)
-        {
-          Tango::Except::throw_exception (_CPTC ("SOFTWARE_FAILURE"),
-                                          _CPTC ("Extraction of data from remote attribute failed [unknown exception]"),
-                                          _CPTC ("BIATask::get_remote_image"));
-        }
-        else
-        {
-          this->fault("Extraction of data from remote attribute failed [unknown exception]");
-          return(0);
-        }
+        THROW_DEVFAILED("UNKNOWN_ERROR",
+                        "Extraction of data from Tango::Attribute failed [unknown exception]",
+                        "BIATask::get_remote_image");
       }
 
-      Tango::DevUChar* attr_data = reinterpret_cast<Tango::DevUChar*>(serialized_image->get_buffer());
-      attr_elem_size = sizeof(Tango::DevUChar);     
-      Tango::DevUShort* dst_image_base = static_cast<Tango::DevUShort*>(image->data());
-
-      for (int j = 0; j < dim_y; j++)
+      isl::Image* uchar_image = 0;
+      try
       {
-        Tango::DevUShort* current_line = dst_image_base + j * image->row_byte_step() / sizeof(Tango::DevUShort);
-        for (int i = 0; i < dim_x; i++)
-        {
-          *current_line++ = static_cast<Tango::DevUShort>(*attr_data++);
-        }
+        uchar_image = new isl::Image(dim_x, dim_y, isl::ISL_STORAGE_UCHAR);
+        if (uchar_image == 0)
+          throw std::bad_alloc();
+      }
+      catch(std::bad_alloc &)
+      {
+        THROW_DEVFAILED("OUT_OF_MEMORY",
+                        "Allocation of isl::Image failed [std::bad_alloc]",
+                        "BIATask::get_remote_image");
+      }
+      catch(isl::Exception & ex)
+      {
+        Tango::DevFailed df = isl_to_tango_exception(ex);
+        isl::ErrorHandler::reset();
+        throw df;
+      }
+      catch(Tango::DevFailed & ex)
+      {
+        RETHROW_DEVFAILED(ex,
+                          "SOFTWARE_FAILURE",
+                          "Allocation of isl::Image failed [Tango::DevFailed]",
+                          "BIATask::get_remote_image");
+      }
+      catch(...)
+      {
+        THROW_DEVFAILED("UNKNOWN_ERROR",
+                        "Allocation of isl::Image failed [Tango::DevFailed]",
+                        "BIATask::get_remote_image");
+      }
+      
+      try
+      {
+        uchar_image->unserialize( serialized_image->get_buffer() );
+        uchar_image->convert( *image );
+      }
+      catch(isl::Exception & ex)
+      {
+        Tango::DevFailed df = isl_to_tango_exception(ex);
+        isl::ErrorHandler::reset();
+        RETHROW_DEVFAILED(df,
+                          "SOFTWARE_FAILURE",
+                          "Unable to convert the UChar image to a UShort image",
+                          "BIATask::get_remote_image");
+      }
+      catch(...)
+      {
+        THROW_DEVFAILED("UNKNOWN_ERROR",
+                        "Unable to convert the UChar image to a UShort image",
+                        "BIATask::get_remote_image");
       }
       SAFE_DELETE_PTR(serialized_image);
+      SAFE_DELETE_PTR(uchar_image);
     }
     break;
   case Tango::DEV_SHORT:
@@ -677,82 +538,53 @@ isl::Image* BIATask::get_remote_image(bool throws)
         if ((dev_attr >> serialized_image) == false)
         {
           SAFE_DELETE_PTR(image);
-          if (throws)
-          {
-            Tango::Except::throw_exception (_CPTC ("SOFTWARE_FAILURE"),
-                                            _CPTC ("Extraction of data from remote attribute failed"),
-                                            _CPTC ("BIATask::get_remote_image"));
-          }
-          else
-          {
-            this->fault("Extraction of data from remote attribute failed");
-            return(0);
-          }
+          THROW_DEVFAILED("OUT_OF_MEMORY",
+                          "Extraction of data from Tango::Attribute failed",
+                          "BIATask::get_remote_image");
         }
       }
       catch(std::bad_alloc &)
       {
         SAFE_DELETE_PTR(image);
-        if (throws)
-        {
-          Tango::Except::throw_exception (_CPTC ("SOFTWARE_FAILURE"),
-                                          _CPTC ("Extraction of data from remote attribute failed [std::bad_alloc]"),
-                                          _CPTC ("BIATask::get_remote_image"));
-        }
-        else
-        {
-          this->fault("Extraction of data from remote attribute failed [std::bad_alloc]");
-          return(0);
-        }
+        THROW_DEVFAILED("OUT_OF_MEMORY",
+                        "Extraction of data from Tango::Attribute failed [std::bad_alloc]",
+                        "BIATask::get_remote_image");
       }
       catch(Tango::DevFailed & ex)
       {
         SAFE_DELETE_PTR(image);
-        if (throws)
-        {
-          Tango::Except::re_throw_exception (ex,
-                                             _CPTC ("SOFTWARE_FAILURE"),
-                                             _CPTC ("Extraction of data from remote attribute failed [Tango::DevFailed]"),
-                                             _CPTC ("BIATask::get_remote_image"));
-        }
-        else
-        {
-          this->fault("Extraction of data from remote attribute failed [Tango::DevFailed]");
-          return(0);
-        }
+        RETHROW_DEVFAILED(ex,
+                          "SOFTWARE_FAILURE",
+                          "Extraction of data from Tango::Attribute failed [Tango::DevFailed]",
+                          "BIATask::get_remote_image");
       }
       catch(...)
       {
         SAFE_DELETE_PTR(image);
-        if (throws)
-        {
-          Tango::Except::throw_exception (_CPTC ("SOFTWARE_FAILURE"),
-                                          _CPTC ("Extraction of data from remote attribute failed [unknown exception]"),
-                                          _CPTC ("BIATask::get_remote_image"));
-        }
-        else
-        {
-          this->fault("Extraction of data from remote attribute failed [unknown exception]");
-          return(0);
-        }
+        THROW_DEVFAILED("UNKNOWN_ERROR",
+                        "Extraction of data from Tango::Attribute failed [unknown exception]",
+                        "BIATask::get_remote_image");
       }
 
-      char* attr_data = reinterpret_cast<char*>(serialized_image->get_buffer());
-      attr_elem_size = sizeof(Tango::DevShort);
-      
-      //- extract data to the internal isl::Image
-      char* dst_image_base = static_cast<char*>(image->data());
-      char* src_image_base = attr_data;
-      int src_image_row_step = dim_x * attr_elem_size;
-      int dst_image_row_step = image->row_byte_step();
-
-      for (int j = 0; j < dim_y; j++)
+      try
       {
-        ::memcpy(dst_image_base, src_image_base, src_image_row_step);
-        dst_image_base += dst_image_row_step;
-        src_image_base += src_image_row_step;
+        image->unserialize(serialized_image->get_buffer());
       }
-
+      catch(isl::Exception & ex)
+      {
+        Tango::DevFailed df = isl_to_tango_exception(ex);
+        isl::ErrorHandler::reset();
+        RETHROW_DEVFAILED(df,
+                          "SOFTWARE_FAILURE",
+                          "Unable to unserialize image",
+                          "BIATask::get_remote_image");
+      }
+      catch(...)
+      {
+        THROW_DEVFAILED("UNKNOWN_ERROR",
+                        "Unable to unserialize image",
+                        "BIATask::get_remote_image");
+      }
       SAFE_DELETE_PTR(serialized_image);
      }
     break;
@@ -765,106 +597,88 @@ isl::Image* BIATask::get_remote_image(bool throws)
         if ((dev_attr >> serialized_image) == false)
         {
           SAFE_DELETE_PTR(image);
-          if (throws)
-          {
-            Tango::Except::throw_exception (_CPTC ("SOFTWARE_FAILURE"),
-                                            _CPTC ("Extraction of data from remote attribute failed"),
-                                            _CPTC ("BIATask::get_remote_image"));
-          }
-          else
-          {
-            this->fault("Extraction of data from remote attribute failed");
-            return(0);
-          }
+          THROW_DEVFAILED("OUT_OF_MEMORY",
+                          "Extraction of data from Tango::Attribute failed",
+                          "BIATask::get_remote_image");
         }
       }
       catch(std::bad_alloc &)
       {
         SAFE_DELETE_PTR(image);
-        if (throws)
-        {
-          Tango::Except::throw_exception (_CPTC ("SOFTWARE_FAILURE"),
-                                          _CPTC ("Extraction of data from remote attribute failed [std::bad_alloc]"),
-                                          _CPTC ("BIATask::get_remote_image"));
-        }
-        else
-        {
-          this->fault("Extraction of data from remote attribute failed [std::bad_alloc]");
-          return(0);
-        }
+        THROW_DEVFAILED("OUT_OF_MEMORY",
+                        "Extraction of data from Tango::Attribute failed [std::bad_alloc]",
+                        "BIATask::get_remote_image");
       }
       catch(Tango::DevFailed & ex)
       {
         SAFE_DELETE_PTR(image);
-        if (throws)
-        {
-          Tango::Except::re_throw_exception (ex,
-                                             _CPTC ("SOFTWARE_FAILURE"),
-                                             _CPTC ("Extraction of data from remote attribute failed [Tango::DevFailed]"),
-                                             _CPTC ("BIATask::get_remote_image"));
-        }
-        else
-        {
-          this->fault("Extraction of data from remote attribute failed [Tango::DevFailed]");
-          return(0);
-        }
+        RETHROW_DEVFAILED(ex,
+                          "SOFTWARE_FAILURE",
+                          "Extraction of data from Tango::Attribute failed [Tango::DevFailed]",
+                          "BIATask::get_remote_image");
       }
       catch(...)
       {
         SAFE_DELETE_PTR(image);
-        if (throws)
-        {
-          Tango::Except::throw_exception (_CPTC ("SOFTWARE_FAILURE"),
-                                          _CPTC ("Extraction of data from remote attribute failed [unknown exception]"),
-                                          _CPTC ("BIATask::get_remote_image"));
-        }
-        else
-        {
-          this->fault("Extraction of data from remote attribute failed [unknown exception]");
-          return(0);
-        }
+        THROW_DEVFAILED("UNKNOWN_ERROR",
+                        "Extraction of data from Tango::Attribute failed [unknown exception]",
+                        "BIATask::get_remote_image");
       }
 
-      char* attr_data = reinterpret_cast<char*>(serialized_image->get_buffer());
-      attr_elem_size = sizeof(Tango::DevUShort);
-
-      //- extract data to the internal isl::Image
-      char* dst_image_base = static_cast<char*>(image->data());
-      char* src_image_base = attr_data;
-      int src_image_row_step = dim_x * attr_elem_size;
-      int dst_image_row_step = image->row_byte_step();
-
-      for (int j = 0; j < dim_y; j++)
+      try
       {
-        ::memcpy(dst_image_base, src_image_base, src_image_row_step);
-        dst_image_base += dst_image_row_step;
-        src_image_base += src_image_row_step;
+        image->unserialize(serialized_image->get_buffer());
       }
-
+      catch(isl::Exception & ex)
+      {
+        Tango::DevFailed df = isl_to_tango_exception(ex);
+        isl::ErrorHandler::reset();
+        RETHROW_DEVFAILED(df,
+                          "SOFTWARE_FAILURE",
+                          "Unable to unserialize image",
+                          "BIATask::get_remote_image");
+      }
+      catch(...)
+      {
+        THROW_DEVFAILED("UNKNOWN_ERROR",
+                        "Unable to unserialize image",
+                        "BIATask::get_remote_image");
+      }
       SAFE_DELETE_PTR(serialized_image);
     }
     break;
   default:
     {
       SAFE_DELETE_PTR(image);
-      if (throws)
-      {
-        Tango::Except::throw_exception (_CPTC ("SOFTWARE_FAILURE"),
-                                        _CPTC ("The remote attribute must be of type DEV_UCHAR, DEV_SHORT or DEV_USHORT"),
-                                        _CPTC ("BIATask::get_remote_image"));
-      }
-      else
-      {
-        this->fault("The remote attribute must be of type DEV_UCHAR, DEV_SHORT or DEV_USHORT");
-        return(0);
-      }
-    }
+      THROW_DEVFAILED("SOFTWARE_FAILURE",
+                      "The remote attribute must be of type DEV_UCHAR, DEV_SHORT or DEV_USHORT",
+                      "BIATask::get_remote_image");
+     }
     break;
   }
 
   return(image);
 }
 
+// ============================================================================
+// BIATask::isl_to_tango_exception
+// ============================================================================
+Tango::DevFailed BIATask::isl_to_tango_exception (const isl::Exception& e)
+{
+  Tango::DevErrorList error_list;
+
+  error_list.length(e.errors.size());
+
+  for (size_t i = 0; i < e.errors.size(); i++) 
+  {
+    error_list[i].reason   = CORBA::string_dup(e.errors[i].reason.c_str());
+    error_list[i].desc     = CORBA::string_dup(e.errors[i].description.c_str());
+    error_list[i].origin   = CORBA::string_dup(e.errors[i].origin.c_str());
+    error_list[i].severity = Tango::ERR;
+  }
+
+  return Tango::DevFailed(error_list);
+}
 
 
 }

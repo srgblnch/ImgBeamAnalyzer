@@ -1,4 +1,4 @@
-static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzer.cpp,v 1.4 2006-12-15 09:58:57 julien_malik Exp $";
+static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzer.cpp,v 1.5 2006-12-19 13:25:08 julien_malik Exp $";
 //+=============================================================================
 //
 // file :         ImgBeamAnalyzer.cpp
@@ -13,7 +13,7 @@ static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/Im
 //
 // $Author: julien_malik $
 //
-// $Revision: 1.4 $
+// $Revision: 1.5 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -33,7 +33,7 @@ static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/Im
 
 //===================================================================
 //
-//	The folowing table gives the correspondance
+//	The following table gives the correspondance
 //	between commands and method's name.
 //
 //  Command's name       |  Method's name
@@ -52,9 +52,20 @@ static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/Im
 
 #include <ImgBeamAnalyzer.h>
 #include <ImgBeamAnalyzerClass.h>
+#include <limits>
+
+#define kDEFAULT_CONTINUOUS_TIMEOUT 1000
+#define kCOMMAND_TIMEOUT 2000
+
 
 namespace ImgBeamAnalyzer_ns
 {
+
+template <> Tango::DevBoolean ImgBeamAnalyzer::DummyValue<Tango::DevBoolean>::dummy = std::numeric_limits<bool>::quiet_NaN();
+template <> Tango::DevUChar   ImgBeamAnalyzer::DummyValue<Tango::DevUChar>  ::dummy = std::numeric_limits<unsigned char>::quiet_NaN();
+template <> Tango::DevUShort  ImgBeamAnalyzer::DummyValue<Tango::DevUShort> ::dummy = std::numeric_limits<unsigned short>::quiet_NaN();
+template <> Tango::DevLong    ImgBeamAnalyzer::DummyValue<Tango::DevLong>   ::dummy = std::numeric_limits<long>::quiet_NaN();
+template <> Tango::DevDouble  ImgBeamAnalyzer::DummyValue<Tango::DevDouble> ::dummy = std::numeric_limits<double>::quiet_NaN();
 
 //+----------------------------------------------------------------------------
 //
@@ -93,21 +104,26 @@ ImgBeamAnalyzer::ImgBeamAnalyzer(Tango::DeviceClass *cl,const char *s,const char
 void ImgBeamAnalyzer::delete_device()
 {
 	//	Delete device's allocated object
-  try
-  {
-    this->task_->exit();
-    this->task_ = 0;
+  if (this->task_)
+	{
+    try
+    {
+		  //- ask the task to quit
+	    this->task_->exit();
+    }
+    catch(Tango::DevFailed &ex)
+    {
+      ERROR_STREAM << ex << std::endl;
+      //- ignore error
+    }
+    catch(...)
+    {
+      ERROR_STREAM << "Unknown exception caught when exiting task" << std::endl;
+      //- ignore error
+    }
+	  this->task_ = 0;
   }
-  catch(Tango::DevFailed& ex)
-  {
-    ERROR_STREAM << ex << std::endl;
-    //- ignore error cause we are in destructor
-  }
-  catch(...)
-  {
-    //- ignore error cause we are in destructor
-  }
-
+  
   if (this->available_data_)
   {
     this->available_data_->release ();
@@ -132,13 +148,6 @@ void ImgBeamAnalyzer::init_device()
   this->task_ = 0;
   this->critical_property_missing_ = false;
   this->properly_initialized_ = false;
-
-  this->dummy_DevBoolean_ = false;
-  this->dummy_DevUChar_   = 0;
-  this->dummy_DevUShort_  = 0;
-  this->dummy_DevLong_    = 0;
-  this->dummy_DevDouble_  = ::sqrt(-1);
-
 
   try
   {
@@ -252,6 +261,14 @@ void ImgBeamAnalyzer::init_device()
     this->delete_device();
     return;
   }
+  catch (Tango::DevFailed & df)
+  {
+  	ERROR_STREAM << df << std::endl;
+    this->set_status ("Initialization failed");
+    this->set_state (Tango::FAULT);
+    this->delete_device ();
+    return;
+  }
   catch (...)
   {
     ERROR_STREAM << "std::bad_alloc caught during instantiation of DataProcessing" << std::endl;
@@ -300,8 +317,6 @@ void ImgBeamAnalyzer::get_device_property()
 
   //	Read device properties from database.(Automatic code generation)
 	//------------------------------------------------------------------
-	if (Tango::Util::instance()->_UseDb==false)
-		return;
 	Tango::DbData	dev_prop;
 	dev_prop.push_back(Tango::DbDatum("AutoROIMagFactor"));
 	dev_prop.push_back(Tango::DbDatum("AutoStart"));
@@ -322,7 +337,8 @@ void ImgBeamAnalyzer::get_device_property()
 
 	//	Call database and extract values
 	//--------------------------------------------
-	get_db_device()->get_property(dev_prop);
+	if (Tango::Util::instance()->_UseDb==true)
+		get_db_device()->get_property(dev_prop);
 	Tango::DbDatum	def_prop, cl_prop;
 	ImgBeamAnalyzerClass	*ds_class =
 		(static_cast<ImgBeamAnalyzerClass *>(get_device_class()));
@@ -527,9 +543,6 @@ void ImgBeamAnalyzer::always_executed_hook()
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_attr_hardware(vector<long> &attr_list)
 {
-#ifdef VERBOSE_RW_ATTRIBUTE
-	DEBUG_STREAM << "ImgBeamAnalyzer::read_attr_hardware(vector<long> &attr_list) entering... "<< endl;
-#endif
 	//	Add your own code here
 	
   try
@@ -1796,21 +1809,17 @@ void ImgBeamAnalyzer::read_YProfile(Tango::Attribute &attr)
 //+------------------------------------------------------------------
 void ImgBeamAnalyzer::start()
 {
-#ifdef VERBOSE_RW_ATTRIBUTE
-	DEBUG_STREAM << "ImgBeamAnalyzer::start(): entering... !" << endl;
-#endif
-
-	//	Add your own code to control device here
   if (this->device_mode_ == MODE_ONESHOT)
   {
-    Tango::Except::throw_exception (_CPTC ("OPERATION_NOT_ALLOWED"),
-                                    _CPTC ("In ONESHOT mode, the 'Start' command is disabled"),
-                                    _CPTC ("ImgBeamAnalyzer::start()"));
+    THROW_DEVFAILED("OPERATION_NOT_ALLOWED",
+                    "In ONESHOT mode, the 'Start' command is disabled",
+                    "ImgBeamAnalyzer::start()");
   }
 
+  
   if (this->properly_initialized_)
   {
-    //- try to send a START message
+    //- try to send a STOP message
     adtb::Message* msg = 0;
     try
     {
@@ -1820,32 +1829,29 @@ void ImgBeamAnalyzer::start()
     }
     catch(...)
     {
-      Tango::Except::throw_exception (_CPTC ("OUT_OF_MEMORY"),
-                                      _CPTC ("Error while creating a START message"),
-                                      _CPTC ("ImgBeamAnalyzer::start()"));
+      THROW_DEVFAILED("OUT_OF_MEMORY",
+                      "Error while creating a STOP message",
+                      "ImgBeamAnalyzer::start()");
     }
-
 
     //- post the message
     try
     {
-      this->task_->post(msg);
+      this->task_->wait_msg_handled(msg, kCOMMAND_TIMEOUT);
     }
-	  catch (const Tango::DevFailed &ex)
+	  catch (Tango::DevFailed &ex)
     {
-      ERROR_STREAM << ex << std::endl;
-      SAFE_DELETE_PTR( msg ); //- will automatically delete the associated image
-      Tango::Except::throw_exception (_CPTC ("SOFTWARE_FAILURE"),
-                                      _CPTC ("The START message has not been properly handled"),
-                                      _CPTC ("ImgBeamAnalyzer::start()"));
+      RETHROW_DEVFAILED(ex,
+                        "SOFTWARE_FAILURE",
+                        "Error while posting a START message",
+                        "ImgBeamAnalyzer::start()");
     }
     catch(...)
     {
-      SAFE_DELETE_PTR( msg ); //- will automatically delete the associated image
-      Tango::Except::throw_exception (_CPTC ("SOFTWARE_FAILURE"),
-                                      _CPTC ("The START message has not been properly handled"),
-                                      _CPTC ("ImgBeamAnalyzer::start()"));
-    }   
+	    THROW_DEVFAILED("UNKNOWN_ERROR",
+                      "Unknown error while posting a START message",
+                      "ImgBeamAnalyzer::start()");
+    }
   }
 }
 
@@ -1861,16 +1867,11 @@ void ImgBeamAnalyzer::start()
 //+------------------------------------------------------------------
 void ImgBeamAnalyzer::stop()
 {
-#ifdef VERBOSE_RW_ATTRIBUTE
-	DEBUG_STREAM << "ImgBeamAnalyzer::stop(): entering... !" << endl;
-#endif
-
-	//	Add your own code to control device here
   if (this->device_mode_ == MODE_ONESHOT)
   {
-    Tango::Except::throw_exception (_CPTC ("OPERATION_NOT_ALLOWED"),
-                                    _CPTC ("In ONESHOT mode, the 'Stop' command is disabled"),
-                                    _CPTC ("ImgBeamAnalyzer::stop()"));
+    THROW_DEVFAILED("OPERATION_NOT_ALLOWED",
+                    "In ONESHOT mode, the 'Stop' command is disabled",
+                    "ImgBeamAnalyzer::stop()");
   }
 
   
@@ -1886,35 +1887,30 @@ void ImgBeamAnalyzer::stop()
     }
     catch(...)
     {
-      Tango::Except::throw_exception (_CPTC ("OUT_OF_MEMORY"),
-                                      _CPTC ("Error while creating a STOP message"),
-                                      _CPTC ("ImgBeamAnalyzer::stop()"));
+      THROW_DEVFAILED("OUT_OF_MEMORY",
+                      "Error while creating a STOP message",
+                      "ImgBeamAnalyzer::stop()");
     }
-
 
     //- post the message
     try
     {
-      this->task_->post(msg);
+      this->task_->wait_msg_handled(msg, kCOMMAND_TIMEOUT);
     }
-	  catch (const Tango::DevFailed &ex)
+	  catch (Tango::DevFailed &ex)
     {
-      ERROR_STREAM << ex << std::endl;
-      SAFE_DELETE_PTR( msg ); //- will automatically delete the associated image
-      Tango::Except::throw_exception (_CPTC ("OUT_OF_MEMORY"),
-                                      _CPTC ("The STOP message has not been properly handled"),
-                                      _CPTC ("ImgBeamAnalyzer::stop()"));
+      RETHROW_DEVFAILED(ex,
+                        "SOFTWARE_FAILURE",
+                        "Error while posting a STOP message",
+                        "ImgBeamAnalyzer::stop()");
     }
     catch(...)
     {
-      SAFE_DELETE_PTR( msg ); //- will automatically delete the associated image
-      Tango::Except::throw_exception (_CPTC ("OUT_OF_MEMORY"),
-                                      _CPTC ("The STOP message has not been properly handled"),
-                                      _CPTC ("ImgBeamAnalyzer::stop()"));
-    }   
+	    THROW_DEVFAILED("UNKNOWN_ERROR",
+                      "Unknown error while posting a STOP message",
+                      "ImgBeamAnalyzer::stop()");
+    }
   }
-
-
 }
 
 //+------------------------------------------------------------------
@@ -1929,37 +1925,34 @@ void ImgBeamAnalyzer::stop()
 //+------------------------------------------------------------------
 void ImgBeamAnalyzer::process()
 {
-	DEBUG_STREAM << "ImgBeamAnalyzer::process(): entering... !" << endl;
-
-	//	Add your own code to control device here
-  
   if (this->process_command_allowed_ == false)
   {
-    Tango::Except::throw_exception (_CPTC ("OPERATION_NOT_ALLOWED"),
-                                    _CPTC ("The current configuration does not allow the use of the 'Process' command"),
-                                    _CPTC ("ImgBeamAnalyzer::process()"));
-  }
-  
-  isl::Image* image = 0;
-  try
-  {
-    image = this->task_->get_remote_image(true);
-  }
-	catch (Tango::DevFailed &ex)
-  {
-    ERROR_STREAM << ex << std::endl;
-    Tango::Except::re_throw_exception (ex,
-                                       _CPTC ("SOFTWARE_FAILURE"),
-                                       _CPTC ("Error while PROCESS command"),
-                                       _CPTC ("ImgBeamAnalyzer::process()"));
-  }
-	catch (...)
-  {
-    Tango::Except::throw_exception (_CPTC ("SOFTWARE_FAILURE"),
-                                    _CPTC ("Error while PROCESS command"),
-                                    _CPTC ("ImgBeamAnalyzer::process()"));
+	  THROW_DEVFAILED("OPERATION_NOT_ALLOWED",
+                    "the current configuration does not allow the use of the 'Process' command",
+                    "ImgBeamAnalyzer::process");
   }
 
+
+  //- retrieve the image from the remote device
+  isl::Image* image = 0;
+  
+  try
+  {
+    image = this->task_->get_remote_image();
+  }
+  catch (Tango::DevFailed &ex)
+  {
+	  RETHROW_DEVFAILED(ex,
+                      "SOFTWARE_FAILURE",
+                      "Unable to get image from remote device",
+                      "ImgBeamAnalyzer::process");
+  }
+  catch(...)
+  {
+	  THROW_DEVFAILED("UNKNOWN_ERROR",
+                    "Unable to get image from remote device",
+                    "ImgBeamAnalyzer::process");
+  }
 
 
   adtb::Message* msg = 0;
@@ -1972,9 +1965,9 @@ void ImgBeamAnalyzer::process()
   catch(...)
   {
     SAFE_DELETE_PTR( image );
-    Tango::Except::throw_exception (_CPTC ("OUT_OF_MEMORY"),
-                                    _CPTC ("Allocation of a adtb::Message failed"),
-                                    _CPTC ("ImgBeamAnalyzer::process()"));
+	  THROW_DEVFAILED("SOFTWARE_FAILURE",
+                    "Allocation of a message failed",
+                    "ImgBeamAnalyzer::process");
   }
 
   try
@@ -1984,45 +1977,39 @@ void ImgBeamAnalyzer::process()
   catch (Tango::DevFailed &ex)
   {
     SAFE_DELETE_PTR( image );
-    SAFE_DELETE_PTR( msg );
-    ERROR_STREAM << ex << std::endl;
-    Tango::Except::re_throw_exception (ex,
-                                       _CPTC ("SOFTWARE_FAILURE"),
-                                       _CPTC ("Attaching isl::Image to a adtb::Message failed"),
-                                       _CPTC ("ImgBeamAnalyzer::process()"));
+    SAFE_RELEASE( msg );
+	  RETHROW_DEVFAILED(ex,
+                      "SOFTWARE_FAILURE",
+                      "Attaching data to a adtb::Message failed",
+                      "ImgBeamAnalyzer::process");
   }
   catch(...)
   {
     SAFE_DELETE_PTR( image );
-    SAFE_DELETE_PTR( msg );
-    Tango::Except::throw_exception (_CPTC ("SOFTWARE_FAILURE"),
-                                    _CPTC ("Attaching isl::Image to a adtb::Message failed"),
-                                    _CPTC ("ImgBeamAnalyzer::process()"));
+    SAFE_RELEASE( msg );
+	  THROW_DEVFAILED("UNKNOWN_ERROR",
+                    "Attaching data to a adtb::Message failed",
+                    "ImgBeamAnalyzer::process");
   }
 
   //- post the message
   try
   {
-    this->task_->post(msg);
+    this->task_->wait_msg_handled(msg, kCOMMAND_TIMEOUT);
   }
 	catch (Tango::DevFailed &ex)
   {
-    SAFE_DELETE_PTR( msg ); //- will automatically delete the associated image
-    ERROR_STREAM << ex << std::endl;
-    Tango::Except::re_throw_exception (ex,
-                                       _CPTC ("SOFTWARE_FAILURE"),
-                                       _CPTC ("The posting of a adtb::Message failed"),
-                                       _CPTC ("ImgBeamAnalyzer::process()"));
+    RETHROW_DEVFAILED(ex,
+                      "SOFTWARE_FAILURE",
+                      "Error while posting a PROCESS message",
+                      "ImgBeamAnalyzer::process");
   }
   catch(...)
   {
-    SAFE_DELETE_PTR( msg ); //- will automatically delete the associated image
-    Tango::Except::throw_exception (_CPTC ("SOFTWARE_FAILURE"),
-                                    _CPTC ("The posting of a adtb::Message failed"),
-                                    _CPTC ("ImgBeamAnalyzer::process()"));
+	  THROW_DEVFAILED("UNKNOWN_ERROR",
+                    "Unknown error while posting a PROCESS message",
+                    "ImgBeamAnalyzer::process");
   }
-
-
 }
 
 //+------------------------------------------------------------------
@@ -2071,21 +2058,16 @@ void ImgBeamAnalyzer::save_current_settings()
   }
   catch (Tango::DevFailed& ex)
   {
-    ERROR_STREAM << ex << endl;
-    //- rethrow exception
-    Tango::Except::re_throw_exception(
-            ex,
-            static_cast<const char*>("put_property failed"),
-				    static_cast<const char*>("Could not save current device settings into TANGO database"),
-				    static_cast<const char*>("ImgBeamAnalyzer::set_device_property"));
+    RETHROW_DEVFAILED(ex,
+                      "DATABASE_FAILURE",
+                      "Could not save current device settings into TANGO database",
+                      "ImgBeamAnalyzer::save_current_settings");
   }
   catch(...)
   {
-    //- rethrow exception
-    Tango::Except::throw_exception(
-            static_cast<const char*>("put_property failed"),
-				    static_cast<const char*>("Could not save current device settings into TANGO database"),
-				    static_cast<const char*>("ImgBeamAnalyzer::set_device_property"));
+	  THROW_DEVFAILED("UNKNOWN_ERROR",
+                    "Could not save current device settings into TANGO database",
+                    "ImgBeamAnalyzer::save_current_settings");
   }
 
 }
@@ -2100,17 +2082,10 @@ void ImgBeamAnalyzer::save_current_settings()
  */
 //+------------------------------------------------------------------
 void ImgBeamAnalyzer::start_learn_noise()
-{
-  if (this->device_mode_ == MODE_ONESHOT)
-  {
-    Tango::Except::throw_exception (_CPTC ("OPERATION_NOT_ALLOWED"),
-                                    _CPTC ("In ONESHOT mode, the 'StartLearnNoise' command is disabled"),
-                                    _CPTC ("ImgBeamAnalyzer::start_learn_noise()"));
-  }
-
+{  
   if (this->properly_initialized_)
   {
-    //- try to send a START_LEARN_NOISE message
+    //- try to send a STOP message
     adtb::Message* msg = 0;
     try
     {
@@ -2120,32 +2095,29 @@ void ImgBeamAnalyzer::start_learn_noise()
     }
     catch(...)
     {
-      Tango::Except::throw_exception (_CPTC ("OUT_OF_MEMORY"),
-                                      _CPTC ("Error while creating a START_LEARN_NOISE message"),
-                                      _CPTC ("ImgBeamAnalyzer::start_learn_noise()"));
+      THROW_DEVFAILED("OUT_OF_MEMORY",
+                      "Error while creating a START_LEARN_NOISE message",
+                      "ImgBeamAnalyzer::start_learn_noise()");
     }
-
 
     //- post the message
     try
     {
-      this->task_->post(msg);
+      this->task_->wait_msg_handled(msg, kCOMMAND_TIMEOUT);
     }
-	  catch (const Tango::DevFailed &ex)
+	  catch (Tango::DevFailed &ex)
     {
-      ERROR_STREAM << ex << std::endl;
-      SAFE_DELETE_PTR( msg ); //- will automatically delete the associated image
-      Tango::Except::throw_exception (_CPTC ("SOFTWARE_FAILURE"),
-                                      _CPTC ("The START_LEARN_NOISE message has not been properly handled"),
-                                      _CPTC ("ImgBeamAnalyzer::start_learn_noise()"));
+      RETHROW_DEVFAILED(ex,
+                        "SOFTWARE_FAILURE",
+                        "Error while posting a START_LEARN_NOISE message",
+                        "ImgBeamAnalyzer::start_learn_noise()");
     }
     catch(...)
     {
-      SAFE_DELETE_PTR( msg ); //- will automatically delete the associated image
-      Tango::Except::throw_exception (_CPTC ("SOFTWARE_FAILURE"),
-                                      _CPTC ("The START_LEARN_NOISE message has not been properly handled"),
-                                      _CPTC ("ImgBeamAnalyzer::start_learn_noise()"));
-    }   
+	    THROW_DEVFAILED("UNKNOWN_ERROR",
+                      "Unknown error while posting a START_LEARN_NOISE message",
+                      "ImgBeamAnalyzer::start_learn_noise()");
+    }
   }
 }
 
@@ -2159,17 +2131,10 @@ void ImgBeamAnalyzer::start_learn_noise()
  */
 //+------------------------------------------------------------------
 void ImgBeamAnalyzer::stop_learn_noise()
-{
-  if (this->device_mode_ == MODE_ONESHOT)
-  {
-    Tango::Except::throw_exception (_CPTC ("OPERATION_NOT_ALLOWED"),
-                                    _CPTC ("In ONESHOT mode, the 'StartLearnNoise' command is disabled"),
-                                    _CPTC ("ImgBeamAnalyzer::stop_learn_noise()"));
-  }
-
+{  
   if (this->properly_initialized_)
   {
-    //- try to send a STOP_LEARN_NOISE message
+    //- try to send a STOP message
     adtb::Message* msg = 0;
     try
     {
@@ -2179,32 +2144,29 @@ void ImgBeamAnalyzer::stop_learn_noise()
     }
     catch(...)
     {
-      Tango::Except::throw_exception (_CPTC ("OUT_OF_MEMORY"),
-                                      _CPTC ("Error while creating a STOP_LEARN_NOISE message"),
-                                      _CPTC ("ImgBeamAnalyzer::stop_learn_noise()"));
+      THROW_DEVFAILED("OUT_OF_MEMORY",
+                      "Error while creating a STOP_LEARN_NOISE message",
+                      "ImgBeamAnalyzer::stop_learn_noise()");
     }
-
 
     //- post the message
     try
     {
-      this->task_->post(msg);
+      this->task_->wait_msg_handled(msg, kCOMMAND_TIMEOUT);
     }
-	  catch (const Tango::DevFailed &ex)
+	  catch (Tango::DevFailed &ex)
     {
-      ERROR_STREAM << ex << std::endl;
-      SAFE_DELETE_PTR( msg ); //- will automatically delete the associated image
-      Tango::Except::throw_exception (_CPTC ("SOFTWARE_FAILURE"),
-                                      _CPTC ("The STOP_LEARN_NOISE message has not been properly handled"),
-                                      _CPTC ("ImgBeamAnalyzer::stop_learn_noise()"));
+      RETHROW_DEVFAILED(ex,
+                        "SOFTWARE_FAILURE",
+                        "Error while posting a STOP_LEARN_NOISE message",
+                        "ImgBeamAnalyzer::stop_learn_noise()");
     }
     catch(...)
     {
-      SAFE_DELETE_PTR( msg ); //- will automatically delete the associated image
-      Tango::Except::throw_exception (_CPTC ("SOFTWARE_FAILURE"),
-                                      _CPTC ("The STOP_LEARN_NOISE message has not been properly handled"),
-                                      _CPTC ("ImgBeamAnalyzer::stop_learn_noise()"));
-    }   
+	    THROW_DEVFAILED("UNKNOWN_ERROR",
+                      "Unknown error while posting a STOP_LEARN_NOISE message",
+                      "ImgBeamAnalyzer::stop_learn_noise()");
+    }
   }
 }
 

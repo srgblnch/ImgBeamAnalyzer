@@ -4,7 +4,7 @@
 //    TANGO Project - ImgBeamAnalyzer DeviceServer - Config class
 //
 // = File
-//    Config.cpp
+//    BIAConfig.cpp
 //
 // = AUTHOR
 //    Julien Malik
@@ -78,7 +78,7 @@ namespace ImgBeamAnalyzer_ns
     return *this;
   }
 
-  bool BIAConfig::is_user_roi_empty(void)
+  bool BIAConfig::is_user_roi_empty(void) const
   {
     return( this->user_roi_width == 0 || this->user_roi_height == 0 );
   }

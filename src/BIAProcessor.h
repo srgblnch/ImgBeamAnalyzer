@@ -4,7 +4,7 @@
 //    TANGO Project - ImgBeamAnalyzer DeviceServer - DataProcessing class
 //
 // = File
-//    DataProcessing.h
+//    BIAProcessor.h
 //
 // = AUTHOR
 //    Julien Malik
@@ -28,54 +28,29 @@
 #include <isl/Exception.h>
 #include <isl/ErrorHandler.h>
 
-#include <DeviceTask.h>
-
 #include "BIAData.h"
 #include "BIAConfig.h"
-// ============================================================================
-// DEFINEs
-// ============================================================================
-
-
+#include <DeviceTask.h>
 
 namespace ImgBeamAnalyzer_ns
 {
 
-class BIATask;
-
-class BIAProcessor : public Tango::LogAdapter
+class BIAProcessor
 {
-  //- This class is dedicated to BIATask
-  //- Each method must be called in a thred safe manner. This is handled
-  //- by the class BIATask where each method (process, configure, get_data, get_config)
-  //- is called after locking a mutex.
   friend class BIATask;
 
 private:
 
-  BIAProcessor (Tango::DeviceImpl * host_device, BIATask& task, const BIAConfig& config);
+  BIAProcessor ();
   virtual ~BIAProcessor ();
 
-  void
-    process(const isl::Image& image);
+  void process(const isl::Image& image, const BIAConfig& config, BIAData& data)
+    throw (Tango::DevFailed);
 
-  void 
-    configure(const BIAConfig& config);
-
-  void
-    get_data(BIAData*& data);
-
-  void
-    get_config(BIAConfig& c);
-
-  void
-    start_learn_noise(void);
+  void start_learn_noise(void);
   
-  void
-    stop_learn_noise(void);
-  
-  Tango::DeviceImpl * host_device_;
- 
+  void stop_learn_noise(void);
+   
   isl::Moments2D      moments2d_;
   isl::PrincipalAxis  principal_axis_;
   isl::BeamBox        beam_box_;
@@ -84,25 +59,11 @@ private:
   isl::Moments1D      moments1d_;
   isl::GaussianFit2D  gauss2d_fitter_;
   isl::NoiseEstimator noise_estim_;
-  
-
-
-  adtb::DeviceMutex   data_mutex_;
-  BIAData*            data_;
-  
-  BIATask&            task_;
-  
-  adtb::DeviceMutex   config_mutex_;
-  BIAConfig           config_;
 
   bool learn_noise_;
   isl::Image mean_noise_image_;
 };
 
 }  // namespace
-
-#if defined (__INLINE_IMPL__)
-# include "BIAProcessor.i"
-#endif // __INLINE_IMPL__
 
 #endif// _DATA_PROC_H_

@@ -1,4 +1,4 @@
-static const char *RcsId     = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzerClass.cpp,v 1.2 2006-10-17 14:24:49 julien_malik Exp $";
+static const char *RcsId     = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzerClass.cpp,v 1.3 2006-12-19 13:25:08 julien_malik Exp $";
 static const char *TagName   = "$Name: not supported by cvs2svn $";
 static const char *HttpServer= "http://www.esrf.fr/computing/cs/tango/tango_doc/ds_doc/";
 //+=============================================================================
@@ -14,7 +14,7 @@ static const char *HttpServer= "http://www.esrf.fr/computing/cs/tango/tango_doc/
 //
 // $Author: julien_malik $
 //
-// $Revision: 1.2 $
+// $Revision: 1.3 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -639,6 +639,7 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	mean_noise_image_prop.set_unit(" ");
 	mean_noise_image_prop.set_description("the mean noise image, which is substracted from every processed image");
 	mean_noise_image->set_default_properties(mean_noise_image_prop);
+	mean_noise_image->set_disp_level(Tango::EXPERT);
 	att_list.push_back(mean_noise_image);
 
 	//	Attribute : ThresholdedImage
@@ -648,6 +649,7 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	thresholded_image_prop.set_unit(" ");
 	thresholded_image_prop.set_description("the binarized image after applying the threshold");
 	thresholded_image->set_default_properties(thresholded_image_prop);
+	thresholded_image->set_disp_level(Tango::EXPERT);
 	att_list.push_back(thresholded_image);
 
 	//	Attribute : MaxIntensity
@@ -838,6 +840,7 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	xprofile_fitted_prop.set_format("%10.2f");
 	xprofile_fitted_prop.set_description("the fitted profile along the X axis");
 	xprofile_fitted->set_default_properties(xprofile_fitted_prop);
+	xprofile_fitted->set_disp_level(Tango::EXPERT);
 	att_list.push_back(xprofile_fitted);
 
 	//	Attribute : XProfileError
@@ -848,6 +851,7 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	xprofile_error_prop.set_format("%10.2f");
 	xprofile_error_prop.set_description("the fitted profile error along the X axis");
 	xprofile_error->set_default_properties(xprofile_error_prop);
+	xprofile_error->set_disp_level(Tango::EXPERT);
 	att_list.push_back(xprofile_error);
 
 	//	Attribute : XProfileCenter
@@ -928,6 +932,7 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	yprofile_fitted_prop.set_format("%10.2f");
 	yprofile_fitted_prop.set_description("the fitted profile along the Y axis");
 	yprofile_fitted->set_default_properties(yprofile_fitted_prop);
+	yprofile_fitted->set_disp_level(Tango::EXPERT);
 	att_list.push_back(yprofile_fitted);
 
 	//	Attribute : YProfileError
@@ -938,6 +943,7 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	yprofile_error_prop.set_format("%10.2f");
 	yprofile_error_prop.set_description("the fitted profile error along the Y axis");
 	yprofile_error->set_default_properties(yprofile_error_prop);
+	yprofile_error->set_disp_level(Tango::EXPERT);
 	att_list.push_back(yprofile_error);
 
 	//	Attribute : YProfileCenter
@@ -1118,6 +1124,7 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	gaussian_fit_parameter_covariance_prop.set_format("%10.2f");
 	gaussian_fit_parameter_covariance_prop.set_description("the covariance matrix of the best fit parameters (7x7). the 7 parameters are ordered as [A, x_c, y_c, s_xx, s_xy, s_yy, b]");
 	gaussian_fit_parameter_covariance->set_default_properties(gaussian_fit_parameter_covariance_prop);
+	gaussian_fit_parameter_covariance->set_disp_level(Tango::EXPERT);
 	att_list.push_back(gaussian_fit_parameter_covariance);
 
 	//	Attribute : Fit2DNbIterMax
@@ -1180,12 +1187,11 @@ void ImgBeamAnalyzerClass::get_class_property()
 
 	//	Read class properties from database.(Automatic code generation)
 	//------------------------------------------------------------------
-	if (Tango::Util::instance()->_UseDb==false)
-		return;
 
 	//	Call database and extract values
 	//--------------------------------------------
-	get_db_class()->get_property(cl_prop);
+	if (Tango::Util::instance()->_UseDb==true)
+		get_db_class()->get_property(cl_prop);
 	Tango::DbDatum	def_prop;
 	int	i = -1;
 
@@ -1512,7 +1518,7 @@ void ImgBeamAnalyzerClass::write_class_property()
 	start = header.length();
 	string	endstr(" $");
 	end   = tagname.find(endstr);
-	if (end>start)
+	if (end!=string::npos && end>start)
 	{
 		string	strtag = tagname.substr(start, end-start);
 		Tango::DbDatum	cvs_tag("cvs_tag");

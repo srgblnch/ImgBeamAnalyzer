@@ -8,7 +8,7 @@
 //
 // $Author: julien_malik $
 //
-// $Revision: 1.3 $
+// $Revision: 1.4 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -30,7 +30,7 @@
 
 /**
  * @author	$Author: julien_malik $
- * @version	$Revision: 1.3 $
+ * @version	$Revision: 1.4 $
  */
 
  //	Add your own constants definitions here.
@@ -69,9 +69,7 @@ const size_t kTIMEOUT_MESSAGE_MS = 2500;
  *                    - when reading the image attribute in the corresponding remote device
  *                    - when configuring
  *                    - when processing the image
- *
  *  Tango::RUNNING :  the device is correctly initialized, configured, and is currently analysing images
- *
  *  Tango::STANDBY :  the device is ready for processing and is waiting.
  *                    In 'CONTINUOUS' mode, it waits for the START command to begin analysis
  *                    In 'ONESHOT' mode, it waits either for the PROCESS command if a remote device is specified,
@@ -1132,11 +1130,11 @@ protected :
   int       device_mode_;
   bool      process_command_allowed_;
 
-  Tango::DevBoolean dummy_DevBoolean_;
-  Tango::DevUChar   dummy_DevUChar_;
-  Tango::DevUShort  dummy_DevUShort_;
-  Tango::DevLong    dummy_DevLong_;
-  Tango::DevDouble  dummy_DevDouble_;
+  template <typename T>
+  class DummyValue
+  {
+    public: static T dummy;
+  };
 
   void update_state()
   {
@@ -1149,9 +1147,7 @@ protected :
     {
       Tango::DevState state;
       std::string status;
-      
-      this->task_->get_state(state);
-      this->task_->get_status(status);
+      this->task_->get_state_status(state, status);
       
       this->set_state (state);
       this->set_status(status);
@@ -1164,8 +1160,7 @@ protected :
 		if (this->available_data_ == 0                                                              \
          || &this->available_data_->data_member == 0)                                           \
 		{                                                                                           \
-      TangoType* p;                                                                             \
-			attr.set_value(this->get_dummy_value(p));                                                 \
+			attr.set_value(&DummyValue<TangoType>::dummy);                                            \
 			attr.set_quality(Tango::ATTR_ALARM);                                                      \
 		}                                                                                           \
 		else                                                                                        \
@@ -1184,8 +1179,7 @@ protected :
          || this->available_data_->config.activated == false                                    \
          || &this->available_data_->data_member == 0)                                           \
 		{                                                                                           \
-      TangoType* p;                                                                             \
-			attr.set_value(this->get_dummy_value(p));                                                 \
+			attr.set_value(&DummyValue<TangoType>::dummy);                                            \
 			attr.set_quality(Tango::ATTR_ALARM);                                                      \
 		}                                                                                           \
 		else                                                                                        \
@@ -1204,8 +1198,7 @@ protected :
          || this->available_data_->config.activated == false                                    \
          || this->available_data_->data_member.base() == 0 )                                    \
 		{                                                                                           \
-      TangoType* p;                                                                             \
-			attr.set_value(this->get_dummy_value(p), 1, 0);                                                 \
+			attr.set_value(&DummyValue<TangoType>::dummy, 1, 0);                                      \
 			attr.set_quality(Tango::ATTR_ALARM);                                                      \
 		}                                                                                           \
 		else                                                                                        \
@@ -1224,8 +1217,7 @@ protected :
 		if (this->available_data_ == 0                                                              \
          || this->available_data_->data_member.base() == 0 )                                    \
 		{                                                                                           \
-      TangoType* p;                                                                             \
-			attr.set_value(this->get_dummy_value(p), 1, 1);                                                 \
+			attr.set_value(&DummyValue<TangoType>::dummy, 1, 1);                                      \
 			attr.set_quality(Tango::ATTR_ALARM);                                                      \
 		}                                                                                           \
 		else                                                                                        \
@@ -1246,8 +1238,7 @@ protected :
          || this->available_data_->config.activated == false                                    \
          || this->available_data_->data_member.base() == 0 )                                    \
 		{                                                                                           \
-      TangoType* p;                                                                             \
-			attr.set_value(this->get_dummy_value(p), 1, 1);                                                 \
+			attr.set_value(&DummyValue<TangoType>::dummy, 1, 1);                                      \
 			attr.set_quality(Tango::ATTR_ALARM);                                                      \
 		}                                                                                           \
 		else                                                                                        \
@@ -1292,7 +1283,6 @@ protected :
    	                                                                                            \
 		TangoType value;                                                                            \
 		attr.get_write_value (value);                                                               \
-		this->task_->get_config(this->current_config_);                                          \
 	 	if (value !=	this->current_config_.config_member_name)                                     \
     {                                                                                           \
       BIAConfig new_config(this->current_config_);                                              \
@@ -1301,55 +1291,22 @@ protected :
 			{                                                                                         \
         this->task_->configure(new_config);                                                     \
 			}                                                                                         \
-			catch (const Tango::DevFailed &ex)                                                        \
+			catch (Tango::DevFailed &ex)                                                              \
       {                                                                                         \
-				ERROR_STREAM << ex << std::endl;                                                        \
-				Tango::Except::re_throw_exception (const_cast<Tango::DevFailed &>(ex),                  \
-																					 _CPTC ("SOFTWARE_FAILURE"),                          \
-																					 _CPTC ("Tango error during configuration"),          \
-																					 _CPTC ("DCCTAnsNI4071::read_" #config_member_name)); \
+				RETHROW_DEVFAILED(ex,                                                                   \
+													"SOFTWARE_FAILURE",                                                   \
+													"Tango error during configuration",                                   \
+													"ImgBeamAnalyzer::read_" #config_member_name);                        \
       }                                                                                         \
 			catch(...)                                                                                \
       {                                                                                         \
-				Tango::Except::throw_exception (_CPTC ("UNKNOWN_ERROR"),                                \
-																				_CPTC ("Unknown error during configuration"),           \
-																				_CPTC ("DCCTAnsNI4071::read_" #config_member_name));    \
+				THROW_DEVFAILED("UNKNOWN_ERROR",                                                        \
+                        "Tango error during configuration",                                     \
+                        "ImgBeamAnalyzer::read_" #config_member_name);                          \
       }                                                                                         \
       this->current_config_ = new_config;                                                       \
 		}                                                                                           \
   }
-
-  template <typename TangoType>
-  TangoType* get_dummy_value(TangoType* = 0);
-
-  Tango::DevBoolean* ImgBeamAnalyzer::get_dummy_value(Tango::DevBoolean*)
-  {
-    return(&this->dummy_DevBoolean_);
-  }
-
-  Tango::DevUChar* ImgBeamAnalyzer::get_dummy_value(Tango::DevUChar*)
-  {
-    return(&this->dummy_DevUChar_);
-  }
-
-  Tango::DevUShort* ImgBeamAnalyzer::get_dummy_value(Tango::DevUShort*)
-  {
-    return(&this->dummy_DevUShort_);
-  }
-
-  Tango::DevLong* ImgBeamAnalyzer::get_dummy_value(Tango::DevLong*)
-  {
-    return(&this->dummy_DevLong_);
-  }
-
-  Tango::DevDouble* ImgBeamAnalyzer::get_dummy_value(Tango::DevDouble*)
-  {
-    return(&this->dummy_DevDouble_);
-  }
-
-
-
-
 };
 
 }	// namespace_ns

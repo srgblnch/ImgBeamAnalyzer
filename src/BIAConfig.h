@@ -4,7 +4,7 @@
 //    TANGO Project - ImgBeamAnalyzer DeviceServer - Config class
 //
 // = File
-//    Config.h
+//    BIAConfig.h
 //
 // = AUTHOR
 //    Julien Malik
@@ -17,7 +17,7 @@
 // ============================================================================
 // DEPENDENCIES
 // ============================================================================
-#include "BIACommon.h"
+#include <tango.h>
 
 
 namespace ImgBeamAnalyzer_ns
@@ -80,7 +80,7 @@ public:
   Tango::DevDouble  gamma_correction;
   Tango::DevLong    pixel_depth;
   
-  bool is_user_roi_empty(void);
+  bool is_user_roi_empty(void) const;
 };
 
 

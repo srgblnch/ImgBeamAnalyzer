@@ -4,7 +4,7 @@
 //    TANGO Project - ImgBeamAnalyzer DeviceServer - Data class
 //
 // = File
-//    Data.cpp
+//    BIAData.cpp
 //
 // = AUTHOR
 //    Julien Malik

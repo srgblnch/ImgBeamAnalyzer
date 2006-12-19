@@ -4,7 +4,7 @@
 //    TANGO Project - ImgBeamAnalyzer DeviceServer - Data class
 //
 // = File
-//    Data.h
+//    BIATask.h
 //
 // = AUTHOR
 //    Julien Malik
@@ -26,7 +26,6 @@ namespace ImgBeamAnalyzer_ns
 const int MODE_ONESHOT = 0;
 const int MODE_CONTINUOUS = 1;
 
-#define kMSG_CONFIG            (adtb::FIRST_USER_MSG)
 #define kMSG_PROCESS           (adtb::FIRST_USER_MSG + 1)
 #define kMSG_START             (adtb::FIRST_USER_MSG + 2)
 #define kMSG_STOP              (adtb::FIRST_USER_MSG + 3)
@@ -66,11 +65,11 @@ public:
 
   void configure(const BIAConfig&);
 
-  void get_state (Tango::DevState& state);
-  void get_status(std::string& status);
+  void get_state_status (Tango::DevState& state, std::string& status);
   
   //- retrieves an isl::Image from the remote device
-  isl::Image* get_remote_image(bool throws = false);
+  isl::Image* get_remote_image()
+    throw (Tango::DevFailed);
 
 protected:
 	//- handle_message -----------------------
@@ -86,11 +85,15 @@ private:
  
   BIAProcessor        proc_;
 
+  adtb::DeviceMutex   config_mutex_;
+  BIAConfig           config_;
+  
+  adtb::DeviceMutex   data_mutex_;
+  BIAData*            data_;
 
   //- Error handling
-  void clear_error();
-  void fault(const char* description);
-
+  static Tango::DevFailed isl_to_tango_exception (const isl::Exception& e);
+  void set_state_status(Tango::DevState state, const char* status);
   adtb::DeviceMutex state_status_mutex_;
   Tango::DevState   state_;
   std::string       status_;

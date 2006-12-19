@@ -4,7 +4,7 @@
 //    TANGO Project - ImgBeamAnalyzer DeviceServer - Data class
 //
 // = File
-//    Data.h
+//    BIAData.h
 //
 // = AUTHOR
 //    Julien Malik
@@ -24,70 +24,9 @@
 namespace ImgBeamAnalyzer_ns
 {
 
-template <class T> class BIAImage : public adtb::Buffer<T>
-{
-public:
-  BIAImage(size_t _width, size_t _height) throw (Tango::DevFailed)
-    : adtb::Buffer<T>(_width * _height),
-      width_(_width),
-      height_(_height)
-  {};
-
-  BIAImage(size_t _width, size_t _height, T *_base) throw (Tango::DevFailed)
-    : adtb::Buffer<T>(_width * _height, _base),
-      width_(_width),
-      height_(_height)
-  {};
-
-  BIAImage(const BIAImage<T>& _im) throw (Tango::DevFailed)
-    : adtb::Buffer<T>(_im),
-      width_(_im.width_),
-      height_(_im.height_)
-  {};
-
-  ~BIAImage()
-  {};
-
-  BIAImage<T>& operator = (const BIAImage<T> &src)
-  {
-    adtb::Buffer<T>::operator =(src);
-    this->width_  = src.width_;
-    this->height_ = src.height_;
-  };
-
-  void dimensions(size_t _width, size_t _height) throw (Tango::DevFailed)
-  {
-    this->length(_width * _height);
-    this->width_  = _width;
-    this->height_ = _height;
-  };
-
-  size_t width(void)
-  {
-    return this->width_;
-  };
-
-  size_t height(void)
-  {
-    return this->height_;
-  };
-
-private:
-  size_t width_;
-  size_t height_;
-};
-
-
-
-// ============================================================================
-//! Data abstraction class.
-// ============================================================================
-//!
-//! detailed description to be written
-//!
-// ============================================================================
 class BIAData : private adtb::SharedObject
 {
+  friend class BIATask;
   friend class BIAProcessor;
 
 public:
@@ -109,7 +48,7 @@ public:
 
 
   //- processed image
-  BIAImage<Tango::DevUShort>     input_image;
+  adtb::ImageBuffer<Tango::DevUShort>     input_image;
   Tango::DevLong                 image_width;
   Tango::DevLong                 image_height;
 
@@ -128,17 +67,17 @@ public:
   Tango::DevDouble               ellipse_tilt;
 
   //- beam box
-  BIAImage<Tango::DevUChar>      thresholded_image;
+  adtb::ImageBuffer<Tango::DevUChar>      thresholded_image;
   Tango::DevLong                 auto_roi_origin_x;
   Tango::DevLong                 auto_roi_origin_y;
   Tango::DevLong                 auto_roi_width;
   Tango::DevLong                 auto_roi_height;
-  BIAImage<Tango::DevUShort>     roi_image;
+  adtb::ImageBuffer<Tango::DevUShort>     roi_image;
   Tango::DevBoolean              bb_found;
 
   //- noise
   Tango::DevLong                 nb_noise_image;
-  BIAImage<Tango::DevUShort>     mean_noise_image;
+  adtb::ImageBuffer<Tango::DevUShort>     mean_noise_image;
 
   //- moments inside beam box
   Tango::DevDouble               max_intensity;
@@ -187,7 +126,7 @@ public:
   Tango::DevDouble               gaussfit_tilt;
   Tango::DevDouble               gaussfit_bg;
   Tango::DevDouble               gaussfit_chi2;
-  BIAImage<Tango::DevDouble>     gaussfit_parameters_covariance;
+  adtb::ImageBuffer<Tango::DevDouble>     gaussfit_parameters_covariance;
 
   Tango::DevBoolean              alarm;
 
