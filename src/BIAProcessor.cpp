@@ -51,6 +51,7 @@ BIAProcessor::~BIAProcessor ()
 
 void
 BIAProcessor::process (const isl::Image& image, const BIAConfig& config, BIAData& data)
+  throw (Tango::DevFailed)
 {
   DEBUG_TRACE("BIAProcessor::process");
 
