@@ -8,7 +8,7 @@
 //
 // $Author: julien_malik $
 //
-// $Revision: 1.4 $
+// $Revision: 1.5 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -30,7 +30,7 @@
 
 /**
  * @author	$Author: julien_malik $
- * @version	$Revision: 1.4 $
+ * @version	$Revision: 1.5 $
  */
 
  //	Add your own constants definitions here.
@@ -64,13 +64,13 @@ const size_t kTIMEOUT_MESSAGE_MS = 2500;
 
 /*
  *	Device States Description:
- *  Tango::FAULT :    an error has been caught either :
+*  Tango::FAULT :    an error has been caught either :
  *                    - at initialisation
  *                    - when reading the image attribute in the corresponding remote device
  *                    - when configuring
  *                    - when processing the image
- *  Tango::RUNNING :  the device is correctly initialized, configured, and is currently analysing images
- *  Tango::STANDBY :  the device is ready for processing and is waiting.
+*  Tango::RUNNING :  the device is correctly initialized, configured, and is currently analysing images
+*  Tango::STANDBY :  the device is ready for processing and is waiting.
  *                    In 'CONTINUOUS' mode, it waits for the START command to begin analysis
  *                    In 'ONESHOT' mode, it waits either for the PROCESS command if a remote device is specified,
  *                    either for the InputImage attribute to be written
@@ -1078,6 +1078,10 @@ public :
  */
 	virtual bool is_StopLearnNoise_allowed(const CORBA::Any &any);
 /**
+ *	Execution allowed for GetVersionNumber command.
+ */
+	virtual bool is_GetVersionNumber_allowed(const CORBA::Any &any);
+/**
  * [CONTINUOUS mode only] When the device is in STANDBY, this command starts the computation
  *	@exception DevFailed
  */
@@ -1107,6 +1111,12 @@ public :
  *	@exception DevFailed
  */
 	void	stop_learn_noise();
+/**
+ * returns the DeviceServer version number
+ *	@return	the Device Server version number
+ *	@exception DevFailed
+ */
+	Tango::DevString	get_version_number();
 
 /**
  *	Read the device properties from database

@@ -6,7 +6,6 @@
 <BODY TEXT="#000000" BGCOLOR="#FFFFFF" LINK="#0000FF" VLINK="#7F00FF" ALINK="#FF0000">
 
 <P><!-------TITLE------></P>
-
 <TABLE BORDER="0" WIDTH="100%">
     <TR>
         <TD ALIGN="left">
@@ -31,22 +30,181 @@
 			<Center><A HREF="http://www.esrf.fr/Infrastructure/Computing/tango/" TARGET="_top">
 					 TANGO </a> <Br> Device Server
 			</Center></FONT>
-    	</Td>
+		</Td>
     </TR>
 </TABLE>
 
 <HR WIDTH="100%"></H5>
-<Br>
+
+<Br>&nbsp;<Br><Br>&nbsp;<Br><Br>&nbsp;<Br><center><Table Border=2 Cellpadding=3 CELLSPACING=0 WIDTH="100%">
+<Tr><Td><Br>&nbsp;<Br>
 <center>
 <h1>
-Image Analyzer		<Br>
-Device Attributes Description 		<Br> <Br>
-ImgBeamAnalyzer Class	<Br>
+Image Analyzer <Br>
+User's Guide<Br>&nbsp;<Br> <Br><Br>
+ImgBeamAnalyzer Class<Br>&nbsp;<Br></Td></Tr>
 </h1>
-<b>
-Revision:  - Author: 
-</b>
+<Tr><Td>
+<b><Center>Revision:  - Author:  <Br>
+ Implemented in C++ -  CVS repository: tango-ds
+</Center></b>
+</Td></Tr>
 </center>
+</Table>
+</center>
+<Br>
+<Br>
+<Br>
+<Br>
+<Br>&nbsp;<Br><Br>&nbsp;<Br>
+<h2>Introduction:</h2>
+<ul>
+	The device analyzes images accessible on another remote device,
+and proposes the following (selectable) features :
+- in preprocessing : rotation, mirroring, gamma correction
+- ROI (Region Of Interest), either user-defined or automatic by blob analysis
+- image moments (mean intensity, centroid, variance, skew)
+- maximal intensity (to monitor saturation for example)
+- ellipse fitting when automatic ROI is desired
+- profiles with corresponding gaussian fit
+- 2D gaussian fit of the image<Br>
+</ul>
+<Br>
+<Br>
+<Br>&nbsp;<Br><Br>
+<h2>Class Inheritance:</h2>
+	<ul>
+		<li> <a href="http://www.esrf.fr/computing/cs/tango/tango_doc/kernel_doc/cpp_doc/classTango_1_1Device__3Impl.html"> Tango::Device_3Impl</a></li>
+		<ul>
+			<li> ImgBeamAnalyzer</li>
+			</ul>
+		</ul>
+	</ul>
+</ul>
+<Br>&nbsp;<Br>
+
+<Br>&nbsp;<Br><Br>&nbsp;<Br><h2>Properties:</h2>
+
+
+<Br> <Br> <Br> 
+<Center>
+<Br> <Br> <Br> 
+<Table Border=2 Cellpadding=3 CELLSPACING=0 WIDTH="100%">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<Td COLSPAN=3> <Font Size=+2><Center><b>Device Properties</b></td></Font></Center>
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<Td><Center><b>Property name</b></td></Center>
+<Td><Center><b>Property type</b></td></Center>
+<Td><Center><b>Description</b></td></Center>
+<Tr><Td><b>AutoROIMagFactor</b></Td>
+<Td><Font Size=-1>Tango::DEV_DOUBLE</Font></Td>
+<Td><Font Size=-1>initial value of AutoROIMagFactor attribute. if not defined, it is set to 1</Font></Td></Tr>
+
+<Tr><Td><b>AutoStart</b></Td>
+<Td><Font Size=-1>Tango::DEV_BOOLEAN</Font></Td>
+<Td><Font Size=-1>if set to 'true' and mode is 'CONTINUOUS', the computation starts automatically when the device is launched</Font></Td></Tr>
+
+<Tr><Td><b>ComputationPeriod</b></Td>
+<Td><Font Size=-1>Tango::DEV_LONG</Font></Td>
+<Td><Font Size=-1>the initial value of the ComputationPeriod attribute</Font></Td></Tr>
+
+<Tr><Td><b>Enable2DGaussianFit</b></Td>
+<Td><Font Size=-1>Tango::DEV_BOOLEAN</Font></Td>
+<Td><Font Size=-1>the initial value of the Enable2DGaussianFit attribute</Font></Td></Tr>
+
+<Tr><Td><b>EnableAutoROI</b></Td>
+<Td><Font Size=-1>Tango::DEV_BOOLEAN</Font></Td>
+<Td><Font Size=-1>the initial value of the EnableAutoROI attribute</Font></Td></Tr>
+
+<Tr><Td><b>EnableImageStats</b></Td>
+<Td><Font Size=-1>Tango::DEV_BOOLEAN</Font></Td>
+<Td><Font Size=-1>the initial value of the EnableImageStats attribute</Font></Td></Tr>
+
+<Tr><Td><b>EnableProfiles</b></Td>
+<Td><Font Size=-1>Tango::DEV_BOOLEAN</Font></Td>
+<Td><Font Size=-1>the initial value of the EnableProfiles attribute</Font></Td></Tr>
+
+<Tr><Td><b>EnableUserROI</b></Td>
+<Td><Font Size=-1>Tango::DEV_BOOLEAN</Font></Td>
+<Td><Font Size=-1>the initial value of the EnableUserROI attribute</Font></Td></Tr>
+
+<Tr><Td><b>ImageAttributeName</b></Td>
+<Td><Font Size=-1>Tango::DEV_STRING</Font></Td>
+<Td><Font Size=-1>the name of the image attribute to take in ImageDevice</Font></Td></Tr>
+
+<Tr><Td><b>ImageDevice</b></Td>
+<Td><Font Size=-1>Tango::DEV_STRING</Font></Td>
+<Td><Font Size=-1>the device from which the image is taken</Font></Td></Tr>
+
+<Tr><Td><b>Mode</b></Td>
+<Td><Font Size=-1>Tango::DEV_STRING</Font></Td>
+<Td><Font Size=-1>ONESHOT or CONTINUOUS</Font></Td></Tr>
+
+<Tr><Td><b>PixelSize</b></Td>
+<Td><Font Size=-1>Tango::DEV_DOUBLE</Font></Td>
+<Td><Font Size=-1>the initial value of the PixelSize attribute</Font></Td></Tr>
+
+<Tr><Td><b>Rotation</b></Td>
+<Td><Font Size=-1>Tango::DEV_LONG</Font></Td>
+<Td><Font Size=-1>the initial value of the Rotation attribute</Font></Td></Tr>
+
+<Tr><Td><b>HorizontalFlip</b></Td>
+<Td><Font Size=-1>Tango::DEV_BOOLEAN</Font></Td>
+<Td><Font Size=-1>the initial value of the HorizontalFlip attribute</Font></Td></Tr>
+
+<Tr><Td><b>GammaCorrection</b></Td>
+<Td><Font Size=-1>Tango::DEV_DOUBLE</Font></Td>
+<Td><Font Size=-1>the initial value of the GammaCorrection attribute</Font></Td></Tr>
+
+<Tr><Td><b>BitsPerPixel</b></Td>
+<Td><Font Size=-1>Tango::DEV_LONG</Font></Td>
+<Td><Font Size=-1>the initial value of the BitsPerPixel attribute</Font></Td></Tr>
+
+</Table>
+
+<Br><Br><Br>
+<Center><b>
+There is no Class properties.<Br><Br>
+</Center></b>
+
+
+</center>
+<Br>&nbsp;<Br><Br>&nbsp;<Br><h2>States:</h2>
+
+
+<Center>
+<Br> <Br> <Br> 
+<Table Border=2 Cellpadding=3 CELLSPACING=0 WIDTH="100%">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<Td COLSPAN=2> <Font Size=+2><Center><b>States</b></td></Font></Center>
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<Td><Center><b>Names</b></td></Center>
+<Td><Center><b>Descriptions</b></td></Center>
+<Tr><Td><b>FAULT</b></Td>
+<Td><Font Size=-1>an error has been caught either :
+- at initialisation
+- when reading the image attribute in the corresponding remote device
+- when configuring
+- when processing the image</Font></Td></Tr>
+
+<Tr><Td><b>RUNNING</b></Td>
+<Td><Font Size=-1>the device is correctly initialized, configured, and is currently analysing images</Font></Td></Tr>
+
+<Tr><Td><b>STANDBY</b></Td>
+<Td><Font Size=-1>the device is ready for processing and is waiting.
+In 'CONTINUOUS' mode, it waits for the START command to begin analysis
+In 'ONESHOT' mode, it waits either for the PROCESS command if a remote device is specified,
+either for the InputImage attribute to be written</Font></Td></Tr>
+
+
+
+
+</Table>
+</Center>
+
+
+</center>
+<Br>&nbsp;<Br><Br>&nbsp;<Br><h2>Attributes:</h2>
 
 
 <Br>
@@ -388,6 +546,211 @@ Revision:  - Author:
 
 </Table>
 </Center>
+
+
+</center>
+<Br>&nbsp;<Br><Br>&nbsp;<Br><h2>Commands:</h2>
+
+
+<Center>
+<Br><Br>
+<A Href="DevCommandsFrame.html"> More Details on commands.... </a><Br>
+<Br> <Br>
+<Table Border=2 Cellpadding=3 CELLSPACING=0 WIDTH="100%">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<Td COLSPAN=3> <Font Size=+2><Center><b>Device Commands for Operator Level</b></td></Font></Center>
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<Td><Center><b>Command name</b></td></Center>
+<Td><Center><b>Argument In</b></td></Center>
+<Td><Center><b>Argument Out</b></td></Center>
+<Tr><Td><b>Init</b></Td>
+<Td><Font Size=-1>DEV_VOID</Font></Td>
+<Td><Font Size=-1>DEV_VOID</Font></Td>
+<Tr><Td><b>State</b></Td>
+<Td><Font Size=-1>DEV_VOID</Font></Td>
+<Td><Font Size=-1>DEV_STATE</Font></Td>
+<Tr><Td><b>Status</b></Td>
+<Td><Font Size=-1>DEV_VOID</Font></Td>
+<Td><Font Size=-1>CONST_DEV_STRING</Font></Td>
+<Tr><Td><b>Start</b></Td>
+<Td><Font Size=-1>DEV_VOID</Font></Td>
+<Td><Font Size=-1>DEV_VOID</Font></Td>
+<Tr><Td><b>Stop</b></Td>
+<Td><Font Size=-1>DEV_VOID</Font></Td>
+<Td><Font Size=-1>DEV_VOID</Font></Td>
+<Tr><Td><b>Process</b></Td>
+<Td><Font Size=-1>DEV_VOID</Font></Td>
+<Td><Font Size=-1>DEV_VOID</Font></Td>
+<Tr><Td><b>SaveCurrentSettings</b></Td>
+<Td><Font Size=-1>DEV_VOID</Font></Td>
+<Td><Font Size=-1>DEV_VOID</Font></Td>
+<Tr><Td><b>StartLearnNoise</b></Td>
+<Td><Font Size=-1>DEV_VOID</Font></Td>
+<Td><Font Size=-1>DEV_VOID</Font></Td>
+<Tr><Td><b>StopLearnNoise</b></Td>
+<Td><Font Size=-1>DEV_VOID</Font></Td>
+<Td><Font Size=-1>DEV_VOID</Font></Td>
+<Tr><Td><b>GetVersionNumber</b></Td>
+<Td><Font Size=-1>DEV_VOID</Font></Td>
+<Td><Font Size=-1>DEV_STRING</Font></Td>
+
+
+
+</Table></Center>
+
+</center>
+<Br>&nbsp;<Br>
+
+<Br>
+<Br>
+<Br>
+<A NAME="Init"><!-- --></A>
+<A NAME="Init"><!-- --></A>
+<h2>1 - Init</h2>
+<ul>
+<Li><Strong>Description: </Strong> This commands re-initialise a device keeping the same network connection.<Br>
+After an Init command executed on a device, it is not necessary for client to re-connect to the device.<Br>
+This command first calls the device <i> delete_device() </i>method and then execute its <i> init_device()</i> method.<Br>
+For C++ device server, all the memory allocated in the <i> nit_device() </i> method must be freed in the <i> delete_device() </i> method.<Br>
+The language device desctructor automatically calls the <i> delete_device() </i> method.<Br>&nbsp
+<Li><Strong>Argin:<Br>DEV_VOID</Strong>
+ : none.<Br>&nbsp
+<Li><Strong>Argout:<Br>DEV_VOID</Strong>
+ : none.<Br>&nbsp
+<Li><Strong>Command allowed for: </Strong><Ul>
+<Li>Tango::FAULT<Li>Tango::RUNNING<Li>Tango::STANDBY</Ul>
+<Br>&nbsp
+</ul><Br>
+<Br>
+<A NAME="State"><!-- --></A>
+<A NAME="State"><!-- --></A>
+<h2>2 - State</h2>
+<ul>
+<Li><Strong>Description: </Strong> This command gets the device state (stored in its <i>device_state</i> data member) and returns it to the caller.<Br>&nbsp
+<Li><Strong>Argin:<Br>DEV_VOID</Strong>
+ : none.<Br>&nbsp
+<Li><Strong>Argout:<Br>DEV_STATE</Strong>
+ : State Code<Br>&nbsp
+<Li><Strong>Command allowed for: </Strong><Ul>
+<Li>Tango::FAULT<Li>Tango::RUNNING<Li>Tango::STANDBY</Ul>
+<Br>&nbsp
+</ul><Br>
+<Br>
+<A NAME="Status"><!-- --></A>
+<A NAME="Status"><!-- --></A>
+<h2>3 - Status</h2>
+<ul>
+<Li><Strong>Description: </Strong> This command gets the device status (stored in its <i>device_status</i> data member) and returns it to the caller.<Br>&nbsp
+<Li><Strong>Argin:<Br>DEV_VOID</Strong>
+ : none.<Br>&nbsp
+<Li><Strong>Argout:<Br>CONST_DEV_STRING</Strong>
+ : Status description<Br>&nbsp
+<Li><Strong>Command allowed for: </Strong><Ul>
+<Li>Tango::FAULT<Li>Tango::RUNNING<Li>Tango::STANDBY</Ul>
+<Br>&nbsp
+</ul><Br>
+<Br>
+<A NAME="Start"><!-- --></A>
+<A NAME="Start"><!-- --></A>
+<h2>4 - Start</h2>
+<ul>
+<Li><Strong>Description: </Strong> [CONTINUOUS mode only] When the device is in STANDBY, this command starts the computation<Br>&nbsp
+<Li><Strong>Argin:<Br>DEV_VOID</Strong>
+ : <Br>&nbsp
+<Li><Strong>Argout:<Br>DEV_VOID</Strong>
+ : <Br>&nbsp
+<Li><Strong>Command allowed for: </Strong><Ul>
+<Li>Tango::STANDBY</Ul>
+<Br>&nbsp
+</ul><Br>
+<Br>
+<A NAME="Stop"><!-- --></A>
+<A NAME="Stop"><!-- --></A>
+<h2>5 - Stop</h2>
+<ul>
+<Li><Strong>Description: </Strong> [CONTINUOUS mode only] When the device is RUNNING, this command stops the computation<Br>&nbsp
+<Li><Strong>Argin:<Br>DEV_VOID</Strong>
+ : <Br>&nbsp
+<Li><Strong>Argout:<Br>DEV_VOID</Strong>
+ : <Br>&nbsp
+<Li><Strong>Command allowed for: </Strong><Ul>
+<Li>Tango::RUNNING</Ul>
+<Br>&nbsp
+</ul><Br>
+<Br>
+<A NAME="Process"><!-- --></A>
+<A NAME="Process"><!-- --></A>
+<h2>6 - Process</h2>
+<ul>
+<Li><Strong>Description: </Strong> [ONESHOT mode only] get an image from the specified remote device, process it and return to STANDBY state<Br>&nbsp
+<Li><Strong>Argin:<Br>DEV_VOID</Strong>
+ : <Br>&nbsp
+<Li><Strong>Argout:<Br>DEV_VOID</Strong>
+ : <Br>&nbsp
+<Li><Strong>Command allowed for: </Strong><Ul>
+<Li>Tango::RUNNING<Li>Tango::STANDBY</Ul>
+<Br>&nbsp
+</ul><Br>
+<Br>
+<A NAME="SaveCurrentSettings"><!-- --></A>
+<A NAME="SaveCurrentSettings"><!-- --></A>
+<h2>7 - SaveCurrentSettings</h2>
+<ul>
+<Li><Strong>Description: </Strong> stores the current configuration in the Tango database as properties<Br>&nbsp
+<Li><Strong>Argin:<Br>DEV_VOID</Strong>
+ : <Br>&nbsp
+<Li><Strong>Argout:<Br>DEV_VOID</Strong>
+ : <Br>&nbsp
+<Li><Strong>Command allowed for: </Strong><Ul>
+<Li>Tango::FAULT<Li>Tango::RUNNING<Li>Tango::STANDBY</Ul>
+<Br>&nbsp
+</ul><Br>
+<Br>
+<A NAME="StartLearnNoise"><!-- --></A>
+<A NAME="StartLearnNoise"><!-- --></A>
+<h2>8 - StartLearnNoise</h2>
+<ul>
+<Li><Strong>Description: </Strong> <Br>&nbsp
+<Li><Strong>Argin:<Br>DEV_VOID</Strong>
+ : <Br>&nbsp
+<Li><Strong>Argout:<Br>DEV_VOID</Strong>
+ : <Br>&nbsp
+<Li><Strong>Command allowed for: </Strong><Ul>
+<Li>Tango::RUNNING<Li>Tango::STANDBY</Ul>
+<Br>&nbsp
+</ul><Br>
+<Br>
+<A NAME="StopLearnNoise"><!-- --></A>
+<A NAME="StopLearnNoise"><!-- --></A>
+<h2>9 - StopLearnNoise</h2>
+<ul>
+<Li><Strong>Description: </Strong> <Br>&nbsp
+<Li><Strong>Argin:<Br>DEV_VOID</Strong>
+ : <Br>&nbsp
+<Li><Strong>Argout:<Br>DEV_VOID</Strong>
+ : <Br>&nbsp
+<Li><Strong>Command allowed for: </Strong><Ul>
+<Li>Tango::RUNNING<Li>Tango::STANDBY</Ul>
+<Br>&nbsp
+</ul><Br>
+<Br>
+<A NAME="GetVersionNumber"><!-- --></A>
+<A NAME="GetVersionNumber"><!-- --></A>
+<h2>10 - GetVersionNumber</h2>
+<ul>
+<Li><Strong>Description: </Strong> returns the DeviceServer version number<Br>&nbsp
+<Li><Strong>Argin:<Br>DEV_VOID</Strong>
+ : <Br>&nbsp
+<Li><Strong>Argout:<Br>DEV_STRING</Strong>
+ : the Device Server version number<Br>&nbsp
+<Li><Strong>Command allowed for: </Strong><Ul>
+<Li>Tango::FAULT<Li>Tango::RUNNING<Li>Tango::STANDBY</Ul>
+<Br>&nbsp
+</ul><Br>
+<Br>
+
+</center>
+<Br>&nbsp;<Br><Br>&nbsp;<Br>
 
 <Center>
 <Br>

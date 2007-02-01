@@ -1,4 +1,4 @@
-static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzerStateMachine.cpp,v 1.2 2006-10-17 14:24:49 julien_malik Exp $";
+static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzerStateMachine.cpp,v 1.3 2007-02-01 09:19:56 julien_malik Exp $";
 //+=============================================================================
 //
 // file :         ImgBeamAnalyzerStateMachine.cpp
@@ -10,7 +10,7 @@ static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/Im
 //
 // $Author: julien_malik $
 //
-// $Revision: 1.2 $
+// $Revision: 1.3 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -1579,6 +1579,20 @@ bool ImgBeamAnalyzer::is_StopLearnNoise_allowed(const CORBA::Any &any)
 		//	Re-Start of Generated Code
 		return false;
 	}
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_GetVersionNumber_allowed
+// 
+// description : 	Execution allowed for GetVersionNumber command.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_GetVersionNumber_allowed(const CORBA::Any &any)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
 	return true;
 }
 

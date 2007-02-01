@@ -1,4 +1,4 @@
-static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzer.cpp,v 1.5 2006-12-19 13:25:08 julien_malik Exp $";
+static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzer.cpp,v 1.6 2007-02-01 09:19:56 julien_malik Exp $";
 //+=============================================================================
 //
 // file :         ImgBeamAnalyzer.cpp
@@ -13,7 +13,7 @@ static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/Im
 //
 // $Author: julien_malik $
 //
-// $Revision: 1.5 $
+// $Revision: 1.6 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -46,6 +46,7 @@ static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/Im
 //  SaveCurrentSettings  |  save_current_settings()
 //  StartLearnNoise      |  start_learn_noise()
 //  StopLearnNoise       |  stop_learn_noise()
+//  GetVersionNumber     |  get_version_number()
 //
 //===================================================================
 
@@ -2168,6 +2169,39 @@ void ImgBeamAnalyzer::stop_learn_noise()
                       "ImgBeamAnalyzer::stop_learn_noise()");
     }
   }
+}
+
+//+------------------------------------------------------------------
+/**
+ *	method:	ImgBeamAnalyzer::get_version_number
+ *
+ *	description:	method to execute "GetVersionNumber"
+ *	returns the DeviceServer version number
+ *
+ * @return	the Device Server version number
+ *
+ */
+//+------------------------------------------------------------------
+Tango::DevString ImgBeamAnalyzer::get_version_number()
+{
+	//	POGO has generated a method core with argout allocation.
+	//	If you would like to use a static reference without copying,
+	//	See "TANGO Device Server Programmer's Manual"
+	//		(chapter : Writing a TANGO DS / Exchanging data)
+	//------------------------------------------------------------
+
+#define STRINGIFY(x) #x
+#define MAKE_STRING(x) STRINGIFY(x)
+
+  string version;
+#ifdef DS_VERSION_NUMBER
+  version = MAKE_STRING(DS_VERSION_NUMBER);
+#else
+  version = "development";
+#endif
+	Tango::DevString	argout  = new char[version.length()];
+	strcpy(argout, version.c_str());
+	return argout;
 }
 
 }	//	namespace

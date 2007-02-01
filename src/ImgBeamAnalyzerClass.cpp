@@ -1,4 +1,4 @@
-static const char *RcsId     = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzerClass.cpp,v 1.3 2006-12-19 13:25:08 julien_malik Exp $";
+static const char *RcsId     = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzerClass.cpp,v 1.4 2007-02-01 09:19:56 julien_malik Exp $";
 static const char *TagName   = "$Name: not supported by cvs2svn $";
 static const char *HttpServer= "http://www.esrf.fr/computing/cs/tango/tango_doc/ds_doc/";
 //+=============================================================================
@@ -14,7 +14,7 @@ static const char *HttpServer= "http://www.esrf.fr/computing/cs/tango/tango_doc/
 //
 // $Author: julien_malik $
 //
-// $Revision: 1.3 $
+// $Revision: 1.4 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -37,6 +37,27 @@ static const char *HttpServer= "http://www.esrf.fr/computing/cs/tango/tango_doc/
 
 namespace ImgBeamAnalyzer_ns
 {
+//+----------------------------------------------------------------------------
+//
+// method : 		GetVersionNumberClass::execute()
+// 
+// description : 	method to trigger the execution of the command.
+//                PLEASE DO NOT MODIFY this method core without pogo   
+//
+// in : - device : The device on which the command must be excuted
+//		- in_any : The command input data
+//
+// returns : The command output data (packed in the Any object)
+//
+//-----------------------------------------------------------------------------
+CORBA::Any *GetVersionNumberClass::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
+{
+
+	cout2 << "GetVersionNumberClass::execute(): arrived" << endl;
+
+	return insert((static_cast<ImgBeamAnalyzer *>(device))->get_version_number());
+}
+
 //+----------------------------------------------------------------------------
 //
 // method : 		StopLearnNoiseCmd::execute()
@@ -287,6 +308,11 @@ void ImgBeamAnalyzerClass::command_factory()
 		"",
 		"",
 		Tango::OPERATOR));
+	command_list.push_back(new GetVersionNumberClass("GetVersionNumber",
+		Tango::DEV_VOID, Tango::DEV_STRING,
+		"",
+		"the Device Server version number",
+		Tango::OPERATOR));
 
 	//	add polling if any
 	for (unsigned int i=0 ; i<command_list.size(); i++)
@@ -305,7 +331,7 @@ void ImgBeamAnalyzerClass::command_factory()
 //+----------------------------------------------------------------------------
 Tango::DbDatum ImgBeamAnalyzerClass::get_class_property(string &prop_name)
 {
-	for (int i=0 ; i<cl_prop.size() ; i++)
+	for (unsigned int i=0 ; i<cl_prop.size() ; i++)
 		if (cl_prop[i].name == prop_name)
 			return cl_prop[i];
 	//	if not found, return  an empty DbDatum
@@ -320,7 +346,7 @@ Tango::DbDatum ImgBeamAnalyzerClass::get_class_property(string &prop_name)
 //-----------------------------------------------------------------------------
 Tango::DbDatum ImgBeamAnalyzerClass::get_default_device_property(string &prop_name)
 {
-	for (int i=0 ; i<dev_def_prop.size() ; i++)
+	for (unsigned int i=0 ; i<dev_def_prop.size() ; i++)
 		if (dev_def_prop[i].name == prop_name)
 			return dev_def_prop[i];
 	//	if not found, return  an empty DbDatum
@@ -336,7 +362,7 @@ Tango::DbDatum ImgBeamAnalyzerClass::get_default_device_property(string &prop_na
 //-----------------------------------------------------------------------------
 Tango::DbDatum ImgBeamAnalyzerClass::get_default_class_property(string &prop_name)
 {
-	for (int i=0 ; i<cl_def_prop.size() ; i++)
+	for (unsigned int i=0 ; i<cl_def_prop.size() ; i++)
 		if (cl_def_prop[i].name == prop_name)
 			return cl_def_prop[i];
 	//	if not found, return  an empty DbDatum
@@ -446,7 +472,7 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	RotationAttrib	*rotation = new RotationAttrib();
 	Tango::UserDefaultAttrProp	rotation_prop;
 	rotation_prop.set_label("Rotation");
-	rotation_prop.set_unit("°");
+	rotation_prop.set_unit("Â°");
 	rotation_prop.set_format("%4d");
 	rotation_prop.set_description("the rotation applied in preprocessing. only multiple of 90 are recognized as valid values");
 	rotation->set_default_properties(rotation_prop);
@@ -696,7 +722,7 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	VarianceXAttrib	*variance_x = new VarianceXAttrib();
 	Tango::UserDefaultAttrProp	variance_x_prop;
 	variance_x_prop.set_label("VarianceX");
-	variance_x_prop.set_unit("mm²");
+	variance_x_prop.set_unit("mmÂ²");
 	variance_x_prop.set_format("%10.2f");
 	variance_x_prop.set_description("the variance along the X axis");
 	variance_x->set_default_properties(variance_x_prop);
@@ -706,7 +732,7 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	VarianceYAttrib	*variance_y = new VarianceYAttrib();
 	Tango::UserDefaultAttrProp	variance_y_prop;
 	variance_y_prop.set_label("VarianceY");
-	variance_y_prop.set_unit("mm²");
+	variance_y_prop.set_unit("mmÂ²");
 	variance_y_prop.set_format("%10.2f");
 	variance_y_prop.set_description("the variance along the Y axis");
 	variance_y->set_default_properties(variance_y_prop);
@@ -716,7 +742,7 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	CovarianceXYAttrib	*covariance_xy = new CovarianceXYAttrib();
 	Tango::UserDefaultAttrProp	covariance_xy_prop;
 	covariance_xy_prop.set_label("Covariance X-Y");
-	covariance_xy_prop.set_unit("mm²");
+	covariance_xy_prop.set_unit("mmÂ²");
 	covariance_xy_prop.set_format("%10.2f");
 	covariance_xy_prop.set_description("the covariance with respect to the X and Y axis");
 	covariance_xy->set_default_properties(covariance_xy_prop);
@@ -755,20 +781,20 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	//	Attribute : SkewX2Y
 	SkewX2YAttrib	*skew_x2_y = new SkewX2YAttrib();
 	Tango::UserDefaultAttrProp	skew_x2_y_prop;
-	skew_x2_y_prop.set_label("Skew X².Y");
+	skew_x2_y_prop.set_label("Skew Xï¿½.Y");
 	skew_x2_y_prop.set_unit("mm3");
 	skew_x2_y_prop.set_format("%10.2f");
-	skew_x2_y_prop.set_description("the skew cross coefficient for X².Y");
+	skew_x2_y_prop.set_description("the skew cross coefficient for Xï¿½.Y");
 	skew_x2_y->set_default_properties(skew_x2_y_prop);
 	att_list.push_back(skew_x2_y);
 
 	//	Attribute : SkewXY2
 	SkewXY2Attrib	*skew_xy2 = new SkewXY2Attrib();
 	Tango::UserDefaultAttrProp	skew_xy2_prop;
-	skew_xy2_prop.set_label("Skew X.Y²");
+	skew_xy2_prop.set_label("Skew X.Yï¿½");
 	skew_xy2_prop.set_unit("mm3");
 	skew_xy2_prop.set_format("%10.2f");
-	skew_xy2_prop.set_description("the skew cross coefficient for X.Y²");
+	skew_xy2_prop.set_description("the skew cross coefficient for X.Yï¿½");
 	skew_xy2->set_default_properties(skew_xy2_prop);
 	att_list.push_back(skew_xy2);
 
@@ -1040,7 +1066,7 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	GaussianFitVarianceXAttrib	*gaussian_fit_variance_x = new GaussianFitVarianceXAttrib();
 	Tango::UserDefaultAttrProp	gaussian_fit_variance_x_prop;
 	gaussian_fit_variance_x_prop.set_label("GaussianFitVarianceX");
-	gaussian_fit_variance_x_prop.set_unit("mm²");
+	gaussian_fit_variance_x_prop.set_unit("mmÂ²");
 	gaussian_fit_variance_x_prop.set_format("%10.2f");
 	gaussian_fit_variance_x_prop.set_description("the variance of the 2D gaussian along the X axis");
 	gaussian_fit_variance_x->set_default_properties(gaussian_fit_variance_x_prop);
@@ -1050,7 +1076,7 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	GaussianFitVarianceYAttrib	*gaussian_fit_variance_y = new GaussianFitVarianceYAttrib();
 	Tango::UserDefaultAttrProp	gaussian_fit_variance_y_prop;
 	gaussian_fit_variance_y_prop.set_label("GaussianFitVarianceY");
-	gaussian_fit_variance_y_prop.set_unit("mm²");
+	gaussian_fit_variance_y_prop.set_unit("mmÂ²");
 	gaussian_fit_variance_y_prop.set_format("%10.2f");
 	gaussian_fit_variance_y_prop.set_description("the variance of the 2D gaussian along the Y axis");
 	gaussian_fit_variance_y->set_default_properties(gaussian_fit_variance_y_prop);
@@ -1060,7 +1086,7 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	GaussianFitCovarianceXYAttrib	*gaussian_fit_covariance_xy = new GaussianFitCovarianceXYAttrib();
 	Tango::UserDefaultAttrProp	gaussian_fit_covariance_xy_prop;
 	gaussian_fit_covariance_xy_prop.set_label("GaussianFitCovarianceXY");
-	gaussian_fit_covariance_xy_prop.set_unit("mm²");
+	gaussian_fit_covariance_xy_prop.set_unit("mmÂ²");
 	gaussian_fit_covariance_xy_prop.set_format("%10.2f");
 	gaussian_fit_covariance_xy_prop.set_description("the covariance of the 2D gaussian");
 	gaussian_fit_covariance_xy->set_default_properties(gaussian_fit_covariance_xy_prop);
@@ -1171,6 +1197,8 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	fit1_dmax_rel_change->set_disp_level(Tango::EXPERT);
 	att_list.push_back(fit1_dmax_rel_change);
 
+	//	End of Automatic code generation
+	//-------------------------------------------------------------
 }
 
 //+----------------------------------------------------------------------------
@@ -1534,6 +1562,13 @@ void ImgBeamAnalyzerClass::write_class_property()
 		db_doc_url << httpServ;
 		data.push_back(db_doc_url);
 	}
+
+	//  Put inheritance
+	Tango::DbDatum	inher_datum("InheritedFrom");
+	vector<string> inheritance;
+	inheritance.push_back("Device_3Impl");
+	inher_datum << inheritance;
+	data.push_back(inher_datum);
 
 	//	Call database and and values
 	//--------------------------------------------

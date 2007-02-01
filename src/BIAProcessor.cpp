@@ -211,7 +211,6 @@ BIAProcessor::process (const isl::Image& image, const BIAConfig& config, BIAData
 
       roi_image_d = new isl::Image(roi_image->width(), roi_image->height(), isl::ISL_STORAGE_DOUBLE);
     
-    
       //- copy integer ROI image to floating point representation
       roi_image->convert(*roi_image_d);
 
@@ -304,7 +303,8 @@ BIAProcessor::process (const isl::Image& image, const BIAConfig& config, BIAData
         {
           this->moments1d_.compute(x_profile, x_profile_size);
 
-          if (this->moments1d_.get_spatial_moment(0) == 0)
+          if (::fabs(this->moments1d_.get_spatial_moment(0)) <= DBL_EPSILON
+                || ::fabs(this->moments1d_.get_central_moment(2)) <= DBL_EPSILON)
           {
             data.profile_x_center  = 0;
             data.profile_x_mag     = 0;
@@ -319,7 +319,6 @@ BIAProcessor::process (const isl::Image& image, const BIAConfig& config, BIAData
           else
           {
             double covar = this->moments1d_.get_central_moment(2) / this->moments1d_.get_spatial_moment(0);
-
             this->gauss1d_fitter_.nb_iter(100);
             this->gauss1d_fitter_.epsilon(0.000001);
 
@@ -346,8 +345,9 @@ BIAProcessor::process (const isl::Image& image, const BIAConfig& config, BIAData
         //- fit Y profile to a gaussian
         {
           this->moments1d_.compute(y_profile, y_profile_size);   
-        
-          if (this->moments1d_.get_spatial_moment(0) == 0)
+
+          if (::fabs(this->moments1d_.get_spatial_moment(0)) <= DBL_EPSILON
+                || ::fabs(this->moments1d_.get_central_moment(2)) <= DBL_EPSILON)
           {
             data.profile_y_center  = 0;
             data.profile_y_mag     = 0;
@@ -432,7 +432,8 @@ BIAProcessor::process (const isl::Image& image, const BIAConfig& config, BIAData
           this->gauss2d_fitter_.covariance(data.gaussfit_variance_x,
                                            data.gaussfit_covariance_xy,
                                            data.gaussfit_variance_y);
-          data.gaussfit_correlation_xy = data.gaussfit_covariance_xy  / ::sqrt(data.gaussfit_variance_x * data.gaussfit_variance_y);
+          data.gaussfit_correlation_xy = data.gaussfit_covariance_xy  
+                                         / ::sqrt(data.gaussfit_variance_x * data.gaussfit_variance_y);
       
           data.gaussfit_variance_x    *= pixel_size * pixel_size;
           data.gaussfit_variance_y    *= pixel_size * pixel_size;

@@ -88,7 +88,13 @@ LFLAGS_USR=	-lISL -lADTB
 #
 # -DACE_HAS_EXCEPTIONS -D__ACE_INLINE__ for ACE
 #
-CXXFLAGS_USR=
+ifdef VERSION
+  DS_VERSION_NUMBER=$(VERSION)
+else
+  DS_VERSION_NUMBER=development
+endif
+
+CXXFLAGS_USR=-DDS_VERSION_NUMBER=$(DS_VERSION_NUMBER)
 
 #
 #	include Standard TANGO compilation options

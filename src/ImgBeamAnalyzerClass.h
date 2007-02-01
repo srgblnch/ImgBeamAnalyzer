@@ -12,7 +12,7 @@
 //
 // $Author: julien_malik $
 //
-// $Revision: 1.2 $
+// $Revision: 1.3 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -1036,6 +1036,30 @@ public:
 //=========================================
 //	Define classes for commands
 //=========================================
+class GetVersionNumberClass : public Tango::Command
+{
+public:
+	GetVersionNumberClass(const char   *name,
+	               Tango::CmdArgType in,
+				   Tango::CmdArgType out,
+				   const char        *in_desc,
+				   const char        *out_desc,
+				   Tango::DispLevel  level)
+	:Command(name,in,out,in_desc,out_desc, level)	{};
+
+	GetVersionNumberClass(const char   *name,
+	               Tango::CmdArgType in,
+				   Tango::CmdArgType out)
+	:Command(name,in,out)	{};
+	~GetVersionNumberClass() {};
+	
+	virtual CORBA::Any *execute (Tango::DeviceImpl *dev, const CORBA::Any &any);
+	virtual bool is_allowed (Tango::DeviceImpl *dev, const CORBA::Any &any)
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_GetVersionNumber_allowed(any);}
+};
+
+
+
 class StopLearnNoiseCmd : public Tango::Command
 {
 public:
