@@ -48,7 +48,7 @@ public:
 
 
   //- processed image
-  adtb::ImageBuffer<Tango::DevUShort>     input_image;
+  adtb::ImageBuffer<Tango::DevUShort> input_image;
   Tango::DevLong                 image_width;
   Tango::DevLong                 image_height;
 
@@ -59,25 +59,16 @@ public:
   //- computation time
   Tango::DevLong                 estim_comput_time;
 
-  //- ellipse fitting
-  Tango::DevDouble               ellipse_centroid_x;
-  Tango::DevDouble               ellipse_centroid_y;
-  Tango::DevDouble               ellipse_major_axis;
-  Tango::DevDouble               ellipse_minor_axis;
-  Tango::DevDouble               ellipse_tilt;
-
   //- beam box
-  adtb::ImageBuffer<Tango::DevUChar>      thresholded_image;
   Tango::DevLong                 auto_roi_origin_x;
   Tango::DevLong                 auto_roi_origin_y;
   Tango::DevLong                 auto_roi_width;
   Tango::DevLong                 auto_roi_height;
-  adtb::ImageBuffer<Tango::DevUShort>     roi_image;
-  Tango::DevBoolean              bb_found;
+  adtb::ImageBuffer<Tango::DevUShort> roi_image;
 
   //- noise
   Tango::DevLong                 nb_noise_image;
-  adtb::ImageBuffer<Tango::DevUShort>     mean_noise_image;
+  adtb::ImageBuffer<Tango::DevUShort> mean_noise_image;
 
   //- moments inside beam box
   Tango::DevDouble               max_intensity;

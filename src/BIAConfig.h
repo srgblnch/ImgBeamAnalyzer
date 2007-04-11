@@ -30,7 +30,6 @@ const Tango::DevBoolean kDEFAULT_ENABLE_USER_ROI = true;
 const Tango::DevBoolean kDEFAULT_ENABLE_AUTO_ROI = true;
 const Tango::DevBoolean kDEFAULT_ENABLE_2D_GAUSSIAN_FIT = false;
 const Tango::DevDouble  kDEFAULT_AUTOROI_MAGFACTOR = 1.0f;
-const Tango::DevDouble  kDEFAULT_THRESHOLD = 200.0f;
 const Tango::DevLong    kDEFAULT_COMPUT_PERIOD = 1000;
 const Tango::DevLong    kDEFAULT_ALARM_ZONE = 10;
 const Tango::DevLong    kDEFAULT_FIT2D_NB_ITER = 100;
@@ -63,7 +62,6 @@ public:
   Tango::DevBoolean enable_auto_roi;
   Tango::DevBoolean enable_2d_gaussian_fit;
   Tango::DevDouble  auto_roi_mag_factor;
-  Tango::DevDouble  threshold;
   Tango::DevLong    comput_period;
   Tango::DevLong    alarm_zone;
   Tango::DevLong    fit2d_nb_iter;

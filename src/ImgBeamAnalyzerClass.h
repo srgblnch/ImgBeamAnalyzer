@@ -12,7 +12,7 @@
 //
 // $Author: julien_malik $
 //
-// $Revision: 1.3 $
+// $Revision: 1.4 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -455,66 +455,6 @@ public:
 	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_XProfile_allowed(ty);}
 };
 
-class EllipseTiltAttrib: public Tango::Attr
-{
-public:
-	EllipseTiltAttrib():Attr("EllipseTilt", Tango::DEV_DOUBLE, Tango::READ) {};
-	~EllipseTiltAttrib() {};
-	
-	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
-	{(static_cast<ImgBeamAnalyzer *>(dev))->read_EllipseTilt(att);}
-	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
-	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_EllipseTilt_allowed(ty);}
-};
-
-class EllipseMinorAxisAttrib: public Tango::Attr
-{
-public:
-	EllipseMinorAxisAttrib():Attr("EllipseMinorAxis", Tango::DEV_DOUBLE, Tango::READ) {};
-	~EllipseMinorAxisAttrib() {};
-	
-	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
-	{(static_cast<ImgBeamAnalyzer *>(dev))->read_EllipseMinorAxis(att);}
-	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
-	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_EllipseMinorAxis_allowed(ty);}
-};
-
-class EllipseMajorAxisAttrib: public Tango::Attr
-{
-public:
-	EllipseMajorAxisAttrib():Attr("EllipseMajorAxis", Tango::DEV_DOUBLE, Tango::READ) {};
-	~EllipseMajorAxisAttrib() {};
-	
-	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
-	{(static_cast<ImgBeamAnalyzer *>(dev))->read_EllipseMajorAxis(att);}
-	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
-	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_EllipseMajorAxis_allowed(ty);}
-};
-
-class EllipseCentroidYAttrib: public Tango::Attr
-{
-public:
-	EllipseCentroidYAttrib():Attr("EllipseCentroidY", Tango::DEV_DOUBLE, Tango::READ) {};
-	~EllipseCentroidYAttrib() {};
-	
-	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
-	{(static_cast<ImgBeamAnalyzer *>(dev))->read_EllipseCentroidY(att);}
-	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
-	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_EllipseCentroidY_allowed(ty);}
-};
-
-class EllipseCentroidXAttrib: public Tango::Attr
-{
-public:
-	EllipseCentroidXAttrib():Attr("EllipseCentroidX", Tango::DEV_DOUBLE, Tango::READ) {};
-	~EllipseCentroidXAttrib() {};
-	
-	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
-	{(static_cast<ImgBeamAnalyzer *>(dev))->read_EllipseCentroidX(att);}
-	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
-	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_EllipseCentroidX_allowed(ty);}
-};
-
 class SkewXY2Attrib: public Tango::Attr
 {
 public:
@@ -657,18 +597,6 @@ public:
 	{(static_cast<ImgBeamAnalyzer *>(dev))->read_MaxIntensity(att);}
 	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
 	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_MaxIntensity_allowed(ty);}
-};
-
-class ThresholdedImageAttrib: public Tango::ImageAttr
-{
-public:
-	ThresholdedImageAttrib():ImageAttr("ThresholdedImage", Tango::DEV_UCHAR, Tango::READ, 131072, 131072) {};
-	~ThresholdedImageAttrib() {};
-	
-	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
-	{(static_cast<ImgBeamAnalyzer *>(dev))->read_ThresholdedImage(att);}
-	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
-	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_ThresholdedImage_allowed(ty);}
 };
 
 class MeanNoiseImageAttrib: public Tango::ImageAttr
@@ -865,20 +793,6 @@ public:
 	{(static_cast<ImgBeamAnalyzer *>(dev))->write_AutoROIMagFactor(att);}
 	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
 	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_AutoROIMagFactor_allowed(ty);}
-};
-
-class ThresholdAttrib: public Tango::Attr
-{
-public:
-	ThresholdAttrib():Attr("Threshold", Tango::DEV_DOUBLE, Tango::READ_WRITE) {};
-	~ThresholdAttrib() {};
-	
-	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
-	{(static_cast<ImgBeamAnalyzer *>(dev))->read_Threshold(att);}
-	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
-	{(static_cast<ImgBeamAnalyzer *>(dev))->write_Threshold(att);}
-	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
-	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_Threshold_allowed(ty);}
 };
 
 class GammaCorrectionAttrib: public Tango::Attr

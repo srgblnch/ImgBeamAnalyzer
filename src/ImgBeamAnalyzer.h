@@ -8,7 +8,7 @@
 //
 // $Author: julien_malik $
 //
-// $Revision: 1.5 $
+// $Revision: 1.6 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -30,7 +30,7 @@
 
 /**
  * @author	$Author: julien_malik $
- * @version	$Revision: 1.5 $
+ * @version	$Revision: 1.6 $
  */
 
  //	Add your own constants definitions here.
@@ -112,8 +112,6 @@ public :
 		Tango::DevLong	attr_BitsPerPixel_write;
 		Tango::DevDouble	*attr_GammaCorrection_read;
 		Tango::DevDouble	attr_GammaCorrection_write;
-		Tango::DevDouble	*attr_Threshold_read;
-		Tango::DevDouble	attr_Threshold_write;
 		Tango::DevDouble	*attr_AutoROIMagFactor_read;
 		Tango::DevDouble	attr_AutoROIMagFactor_write;
 		Tango::DevLong	*attr_AlarmZone_read;
@@ -137,7 +135,6 @@ public :
 		Tango::DevUShort	attr_InputImage_write;
 		Tango::DevUShort	*attr_ROIImage_read;
 		Tango::DevUShort	*attr_MeanNoiseImage_read;
-		Tango::DevUChar	*attr_ThresholdedImage_read;
 		Tango::DevDouble	*attr_MaxIntensity_read;
 		Tango::DevDouble	*attr_MeanIntensity_read;
 		Tango::DevDouble	*attr_CentroidX_read;
@@ -150,11 +147,6 @@ public :
 		Tango::DevDouble	*attr_SkewY_read;
 		Tango::DevDouble	*attr_SkewX2Y_read;
 		Tango::DevDouble	*attr_SkewXY2_read;
-		Tango::DevDouble	*attr_EllipseCentroidX_read;
-		Tango::DevDouble	*attr_EllipseCentroidY_read;
-		Tango::DevDouble	*attr_EllipseMajorAxis_read;
-		Tango::DevDouble	*attr_EllipseMinorAxis_read;
-		Tango::DevDouble	*attr_EllipseTilt_read;
 		Tango::DevDouble	*attr_XProfile_read;
 		Tango::DevDouble	*attr_XProfileFitted_read;
 		Tango::DevDouble	*attr_XProfileError_read;
@@ -414,14 +406,6 @@ public :
  */
 	virtual void write_GammaCorrection(Tango::WAttribute &attr);
 /**
- *	Extract real attribute values for Threshold acquisition result.
- */
-	virtual void read_Threshold(Tango::Attribute &attr);
-/**
- *	Write Threshold attribute values to hardware.
- */
-	virtual void write_Threshold(Tango::WAttribute &attr);
-/**
  *	Extract real attribute values for AutoROIMagFactor acquisition result.
  */
 	virtual void read_AutoROIMagFactor(Tango::Attribute &attr);
@@ -514,10 +498,6 @@ public :
  */
 	virtual void read_MeanNoiseImage(Tango::Attribute &attr);
 /**
- *	Extract real attribute values for ThresholdedImage acquisition result.
- */
-	virtual void read_ThresholdedImage(Tango::Attribute &attr);
-/**
  *	Extract real attribute values for MaxIntensity acquisition result.
  */
 	virtual void read_MaxIntensity(Tango::Attribute &attr);
@@ -565,26 +545,6 @@ public :
  *	Extract real attribute values for SkewXY2 acquisition result.
  */
 	virtual void read_SkewXY2(Tango::Attribute &attr);
-/**
- *	Extract real attribute values for EllipseCentroidX acquisition result.
- */
-	virtual void read_EllipseCentroidX(Tango::Attribute &attr);
-/**
- *	Extract real attribute values for EllipseCentroidY acquisition result.
- */
-	virtual void read_EllipseCentroidY(Tango::Attribute &attr);
-/**
- *	Extract real attribute values for EllipseMajorAxis acquisition result.
- */
-	virtual void read_EllipseMajorAxis(Tango::Attribute &attr);
-/**
- *	Extract real attribute values for EllipseMinorAxis acquisition result.
- */
-	virtual void read_EllipseMinorAxis(Tango::Attribute &attr);
-/**
- *	Extract real attribute values for EllipseTilt acquisition result.
- */
-	virtual void read_EllipseTilt(Tango::Attribute &attr);
 /**
  *	Extract real attribute values for XProfile acquisition result.
  */
@@ -782,10 +742,6 @@ public :
  */
 	virtual bool is_GammaCorrection_allowed(Tango::AttReqType type);
 /**
- *	Read/Write allowed for Threshold attribute.
- */
-	virtual bool is_Threshold_allowed(Tango::AttReqType type);
-/**
  *	Read/Write allowed for AutoROIMagFactor attribute.
  */
 	virtual bool is_AutoROIMagFactor_allowed(Tango::AttReqType type);
@@ -846,10 +802,6 @@ public :
  */
 	virtual bool is_MeanNoiseImage_allowed(Tango::AttReqType type);
 /**
- *	Read/Write allowed for ThresholdedImage attribute.
- */
-	virtual bool is_ThresholdedImage_allowed(Tango::AttReqType type);
-/**
  *	Read/Write allowed for MaxIntensity attribute.
  */
 	virtual bool is_MaxIntensity_allowed(Tango::AttReqType type);
@@ -897,26 +849,6 @@ public :
  *	Read/Write allowed for SkewXY2 attribute.
  */
 	virtual bool is_SkewXY2_allowed(Tango::AttReqType type);
-/**
- *	Read/Write allowed for EllipseCentroidX attribute.
- */
-	virtual bool is_EllipseCentroidX_allowed(Tango::AttReqType type);
-/**
- *	Read/Write allowed for EllipseCentroidY attribute.
- */
-	virtual bool is_EllipseCentroidY_allowed(Tango::AttReqType type);
-/**
- *	Read/Write allowed for EllipseMajorAxis attribute.
- */
-	virtual bool is_EllipseMajorAxis_allowed(Tango::AttReqType type);
-/**
- *	Read/Write allowed for EllipseMinorAxis attribute.
- */
-	virtual bool is_EllipseMinorAxis_allowed(Tango::AttReqType type);
-/**
- *	Read/Write allowed for EllipseTilt attribute.
- */
-	virtual bool is_EllipseTilt_allowed(Tango::AttReqType type);
 /**
  *	Read/Write allowed for XProfile attribute.
  */

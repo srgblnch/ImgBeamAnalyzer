@@ -51,13 +51,6 @@ private:
   
   void stop_learn_noise(void);
    
-  isl::Moments2D      moments2d_;
-  isl::PrincipalAxis  principal_axis_;
-  isl::BeamBox        beam_box_;
-  isl::Profiles       profiles_;
-  isl::GaussianFit1D  gauss1d_fitter_;
-  isl::Moments1D      moments1d_;
-  isl::GaussianFit2D  gauss2d_fitter_;
   isl::NoiseEstimator noise_estim_;
 
   bool learn_noise_;

@@ -1,4 +1,4 @@
-static const char *RcsId     = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzerClass.cpp,v 1.4 2007-02-01 09:19:56 julien_malik Exp $";
+static const char *RcsId     = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzerClass.cpp,v 1.5 2007-04-11 13:29:32 julien_malik Exp $";
 static const char *TagName   = "$Name: not supported by cvs2svn $";
 static const char *HttpServer= "http://www.esrf.fr/computing/cs/tango/tango_doc/ds_doc/";
 //+=============================================================================
@@ -14,7 +14,7 @@ static const char *HttpServer= "http://www.esrf.fr/computing/cs/tango/tango_doc/
 //
 // $Author: julien_malik $
 //
-// $Revision: 1.4 $
+// $Revision: 1.5 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -506,16 +506,6 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	gamma_correction->set_default_properties(gamma_correction_prop);
 	att_list.push_back(gamma_correction);
 
-	//	Attribute : Threshold
-	ThresholdAttrib	*threshold = new ThresholdAttrib();
-	Tango::UserDefaultAttrProp	threshold_prop;
-	threshold_prop.set_label("Threshold");
-	threshold_prop.set_unit(" ");
-	threshold_prop.set_format("%6.1f");
-	threshold_prop.set_description("the threshold level, used to binarize the image");
-	threshold->set_default_properties(threshold_prop);
-	att_list.push_back(threshold);
-
 	//	Attribute : AutoROIMagFactor
 	AutoROIMagFactorAttrib	*auto_roimag_factor = new AutoROIMagFactorAttrib();
 	Tango::UserDefaultAttrProp	auto_roimag_factor_prop;
@@ -668,16 +658,6 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	mean_noise_image->set_disp_level(Tango::EXPERT);
 	att_list.push_back(mean_noise_image);
 
-	//	Attribute : ThresholdedImage
-	ThresholdedImageAttrib	*thresholded_image = new ThresholdedImageAttrib();
-	Tango::UserDefaultAttrProp	thresholded_image_prop;
-	thresholded_image_prop.set_label("ThresholdedImage");
-	thresholded_image_prop.set_unit(" ");
-	thresholded_image_prop.set_description("the binarized image after applying the threshold");
-	thresholded_image->set_default_properties(thresholded_image_prop);
-	thresholded_image->set_disp_level(Tango::EXPERT);
-	att_list.push_back(thresholded_image);
-
 	//	Attribute : MaxIntensity
 	MaxIntensityAttrib	*max_intensity = new MaxIntensityAttrib();
 	Tango::UserDefaultAttrProp	max_intensity_prop;
@@ -797,56 +777,6 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	skew_xy2_prop.set_description("the skew cross coefficient for X.Y�");
 	skew_xy2->set_default_properties(skew_xy2_prop);
 	att_list.push_back(skew_xy2);
-
-	//	Attribute : EllipseCentroidX
-	EllipseCentroidXAttrib	*ellipse_centroid_x = new EllipseCentroidXAttrib();
-	Tango::UserDefaultAttrProp	ellipse_centroid_x_prop;
-	ellipse_centroid_x_prop.set_label("EllipseCentroidX");
-	ellipse_centroid_x_prop.set_unit("mm");
-	ellipse_centroid_x_prop.set_format("%10.2f");
-	ellipse_centroid_x_prop.set_description("the X coordinate of the centroid of the fitted ellipse");
-	ellipse_centroid_x->set_default_properties(ellipse_centroid_x_prop);
-	att_list.push_back(ellipse_centroid_x);
-
-	//	Attribute : EllipseCentroidY
-	EllipseCentroidYAttrib	*ellipse_centroid_y = new EllipseCentroidYAttrib();
-	Tango::UserDefaultAttrProp	ellipse_centroid_y_prop;
-	ellipse_centroid_y_prop.set_label("EllipseCentroidY");
-	ellipse_centroid_y_prop.set_unit("mm");
-	ellipse_centroid_y_prop.set_format("%10.2f");
-	ellipse_centroid_y_prop.set_description("the Y coordinate of the centroid of the fitted ellipse");
-	ellipse_centroid_y->set_default_properties(ellipse_centroid_y_prop);
-	att_list.push_back(ellipse_centroid_y);
-
-	//	Attribute : EllipseMajorAxis
-	EllipseMajorAxisAttrib	*ellipse_major_axis = new EllipseMajorAxisAttrib();
-	Tango::UserDefaultAttrProp	ellipse_major_axis_prop;
-	ellipse_major_axis_prop.set_label("EllipseMajorAxis");
-	ellipse_major_axis_prop.set_unit("mm");
-	ellipse_major_axis_prop.set_format("%10.2f");
-	ellipse_major_axis_prop.set_description("the major axis (full axis, not half) of the beam ellipse");
-	ellipse_major_axis->set_default_properties(ellipse_major_axis_prop);
-	att_list.push_back(ellipse_major_axis);
-
-	//	Attribute : EllipseMinorAxis
-	EllipseMinorAxisAttrib	*ellipse_minor_axis = new EllipseMinorAxisAttrib();
-	Tango::UserDefaultAttrProp	ellipse_minor_axis_prop;
-	ellipse_minor_axis_prop.set_label("EllipseMinorAxis");
-	ellipse_minor_axis_prop.set_unit("mm");
-	ellipse_minor_axis_prop.set_format("%10.2f");
-	ellipse_minor_axis_prop.set_description("the minor axis (full axis, not half) of the beam ellipse");
-	ellipse_minor_axis->set_default_properties(ellipse_minor_axis_prop);
-	att_list.push_back(ellipse_minor_axis);
-
-	//	Attribute : EllipseTilt
-	EllipseTiltAttrib	*ellipse_tilt = new EllipseTiltAttrib();
-	Tango::UserDefaultAttrProp	ellipse_tilt_prop;
-	ellipse_tilt_prop.set_label("EllipseTilt");
-	ellipse_tilt_prop.set_unit("rad");
-	ellipse_tilt_prop.set_format("%10.2f");
-	ellipse_tilt_prop.set_description("the orientation of the beam ellipse from the X axis");
-	ellipse_tilt->set_default_properties(ellipse_tilt_prop);
-	att_list.push_back(ellipse_tilt);
 
 	//	Attribute : XProfile
 	XProfileAttrib	*xprofile = new XProfileAttrib();

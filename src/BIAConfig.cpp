@@ -25,7 +25,6 @@ namespace ImgBeamAnalyzer_ns
     enable_auto_roi(kDEFAULT_ENABLE_AUTO_ROI),
     enable_2d_gaussian_fit(kDEFAULT_ENABLE_2D_GAUSSIAN_FIT),
     auto_roi_mag_factor(kDEFAULT_AUTOROI_MAGFACTOR),
-    threshold(kDEFAULT_THRESHOLD),
     comput_period(kDEFAULT_COMPUT_PERIOD),
     alarm_zone(kDEFAULT_ALARM_ZONE),
     fit2d_nb_iter(kDEFAULT_FIT2D_NB_ITER),
@@ -59,7 +58,6 @@ namespace ImgBeamAnalyzer_ns
     this->enable_auto_roi        = _c.enable_auto_roi;
     this->enable_2d_gaussian_fit = _c.enable_2d_gaussian_fit;
     this->auto_roi_mag_factor    = _c.auto_roi_mag_factor;
-    this->threshold              = _c.threshold;
     this->comput_period          = _c.comput_period;
     this->alarm_zone             = _c.alarm_zone;
     this->fit2d_nb_iter          = _c.fit2d_nb_iter;

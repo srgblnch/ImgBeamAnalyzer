@@ -1,4 +1,4 @@
-static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzerStateMachine.cpp,v 1.3 2007-02-01 09:19:56 julien_malik Exp $";
+static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzerStateMachine.cpp,v 1.4 2007-04-11 13:29:32 julien_malik Exp $";
 //+=============================================================================
 //
 // file :         ImgBeamAnalyzerStateMachine.cpp
@@ -10,7 +10,7 @@ static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/Im
 //
 // $Author: julien_malik $
 //
-// $Revision: 1.3 $
+// $Revision: 1.4 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -73,24 +73,6 @@ bool ImgBeamAnalyzer::is_EnableImageStats_allowed(Tango::AttReqType type)
 //
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_EnableProfiles_allowed(Tango::AttReqType type)
-{
-	if (get_state() == Tango::FAULT)
-	{
-		//	End of Generated Code
-
-		//	Re-Start of Generated Code
-		return false;
-	}
-	return true;
-}
-//+----------------------------------------------------------------------------
-//
-// method : 		ImgBeamAnalyzer::is_Threshold_allowed
-// 
-// description : 	Read/Write allowed for Threshold attribute.
-//
-//-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_Threshold_allowed(Tango::AttReqType type)
 {
 	if (get_state() == Tango::FAULT)
 	{
@@ -211,24 +193,6 @@ bool ImgBeamAnalyzer::is_EstimComputTime_allowed(Tango::AttReqType type)
 }
 //+----------------------------------------------------------------------------
 //
-// method : 		ImgBeamAnalyzer::is_ThresholdedImage_allowed
-// 
-// description : 	Read/Write allowed for ThresholdedImage attribute.
-//
-//-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_ThresholdedImage_allowed(Tango::AttReqType type)
-{
-	if (get_state() == Tango::FAULT)
-	{
-		//	End of Generated Code
-
-		//	Re-Start of Generated Code
-		return false;
-	}
-	return true;
-}
-//+----------------------------------------------------------------------------
-//
 // method : 		ImgBeamAnalyzer::is_Enable2DGaussianFit_allowed
 // 
 // description : 	Read/Write allowed for Enable2DGaussianFit attribute.
@@ -281,60 +245,7 @@ bool ImgBeamAnalyzer::is_GaussianFitTilt_allowed(Tango::AttReqType type)
 	}
 	return true;
 }
-//+----------------------------------------------------------------------------
-//
-// method : 		ImgBeamAnalyzer::is_EllipseMajorAxis_allowed
-// 
-// description : 	Read/Write allowed for EllipseMajorAxis attribute.
-//
-//-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_EllipseMajorAxis_allowed(Tango::AttReqType type)
-{
-	if (get_state() == Tango::FAULT)
-	{
-		//	End of Generated Code
 
-		//	Re-Start of Generated Code
-		return false;
-	}
-	return true;
-}
-//+----------------------------------------------------------------------------
-//
-// method : 		ImgBeamAnalyzer::is_EllipseMinorAxis_allowed
-// 
-// description : 	Read/Write allowed for EllipseMinorAxis attribute.
-//
-//-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_EllipseMinorAxis_allowed(Tango::AttReqType type)
-{
-	if (get_state() == Tango::FAULT)
-	{
-		//	End of Generated Code
-
-		//	Re-Start of Generated Code
-		return false;
-	}
-	return true;
-}
-//+----------------------------------------------------------------------------
-//
-// method : 		ImgBeamAnalyzer::is_EllipseTilt_allowed
-// 
-// description : 	Read/Write allowed for EllipseTilt attribute.
-//
-//-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_EllipseTilt_allowed(Tango::AttReqType type)
-{
-	if (get_state() == Tango::FAULT)
-	{
-		//	End of Generated Code
-
-		//	Re-Start of Generated Code
-		return false;
-	}
-	return true;
-}
 //+----------------------------------------------------------------------------
 //
 // method : 		ImgBeamAnalyzer::is_XProfileSigma_allowed
@@ -822,42 +733,7 @@ bool ImgBeamAnalyzer::is_SkewXY2_allowed(Tango::AttReqType type)
 	}
 	return true;
 }
-//+----------------------------------------------------------------------------
-//
-// method : 		ImgBeamAnalyzer::is_EllipseCentroidX_allowed
-// 
-// description : 	Read/Write allowed for EllipseCentroidX attribute.
-//
-//-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_EllipseCentroidX_allowed(Tango::AttReqType type)
-{
-	if (get_state() == Tango::FAULT)
-	{
-		//	End of Generated Code
 
-		//	Re-Start of Generated Code
-		return false;
-	}
-	return true;
-}
-//+----------------------------------------------------------------------------
-//
-// method : 		ImgBeamAnalyzer::is_EllipseCentroidY_allowed
-// 
-// description : 	Read/Write allowed for EllipseCentroidY attribute.
-//
-//-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_EllipseCentroidY_allowed(Tango::AttReqType type)
-{
-	if (get_state() == Tango::FAULT)
-	{
-		//	End of Generated Code
-
-		//	Re-Start of Generated Code
-		return false;
-	}
-	return true;
-}
 //+----------------------------------------------------------------------------
 //
 // method : 		ImgBeamAnalyzer::is_XProfileCenter_allowed

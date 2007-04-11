@@ -17,7 +17,7 @@
 #include "BIAProcessor.h"
 #include "BIATask.h"
 
-#include <isl/geometry/Rectangle.h>
+#include <isl/AutoROI.h>
 
 #include <sys/timeb.h>
 // ============================================================================
@@ -141,41 +141,19 @@ BIAProcessor::process (const isl::Image& image, const BIAConfig& config, BIAData
       }
       else if (config.enable_auto_roi)
       {
-        //- try to determine the beam box automatically
-        isl::Image thresholded_image(*input_image);
-        thresholded_image.convert(isl::ISL_STORAGE_FLOAT);
-        thresholded_image.threshold(config.threshold, 255, isl::ISL_THRESH_BINARY);
-        thresholded_image.convert(isl::ISL_STORAGE_UCHAR);
-        thresholded_image.morphology(isl::ISL_MORPHO_ERODE, 3, 3, 1, 1, isl::ISL_SHAPE_ELLIPSE, 1);
-      
-        data.thresholded_image.set_dimensions(input_image->width(), input_image->height());
-        thresholded_image.serialize(data.thresholded_image.base());
-
-        data.bb_found = this->beam_box_.compute(thresholded_image, config.auto_roi_mag_factor);
-
-        if (data.bb_found)
+        
+        try
         {
-          roi = isl::Rectangle(static_cast<int>(this->beam_box_.corner(0).x()),
-                               static_cast<int>(this->beam_box_.corner(0).y()),
-                               static_cast<int>(this->beam_box_.width()),
-                               static_cast<int>(this->beam_box_.height()));
-
+          roi = isl::AutoROI(*input_image, config.auto_roi_mag_factor);
           roi_image = input_image->get_roi(roi);
-
-          data.ellipse_centroid_x  = this->beam_box_.equivalent_ellipse().center().x() * pixel_size;
-          data.ellipse_centroid_y  = this->beam_box_.equivalent_ellipse().center().y() * pixel_size;
-          data.ellipse_major_axis  = this->beam_box_.equivalent_ellipse().major_axis() * pixel_size;
-          data.ellipse_minor_axis  = this->beam_box_.equivalent_ellipse().minor_axis() * pixel_size;
-          data.ellipse_tilt        = this->beam_box_.equivalent_ellipse().tilt();
         }
-        else
+        catch(isl::Exception&)
         {
+          // failed to determine the ROI automatically : take the whole image
           roi = isl::Rectangle(0,
                                0,
                                input_image->width(),
                                input_image->height());
-
-
           roi_image = new isl::Image(*input_image);
         }
       
@@ -228,13 +206,12 @@ BIAProcessor::process (const isl::Image& image, const BIAConfig& config, BIAData
       //- Compute image statistics
       if (config.enable_image_stats)
       {
-        //- moments calculation
-        this->moments2d_.compute(*roi_image);
-        double m00 = this->moments2d_.get_spatial_moment(0,0);
+        isl::Moments2D img_moments(*roi_image);
+        double m00 = img_moments.m00();
 
-        if (m00 == 0)
+        if (img_moments.m00() == 0)
         {
-          //- we are sure the image is null
+          //- we are sure the image is completely null
           data.mean_intensity = 0;
           data.centroid_x = 0;
           data.centroid_y = 0;
@@ -252,18 +229,18 @@ BIAProcessor::process (const isl::Image& image, const BIAConfig& config, BIAData
         {
           data.mean_intensity = m00 / (roi.width() * roi.height());
       
-          data.centroid_x     = (this->moments2d_.get_spatial_moment(1,0) / m00 + roi.origin().x()) * pixel_size;
-          data.centroid_y     = (this->moments2d_.get_spatial_moment(0,1) / m00 + roi.origin().y()) * pixel_size;
+          data.centroid_x     = (img_moments.m10() / m00 + roi.origin().x()) * pixel_size;
+          data.centroid_y     = (img_moments.m01() / m00 + roi.origin().y()) * pixel_size;
       
-          data.variance_x     = this->moments2d_.get_central_moment(2,0) / m00 * pixel_size * pixel_size;
-          data.covariance_xy  = this->moments2d_.get_central_moment(1,1) / m00 * pixel_size * pixel_size;
-          data.variance_y     = this->moments2d_.get_central_moment(0,2) / m00 * pixel_size * pixel_size;
+          data.variance_x     = img_moments.mu20() / m00 * pixel_size * pixel_size;
+          data.covariance_xy  = img_moments.mu11() / m00 * pixel_size * pixel_size;
+          data.variance_y     = img_moments.mu02() / m00 * pixel_size * pixel_size;
           data.correlation_xy = data.covariance_xy / ::sqrt(data.variance_x * data.variance_y);
       
-          data.skew_x         = this->moments2d_.get_central_moment(3,0) / m00 * pixel_size * pixel_size * pixel_size;
-          data.skew_x2y       = this->moments2d_.get_central_moment(2,1) / m00 * pixel_size * pixel_size * pixel_size;
-          data.skew_xy2       = this->moments2d_.get_central_moment(1,2) / m00 * pixel_size * pixel_size * pixel_size;
-          data.skew_y         = this->moments2d_.get_central_moment(0,3) / m00 * pixel_size * pixel_size * pixel_size;
+          data.skew_x         = img_moments.mu30() / m00 * pixel_size * pixel_size * pixel_size;
+          data.skew_x2y       = img_moments.mu21() / m00 * pixel_size * pixel_size * pixel_size;
+          data.skew_xy2       = img_moments.mu12() / m00 * pixel_size * pixel_size * pixel_size;
+          data.skew_y         = img_moments.mu03() / m00 * pixel_size * pixel_size * pixel_size;
       
           //- max calculation
           Tango::DevDouble max = 0;
@@ -275,191 +252,170 @@ BIAProcessor::process (const isl::Image& image, const BIAConfig& config, BIAData
           }
           data.max_intensity = max;
         }
+
+        if (config.enable_2d_gaussian_fit)
+        {
+          if (m00 == 0)
+          {
+            data.gaussfit_magnitude = 0;
+            data.gaussfit_centroid_x = 0;
+            data.gaussfit_centroid_y = 0;
+            data.gaussfit_variance_x = 0;
+            data.gaussfit_variance_y = 0;
+            data.gaussfit_covariance_xy = 0;
+            data.gaussfit_correlation_xy = 0;
+            data.gaussfit_major_axis_fwhm = 0;
+            data.gaussfit_minor_axis_fwhm = 0;
+            data.gaussfit_tilt = 0;
+            data.gaussfit_bg = 0;
+            data.gaussfit_chi2 = 0;
+            data.gaussfit_parameters_covariance.set_dimensions(7, 7);
+            data.gaussfit_parameters_covariance.fill(0);
+          }
+          else
+          {
+            double initial_magnitude = roi_image_d->value(static_cast<int>(img_moments.m10() / m00),
+                                                          static_cast<int>(img_moments.m01() / m00));
+
+            isl::GaussianFit2D gauss_fit2d;
+            gauss_fit2d.nb_iter(config.fit2d_nb_iter);
+            gauss_fit2d.epsilon(config.fit2d_max_rel_change);
+
+            TIMEVAL	before_fit, after_fit;
+            GET_TIME(before_fit);
+            gauss_fit2d.compute(*roi_image_d,
+                                initial_magnitude,
+                                img_moments.m10() / m00,
+                                img_moments.m01() / m00,
+                                img_moments.mu20() / m00,
+                                img_moments.mu11() / m00,
+                                img_moments.mu02() / m00,
+                                0);
+            GET_TIME(after_fit);
+            std::cout << "fit time : " << ELAPSED_TIME_MS(before_fit, after_fit) << std::endl;
+
+
+            std::cout << "N=" << gauss_fit2d.nb_iter() << "         eps=" << gauss_fit2d.epsilon() << std::endl;
+
+            data.gaussfit_magnitude = gauss_fit2d.magnitude();
+            data.gaussfit_centroid_x = ( gauss_fit2d.mean().x() + roi.origin().x() ) * pixel_size;
+            data.gaussfit_centroid_y = ( gauss_fit2d.mean().y() + roi.origin().y() ) * pixel_size;
+
+            gauss_fit2d.covariance(data.gaussfit_variance_x,
+                                   data.gaussfit_covariance_xy,
+                                   data.gaussfit_variance_y);
+            data.gaussfit_correlation_xy = data.gaussfit_covariance_xy  
+                                           / ::sqrt(data.gaussfit_variance_x * data.gaussfit_variance_y);
+      
+            data.gaussfit_variance_x    *= pixel_size * pixel_size;
+            data.gaussfit_variance_y    *= pixel_size * pixel_size;
+            data.gaussfit_covariance_xy *= pixel_size * pixel_size;
+
+            data.gaussfit_bg = gauss_fit2d.background();
+
+            data.gaussfit_parameters_covariance.set_dimensions(7, 7);
+            gauss_fit2d.parameters_cov(data.gaussfit_parameters_covariance.base());
+
+            data.gaussfit_chi2 = gauss_fit2d.chi2();
+      
+            //- Principal Axis of the gaussian
+            isl::PrincipalAxis princ_ax(img_moments.m10() / m00,
+                                        img_moments.m01() / m00,
+                                        img_moments.m20() / m00,
+                                        img_moments.m11() / m00,
+                                        img_moments.m02() / m00);
+            double x,y;
+            princ_ax.get_first (x,y, data.gaussfit_major_axis_fwhm);
+            data.gaussfit_major_axis_fwhm *= SIGMA2FWHM_SCALE_FACTOR * pixel_size;
+      
+            princ_ax.get_second(x,y, data.gaussfit_minor_axis_fwhm);
+            data.gaussfit_minor_axis_fwhm *= SIGMA2FWHM_SCALE_FACTOR * pixel_size;
+      
+            data.gaussfit_tilt = princ_ax.get_angle ();
+          }
+        }
       }
 
 
 
       if (config.enable_profile)
       {
-        this->profiles_.compute(*roi_image_d);
-
-        const double* x_profile = this->profiles_.get_x_profile();
-        size_t  x_profile_size = this->profiles_.size_x();
-
-        data.profile_x.length(x_profile_size);
-        data.profile_x_fitted.length(x_profile_size);
-        data.profile_x_error.length(x_profile_size);
-        data.profile_x = x_profile;
-      
-        const double* y_profile = this->profiles_.get_y_profile();
-        size_t  y_profile_size = this->profiles_.size_y();
-      
-        data.profile_y.length(y_profile_size);
-        data.profile_y_fitted.length(y_profile_size);
-        data.profile_y_error.length(y_profile_size);
-        data.profile_y = y_profile;
-
-        //- fit X profile to a gaussian
-        {
-          this->moments1d_.compute(x_profile, x_profile_size);
-
-          if (::fabs(this->moments1d_.get_spatial_moment(0)) <= DBL_EPSILON
-                || ::fabs(this->moments1d_.get_central_moment(2)) <= DBL_EPSILON)
-          {
-            data.profile_x_center  = 0;
-            data.profile_x_mag     = 0;
-            data.profile_x_sigma   = 0;
-            data.profile_x_fwhm    = 0;
-            data.profile_x_bg      = 0;
-            data.profile_x_chi2    = 0;
-
-            data.profile_x_fitted.fill(0);
-            data.profile_x_error.fill(0);
-          }
-          else
-          {
-            double covar = this->moments1d_.get_central_moment(2) / this->moments1d_.get_spatial_moment(0);
-            this->gauss1d_fitter_.nb_iter(100);
-            this->gauss1d_fitter_.epsilon(0.000001);
-
-            this->gauss1d_fitter_.compute(x_profile, 
-                                          x_profile_size,
-                                          this->profiles_.max_val_x(),
-                                          this->profiles_.max_pos_x(),
-                                          covar,
-                                          x_profile[0]);
-            data.profile_x_center  = (this->gauss1d_fitter_.mean() + roi.origin().x()) * pixel_size;
-            data.profile_x_mag     = this->gauss1d_fitter_.magnitude();
-            data.profile_x_sigma   = this->gauss1d_fitter_.standard_deviation() * pixel_size;
-            data.profile_x_fwhm    = data.profile_x_sigma * SIGMA2FWHM_SCALE_FACTOR;
-            data.profile_x_bg      = this->gauss1d_fitter_.background();
-            data.profile_x_chi2    = this->gauss1d_fitter_.chi2();
+        isl::Profiles profiles(*roi_image_d);
         
-            for (size_t i = 0; i < x_profile_size; i++)
-            {
-              data.profile_x_fitted[i] = this->gauss1d_fitter_.get_fitted_value(i);
-              data.profile_x_error[i]  = this->gauss1d_fitter_.get_fitted_error(i);
-            }
-          }
-        }
-        //- fit Y profile to a gaussian
+        data.profile_x.length(profiles.size_x());
+        data.profile_x_fitted.length(profiles.size_x());
+        data.profile_x_error.length(profiles.size_x());
+        data.profile_x = profiles.get_x_profile();
+        try
         {
-          this->moments1d_.compute(y_profile, y_profile_size);   
+          isl::GaussianFit1D gaussian_fit;
+          gaussian_fit.nb_iter(config.fit1d_nb_iter);
+          gaussian_fit.epsilon(config.fit1d_max_rel_change);
 
-          if (::fabs(this->moments1d_.get_spatial_moment(0)) <= DBL_EPSILON
-                || ::fabs(this->moments1d_.get_central_moment(2)) <= DBL_EPSILON)
+          gaussian_fit.compute(profiles.get_x_profile(), profiles.size_x());
+          
+          data.profile_x_center  = (gaussian_fit.mean() + roi.origin().x()) * pixel_size;
+          data.profile_x_mag     = gaussian_fit.magnitude();
+          data.profile_x_sigma   = gaussian_fit.standard_deviation() * pixel_size;
+          data.profile_x_fwhm    = data.profile_x_sigma * SIGMA2FWHM_SCALE_FACTOR;
+          data.profile_x_bg      = gaussian_fit.background();
+          data.profile_x_chi2    = gaussian_fit.chi2();
+          
+          for (size_t i = 0; i < profiles.size_x(); i++)
           {
-            data.profile_y_center  = 0;
-            data.profile_y_mag     = 0;
-            data.profile_y_sigma   = 0;
-            data.profile_y_fwhm    = 0;
-            data.profile_y_bg      = 0;
-            data.profile_y_chi2    = 0;
-
-            data.profile_y_fitted.fill(0);
-            data.profile_y_error.fill(0);
+            data.profile_x_fitted[i] = gaussian_fit.get_fitted_value(i);
+            data.profile_x_error[i]  = gaussian_fit.get_fitted_error(i);
           }
-          else
+        }
+        catch(isl::Exception&)
+        {
+          data.profile_x_center  = 0;
+          data.profile_x_mag     = 0;
+          data.profile_x_sigma   = 0;
+          data.profile_x_fwhm    = 0;
+          data.profile_x_bg      = 0;
+          data.profile_x_chi2    = 0;
+
+          data.profile_x_fitted.fill(0);
+          data.profile_x_error.fill(0);
+        }
+
+        data.profile_y.length(profiles.size_y());
+        data.profile_y_fitted.length(profiles.size_y());
+        data.profile_y_error.length(profiles.size_y());
+        data.profile_y = profiles.get_y_profile();
+        try
+        {
+          isl::GaussianFit1D gaussian_fit;
+          gaussian_fit.nb_iter(config.fit1d_nb_iter);
+          gaussian_fit.epsilon(config.fit1d_max_rel_change);
+
+          gaussian_fit.compute(profiles.get_y_profile(), profiles.size_y());
+          
+          data.profile_y_center  = (gaussian_fit.mean() + roi.origin().y()) * pixel_size;
+          data.profile_y_mag     = gaussian_fit.magnitude();
+          data.profile_y_sigma   = gaussian_fit.standard_deviation() * pixel_size;
+          data.profile_y_fwhm    = data.profile_y_sigma * SIGMA2FWHM_SCALE_FACTOR;
+          data.profile_y_bg      = gaussian_fit.background();
+          data.profile_y_chi2    = gaussian_fit.chi2();
+          
+          for (size_t i = 0; i < profiles.size_y(); i++)
           {
-            double covar = this->moments1d_.get_central_moment(2) / this->moments1d_.get_spatial_moment(0);
-    
-            this->gauss1d_fitter_.nb_iter(config.fit1d_nb_iter);
-            this->gauss1d_fitter_.epsilon(config.fit1d_max_rel_change);
-
-            this->gauss1d_fitter_.compute(y_profile, 
-                                          y_profile_size,
-                                          this->profiles_.max_val_y(),
-                                          this->profiles_.max_pos_y(),
-                                          covar,
-                                          y_profile[0]);
-            data.profile_y_center  = (this->gauss1d_fitter_.mean() + roi.origin().y()) * pixel_size;
-            data.profile_y_mag     = this->gauss1d_fitter_.magnitude();
-            data.profile_y_sigma   = this->gauss1d_fitter_.standard_deviation() * pixel_size;
-            data.profile_y_fwhm    = data.profile_y_sigma * SIGMA2FWHM_SCALE_FACTOR;
-            data.profile_y_bg      = this->gauss1d_fitter_.background();
-            data.profile_y_chi2    = this->gauss1d_fitter_.chi2();
-        
-            for (size_t i = 0; i < y_profile_size; i++)
-            {
-              data.profile_y_fitted[i] = this->gauss1d_fitter_.get_fitted_value(i);
-              data.profile_y_error[i]  = this->gauss1d_fitter_.get_fitted_error(i);
-            }
+            data.profile_y_fitted[i] = gaussian_fit.get_fitted_value(i);
+            data.profile_y_error[i]  = gaussian_fit.get_fitted_error(i);
           }
         }
-      }
-
-      if (config.enable_image_stats && config.enable_2d_gaussian_fit)
-      {
-        double m00 = this->moments2d_.get_spatial_moment(0,0);
-
-        if (m00 == 0)
+        catch(isl::Exception&)
         {
-          data.gaussfit_magnitude = 0;
-          data.gaussfit_centroid_x = 0;
-          data.gaussfit_centroid_y = 0;
-          data.gaussfit_variance_x = 0;
-          data.gaussfit_variance_y = 0;
-          data.gaussfit_covariance_xy = 0;
-          data.gaussfit_correlation_xy = 0;
-          data.gaussfit_major_axis_fwhm = 0;
-          data.gaussfit_minor_axis_fwhm = 0;
-          data.gaussfit_tilt = 0;
-          data.gaussfit_bg = 0;
-          data.gaussfit_chi2 = 0;
-          data.gaussfit_parameters_covariance.set_dimensions(7, 7);
-          data.gaussfit_parameters_covariance.fill(0);
-        }
-        else
-        {
-          double initial_magnitude = roi_image_d->value(static_cast<int>(this->moments2d_.get_spatial_moment(1,0) / m00),
-                                                        static_cast<int>(this->moments2d_.get_spatial_moment(0,1) / m00));
+          data.profile_y_center  = 0;
+          data.profile_y_mag     = 0;
+          data.profile_y_sigma   = 0;
+          data.profile_y_fwhm    = 0;
+          data.profile_y_bg      = 0;
+          data.profile_y_chi2    = 0;
 
-          this->gauss2d_fitter_.nb_iter(config.fit2d_nb_iter);
-          this->gauss2d_fitter_.epsilon(config.fit2d_max_rel_change);
-
-          this->gauss2d_fitter_.compute(*roi_image_d,
-                                        initial_magnitude,
-                                        this->moments2d_.get_spatial_moment(1,0) / m00,
-                                        this->moments2d_.get_spatial_moment(0,1) / m00,
-                                        data.variance_x,
-                                        data.covariance_xy,
-                                        data.variance_y,
-                                        0);
-          data.gaussfit_magnitude = this->gauss2d_fitter_.magnitude();
-          data.gaussfit_centroid_x = ( this->gauss2d_fitter_.mean().x() + roi.origin().x() ) * pixel_size;
-          data.gaussfit_centroid_y = ( this->gauss2d_fitter_.mean().y() + roi.origin().y() ) * pixel_size;
-
-          this->gauss2d_fitter_.covariance(data.gaussfit_variance_x,
-                                           data.gaussfit_covariance_xy,
-                                           data.gaussfit_variance_y);
-          data.gaussfit_correlation_xy = data.gaussfit_covariance_xy  
-                                         / ::sqrt(data.gaussfit_variance_x * data.gaussfit_variance_y);
-      
-          data.gaussfit_variance_x    *= pixel_size * pixel_size;
-          data.gaussfit_variance_y    *= pixel_size * pixel_size;
-          data.gaussfit_covariance_xy *= pixel_size * pixel_size;
-
-          data.gaussfit_bg = this->gauss2d_fitter_.background();
-
-          data.gaussfit_parameters_covariance.set_dimensions(7, 7);
-          this->gauss2d_fitter_.parameters_cov(data.gaussfit_parameters_covariance.base());
-
-          data.gaussfit_chi2 = this->gauss2d_fitter_.chi2();
-      
-          //- Principal Axis of the gaussian
-          this->principal_axis_.compute(data.gaussfit_centroid_x,
-                                        data.gaussfit_centroid_y,
-                                        data.gaussfit_variance_x,
-                                        data.gaussfit_covariance_xy,
-                                        data.gaussfit_variance_y);
-          double x,y;
-          this->principal_axis_.get_first (x,y, data.gaussfit_major_axis_fwhm);
-          data.gaussfit_major_axis_fwhm *= SIGMA2FWHM_SCALE_FACTOR * pixel_size;
-      
-          this->principal_axis_.get_second(x,y, data.gaussfit_minor_axis_fwhm);
-          data.gaussfit_minor_axis_fwhm *= SIGMA2FWHM_SCALE_FACTOR * pixel_size;
-      
-          data.gaussfit_tilt = this->principal_axis_.get_angle ();
+          data.profile_y_fitted.fill(0);
+          data.profile_y_error.fill(0);
         }
       }
 

@@ -1,4 +1,4 @@
-static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzer.cpp,v 1.6 2007-02-01 09:19:56 julien_malik Exp $";
+static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzer.cpp,v 1.7 2007-04-11 13:29:32 julien_malik Exp $";
 //+=============================================================================
 //
 // file :         ImgBeamAnalyzer.cpp
@@ -13,7 +13,7 @@ static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/Im
 //
 // $Author: julien_malik $
 //
-// $Revision: 1.6 $
+// $Revision: 1.7 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -1175,30 +1175,6 @@ void ImgBeamAnalyzer::read_SkewXY2(Tango::Attribute &attr)
 
 //+----------------------------------------------------------------------------
 //
-// method : 		ImgBeamAnalyzer::read_EllipseCentroidX
-// 
-// description : 	Extract real attribute values for EllipseCentroidX acquisition result.
-//
-//-----------------------------------------------------------------------------
-void ImgBeamAnalyzer::read_EllipseCentroidX(Tango::Attribute &attr)
-{
-  READ_OUTPUT_SCALAR_ATTR(ellipse_centroid_x, enable_image_stats, Tango::DevDouble);
-}
-
-//+----------------------------------------------------------------------------
-//
-// method : 		ImgBeamAnalyzer::read_EllipseCentroidY
-// 
-// description : 	Extract real attribute values for EllipseCentroidY acquisition result.
-//
-//-----------------------------------------------------------------------------
-void ImgBeamAnalyzer::read_EllipseCentroidY(Tango::Attribute &attr)
-{
-  READ_OUTPUT_SCALAR_ATTR(ellipse_centroid_y, enable_image_stats, Tango::DevDouble);
-}
-
-//+----------------------------------------------------------------------------
-//
 // method : 		ImgBeamAnalyzer::read_XProfileCenter
 // 
 // description : 	Extract real attribute values for XProfileCenter acquisition result.
@@ -1499,42 +1475,6 @@ void ImgBeamAnalyzer::read_YProfileChi2(Tango::Attribute &attr)
 
 //+----------------------------------------------------------------------------
 //
-// method : 		ImgBeamAnalyzer::read_EllipseMajorAxis
-// 
-// description : 	Extract real attribute values for EllipseMajorAxis acquisition result.
-//
-//-----------------------------------------------------------------------------
-void ImgBeamAnalyzer::read_EllipseMajorAxis(Tango::Attribute &attr)
-{
-  READ_OUTPUT_SCALAR_ATTR(ellipse_major_axis, enable_image_stats, Tango::DevDouble);
-}
-
-//+----------------------------------------------------------------------------
-//
-// method : 		ImgBeamAnalyzer::read_EllipseMinorAxis
-// 
-// description : 	Extract real attribute values for EllipseMinorAxis acquisition result.
-//
-//-----------------------------------------------------------------------------
-void ImgBeamAnalyzer::read_EllipseMinorAxis(Tango::Attribute &attr)
-{
-  READ_OUTPUT_SCALAR_ATTR(ellipse_minor_axis, enable_image_stats, Tango::DevDouble);
-}
-
-//+----------------------------------------------------------------------------
-//
-// method : 		ImgBeamAnalyzer::read_EllipseTilt
-// 
-// description : 	Extract real attribute values for EllipseTilt acquisition result.
-//
-//-----------------------------------------------------------------------------
-void ImgBeamAnalyzer::read_EllipseTilt(Tango::Attribute &attr)
-{
-  READ_OUTPUT_SCALAR_ATTR(ellipse_tilt, enable_image_stats, Tango::DevDouble);
-}
-
-//+----------------------------------------------------------------------------
-//
 // method : 		ImgBeamAnalyzer::read_XProfileSigma
 // 
 // description : 	Extract real attribute values for XProfileSigma acquisition result.
@@ -1631,18 +1571,6 @@ void ImgBeamAnalyzer::write_Enable2DGaussianFit(Tango::WAttribute &attr)
 
 //+----------------------------------------------------------------------------
 //
-// method : 		ImgBeamAnalyzer::read_ThresholdedImage
-// 
-// description : 	Extract real attribute values for ThresholdedImage acquisition result.
-//
-//-----------------------------------------------------------------------------
-void ImgBeamAnalyzer::read_ThresholdedImage(Tango::Attribute &attr)
-{
-  READ_OUTPUT_IMAGE_ATTR(thresholded_image, enable_auto_roi, Tango::DevUChar);
-}
-
-//+----------------------------------------------------------------------------
-//
 // method : 		ImgBeamAnalyzer::read_ComputationPeriod
 // 
 // description : 	Extract real attribute values for ComputationPeriod acquisition result.
@@ -1727,30 +1655,6 @@ void ImgBeamAnalyzer::write_EnableProfiles(Tango::WAttribute &attr)
 
 //+----------------------------------------------------------------------------
 //
-// method : 		ImgBeamAnalyzer::read_Threshold
-// 
-// description : 	Extract real attribute values for Threshold acquisition result.
-//
-//-----------------------------------------------------------------------------
-void ImgBeamAnalyzer::read_Threshold(Tango::Attribute &attr)
-{
-  READ_INPUT_ATTR(threshold);
-}
-
-//+----------------------------------------------------------------------------
-//
-// method : 		ImgBeamAnalyzer::write_Threshold
-// 
-// description : 	Write Threshold attribute values to hardware.
-//
-//-----------------------------------------------------------------------------
-void ImgBeamAnalyzer::write_Threshold(Tango::WAttribute &attr)
-{
-  WRITE_INPUT_ATTR(threshold, Tango::DevDouble);
-}
-
-//+----------------------------------------------------------------------------
-//
 // method : 		ImgBeamAnalyzer::read_InputImage
 // 
 // description : 	Extract real attribute values for InputImage acquisition result.
@@ -1820,13 +1724,14 @@ void ImgBeamAnalyzer::start()
   
   if (this->properly_initialized_)
   {
-    //- try to send a STOP message
+    //- try to send a START message
     adtb::Message* msg = 0;
     try
     {
       msg = new adtb::Message(kMSG_START);
       if (msg == 0)
         throw std::bad_alloc();
+      msg->make_waitable();
     }
     catch(...)
     {
@@ -1885,6 +1790,7 @@ void ImgBeamAnalyzer::stop()
       msg = new adtb::Message(kMSG_STOP);
       if (msg == 0)
         throw std::bad_alloc();
+      msg->make_waitable();
     }
     catch(...)
     {
@@ -1962,6 +1868,7 @@ void ImgBeamAnalyzer::process()
     msg = new adtb::Message(kMSG_PROCESS);
     if (msg == 0)
       throw std::bad_alloc();
+    msg->make_waitable();
   }
   catch(...)
   {
@@ -2093,6 +2000,7 @@ void ImgBeamAnalyzer::start_learn_noise()
       msg = new adtb::Message(kMSG_START_LEARN_NOISE);
       if (msg == 0)
         throw std::bad_alloc();
+      msg->make_waitable();
     }
     catch(...)
     {
@@ -2142,6 +2050,7 @@ void ImgBeamAnalyzer::stop_learn_noise()
       msg = new adtb::Message(kMSG_STOP_LEARN_NOISE);
       if (msg == 0)
         throw std::bad_alloc();
+      msg->make_waitable();
     }
     catch(...)
     {
