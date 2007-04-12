@@ -15,7 +15,7 @@ OUTPUT_TYPE = DEVICE
 #	- $HOME/DeviceServers if OUTPUT_TYPE is DEVICE
 #	- ../bin for others
 #
-OUTPUT_DIR =
+#OUTPUT_DIR =
 
 
 #=============================================================================
@@ -125,7 +125,3 @@ SVC_OBJS = 	    $(OBJDIR)/ClassFactory.o  \
 #	include common targets
 #
 include $(SOLEIL_ROOT)/env/common_target.opt
- 
-
-
-
