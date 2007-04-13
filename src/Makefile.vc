@@ -13,7 +13,7 @@ LIBUSER= $(SOLEIL_ROOT)/sw-support/OpenCV/lib/libOpenCV_cx.lib \
 		 $(SOLEIL_ROOT)/sw-support/GraphicFiles/libpng/lib/libpng.lib \
 		 $(SOLEIL_ROOT)/sw-support/Zlib/lib/libz.lib \
 		 $(SOLEIL_ROOT)/sw-support/ISL/lib/libISL.lib \
-		 $(SOLEIL_ROOT)/sw-support/adtb/lib/libADTB.lib
+		 $(SOLEIL_ROOT)/sw-support/adtb/lib/static/libADTB.lib
 
 
 CPPDIRUSER=
