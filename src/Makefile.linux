@@ -46,7 +46,9 @@ PACKAGE_NAME = ImgBeamAnalyzer
 # -I$(SOLEIL_ROOT)/sw-support/hkl/include for HKL library
 # ...etc
 #
-#INC_DIR_USER=
+INC_DIR_USER=-I $(SOLEIL_ROOT)/sw-support/ISL/include \
+    -I $(SOLEIL_ROOT)/sw-support/OpenCV/include \
+    -I $(SOLEIL_ROOT)/sw-support/adtb/include    
 
 #=============================================================================
 # LIB_DIR_USER is the list of user library directories
@@ -57,7 +59,9 @@ PACKAGE_NAME = ImgBeamAnalyzer
 # -L $(SOLEIL_ROOT)/sw-support/hkl/lib for HKL library
 # ...etc
 #
-#LIB_DIR_USER=
+LIB_DIR_USER=-L $(SOLEIL_ROOT)/sw-support/ISL/lib \
+		-L $(SOLEIL_ROOT)/sw-support/adtb/lib
+
 
 #=============================================================================
 # LFLAGS_USR is the list of user link flags
@@ -74,7 +78,7 @@ PACKAGE_NAME = ImgBeamAnalyzer
 # -lASL for ASL
 # -lHKL for HKL
 #
-#LFLAGS_USR=
+LFLAGS_USR=	-lISL -lADTB
 
 
 #=============================================================================
@@ -83,7 +87,13 @@ PACKAGE_NAME = ImgBeamAnalyzer
 #
 # -DACE_HAS_EXCEPTIONS -D__ACE_INLINE__ for ACE
 #
-#CXXFLAGS_USR=-DSIMULATED_AXIS
+ifdef VERSION
+  DS_VERSION_NUMBER=$(VERSION)
+else
+  DS_VERSION_NUMBER=development
+endif
+
+CXXFLAGS_USR=-DDS_VERSION_NUMBER=$(DS_VERSION_NUMBER)
 
 
 #
@@ -95,15 +105,20 @@ include $(SOLEIL_ROOT)/env/tango.opt
 #=============================================================================
 # SVC_OBJS is the list of all objects needed to make the output
 #
-SVC_OBJS =	$(OBJDIR)/ClassFactory.o  \
-		$(OBJDIR)/main.o  \
-		$(OBJDIR)/$(PACKAGE_NAME)Class.o \
-		$(OBJDIR)/$(PACKAGE_NAME).o
+SVC_OBJS = 	    $(OBJDIR)/ClassFactory.o  \
+                $(OBJDIR)/main.o  \
+                $(OBJDIR)/$(PACKAGE_NAME)Class.o \
+                $(OBJDIR)/$(PACKAGE_NAME).o \
+                $(OBJDIR)/$(PACKAGE_NAME)StateMachine.o \
+                $(OBJDIR)/BIAConfig.o \
+                $(OBJDIR)/BIAData.o \
+                $(OBJDIR)/BIAProcessor.o \
+                $(OBJDIR)/BIATask.o
 
 #
 # Verbose mode
 #
-#.SILENT:
+.SILENT:
 
 #
 #	include common targets
