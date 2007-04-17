@@ -292,11 +292,6 @@ BIAProcessor::process (const isl::Image& image, const BIAConfig& config, BIAData
                                 img_moments.mu02() / m00,
                                 0);
             GET_TIME(after_fit);
-            std::cout << "fit time : " << ELAPSED_TIME_MS(before_fit, after_fit) << std::endl;
-
-
-            std::cout << "N=" << gauss_fit2d.nb_iter() << "         eps=" << gauss_fit2d.epsilon() << std::endl;
-
             data.gaussfit_magnitude = gauss_fit2d.magnitude();
             data.gaussfit_centroid_x = ( gauss_fit2d.mean().x() + roi.origin().x() ) * pixel_size;
             data.gaussfit_centroid_y = ( gauss_fit2d.mean().y() + roi.origin().y() ) * pixel_size;
