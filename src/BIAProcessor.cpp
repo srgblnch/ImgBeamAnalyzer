@@ -58,6 +58,12 @@ BIAProcessor::process (const isl::Image& image, const BIAConfig& config, BIAData
   GET_TIME(start_time);
 
 
+  //- Check configuration
+	//------------------------------------------
+  //- will throw an exception if config is invalid
+  config.check();
+
+
   //-	Process the image
 	//------------------------------------------
   isl::Image* input_image = 0; //- the preprocessed image
@@ -114,8 +120,11 @@ BIAProcessor::process (const isl::Image& image, const BIAConfig& config, BIAData
     }
     else
     {
-      double pixel_size = config.pixel_size;
-    
+
+      double px = config.pixel_size_x / config.growth;
+      double py = config.pixel_size_y / config.growth;
+   
+
       //- Determine the ROI
       isl::Rectangle roi;
       if (config.enable_user_roi)
@@ -229,18 +238,18 @@ BIAProcessor::process (const isl::Image& image, const BIAConfig& config, BIAData
         {
           data.mean_intensity = m00 / (roi.width() * roi.height());
       
-          data.centroid_x     = (img_moments.m10() / m00 + roi.origin().x()) * pixel_size;
-          data.centroid_y     = (img_moments.m01() / m00 + roi.origin().y()) * pixel_size;
+          data.centroid_x     = (img_moments.m10() / m00 + roi.origin().x()) * px;
+          data.centroid_y     = (img_moments.m01() / m00 + roi.origin().y()) * py;
       
-          data.variance_x     = img_moments.mu20() / m00 * pixel_size * pixel_size;
-          data.covariance_xy  = img_moments.mu11() / m00 * pixel_size * pixel_size;
-          data.variance_y     = img_moments.mu02() / m00 * pixel_size * pixel_size;
+          data.variance_x     = img_moments.mu20() / m00 * px * px;
+          data.covariance_xy  = img_moments.mu11() / m00 * px * py;
+          data.variance_y     = img_moments.mu02() / m00 * py * py;
           data.correlation_xy = data.covariance_xy / ::sqrt(data.variance_x * data.variance_y);
       
-          data.skew_x         = img_moments.mu30() / m00 * pixel_size * pixel_size * pixel_size;
-          data.skew_x2y       = img_moments.mu21() / m00 * pixel_size * pixel_size * pixel_size;
-          data.skew_xy2       = img_moments.mu12() / m00 * pixel_size * pixel_size * pixel_size;
-          data.skew_y         = img_moments.mu03() / m00 * pixel_size * pixel_size * pixel_size;
+          data.skew_x         = img_moments.mu30() / m00 * px * px * px;
+          data.skew_x2y       = img_moments.mu21() / m00 * px * px * py;
+          data.skew_xy2       = img_moments.mu12() / m00 * px * py * py;
+          data.skew_y         = img_moments.mu03() / m00 * py * py * py;
       
           //- max calculation
           Tango::DevDouble max = 0;
@@ -293,8 +302,8 @@ BIAProcessor::process (const isl::Image& image, const BIAConfig& config, BIAData
                                 0);
             GET_TIME(after_fit);
             data.gaussfit_magnitude = gauss_fit2d.magnitude();
-            data.gaussfit_centroid_x = ( gauss_fit2d.mean().x() + roi.origin().x() ) * pixel_size;
-            data.gaussfit_centroid_y = ( gauss_fit2d.mean().y() + roi.origin().y() ) * pixel_size;
+            data.gaussfit_centroid_x = ( gauss_fit2d.mean().x() + roi.origin().x() ) * px;
+            data.gaussfit_centroid_y = ( gauss_fit2d.mean().y() + roi.origin().y() ) * py;
 
             gauss_fit2d.covariance(data.gaussfit_variance_x,
                                    data.gaussfit_covariance_xy,
@@ -302,9 +311,9 @@ BIAProcessor::process (const isl::Image& image, const BIAConfig& config, BIAData
             data.gaussfit_correlation_xy = data.gaussfit_covariance_xy  
                                            / ::sqrt(data.gaussfit_variance_x * data.gaussfit_variance_y);
       
-            data.gaussfit_variance_x    *= pixel_size * pixel_size;
-            data.gaussfit_variance_y    *= pixel_size * pixel_size;
-            data.gaussfit_covariance_xy *= pixel_size * pixel_size;
+            data.gaussfit_variance_x    *= px * px;
+            data.gaussfit_variance_y    *= py * py;
+            data.gaussfit_covariance_xy *= px * py;
 
             data.gaussfit_bg = gauss_fit2d.background();
 
@@ -321,10 +330,10 @@ BIAProcessor::process (const isl::Image& image, const BIAConfig& config, BIAData
                                         img_moments.m02() / m00);
             double x,y;
             princ_ax.get_first (x,y, data.gaussfit_major_axis_fwhm);
-            data.gaussfit_major_axis_fwhm *= SIGMA2FWHM_SCALE_FACTOR * pixel_size;
+            data.gaussfit_major_axis_fwhm *= SIGMA2FWHM_SCALE_FACTOR * px;
       
             princ_ax.get_second(x,y, data.gaussfit_minor_axis_fwhm);
-            data.gaussfit_minor_axis_fwhm *= SIGMA2FWHM_SCALE_FACTOR * pixel_size;
+            data.gaussfit_minor_axis_fwhm *= SIGMA2FWHM_SCALE_FACTOR * py;
       
             data.gaussfit_tilt = princ_ax.get_angle ();
           }
@@ -349,9 +358,9 @@ BIAProcessor::process (const isl::Image& image, const BIAConfig& config, BIAData
 
           gaussian_fit.compute(profiles.get_x_profile(), profiles.size_x());
           
-          data.profile_x_center  = (gaussian_fit.mean() + roi.origin().x()) * pixel_size;
+          data.profile_x_center  = (gaussian_fit.mean() + roi.origin().x()) * px;
           data.profile_x_mag     = gaussian_fit.magnitude();
-          data.profile_x_sigma   = gaussian_fit.standard_deviation() * pixel_size;
+          data.profile_x_sigma   = gaussian_fit.standard_deviation() * px;
           data.profile_x_fwhm    = data.profile_x_sigma * SIGMA2FWHM_SCALE_FACTOR;
           data.profile_x_bg      = gaussian_fit.background();
           data.profile_x_chi2    = gaussian_fit.chi2();
@@ -387,9 +396,9 @@ BIAProcessor::process (const isl::Image& image, const BIAConfig& config, BIAData
 
           gaussian_fit.compute(profiles.get_y_profile(), profiles.size_y());
           
-          data.profile_y_center  = (gaussian_fit.mean() + roi.origin().y()) * pixel_size;
+          data.profile_y_center  = (gaussian_fit.mean() + roi.origin().y()) * py;
           data.profile_y_mag     = gaussian_fit.magnitude();
-          data.profile_y_sigma   = gaussian_fit.standard_deviation() * pixel_size;
+          data.profile_y_sigma   = gaussian_fit.standard_deviation() * py;
           data.profile_y_fwhm    = data.profile_y_sigma * SIGMA2FWHM_SCALE_FACTOR;
           data.profile_y_bg      = gaussian_fit.background();
           data.profile_y_chi2    = gaussian_fit.chi2();

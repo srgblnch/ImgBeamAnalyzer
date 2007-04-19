@@ -1,4 +1,4 @@
-static const char *RcsId     = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzerClass.cpp,v 1.5 2007-04-11 13:29:32 julien_malik Exp $";
+static const char *RcsId     = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzerClass.cpp,v 1.6 2007-04-19 08:39:39 julien_malik Exp $";
 static const char *TagName   = "$Name: not supported by cvs2svn $";
 static const char *HttpServer= "http://www.esrf.fr/computing/cs/tango/tango_doc/ds_doc/";
 //+=============================================================================
@@ -14,7 +14,7 @@ static const char *HttpServer= "http://www.esrf.fr/computing/cs/tango/tango_doc/
 //
 // $Author: julien_malik $
 //
-// $Revision: 1.5 $
+// $Revision: 1.6 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -527,15 +527,35 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	alarm_zone->set_default_properties(alarm_zone_prop);
 	att_list.push_back(alarm_zone);
 
-	//	Attribute : PixelSize
-	PixelSizeAttrib	*pixel_size = new PixelSizeAttrib();
-	Tango::UserDefaultAttrProp	pixel_size_prop;
-	pixel_size_prop.set_label("PixelSize");
-	pixel_size_prop.set_unit("mm/pix");
-	pixel_size_prop.set_format("%5.4f");
-	pixel_size_prop.set_description("The correspondence between pixel and mm");
-	pixel_size->set_default_properties(pixel_size_prop);
-	att_list.push_back(pixel_size);
+	//	Attribute : PixelSizeX
+	PixelSizeXAttrib	*pixel_size_x = new PixelSizeXAttrib();
+	Tango::UserDefaultAttrProp	pixel_size_x_prop;
+	pixel_size_x_prop.set_label("PixelSizeX");
+	pixel_size_x_prop.set_unit("mm/pix");
+	pixel_size_x_prop.set_format("%5.4f");
+	pixel_size_x_prop.set_description("The correspondence between pixel width and mm");
+	pixel_size_x->set_default_properties(pixel_size_x_prop);
+	att_list.push_back(pixel_size_x);
+
+	//	Attribute : PixelSizeY
+	PixelSizeYAttrib	*pixel_size_y = new PixelSizeYAttrib();
+	Tango::UserDefaultAttrProp	pixel_size_y_prop;
+	pixel_size_y_prop.set_label("PixelSizeY");
+	pixel_size_y_prop.set_unit("mm/pix");
+	pixel_size_y_prop.set_format("%5.4f");
+	pixel_size_y_prop.set_description("The correspondence between pixel height and mm");
+	pixel_size_y->set_default_properties(pixel_size_y_prop);
+	att_list.push_back(pixel_size_y);
+
+	//	Attribute : Growth
+	GrowthAttrib	*growth = new GrowthAttrib();
+	Tango::UserDefaultAttrProp	growth_prop;
+	growth_prop.set_label("Growth");
+	growth_prop.set_unit(" ");
+	growth_prop.set_format("%5.4f");
+	growth_prop.set_description("the growth of the optical system (no unit). ");
+	growth->set_default_properties(growth_prop);
+	att_list.push_back(growth);
 
 	//	Attribute : UserROIOriginX
 	UserROIOriginXAttrib	*user_roiorigin_x = new UserROIOriginXAttrib();
@@ -1339,8 +1359,34 @@ void ImgBeamAnalyzerClass::set_default_property()
 	else
 		add_wiz_dev_prop(prop_name, prop_desc);
 
-	prop_name = "PixelSize";
-	prop_desc = "the initial value of the PixelSize attribute";
+	prop_name = "PixelSizeX";
+	prop_desc = "the initial value of the PixelSizeX attribute";
+	prop_def  = "";
+	if (prop_def.length()>0)
+	{
+		Tango::DbDatum	data(prop_name);
+		data << vect_data ;
+		dev_def_prop.push_back(data);
+		add_wiz_dev_prop(prop_name, prop_desc,  prop_def);
+	}
+	else
+		add_wiz_dev_prop(prop_name, prop_desc);
+
+	prop_name = "PixelSizeY";
+	prop_desc = "the initial value of the PixelSizeY attribute";
+	prop_def  = "";
+	if (prop_def.length()>0)
+	{
+		Tango::DbDatum	data(prop_name);
+		data << vect_data ;
+		dev_def_prop.push_back(data);
+		add_wiz_dev_prop(prop_name, prop_desc,  prop_def);
+	}
+	else
+		add_wiz_dev_prop(prop_name, prop_desc);
+
+	prop_name = "Growth";
+	prop_desc = "the initial value of the Growth attribute";
 	prop_def  = "";
 	if (prop_def.length()>0)
 	{

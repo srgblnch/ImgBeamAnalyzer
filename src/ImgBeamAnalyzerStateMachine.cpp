@@ -1,4 +1,4 @@
-static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzerStateMachine.cpp,v 1.4 2007-04-11 13:29:32 julien_malik Exp $";
+static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzerStateMachine.cpp,v 1.5 2007-04-19 08:39:39 julien_malik Exp $";
 //+=============================================================================
 //
 // file :         ImgBeamAnalyzerStateMachine.cpp
@@ -10,7 +10,7 @@ static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/Im
 //
 // $Author: julien_malik $
 //
-// $Revision: 1.4 $
+// $Revision: 1.5 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -898,24 +898,6 @@ bool ImgBeamAnalyzer::is_GaussianFitCovarianceXY_allowed(Tango::AttReqType type)
 }
 //+----------------------------------------------------------------------------
 //
-// method : 		ImgBeamAnalyzer::is_PixelSize_allowed
-// 
-// description : 	Read/Write allowed for PixelSize attribute.
-//
-//-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_PixelSize_allowed(Tango::AttReqType type)
-{
-	if (get_state() == Tango::FAULT)
-	{
-		//	End of Generated Code
-
-		//	Re-Start of Generated Code
-		return false;
-	}
-	return true;
-}
-//+----------------------------------------------------------------------------
-//
 // method : 		ImgBeamAnalyzer::is_ROIImage_allowed
 // 
 // description : 	Read/Write allowed for ROIImage attribute.
@@ -1336,6 +1318,60 @@ bool ImgBeamAnalyzer::is_NbNoiseImage_allowed(Tango::AttReqType type)
 //
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_MeanNoiseImage_allowed(Tango::AttReqType type)
+{
+	if (get_state() == Tango::FAULT)
+	{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+		return false;
+	}
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_PixelSizeX_allowed
+// 
+// description : 	Read/Write allowed for PixelSizeX attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_PixelSizeX_allowed(Tango::AttReqType type)
+{
+	if (get_state() == Tango::FAULT)
+	{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+		return false;
+	}
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_PixelSizeY_allowed
+// 
+// description : 	Read/Write allowed for PixelSizeY attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_PixelSizeY_allowed(Tango::AttReqType type)
+{
+	if (get_state() == Tango::FAULT)
+	{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+		return false;
+	}
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_Growth_allowed
+// 
+// description : 	Read/Write allowed for Growth attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_Growth_allowed(Tango::AttReqType type)
 {
 	if (get_state() == Tango::FAULT)
 	{

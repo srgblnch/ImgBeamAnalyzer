@@ -1,4 +1,4 @@
-static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzer.cpp,v 1.7 2007-04-11 13:29:32 julien_malik Exp $";
+static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzer.cpp,v 1.8 2007-04-19 08:39:39 julien_malik Exp $";
 //+=============================================================================
 //
 // file :         ImgBeamAnalyzer.cpp
@@ -13,7 +13,7 @@ static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/Im
 //
 // $Author: julien_malik $
 //
-// $Revision: 1.7 $
+// $Revision: 1.8 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -54,6 +54,7 @@ static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/Im
 #include <ImgBeamAnalyzer.h>
 #include <ImgBeamAnalyzerClass.h>
 #include <limits>
+#include <ImgBeamAnalyzerVersion.h>
 
 #define kDEFAULT_CONTINUOUS_TIMEOUT 1000
 #define kCOMMAND_TIMEOUT 2000
@@ -310,7 +311,9 @@ void ImgBeamAnalyzer::get_device_property()
   this->enable2DGaussianFit = kDEFAULT_ENABLE_2D_GAUSSIAN_FIT;
   this->mode = "unspecified";
   this->autoROIMagFactor = kDEFAULT_AUTOROI_MAGFACTOR;
-  this->pixelSize = kDEFAULT_PIXELSIZE;
+  this->pixelSizeX = kDEFAULT_PIXELSIZE_X;
+  this->pixelSizeY = kDEFAULT_PIXELSIZE_Y;
+  this->growth = kDEFAULT_GROWTH;
   this->rotation = kDEFAULT_ROTATION;
   this->horizontalFlip = kDEFAULT_HORIZONTAL_FLIP;
   this->gammaCorrection = kDEFAULT_GAMMA_CORRECTION;
@@ -330,7 +333,9 @@ void ImgBeamAnalyzer::get_device_property()
 	dev_prop.push_back(Tango::DbDatum("ImageAttributeName"));
 	dev_prop.push_back(Tango::DbDatum("ImageDevice"));
 	dev_prop.push_back(Tango::DbDatum("Mode"));
-	dev_prop.push_back(Tango::DbDatum("PixelSize"));
+	dev_prop.push_back(Tango::DbDatum("PixelSizeX"));
+	dev_prop.push_back(Tango::DbDatum("PixelSizeY"));
+	dev_prop.push_back(Tango::DbDatum("Growth"));
 	dev_prop.push_back(Tango::DbDatum("Rotation"));
 	dev_prop.push_back(Tango::DbDatum("HorizontalFlip"));
 	dev_prop.push_back(Tango::DbDatum("GammaCorrection"));
@@ -444,14 +449,32 @@ void ImgBeamAnalyzer::get_device_property()
 	//	And try to extract Mode value from database
 	if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  mode;
 
-	//	Try to initialize PixelSize from class property
+	//	Try to initialize PixelSizeX from class property
 	cl_prop = ds_class->get_class_property(dev_prop[++i].name);
-	if (cl_prop.is_empty()==false)	cl_prop  >>  pixelSize;
-	//	Try to initialize PixelSize from default device value
+	if (cl_prop.is_empty()==false)	cl_prop  >>  pixelSizeX;
+	//	Try to initialize PixelSizeX from default device value
 	def_prop = ds_class->get_default_device_property(dev_prop[i].name);
-	if (def_prop.is_empty()==false)	def_prop  >>  pixelSize;
-	//	And try to extract PixelSize value from database
-	if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  pixelSize;
+	if (def_prop.is_empty()==false)	def_prop  >>  pixelSizeX;
+	//	And try to extract PixelSizeX value from database
+	if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  pixelSizeX;
+
+	//	Try to initialize PixelSizeY from class property
+	cl_prop = ds_class->get_class_property(dev_prop[++i].name);
+	if (cl_prop.is_empty()==false)	cl_prop  >>  pixelSizeY;
+	//	Try to initialize PixelSizeY from default device value
+	def_prop = ds_class->get_default_device_property(dev_prop[i].name);
+	if (def_prop.is_empty()==false)	def_prop  >>  pixelSizeY;
+	//	And try to extract PixelSizeY value from database
+	if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  pixelSizeY;
+
+	//	Try to initialize Growth from class property
+	cl_prop = ds_class->get_class_property(dev_prop[++i].name);
+	if (cl_prop.is_empty()==false)	cl_prop  >>  growth;
+	//	Try to initialize Growth from default device value
+	def_prop = ds_class->get_default_device_property(dev_prop[i].name);
+	if (def_prop.is_empty()==false)	def_prop  >>  growth;
+	//	And try to extract Growth value from database
+	if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  growth;
 
 	//	Try to initialize Rotation from class property
 	cl_prop = ds_class->get_class_property(dev_prop[++i].name);
@@ -513,7 +536,9 @@ void ImgBeamAnalyzer::get_device_property()
   this->current_config_.enable_auto_roi = enableAutoROI;
   this->current_config_.enable_user_roi = enableUserROI;
   this->current_config_.comput_period = computationPeriod;
-  this->current_config_.pixel_size = pixelSize;
+  this->current_config_.pixel_size_x = pixelSizeX;
+  this->current_config_.pixel_size_y = pixelSizeY;
+  this->current_config_.growth = growth;
   this->current_config_.auto_roi_mag_factor = autoROIMagFactor;
   this->current_config_.rotation = rotation;
   this->current_config_.horizontal_flip = horizontalFlip;
@@ -573,6 +598,78 @@ void ImgBeamAnalyzer::read_attr_hardware(vector<long> &attr_list)
   this->update_state();
 
 }
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_PixelSizeX
+// 
+// description : 	Extract real attribute values for PixelSizeX acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_PixelSizeX(Tango::Attribute &attr)
+{
+  READ_INPUT_ATTR(pixel_size_x);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::write_PixelSizeX
+// 
+// description : 	Write PixelSizeX attribute values to hardware.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::write_PixelSizeX(Tango::WAttribute &attr)
+{
+  WRITE_INPUT_ATTR(pixel_size_x, Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_PixelSizeY
+// 
+// description : 	Extract real attribute values for PixelSizeY acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_PixelSizeY(Tango::Attribute &attr)
+{
+  READ_INPUT_ATTR(pixel_size_y);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::write_PixelSizeY
+// 
+// description : 	Write PixelSizeY attribute values to hardware.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::write_PixelSizeY(Tango::WAttribute &attr)
+{
+  WRITE_INPUT_ATTR(pixel_size_y, Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_Growth
+// 
+// description : 	Extract real attribute values for Growth acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_Growth(Tango::Attribute &attr)
+{
+  READ_INPUT_ATTR(growth);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::write_Growth
+// 
+// description : 	Write Growth attribute values to hardware.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::write_Growth(Tango::WAttribute &attr)
+{
+  WRITE_INPUT_ATTR(growth, Tango::DevDouble);
+}
+
 //+----------------------------------------------------------------------------
 //
 // method : 		ImgBeamAnalyzer::read_NbNoiseImage
@@ -967,30 +1064,6 @@ void ImgBeamAnalyzer::read_AutoROIHeight(Tango::Attribute &attr)
 void ImgBeamAnalyzer::read_ROIImage(Tango::Attribute &attr)
 {
   READ_OUTPUT_IMAGE_ATTR_ALWAYSACTIV(roi_image, Tango::DevUShort);
-}
-
-//+----------------------------------------------------------------------------
-//
-// method : 		ImgBeamAnalyzer::read_PixelSize
-// 
-// description : 	Extract real attribute values for PixelSize acquisition result.
-//
-//-----------------------------------------------------------------------------
-void ImgBeamAnalyzer::read_PixelSize(Tango::Attribute &attr)
-{
-  READ_INPUT_ATTR(pixel_size);
-}
-
-//+----------------------------------------------------------------------------
-//
-// method : 		ImgBeamAnalyzer::write_PixelSize
-// 
-// description : 	Write PixelSize attribute values to hardware.
-//
-//-----------------------------------------------------------------------------
-void ImgBeamAnalyzer::write_PixelSize(Tango::WAttribute &attr)
-{
-  WRITE_INPUT_ATTR(pixel_size, Tango::DevDouble);
 }
 
 //+----------------------------------------------------------------------------
@@ -1951,7 +2024,9 @@ void ImgBeamAnalyzer::save_current_settings()
   ADD_DATUM( EnableImageStats,    this->current_config_.enable_image_stats );
   ADD_DATUM( EnableProfiles,      this->current_config_.enable_profile );
   ADD_DATUM( EnableUserROI,       this->current_config_.enable_user_roi );
-  ADD_DATUM( PixelSize,           this->current_config_.pixel_size );
+  ADD_DATUM( PixelSizeX,          this->current_config_.pixel_size_x );
+  ADD_DATUM( PixelSizeY,          this->current_config_.pixel_size_y );
+  ADD_DATUM( Growth,              this->current_config_.growth );
   ADD_DATUM( Rotation,            this->current_config_.rotation );
   ADD_DATUM( HorizontalFlip,      this->current_config_.horizontal_flip );
   ADD_DATUM( GammaCorrection,     this->current_config_.gamma_correction );
@@ -2098,7 +2173,7 @@ Tango::DevString ImgBeamAnalyzer::get_version_number()
 	//	See "TANGO Device Server Programmer's Manual"
 	//		(chapter : Writing a TANGO DS / Exchanging data)
 	//------------------------------------------------------------
-
+/*
 #define STRINGIFY(x) #x
 #define MAKE_STRING(x) STRINGIFY(x)
 
@@ -2108,6 +2183,8 @@ Tango::DevString ImgBeamAnalyzer::get_version_number()
 #else
   version = "development";
 #endif
+*/
+  string version(BIA_VERSION);
 	Tango::DevString	argout  = new char[version.length()];
 	strcpy(argout, version.c_str());
 	return argout;

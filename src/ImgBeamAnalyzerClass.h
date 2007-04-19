@@ -12,7 +12,7 @@
 //
 // $Author: julien_malik $
 //
-// $Revision: 1.4 $
+// $Revision: 1.5 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -753,18 +753,46 @@ public:
 	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_UserROIOriginX_allowed(ty);}
 };
 
-class PixelSizeAttrib: public Tango::Attr
+class GrowthAttrib: public Tango::Attr
 {
 public:
-	PixelSizeAttrib():Attr("PixelSize", Tango::DEV_DOUBLE, Tango::READ_WRITE) {};
-	~PixelSizeAttrib() {};
+	GrowthAttrib():Attr("Growth", Tango::DEV_DOUBLE, Tango::READ_WRITE) {};
+	~GrowthAttrib() {};
 	
 	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
-	{(static_cast<ImgBeamAnalyzer *>(dev))->read_PixelSize(att);}
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_Growth(att);}
 	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
-	{(static_cast<ImgBeamAnalyzer *>(dev))->write_PixelSize(att);}
+	{(static_cast<ImgBeamAnalyzer *>(dev))->write_Growth(att);}
 	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
-	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_PixelSize_allowed(ty);}
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_Growth_allowed(ty);}
+};
+
+class PixelSizeYAttrib: public Tango::Attr
+{
+public:
+	PixelSizeYAttrib():Attr("PixelSizeY", Tango::DEV_DOUBLE, Tango::READ_WRITE) {};
+	~PixelSizeYAttrib() {};
+	
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_PixelSizeY(att);}
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+	{(static_cast<ImgBeamAnalyzer *>(dev))->write_PixelSizeY(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_PixelSizeY_allowed(ty);}
+};
+
+class PixelSizeXAttrib: public Tango::Attr
+{
+public:
+	PixelSizeXAttrib():Attr("PixelSizeX", Tango::DEV_DOUBLE, Tango::READ_WRITE) {};
+	~PixelSizeXAttrib() {};
+	
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_PixelSizeX(att);}
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+	{(static_cast<ImgBeamAnalyzer *>(dev))->write_PixelSizeX(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_PixelSizeX_allowed(ty);}
 };
 
 class AlarmZoneAttrib: public Tango::Attr

@@ -152,6 +152,10 @@ SOURCE=..\src\ImgBeamAnalyzerStateMachine.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\ImgBeamAnalyzerVersion.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\main.cpp
 # End Source File
 # End Group

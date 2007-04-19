@@ -103,10 +103,6 @@ Revision:  - Author:
 <Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ_WRITE</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
 
 <Font Size=-1>
-<Tr><Td><b>Threshold</b>: <Font Size=-1>the threshold level, used to binarize the image</Font></Td>
-<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ_WRITE</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
-
-<Font Size=-1>
 <Tr><Td><b>AutoROIMagFactor</b>: <Font Size=-1>the scaling factor applied to the bounding rectangle of the longest contour to define the ROI automatically</Font></Td>
 <Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ_WRITE</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
 
@@ -115,7 +111,15 @@ Revision:  - Author:
 <Td><Center><Font Size=-1>DEV_LONG</Font></Center></Td><Td><Center><Font Size=-1>READ_WRITE</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
 
 <Font Size=-1>
-<Tr><Td><b>PixelSize</b>: <Font Size=-1>The correspondence between pixel and mm</Font></Td>
+<Tr><Td><b>PixelSizeX</b>: <Font Size=-1>The correspondence between pixel width and mm</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ_WRITE</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>PixelSizeY</b>: <Font Size=-1>The correspondence between pixel height and mm</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ_WRITE</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>Growth</b>: <Font Size=-1>the growth of the optical system (no unit). </Font></Td>
 <Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ_WRITE</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
 
 <Font Size=-1>
@@ -200,26 +204,6 @@ Revision:  - Author:
 
 <Font Size=-1>
 <Tr><Td><b>SkewXY2</b>: <Font Size=-1>the skew cross coefficient for X.Y�</Font></Td>
-<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
-
-<Font Size=-1>
-<Tr><Td><b>EllipseCentroidX</b>: <Font Size=-1>the X coordinate of the centroid of the fitted ellipse</Font></Td>
-<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
-
-<Font Size=-1>
-<Tr><Td><b>EllipseCentroidY</b>: <Font Size=-1>the Y coordinate of the centroid of the fitted ellipse</Font></Td>
-<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
-
-<Font Size=-1>
-<Tr><Td><b>EllipseMajorAxis</b>: <Font Size=-1>the major axis (full axis, not half) of the beam ellipse</Font></Td>
-<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
-
-<Font Size=-1>
-<Tr><Td><b>EllipseMinorAxis</b>: <Font Size=-1>the minor axis (full axis, not half) of the beam ellipse</Font></Td>
-<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
-
-<Font Size=-1>
-<Tr><Td><b>EllipseTilt</b>: <Font Size=-1>the orientation of the beam ellipse from the X axis</Font></Td>
 <Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
 
 <Font Size=-1>
@@ -379,9 +363,6 @@ Revision:  - Author:
 
 <Tr><Td><b>MeanNoiseImage</b>: <Font Size=-1>the mean noise image, which is substracted from every processed image</Font></Td>
 <Td><Center><Font Size=-1>DEV_USHORT</Font></Center></Td><Td><Center><Font Size=-1>131072</Font></Center></Td><Td><Center><Font Size=-1>131072</Font></Center></Td><Td><Center><Font Size=-1>Yes</Font></Center></Td></Tr>
-
-<Tr><Td><b>ThresholdedImage</b>: <Font Size=-1>the binarized image after applying the threshold</Font></Td>
-<Td><Center><Font Size=-1>DEV_UCHAR</Font></Center></Td><Td><Center><Font Size=-1>131072</Font></Center></Td><Td><Center><Font Size=-1>131072</Font></Center></Td><Td><Center><Font Size=-1>Yes</Font></Center></Td></Tr>
 
 <Tr><Td><b>GaussianFitParameterCovariance</b>: <Font Size=-1>the covariance matrix of the best fit parameters (7x7). the 7 parameters are ordered as [A, x_c, y_c, s_xx, s_xy, s_yy, b]</Font></Td>
 <Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>7</Font></Center></Td><Td><Center><Font Size=-1>7</Font></Center></Td><Td><Center><Font Size=-1>Yes</Font></Center></Td></Tr>

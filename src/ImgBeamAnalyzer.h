@@ -8,7 +8,7 @@
 //
 // $Author: julien_malik $
 //
-// $Revision: 1.6 $
+// $Revision: 1.7 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -30,7 +30,7 @@
 
 /**
  * @author	$Author: julien_malik $
- * @version	$Revision: 1.6 $
+ * @version	$Revision: 1.7 $
  */
 
  //	Add your own constants definitions here.
@@ -116,8 +116,12 @@ public :
 		Tango::DevDouble	attr_AutoROIMagFactor_write;
 		Tango::DevLong	*attr_AlarmZone_read;
 		Tango::DevLong	attr_AlarmZone_write;
-		Tango::DevDouble	*attr_PixelSize_read;
-		Tango::DevDouble	attr_PixelSize_write;
+		Tango::DevDouble	*attr_PixelSizeX_read;
+		Tango::DevDouble	attr_PixelSizeX_write;
+		Tango::DevDouble	*attr_PixelSizeY_read;
+		Tango::DevDouble	attr_PixelSizeY_write;
+		Tango::DevDouble	*attr_Growth_read;
+		Tango::DevDouble	attr_Growth_write;
 		Tango::DevLong	*attr_UserROIOriginX_read;
 		Tango::DevLong	attr_UserROIOriginX_write;
 		Tango::DevLong	*attr_UserROIOriginY_read;
@@ -237,9 +241,17 @@ public :
  */
 	string	mode;
 /**
- *	the initial value of the PixelSize attribute
+ *	the initial value of the PixelSizeX attribute
  */
-	Tango::DevDouble	pixelSize;
+	Tango::DevDouble	pixelSizeX;
+/**
+ *	the initial value of the PixelSizeY attribute
+ */
+	Tango::DevDouble	pixelSizeY;
+/**
+ *	the initial value of the Growth attribute
+ */
+	Tango::DevDouble	growth;
 /**
  *	the initial value of the Rotation attribute
  */
@@ -422,13 +434,29 @@ public :
  */
 	virtual void write_AlarmZone(Tango::WAttribute &attr);
 /**
- *	Extract real attribute values for PixelSize acquisition result.
+ *	Extract real attribute values for PixelSizeX acquisition result.
  */
-	virtual void read_PixelSize(Tango::Attribute &attr);
+	virtual void read_PixelSizeX(Tango::Attribute &attr);
 /**
- *	Write PixelSize attribute values to hardware.
+ *	Write PixelSizeX attribute values to hardware.
  */
-	virtual void write_PixelSize(Tango::WAttribute &attr);
+	virtual void write_PixelSizeX(Tango::WAttribute &attr);
+/**
+ *	Extract real attribute values for PixelSizeY acquisition result.
+ */
+	virtual void read_PixelSizeY(Tango::Attribute &attr);
+/**
+ *	Write PixelSizeY attribute values to hardware.
+ */
+	virtual void write_PixelSizeY(Tango::WAttribute &attr);
+/**
+ *	Extract real attribute values for Growth acquisition result.
+ */
+	virtual void read_Growth(Tango::Attribute &attr);
+/**
+ *	Write Growth attribute values to hardware.
+ */
+	virtual void write_Growth(Tango::WAttribute &attr);
 /**
  *	Extract real attribute values for UserROIOriginX acquisition result.
  */
@@ -750,9 +778,17 @@ public :
  */
 	virtual bool is_AlarmZone_allowed(Tango::AttReqType type);
 /**
- *	Read/Write allowed for PixelSize attribute.
+ *	Read/Write allowed for PixelSizeX attribute.
  */
-	virtual bool is_PixelSize_allowed(Tango::AttReqType type);
+	virtual bool is_PixelSizeX_allowed(Tango::AttReqType type);
+/**
+ *	Read/Write allowed for PixelSizeY attribute.
+ */
+	virtual bool is_PixelSizeY_allowed(Tango::AttReqType type);
+/**
+ *	Read/Write allowed for Growth attribute.
+ */
+	virtual bool is_Growth_allowed(Tango::AttReqType type);
 /**
  *	Read/Write allowed for UserROIOriginX attribute.
  */

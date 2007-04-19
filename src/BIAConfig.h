@@ -19,6 +19,7 @@
 // ============================================================================
 #include <tango.h>
 
+#include <DeviceTask.h>
 
 namespace ImgBeamAnalyzer_ns
 {
@@ -36,7 +37,9 @@ const Tango::DevLong    kDEFAULT_FIT2D_NB_ITER = 100;
 const Tango::DevDouble  kDEFAULT_FIT2D_MAX_REL_CHANGE = 1.0E-6;
 const Tango::DevLong    kDEFAULT_FIT1D_NB_ITER = 100;
 const Tango::DevDouble  kDEFAULT_FIT1D_MAX_REL_CHANGE = 1.0E-6;
-const Tango::DevDouble  kDEFAULT_PIXELSIZE = 1.0f;
+const Tango::DevDouble  kDEFAULT_PIXELSIZE_X = 1.0f;
+const Tango::DevDouble  kDEFAULT_PIXELSIZE_Y = 1.0f;
+const Tango::DevDouble  kDEFAULT_GROWTH = 1.0f;
 const Tango::DevLong    kDEFAULT_USER_ROI_ORIGIN_X = 0;
 const Tango::DevLong    kDEFAULT_USER_ROI_ORIGIN_Y = 0;
 const Tango::DevLong    kDEFAULT_USER_ROI_WIDTH = 0; //- means 'whole image'
@@ -68,7 +71,9 @@ public:
   Tango::DevDouble  fit2d_max_rel_change;
   Tango::DevLong    fit1d_nb_iter;
   Tango::DevDouble  fit1d_max_rel_change;
-  Tango::DevDouble  pixel_size;
+  Tango::DevDouble  pixel_size_x;
+  Tango::DevDouble  pixel_size_y;
+  Tango::DevDouble  growth;
   Tango::DevLong    user_roi_origin_x;
   Tango::DevLong    user_roi_origin_y;
   Tango::DevLong    user_roi_width;
@@ -79,6 +84,9 @@ public:
   Tango::DevLong    pixel_depth;
   
   bool is_user_roi_empty(void) const;
+
+  void check(void) const
+    throw (Tango::DevFailed);
 };
 
 
