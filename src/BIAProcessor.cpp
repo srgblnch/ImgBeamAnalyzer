@@ -154,6 +154,15 @@ BIAProcessor::process (const isl::Image& image, const BIAConfig& config, BIAData
         try
         {
           roi = isl::AutoROI(*input_image, config.auto_roi_mag_factor);
+
+          if (roi.is_empty())
+          {
+            roi = isl::Rectangle(0,
+                                 0,
+                                 input_image->width(),
+                                 input_image->height());
+          }
+
           roi_image = input_image->get_roi(roi);
         }
         catch(isl::Exception&)
@@ -165,7 +174,7 @@ BIAProcessor::process (const isl::Image& image, const BIAConfig& config, BIAData
                                input_image->height());
           roi_image = new isl::Image(*input_image);
         }
-      
+
         data.auto_roi_origin_x = roi.origin().x();
         data.auto_roi_origin_y = roi.origin().y();
         data.auto_roi_width    = roi.width();
