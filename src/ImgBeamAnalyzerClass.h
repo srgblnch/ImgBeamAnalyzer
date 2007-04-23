@@ -12,7 +12,7 @@
 //
 // $Author: julien_malik $
 //
-// $Revision: 1.5 $
+// $Revision: 1.6 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -239,6 +239,18 @@ public:
 	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_GaussianFitMagnitude_allowed(ty);}
 };
 
+class GaussianFitConvergedAttrib: public Tango::Attr
+{
+public:
+	GaussianFitConvergedAttrib():Attr("GaussianFitConverged", Tango::DEV_BOOLEAN, Tango::READ) {};
+	~GaussianFitConvergedAttrib() {};
+	
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_GaussianFitConverged(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_GaussianFitConverged_allowed(ty);}
+};
+
 class YProfileChi2Attrib: public Tango::Attr
 {
 public:
@@ -333,6 +345,18 @@ public:
 	{(static_cast<ImgBeamAnalyzer *>(dev))->read_YProfileFitted(att);}
 	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
 	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_YProfileFitted_allowed(ty);}
+};
+
+class YProfileFitConvergedAttrib: public Tango::Attr
+{
+public:
+	YProfileFitConvergedAttrib():Attr("YProfileFitConverged", Tango::DEV_BOOLEAN, Tango::READ) {};
+	~YProfileFitConvergedAttrib() {};
+	
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_YProfileFitConverged(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_YProfileFitConverged_allowed(ty);}
 };
 
 class YProfileAttrib: public Tango::SpectrumAttr
@@ -441,6 +465,18 @@ public:
 	{(static_cast<ImgBeamAnalyzer *>(dev))->read_XProfileFitted(att);}
 	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
 	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_XProfileFitted_allowed(ty);}
+};
+
+class XProfileFitConvergedAttrib: public Tango::Attr
+{
+public:
+	XProfileFitConvergedAttrib():Attr("XProfileFitConverged", Tango::DEV_BOOLEAN, Tango::READ) {};
+	~XProfileFitConvergedAttrib() {};
+	
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_XProfileFitConverged(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_XProfileFitConverged_allowed(ty);}
 };
 
 class XProfileAttrib: public Tango::SpectrumAttr
@@ -697,6 +733,18 @@ public:
 	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_AutoROIOriginX_allowed(ty);}
 };
 
+class AutoROIFoundAttrib: public Tango::Attr
+{
+public:
+	AutoROIFoundAttrib():Attr("AutoROIFound", Tango::DEV_BOOLEAN, Tango::READ) {};
+	~AutoROIFoundAttrib() {};
+	
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_AutoROIFound(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_AutoROIFound_allowed(ty);}
+};
+
 class UserROIHeightAttrib: public Tango::Attr
 {
 public:
@@ -753,18 +801,18 @@ public:
 	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_UserROIOriginX_allowed(ty);}
 };
 
-class GrowthAttrib: public Tango::Attr
+class OpticalMagnificationAttrib: public Tango::Attr
 {
 public:
-	GrowthAttrib():Attr("Growth", Tango::DEV_DOUBLE, Tango::READ_WRITE) {};
-	~GrowthAttrib() {};
+	OpticalMagnificationAttrib():Attr("OpticalMagnification", Tango::DEV_DOUBLE, Tango::READ_WRITE) {};
+	~OpticalMagnificationAttrib() {};
 	
 	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
-	{(static_cast<ImgBeamAnalyzer *>(dev))->read_Growth(att);}
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_OpticalMagnification(att);}
 	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
-	{(static_cast<ImgBeamAnalyzer *>(dev))->write_Growth(att);}
+	{(static_cast<ImgBeamAnalyzer *>(dev))->write_OpticalMagnification(att);}
 	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
-	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_Growth_allowed(ty);}
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_OpticalMagnification_allowed(ty);}
 };
 
 class PixelSizeYAttrib: public Tango::Attr

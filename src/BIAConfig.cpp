@@ -33,7 +33,7 @@ namespace ImgBeamAnalyzer_ns
     fit1d_max_rel_change(kDEFAULT_FIT1D_MAX_REL_CHANGE),
     pixel_size_x(kDEFAULT_PIXELSIZE_X),
     pixel_size_y(kDEFAULT_PIXELSIZE_Y),
-    growth(kDEFAULT_GROWTH),
+    optical_mag(kDEFAULT_OPTICAL_MAGNIFICATION),
     user_roi_origin_x(kDEFAULT_USER_ROI_ORIGIN_X),
     user_roi_origin_y(kDEFAULT_USER_ROI_ORIGIN_Y),
     user_roi_width(kDEFAULT_USER_ROI_WIDTH),
@@ -68,7 +68,7 @@ namespace ImgBeamAnalyzer_ns
     this->fit1d_max_rel_change   = _c.fit1d_max_rel_change;
     this->pixel_size_x           = _c.pixel_size_x;
     this->pixel_size_y           = _c.pixel_size_y;
-    this->growth                 = _c.growth;
+    this->optical_mag            = _c.optical_mag;
     this->user_roi_origin_x      = _c.user_roi_origin_x;
     this->user_roi_origin_y      = _c.user_roi_origin_y;
     this->user_roi_width         = _c.user_roi_width;
@@ -114,7 +114,7 @@ namespace ImgBeamAnalyzer_ns
     CHECK( fit1d_max_rel_change, > 0 , Fit1DMaxRelChange );
     CHECK( pixel_size_x,         > 0 , PixelSizeX );
     CHECK( pixel_size_y,         > 0 , PixelSizeY );
-    CHECK( growth,               > 0 , Growth );
+    CHECK( optical_mag,          > 0 , OpticalMagnification );
     CHECK( user_roi_origin_x,    >=0 , UserROIOriginX );
     CHECK( user_roi_origin_y,    >=0 , UserROIOriginY );
     CHECK( user_roi_width,       >=0 , UserROIWidth );

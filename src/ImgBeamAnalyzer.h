@@ -8,7 +8,7 @@
 //
 // $Author: julien_malik $
 //
-// $Revision: 1.7 $
+// $Revision: 1.8 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -30,7 +30,7 @@
 
 /**
  * @author	$Author: julien_malik $
- * @version	$Revision: 1.7 $
+ * @version	$Revision: 1.8 $
  */
 
  //	Add your own constants definitions here.
@@ -120,8 +120,8 @@ public :
 		Tango::DevDouble	attr_PixelSizeX_write;
 		Tango::DevDouble	*attr_PixelSizeY_read;
 		Tango::DevDouble	attr_PixelSizeY_write;
-		Tango::DevDouble	*attr_Growth_read;
-		Tango::DevDouble	attr_Growth_write;
+		Tango::DevDouble	*attr_OpticalMagnification_read;
+		Tango::DevDouble	attr_OpticalMagnification_write;
 		Tango::DevLong	*attr_UserROIOriginX_read;
 		Tango::DevLong	attr_UserROIOriginX_write;
 		Tango::DevLong	*attr_UserROIOriginY_read;
@@ -130,6 +130,7 @@ public :
 		Tango::DevLong	attr_UserROIWidth_write;
 		Tango::DevLong	*attr_UserROIHeight_read;
 		Tango::DevLong	attr_UserROIHeight_write;
+		Tango::DevBoolean	*attr_AutoROIFound_read;
 		Tango::DevLong	*attr_AutoROIOriginX_read;
 		Tango::DevLong	*attr_AutoROIOriginY_read;
 		Tango::DevLong	*attr_AutoROIWidth_read;
@@ -152,6 +153,7 @@ public :
 		Tango::DevDouble	*attr_SkewX2Y_read;
 		Tango::DevDouble	*attr_SkewXY2_read;
 		Tango::DevDouble	*attr_XProfile_read;
+		Tango::DevBoolean	*attr_XProfileFitConverged_read;
 		Tango::DevDouble	*attr_XProfileFitted_read;
 		Tango::DevDouble	*attr_XProfileError_read;
 		Tango::DevDouble	*attr_XProfileCenter_read;
@@ -161,6 +163,7 @@ public :
 		Tango::DevDouble	*attr_XProfileBG_read;
 		Tango::DevDouble	*attr_XProfileChi2_read;
 		Tango::DevDouble	*attr_YProfile_read;
+		Tango::DevBoolean	*attr_YProfileFitConverged_read;
 		Tango::DevDouble	*attr_YProfileFitted_read;
 		Tango::DevDouble	*attr_YProfileError_read;
 		Tango::DevDouble	*attr_YProfileCenter_read;
@@ -169,6 +172,7 @@ public :
 		Tango::DevDouble	*attr_YProfileFWHM_read;
 		Tango::DevDouble	*attr_YProfileBG_read;
 		Tango::DevDouble	*attr_YProfileChi2_read;
+		Tango::DevBoolean	*attr_GaussianFitConverged_read;
 		Tango::DevDouble	*attr_GaussianFitMagnitude_read;
 		Tango::DevDouble	*attr_GaussianFitCenterX_read;
 		Tango::DevDouble	*attr_GaussianFitCenterY_read;
@@ -249,9 +253,9 @@ public :
  */
 	Tango::DevDouble	pixelSizeY;
 /**
- *	the initial value of the Growth attribute
+ *	the initial value of the OpticalMagnification attribute
  */
-	Tango::DevDouble	growth;
+	Tango::DevDouble	opticalMagnification;
 /**
  *	the initial value of the Rotation attribute
  */
@@ -450,13 +454,13 @@ public :
  */
 	virtual void write_PixelSizeY(Tango::WAttribute &attr);
 /**
- *	Extract real attribute values for Growth acquisition result.
+ *	Extract real attribute values for OpticalMagnification acquisition result.
  */
-	virtual void read_Growth(Tango::Attribute &attr);
+	virtual void read_OpticalMagnification(Tango::Attribute &attr);
 /**
- *	Write Growth attribute values to hardware.
+ *	Write OpticalMagnification attribute values to hardware.
  */
-	virtual void write_Growth(Tango::WAttribute &attr);
+	virtual void write_OpticalMagnification(Tango::WAttribute &attr);
 /**
  *	Extract real attribute values for UserROIOriginX acquisition result.
  */
@@ -489,6 +493,10 @@ public :
  *	Write UserROIHeight attribute values to hardware.
  */
 	virtual void write_UserROIHeight(Tango::WAttribute &attr);
+/**
+ *	Extract real attribute values for AutoROIFound acquisition result.
+ */
+	virtual void read_AutoROIFound(Tango::Attribute &attr);
 /**
  *	Extract real attribute values for AutoROIOriginX acquisition result.
  */
@@ -578,6 +586,10 @@ public :
  */
 	virtual void read_XProfile(Tango::Attribute &attr);
 /**
+ *	Extract real attribute values for XProfileFitConverged acquisition result.
+ */
+	virtual void read_XProfileFitConverged(Tango::Attribute &attr);
+/**
  *	Extract real attribute values for XProfileFitted acquisition result.
  */
 	virtual void read_XProfileFitted(Tango::Attribute &attr);
@@ -614,6 +626,10 @@ public :
  */
 	virtual void read_YProfile(Tango::Attribute &attr);
 /**
+ *	Extract real attribute values for YProfileFitConverged acquisition result.
+ */
+	virtual void read_YProfileFitConverged(Tango::Attribute &attr);
+/**
  *	Extract real attribute values for YProfileFitted acquisition result.
  */
 	virtual void read_YProfileFitted(Tango::Attribute &attr);
@@ -645,6 +661,10 @@ public :
  *	Extract real attribute values for YProfileChi2 acquisition result.
  */
 	virtual void read_YProfileChi2(Tango::Attribute &attr);
+/**
+ *	Extract real attribute values for GaussianFitConverged acquisition result.
+ */
+	virtual void read_GaussianFitConverged(Tango::Attribute &attr);
 /**
  *	Extract real attribute values for GaussianFitMagnitude acquisition result.
  */
@@ -786,9 +806,9 @@ public :
  */
 	virtual bool is_PixelSizeY_allowed(Tango::AttReqType type);
 /**
- *	Read/Write allowed for Growth attribute.
+ *	Read/Write allowed for OpticalMagnification attribute.
  */
-	virtual bool is_Growth_allowed(Tango::AttReqType type);
+	virtual bool is_OpticalMagnification_allowed(Tango::AttReqType type);
 /**
  *	Read/Write allowed for UserROIOriginX attribute.
  */
@@ -805,6 +825,10 @@ public :
  *	Read/Write allowed for UserROIHeight attribute.
  */
 	virtual bool is_UserROIHeight_allowed(Tango::AttReqType type);
+/**
+ *	Read/Write allowed for AutoROIFound attribute.
+ */
+	virtual bool is_AutoROIFound_allowed(Tango::AttReqType type);
 /**
  *	Read/Write allowed for AutoROIOriginX attribute.
  */
@@ -890,6 +914,10 @@ public :
  */
 	virtual bool is_XProfile_allowed(Tango::AttReqType type);
 /**
+ *	Read/Write allowed for XProfileFitConverged attribute.
+ */
+	virtual bool is_XProfileFitConverged_allowed(Tango::AttReqType type);
+/**
  *	Read/Write allowed for XProfileFitted attribute.
  */
 	virtual bool is_XProfileFitted_allowed(Tango::AttReqType type);
@@ -926,6 +954,10 @@ public :
  */
 	virtual bool is_YProfile_allowed(Tango::AttReqType type);
 /**
+ *	Read/Write allowed for YProfileFitConverged attribute.
+ */
+	virtual bool is_YProfileFitConverged_allowed(Tango::AttReqType type);
+/**
  *	Read/Write allowed for YProfileFitted attribute.
  */
 	virtual bool is_YProfileFitted_allowed(Tango::AttReqType type);
@@ -957,6 +989,10 @@ public :
  *	Read/Write allowed for YProfileChi2 attribute.
  */
 	virtual bool is_YProfileChi2_allowed(Tango::AttReqType type);
+/**
+ *	Read/Write allowed for GaussianFitConverged attribute.
+ */
+	virtual bool is_GaussianFitConverged_allowed(Tango::AttReqType type);
 /**
  *	Read/Write allowed for GaussianFitMagnitude attribute.
  */
@@ -1233,15 +1269,17 @@ protected :
 
 #define READ_INPUT_ATTR( config_member_name )                                                   \
   {	                                                                                            \
-    if (this->available_data_)                                                                  \
-			attr.set_value(&this->available_data_->config.config_member_name);                        \
-		else                                                                                        \
+    if (this->available_data_ == 0 || this->get_state() == Tango::FAULT)                        \
 			attr.set_value(&this->current_config_.config_member_name);                                \
+		else                                                                                        \
+			attr.set_value(&this->available_data_->config.config_member_name);                        \
   }
 
 #define READ_INPUT_ATTR_WITH_ALARM( config_member_name , alarm_boolean)                         \
   {	                                                                                            \
-    if (this->available_data_)                                                                  \
+    if (this->available_data_ == 0 || this->get_state() == Tango::FAULT)                        \
+			attr.set_value(&this->current_config_.config_member_name);                                \
+		else                                                                                        \
     {                                                                                           \
 			attr.set_value(&this->available_data_->config.config_member_name);                        \
       if (this->available_data_->alarm_boolean == true)                                         \
@@ -1249,8 +1287,6 @@ protected :
       else                                                                                      \
         attr.set_quality(Tango::ATTR_VALID);                                                    \
 		}                                                                                           \
-		else                                                                                        \
-			attr.set_value(&this->current_config_.config_member_name);                                \
   }
 
 

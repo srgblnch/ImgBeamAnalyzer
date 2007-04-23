@@ -60,6 +60,7 @@ public:
   Tango::DevLong                 estim_comput_time;
 
   //- beam box
+  Tango::DevBoolean              auto_roi_found;
   Tango::DevLong                 auto_roi_origin_x;
   Tango::DevLong                 auto_roi_origin_y;
   Tango::DevLong                 auto_roi_width;
@@ -86,6 +87,7 @@ public:
 
   //- profile
   adtb::Buffer<Tango::DevDouble> profile_x;
+  Tango::DevBoolean              profile_x_fit_converged;
   adtb::Buffer<Tango::DevDouble> profile_x_fitted;
   adtb::Buffer<Tango::DevDouble> profile_x_error;
   Tango::DevDouble               profile_x_center;
@@ -94,7 +96,9 @@ public:
   Tango::DevDouble               profile_x_fwhm;
   Tango::DevDouble               profile_x_bg;
   Tango::DevDouble               profile_x_chi2;
+
   adtb::Buffer<Tango::DevDouble> profile_y;
+  Tango::DevBoolean              profile_y_fit_converged;
   adtb::Buffer<Tango::DevDouble> profile_y_fitted;
   adtb::Buffer<Tango::DevDouble> profile_y_error;
   Tango::DevDouble               profile_y_center;
@@ -105,6 +109,7 @@ public:
   Tango::DevDouble               profile_y_chi2;
 
   //- gaussian fit
+  Tango::DevBoolean              gaussfit_converged;
   Tango::DevDouble               gaussfit_magnitude;
   Tango::DevDouble               gaussfit_centroid_x;
   Tango::DevDouble               gaussfit_centroid_y;

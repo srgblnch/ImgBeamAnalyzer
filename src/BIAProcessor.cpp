@@ -32,6 +32,7 @@
 //- it is approximately 2.35
 const Tango::DevDouble SIGMA2FWHM_SCALE_FACTOR = 2 * ::sqrt( 2 * ::log(2) ); 
 
+const Tango::DevDouble kPI = 3.1415926535897932384626433832795f;
 
 namespace ImgBeamAnalyzer_ns
 {
@@ -121,9 +122,8 @@ BIAProcessor::process (const isl::Image& image, const BIAConfig& config, BIAData
     else
     {
 
-      double px = config.pixel_size_x / config.growth;
-      double py = config.pixel_size_y / config.growth;
-   
+      double px = config.pixel_size_x / config.optical_mag;
+      double py = config.pixel_size_y / config.optical_mag;
 
       //- Determine the ROI
       isl::Rectangle roi;
@@ -162,11 +162,16 @@ BIAProcessor::process (const isl::Image& image, const BIAConfig& config, BIAData
                                  input_image->width(),
                                  input_image->height());
           }
+          else
+          {
+            data.auto_roi_found = true;
+          }
 
           roi_image = input_image->get_roi(roi);
         }
         catch(isl::Exception&)
         {
+          isl::ErrorHandler::reset();
           // failed to determine the ROI automatically : take the whole image
           roi = isl::Rectangle(0,
                                0,
@@ -292,59 +297,85 @@ BIAProcessor::process (const isl::Image& image, const BIAConfig& config, BIAData
           }
           else
           {
-            double initial_magnitude = roi_image_d->value(static_cast<int>(img_moments.m10() / m00),
-                                                          static_cast<int>(img_moments.m01() / m00));
+            try
+            {
+              double initial_magnitude = roi_image_d->value(static_cast<int>(img_moments.m10() / m00),
+                                                            static_cast<int>(img_moments.m01() / m00));
 
-            isl::GaussianFit2D gauss_fit2d;
-            gauss_fit2d.nb_iter(config.fit2d_nb_iter);
-            gauss_fit2d.epsilon(config.fit2d_max_rel_change);
+              isl::GaussianFit2D gauss_fit2d;
+              gauss_fit2d.nb_iter(config.fit2d_nb_iter);
+              gauss_fit2d.epsilon(config.fit2d_max_rel_change);
 
-            TIMEVAL	before_fit, after_fit;
-            GET_TIME(before_fit);
-            gauss_fit2d.compute(*roi_image_d,
-                                initial_magnitude,
-                                img_moments.m10() / m00,
-                                img_moments.m01() / m00,
-                                img_moments.mu20() / m00,
-                                img_moments.mu11() / m00,
-                                img_moments.mu02() / m00,
-                                0);
-            GET_TIME(after_fit);
-            data.gaussfit_magnitude = gauss_fit2d.magnitude();
-            data.gaussfit_centroid_x = ( gauss_fit2d.mean().x() + roi.origin().x() ) * px;
-            data.gaussfit_centroid_y = ( gauss_fit2d.mean().y() + roi.origin().y() ) * py;
+              TIMEVAL	before_fit, after_fit;
 
-            gauss_fit2d.covariance(data.gaussfit_variance_x,
-                                   data.gaussfit_covariance_xy,
-                                   data.gaussfit_variance_y);
-            data.gaussfit_correlation_xy = data.gaussfit_covariance_xy  
-                                           / ::sqrt(data.gaussfit_variance_x * data.gaussfit_variance_y);
+              GET_TIME(before_fit);
+              gauss_fit2d.compute(*roi_image_d,
+                                  initial_magnitude,
+                                  img_moments.m10() / m00,
+                                  img_moments.m01() / m00,
+                                  img_moments.mu20() / m00,
+                                  img_moments.mu11() / m00,
+                                  img_moments.mu02() / m00,
+                                  0);
+
+              GET_TIME(after_fit);
+              data.gaussfit_magnitude = gauss_fit2d.magnitude();
+              data.gaussfit_centroid_x = ( gauss_fit2d.mean().x() + roi.origin().x() ) * px;
+              data.gaussfit_centroid_y = ( gauss_fit2d.mean().y() + roi.origin().y() ) * py;
+
+              gauss_fit2d.covariance(data.gaussfit_variance_x,
+                                     data.gaussfit_covariance_xy,
+                                     data.gaussfit_variance_y);
+              data.gaussfit_correlation_xy = data.gaussfit_covariance_xy  
+                                             / ::sqrt(data.gaussfit_variance_x * data.gaussfit_variance_y);
       
-            data.gaussfit_variance_x    *= px * px;
-            data.gaussfit_variance_y    *= py * py;
-            data.gaussfit_covariance_xy *= px * py;
+              data.gaussfit_variance_x    *= px * px;
+              data.gaussfit_variance_y    *= py * py;
+              data.gaussfit_covariance_xy *= px * py;
 
-            data.gaussfit_bg = gauss_fit2d.background();
+              data.gaussfit_bg = gauss_fit2d.background();
 
-            data.gaussfit_parameters_covariance.set_dimensions(7, 7);
-            gauss_fit2d.parameters_cov(data.gaussfit_parameters_covariance.base());
+              data.gaussfit_parameters_covariance.set_dimensions(7, 7);
+              gauss_fit2d.parameters_cov(data.gaussfit_parameters_covariance.base());
 
-            data.gaussfit_chi2 = gauss_fit2d.chi2();
+              data.gaussfit_chi2 = gauss_fit2d.chi2();
       
-            //- Principal Axis of the gaussian
-            isl::PrincipalAxis princ_ax(img_moments.m10() / m00,
-                                        img_moments.m01() / m00,
-                                        img_moments.m20() / m00,
-                                        img_moments.m11() / m00,
-                                        img_moments.m02() / m00);
-            double x,y;
-            princ_ax.get_first (x,y, data.gaussfit_major_axis_fwhm);
-            data.gaussfit_major_axis_fwhm *= SIGMA2FWHM_SCALE_FACTOR * px;
+              //- Principal Axis of the gaussian
+              isl::PrincipalAxis princ_ax(data.gaussfit_centroid_x,
+                                          data.gaussfit_centroid_y,
+                                          data.gaussfit_variance_x,
+                                          data.gaussfit_covariance_xy,
+                                          data.gaussfit_variance_y);
+              double x,y;
+              princ_ax.get_first (x,y, data.gaussfit_major_axis_fwhm);
+              data.gaussfit_major_axis_fwhm *= SIGMA2FWHM_SCALE_FACTOR * px;
       
-            princ_ax.get_second(x,y, data.gaussfit_minor_axis_fwhm);
-            data.gaussfit_minor_axis_fwhm *= SIGMA2FWHM_SCALE_FACTOR * py;
+              princ_ax.get_second(x,y, data.gaussfit_minor_axis_fwhm);
+              data.gaussfit_minor_axis_fwhm *= SIGMA2FWHM_SCALE_FACTOR * py;
       
-            data.gaussfit_tilt = princ_ax.get_angle ();
+              data.gaussfit_tilt = princ_ax.get_angle () * 180 / kPI;
+
+              data.gaussfit_converged = true;
+            }
+            catch(isl::Exception &)
+            {
+              isl::ErrorHandler::reset();
+              //- Unable to do the fit
+              data.gaussfit_magnitude = 0;
+              data.gaussfit_centroid_x = 0;
+              data.gaussfit_centroid_y = 0;
+              data.gaussfit_variance_x = 0;
+              data.gaussfit_variance_y = 0;
+              data.gaussfit_covariance_xy = 0;
+              data.gaussfit_correlation_xy = 0;
+              data.gaussfit_major_axis_fwhm = 0;
+              data.gaussfit_minor_axis_fwhm = 0;
+              data.gaussfit_tilt = 0;
+              data.gaussfit_bg = 0;
+              data.gaussfit_chi2 = 0;
+              data.gaussfit_parameters_covariance.set_dimensions(7, 7);
+              data.gaussfit_parameters_covariance.fill(0);
+            }
           }
         }
       }
@@ -379,9 +410,12 @@ BIAProcessor::process (const isl::Image& image, const BIAConfig& config, BIAData
             data.profile_x_fitted[i] = gaussian_fit.get_fitted_value(i);
             data.profile_x_error[i]  = gaussian_fit.get_fitted_error(i);
           }
+
+          data.profile_x_fit_converged = true;
         }
         catch(isl::Exception&)
         {
+          isl::ErrorHandler::reset();
           data.profile_x_center  = 0;
           data.profile_x_mag     = 0;
           data.profile_x_sigma   = 0;
@@ -417,9 +451,12 @@ BIAProcessor::process (const isl::Image& image, const BIAConfig& config, BIAData
             data.profile_y_fitted[i] = gaussian_fit.get_fitted_value(i);
             data.profile_y_error[i]  = gaussian_fit.get_fitted_error(i);
           }
+
+          data.profile_y_fit_converged = true;
         }
         catch(isl::Exception&)
         {
+          isl::ErrorHandler::reset();
           data.profile_y_center  = 0;
           data.profile_y_mag     = 0;
           data.profile_y_sigma   = 0;

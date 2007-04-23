@@ -119,7 +119,7 @@ Revision:  - Author:
 <Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ_WRITE</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
 
 <Font Size=-1>
-<Tr><Td><b>Growth</b>: <Font Size=-1>the growth of the optical system (no unit). </Font></Td>
+<Tr><Td><b>OpticalMagnification</b>: <Font Size=-1>the magnification factor of the optical system (no unit)</Font></Td>
 <Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ_WRITE</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
 
 <Font Size=-1>
@@ -137,6 +137,10 @@ Revision:  - Author:
 <Font Size=-1>
 <Tr><Td><b>UserROIHeight</b>: <Font Size=-1>the height of the ROI in pixels</Font></Td>
 <Td><Center><Font Size=-1>DEV_LONG</Font></Center></Td><Td><Center><Font Size=-1>READ_WRITE</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>AutoROIFound</b>: <Font Size=-1>true if the AutoROI algorithm was used and did found a beam inside the image</Font></Td>
+<Td><Center><Font Size=-1>DEV_BOOLEAN</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
 
 <Font Size=-1>
 <Tr><Td><b>AutoROIOriginX</b>: <Font Size=-1>the X coordinate of the origin of the ROI (up-left corner) in pixels</Font></Td>
@@ -199,12 +203,16 @@ Revision:  - Author:
 <Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
 
 <Font Size=-1>
-<Tr><Td><b>SkewX2Y</b>: <Font Size=-1>the skew cross coefficient for Xï¿½.Y</Font></Td>
+<Tr><Td><b>SkewX2Y</b>: <Font Size=-1>the skew cross coefficient for X².Y</Font></Td>
 <Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
 
 <Font Size=-1>
-<Tr><Td><b>SkewXY2</b>: <Font Size=-1>the skew cross coefficient for X.Yï¿½</Font></Td>
+<Tr><Td><b>SkewXY2</b>: <Font Size=-1>the skew cross coefficient for X.Y²</Font></Td>
 <Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>XProfileFitConverged</b>: <Font Size=-1>true of the profile fitting algorithm has converged</Font></Td>
+<Td><Center><Font Size=-1>DEV_BOOLEAN</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
 
 <Font Size=-1>
 <Tr><Td><b>XProfileCenter</b>: <Font Size=-1>the X position of the center of the fitted gaussian corresponding to the X profile</Font></Td>
@@ -231,6 +239,10 @@ Revision:  - Author:
 <Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
 
 <Font Size=-1>
+<Tr><Td><b>YProfileFitConverged</b>: <Font Size=-1>true of the profile fitting algorithm has converged</Font></Td>
+<Td><Center><Font Size=-1>DEV_BOOLEAN</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Font Size=-1>
 <Tr><Td><b>YProfileCenter</b>: <Font Size=-1>the Y position of the center of the fitted gaussian corresponding to the Y profile</Font></Td>
 <Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
 
@@ -253,6 +265,10 @@ Revision:  - Author:
 <Font Size=-1>
 <Tr><Td><b>YProfileChi2</b>: <Font Size=-1>the chi-2 of  fitted gaussian corresponding to the Y profile</Font></Td>
 <Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>GaussianFitConverged</b>: <Font Size=-1>true of the 2D gaussian fitting algorithm has converged</Font></Td>
+<Td><Center><Font Size=-1>DEV_BOOLEAN</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
 
 <Font Size=-1>
 <Tr><Td><b>GaussianFitMagnitude</b>: <Font Size=-1>the magnitude of the fitted gaussian</Font></Td>

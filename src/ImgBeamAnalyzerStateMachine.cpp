@@ -1,4 +1,4 @@
-static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzerStateMachine.cpp,v 1.5 2007-04-19 08:39:39 julien_malik Exp $";
+static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzerStateMachine.cpp,v 1.6 2007-04-23 13:58:26 julien_malik Exp $";
 //+=============================================================================
 //
 // file :         ImgBeamAnalyzerStateMachine.cpp
@@ -10,7 +10,7 @@ static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/Im
 //
 // $Author: julien_malik $
 //
-// $Revision: 1.5 $
+// $Revision: 1.6 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -56,13 +56,9 @@ namespace ImgBeamAnalyzer_ns
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_EnableImageStats_allowed(Tango::AttReqType type)
 {
-	if (get_state() == Tango::FAULT)
-	{
 		//	End of Generated Code
 
 		//	Re-Start of Generated Code
-		return false;
-	}
 	return true;
 }
 //+----------------------------------------------------------------------------
@@ -74,13 +70,9 @@ bool ImgBeamAnalyzer::is_EnableImageStats_allowed(Tango::AttReqType type)
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_EnableProfiles_allowed(Tango::AttReqType type)
 {
-	if (get_state() == Tango::FAULT)
-	{
 		//	End of Generated Code
 
 		//	Re-Start of Generated Code
-		return false;
-	}
 	return true;
 }
 //+----------------------------------------------------------------------------
@@ -92,13 +84,9 @@ bool ImgBeamAnalyzer::is_EnableProfiles_allowed(Tango::AttReqType type)
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_InputImage_allowed(Tango::AttReqType type)
 {
-	if (get_state() == Tango::FAULT)
-	{
 		//	End of Generated Code
 
 		//	Re-Start of Generated Code
-		return false;
-	}
 	return true;
 }
 //+----------------------------------------------------------------------------
@@ -110,13 +98,9 @@ bool ImgBeamAnalyzer::is_InputImage_allowed(Tango::AttReqType type)
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_MeanIntensity_allowed(Tango::AttReqType type)
 {
-	if (get_state() == Tango::FAULT)
-	{
 		//	End of Generated Code
 
 		//	Re-Start of Generated Code
-		return false;
-	}
 	return true;
 }
 //+----------------------------------------------------------------------------
@@ -128,13 +112,9 @@ bool ImgBeamAnalyzer::is_MeanIntensity_allowed(Tango::AttReqType type)
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_XProfile_allowed(Tango::AttReqType type)
 {
-	if (get_state() == Tango::FAULT)
-	{
 		//	End of Generated Code
 
 		//	Re-Start of Generated Code
-		return false;
-	}
 	return true;
 }
 //+----------------------------------------------------------------------------
@@ -146,13 +126,9 @@ bool ImgBeamAnalyzer::is_XProfile_allowed(Tango::AttReqType type)
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_YProfile_allowed(Tango::AttReqType type)
 {
-	if (get_state() == Tango::FAULT)
-	{
 		//	End of Generated Code
 
 		//	Re-Start of Generated Code
-		return false;
-	}
 	return true;
 }
 //+----------------------------------------------------------------------------
@@ -164,13 +140,9 @@ bool ImgBeamAnalyzer::is_YProfile_allowed(Tango::AttReqType type)
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_ComputationPeriod_allowed(Tango::AttReqType type)
 {
-	if (get_state() == Tango::FAULT)
-	{
 		//	End of Generated Code
 
 		//	Re-Start of Generated Code
-		return false;
-	}
 	return true;
 }
 //+----------------------------------------------------------------------------
@@ -182,13 +154,9 @@ bool ImgBeamAnalyzer::is_ComputationPeriod_allowed(Tango::AttReqType type)
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_EstimComputTime_allowed(Tango::AttReqType type)
 {
-	if (get_state() == Tango::FAULT)
-	{
 		//	End of Generated Code
 
 		//	Re-Start of Generated Code
-		return false;
-	}
 	return true;
 }
 //+----------------------------------------------------------------------------
@@ -200,13 +168,9 @@ bool ImgBeamAnalyzer::is_EstimComputTime_allowed(Tango::AttReqType type)
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_Enable2DGaussianFit_allowed(Tango::AttReqType type)
 {
-	if (get_state() == Tango::FAULT)
-	{
 		//	End of Generated Code
 
 		//	Re-Start of Generated Code
-		return false;
-	}
 	return true;
 }
 //+----------------------------------------------------------------------------
@@ -218,13 +182,9 @@ bool ImgBeamAnalyzer::is_Enable2DGaussianFit_allowed(Tango::AttReqType type)
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_GaussianFitMagnitude_allowed(Tango::AttReqType type)
 {
-	if (get_state() == Tango::FAULT)
-	{
 		//	End of Generated Code
 
 		//	Re-Start of Generated Code
-		return false;
-	}
 	return true;
 }
 //+----------------------------------------------------------------------------
@@ -236,13 +196,9 @@ bool ImgBeamAnalyzer::is_GaussianFitMagnitude_allowed(Tango::AttReqType type)
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_GaussianFitTilt_allowed(Tango::AttReqType type)
 {
-	if (get_state() == Tango::FAULT)
-	{
 		//	End of Generated Code
 
 		//	Re-Start of Generated Code
-		return false;
-	}
 	return true;
 }
 
@@ -255,13 +211,9 @@ bool ImgBeamAnalyzer::is_GaussianFitTilt_allowed(Tango::AttReqType type)
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_XProfileSigma_allowed(Tango::AttReqType type)
 {
-	if (get_state() == Tango::FAULT)
-	{
 		//	End of Generated Code
 
 		//	Re-Start of Generated Code
-		return false;
-	}
 	return true;
 }
 //+----------------------------------------------------------------------------
@@ -273,13 +225,9 @@ bool ImgBeamAnalyzer::is_XProfileSigma_allowed(Tango::AttReqType type)
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_YProfileSigma_allowed(Tango::AttReqType type)
 {
-	if (get_state() == Tango::FAULT)
-	{
 		//	End of Generated Code
 
 		//	Re-Start of Generated Code
-		return false;
-	}
 	return true;
 }
 
@@ -292,13 +240,9 @@ bool ImgBeamAnalyzer::is_YProfileSigma_allowed(Tango::AttReqType type)
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_GaussianFitChi2_allowed(Tango::AttReqType type)
 {
-	if (get_state() == Tango::FAULT)
-	{
 		//	End of Generated Code
 
 		//	Re-Start of Generated Code
-		return false;
-	}
 	return true;
 }
 //+----------------------------------------------------------------------------
@@ -310,13 +254,9 @@ bool ImgBeamAnalyzer::is_GaussianFitChi2_allowed(Tango::AttReqType type)
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_GaussianFitParameterCovariance_allowed(Tango::AttReqType type)
 {
-	if (get_state() == Tango::FAULT)
-	{
 		//	End of Generated Code
 
 		//	Re-Start of Generated Code
-		return false;
-	}
 	return true;
 }
 //+----------------------------------------------------------------------------
@@ -328,13 +268,9 @@ bool ImgBeamAnalyzer::is_GaussianFitParameterCovariance_allowed(Tango::AttReqTyp
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_XProfileChi2_allowed(Tango::AttReqType type)
 {
-	if (get_state() == Tango::FAULT)
-	{
 		//	End of Generated Code
 
 		//	Re-Start of Generated Code
-		return false;
-	}
 	return true;
 }
 //+----------------------------------------------------------------------------
@@ -346,13 +282,9 @@ bool ImgBeamAnalyzer::is_XProfileChi2_allowed(Tango::AttReqType type)
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_YProfileChi2_allowed(Tango::AttReqType type)
 {
-	if (get_state() == Tango::FAULT)
-	{
 		//	End of Generated Code
 
 		//	Re-Start of Generated Code
-		return false;
-	}
 	return true;
 }
 //+----------------------------------------------------------------------------
@@ -364,13 +296,9 @@ bool ImgBeamAnalyzer::is_YProfileChi2_allowed(Tango::AttReqType type)
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_AlarmZone_allowed(Tango::AttReqType type)
 {
-	if (get_state() == Tango::FAULT)
-	{
 		//	End of Generated Code
 
 		//	Re-Start of Generated Code
-		return false;
-	}
 	return true;
 }
 //+----------------------------------------------------------------------------
@@ -382,13 +310,9 @@ bool ImgBeamAnalyzer::is_AlarmZone_allowed(Tango::AttReqType type)
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_Fit2DNbIterMax_allowed(Tango::AttReqType type)
 {
-	if (get_state() == Tango::FAULT)
-	{
 		//	End of Generated Code
 
 		//	Re-Start of Generated Code
-		return false;
-	}
 	return true;
 }
 //+----------------------------------------------------------------------------
@@ -400,13 +324,9 @@ bool ImgBeamAnalyzer::is_Fit2DNbIterMax_allowed(Tango::AttReqType type)
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_Fit2DMaxRelChange_allowed(Tango::AttReqType type)
 {
-	if (get_state() == Tango::FAULT)
-	{
 		//	End of Generated Code
 
 		//	Re-Start of Generated Code
-		return false;
-	}
 	return true;
 }
 //+----------------------------------------------------------------------------
@@ -418,13 +338,9 @@ bool ImgBeamAnalyzer::is_Fit2DMaxRelChange_allowed(Tango::AttReqType type)
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_Fit1DNbIterMax_allowed(Tango::AttReqType type)
 {
-	if (get_state() == Tango::FAULT)
-	{
 		//	End of Generated Code
 
 		//	Re-Start of Generated Code
-		return false;
-	}
 	return true;
 }
 //+----------------------------------------------------------------------------
@@ -436,13 +352,9 @@ bool ImgBeamAnalyzer::is_Fit1DNbIterMax_allowed(Tango::AttReqType type)
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_Fit1DMaxRelChange_allowed(Tango::AttReqType type)
 {
-	if (get_state() == Tango::FAULT)
-	{
 		//	End of Generated Code
 
 		//	Re-Start of Generated Code
-		return false;
-	}
 	return true;
 }
 //+----------------------------------------------------------------------------
@@ -454,13 +366,9 @@ bool ImgBeamAnalyzer::is_Fit1DMaxRelChange_allowed(Tango::AttReqType type)
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_XProfileBG_allowed(Tango::AttReqType type)
 {
-	if (get_state() == Tango::FAULT)
-	{
 		//	End of Generated Code
 
 		//	Re-Start of Generated Code
-		return false;
-	}
 	return true;
 }
 //+----------------------------------------------------------------------------
@@ -472,13 +380,9 @@ bool ImgBeamAnalyzer::is_XProfileBG_allowed(Tango::AttReqType type)
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_YProfileBG_allowed(Tango::AttReqType type)
 {
-	if (get_state() == Tango::FAULT)
-	{
 		//	End of Generated Code
 
 		//	Re-Start of Generated Code
-		return false;
-	}
 	return true;
 }
 //+----------------------------------------------------------------------------
@@ -490,13 +394,9 @@ bool ImgBeamAnalyzer::is_YProfileBG_allowed(Tango::AttReqType type)
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_GaussianFitBG_allowed(Tango::AttReqType type)
 {
-	if (get_state() == Tango::FAULT)
-	{
 		//	End of Generated Code
 
 		//	Re-Start of Generated Code
-		return false;
-	}
 	return true;
 }
 //+----------------------------------------------------------------------------
@@ -508,13 +408,9 @@ bool ImgBeamAnalyzer::is_GaussianFitBG_allowed(Tango::AttReqType type)
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_EnableAutoROI_allowed(Tango::AttReqType type)
 {
-	if (get_state() == Tango::FAULT)
-	{
 		//	End of Generated Code
 
 		//	Re-Start of Generated Code
-		return false;
-	}
 	return true;
 }
 //+----------------------------------------------------------------------------
@@ -526,13 +422,9 @@ bool ImgBeamAnalyzer::is_EnableAutoROI_allowed(Tango::AttReqType type)
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_AutoROIMagFactor_allowed(Tango::AttReqType type)
 {
-	if (get_state() == Tango::FAULT)
-	{
 		//	End of Generated Code
 
 		//	Re-Start of Generated Code
-		return false;
-	}
 	return true;
 }
 //+----------------------------------------------------------------------------
@@ -544,13 +436,9 @@ bool ImgBeamAnalyzer::is_AutoROIMagFactor_allowed(Tango::AttReqType type)
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_MaxIntensity_allowed(Tango::AttReqType type)
 {
-	if (get_state() == Tango::FAULT)
-	{
 		//	End of Generated Code
 
 		//	Re-Start of Generated Code
-		return false;
-	}
 	return true;
 }
 //+----------------------------------------------------------------------------
@@ -562,13 +450,9 @@ bool ImgBeamAnalyzer::is_MaxIntensity_allowed(Tango::AttReqType type)
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_CentroidX_allowed(Tango::AttReqType type)
 {
-	if (get_state() == Tango::FAULT)
-	{
 		//	End of Generated Code
 
 		//	Re-Start of Generated Code
-		return false;
-	}
 	return true;
 }
 //+----------------------------------------------------------------------------
@@ -580,13 +464,9 @@ bool ImgBeamAnalyzer::is_CentroidX_allowed(Tango::AttReqType type)
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_CentroidY_allowed(Tango::AttReqType type)
 {
-	if (get_state() == Tango::FAULT)
-	{
 		//	End of Generated Code
 
 		//	Re-Start of Generated Code
-		return false;
-	}
 	return true;
 }
 //+----------------------------------------------------------------------------
@@ -598,13 +478,9 @@ bool ImgBeamAnalyzer::is_CentroidY_allowed(Tango::AttReqType type)
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_VarianceX_allowed(Tango::AttReqType type)
 {
-	if (get_state() == Tango::FAULT)
-	{
 		//	End of Generated Code
 
 		//	Re-Start of Generated Code
-		return false;
-	}
 	return true;
 }
 //+----------------------------------------------------------------------------
@@ -616,13 +492,9 @@ bool ImgBeamAnalyzer::is_VarianceX_allowed(Tango::AttReqType type)
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_VarianceY_allowed(Tango::AttReqType type)
 {
-	if (get_state() == Tango::FAULT)
-	{
 		//	End of Generated Code
 
 		//	Re-Start of Generated Code
-		return false;
-	}
 	return true;
 }
 //+----------------------------------------------------------------------------
@@ -634,13 +506,9 @@ bool ImgBeamAnalyzer::is_VarianceY_allowed(Tango::AttReqType type)
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_CovarianceXY_allowed(Tango::AttReqType type)
 {
-	if (get_state() == Tango::FAULT)
-	{
 		//	End of Generated Code
 
 		//	Re-Start of Generated Code
-		return false;
-	}
 	return true;
 }
 //+----------------------------------------------------------------------------
@@ -652,13 +520,9 @@ bool ImgBeamAnalyzer::is_CovarianceXY_allowed(Tango::AttReqType type)
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_CorrelationXY_allowed(Tango::AttReqType type)
 {
-	if (get_state() == Tango::FAULT)
-	{
 		//	End of Generated Code
 
 		//	Re-Start of Generated Code
-		return false;
-	}
 	return true;
 }
 //+----------------------------------------------------------------------------
@@ -670,13 +534,9 @@ bool ImgBeamAnalyzer::is_CorrelationXY_allowed(Tango::AttReqType type)
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_SkewX_allowed(Tango::AttReqType type)
 {
-	if (get_state() == Tango::FAULT)
-	{
 		//	End of Generated Code
 
 		//	Re-Start of Generated Code
-		return false;
-	}
 	return true;
 }
 //+----------------------------------------------------------------------------
@@ -688,13 +548,9 @@ bool ImgBeamAnalyzer::is_SkewX_allowed(Tango::AttReqType type)
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_SkewY_allowed(Tango::AttReqType type)
 {
-	if (get_state() == Tango::FAULT)
-	{
 		//	End of Generated Code
 
 		//	Re-Start of Generated Code
-		return false;
-	}
 	return true;
 }
 //+----------------------------------------------------------------------------
@@ -706,13 +562,9 @@ bool ImgBeamAnalyzer::is_SkewY_allowed(Tango::AttReqType type)
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_SkewX2Y_allowed(Tango::AttReqType type)
 {
-	if (get_state() == Tango::FAULT)
-	{
 		//	End of Generated Code
 
 		//	Re-Start of Generated Code
-		return false;
-	}
 	return true;
 }
 //+----------------------------------------------------------------------------
@@ -724,13 +576,9 @@ bool ImgBeamAnalyzer::is_SkewX2Y_allowed(Tango::AttReqType type)
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_SkewXY2_allowed(Tango::AttReqType type)
 {
-	if (get_state() == Tango::FAULT)
-	{
 		//	End of Generated Code
 
 		//	Re-Start of Generated Code
-		return false;
-	}
 	return true;
 }
 
@@ -743,13 +591,9 @@ bool ImgBeamAnalyzer::is_SkewXY2_allowed(Tango::AttReqType type)
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_XProfileCenter_allowed(Tango::AttReqType type)
 {
-	if (get_state() == Tango::FAULT)
-	{
 		//	End of Generated Code
 
 		//	Re-Start of Generated Code
-		return false;
-	}
 	return true;
 }
 //+----------------------------------------------------------------------------
@@ -761,13 +605,9 @@ bool ImgBeamAnalyzer::is_XProfileCenter_allowed(Tango::AttReqType type)
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_XProfileMag_allowed(Tango::AttReqType type)
 {
-	if (get_state() == Tango::FAULT)
-	{
 		//	End of Generated Code
 
 		//	Re-Start of Generated Code
-		return false;
-	}
 	return true;
 }
 //+----------------------------------------------------------------------------
@@ -779,13 +619,9 @@ bool ImgBeamAnalyzer::is_XProfileMag_allowed(Tango::AttReqType type)
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_YProfileCenter_allowed(Tango::AttReqType type)
 {
-	if (get_state() == Tango::FAULT)
-	{
 		//	End of Generated Code
 
 		//	Re-Start of Generated Code
-		return false;
-	}
 	return true;
 }
 //+----------------------------------------------------------------------------
@@ -797,13 +633,9 @@ bool ImgBeamAnalyzer::is_YProfileCenter_allowed(Tango::AttReqType type)
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_YProfileMag_allowed(Tango::AttReqType type)
 {
-	if (get_state() == Tango::FAULT)
-	{
 		//	End of Generated Code
 
 		//	Re-Start of Generated Code
-		return false;
-	}
 	return true;
 }
 //+----------------------------------------------------------------------------
@@ -815,13 +647,9 @@ bool ImgBeamAnalyzer::is_YProfileMag_allowed(Tango::AttReqType type)
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_GaussianFitCenterX_allowed(Tango::AttReqType type)
 {
-	if (get_state() == Tango::FAULT)
-	{
 		//	End of Generated Code
 
 		//	Re-Start of Generated Code
-		return false;
-	}
 	return true;
 }
 //+----------------------------------------------------------------------------
@@ -833,13 +661,9 @@ bool ImgBeamAnalyzer::is_GaussianFitCenterX_allowed(Tango::AttReqType type)
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_GaussianFitCenterY_allowed(Tango::AttReqType type)
 {
-	if (get_state() == Tango::FAULT)
-	{
 		//	End of Generated Code
 
 		//	Re-Start of Generated Code
-		return false;
-	}
 	return true;
 }
 //+----------------------------------------------------------------------------
@@ -851,13 +675,9 @@ bool ImgBeamAnalyzer::is_GaussianFitCenterY_allowed(Tango::AttReqType type)
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_GaussianFitVarianceX_allowed(Tango::AttReqType type)
 {
-	if (get_state() == Tango::FAULT)
-	{
 		//	End of Generated Code
 
 		//	Re-Start of Generated Code
-		return false;
-	}
 	return true;
 }
 //+----------------------------------------------------------------------------
@@ -869,13 +689,9 @@ bool ImgBeamAnalyzer::is_GaussianFitVarianceX_allowed(Tango::AttReqType type)
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_GaussianFitVarianceY_allowed(Tango::AttReqType type)
 {
-	if (get_state() == Tango::FAULT)
-	{
 		//	End of Generated Code
 
 		//	Re-Start of Generated Code
-		return false;
-	}
 	return true;
 }
 //+----------------------------------------------------------------------------
@@ -887,13 +703,9 @@ bool ImgBeamAnalyzer::is_GaussianFitVarianceY_allowed(Tango::AttReqType type)
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_GaussianFitCovarianceXY_allowed(Tango::AttReqType type)
 {
-	if (get_state() == Tango::FAULT)
-	{
 		//	End of Generated Code
 
 		//	Re-Start of Generated Code
-		return false;
-	}
 	return true;
 }
 //+----------------------------------------------------------------------------
@@ -905,13 +717,9 @@ bool ImgBeamAnalyzer::is_GaussianFitCovarianceXY_allowed(Tango::AttReqType type)
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_ROIImage_allowed(Tango::AttReqType type)
 {
-	if (get_state() == Tango::FAULT)
-	{
 		//	End of Generated Code
 
 		//	Re-Start of Generated Code
-		return false;
-	}
 	return true;
 }
 //+----------------------------------------------------------------------------
@@ -923,13 +731,9 @@ bool ImgBeamAnalyzer::is_ROIImage_allowed(Tango::AttReqType type)
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_EnableUserROI_allowed(Tango::AttReqType type)
 {
-	if (get_state() == Tango::FAULT)
-	{
 		//	End of Generated Code
 
 		//	Re-Start of Generated Code
-		return false;
-	}
 	return true;
 }
 //+----------------------------------------------------------------------------
@@ -941,13 +745,9 @@ bool ImgBeamAnalyzer::is_EnableUserROI_allowed(Tango::AttReqType type)
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_UserROIOriginX_allowed(Tango::AttReqType type)
 {
-	if (get_state() == Tango::FAULT)
-	{
 		//	End of Generated Code
 
 		//	Re-Start of Generated Code
-		return false;
-	}
 	return true;
 }
 //+----------------------------------------------------------------------------
@@ -959,13 +759,9 @@ bool ImgBeamAnalyzer::is_UserROIOriginX_allowed(Tango::AttReqType type)
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_UserROIOriginY_allowed(Tango::AttReqType type)
 {
-	if (get_state() == Tango::FAULT)
-	{
 		//	End of Generated Code
 
 		//	Re-Start of Generated Code
-		return false;
-	}
 	return true;
 }
 //+----------------------------------------------------------------------------
@@ -977,13 +773,9 @@ bool ImgBeamAnalyzer::is_UserROIOriginY_allowed(Tango::AttReqType type)
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_UserROIWidth_allowed(Tango::AttReqType type)
 {
-	if (get_state() == Tango::FAULT)
-	{
 		//	End of Generated Code
 
 		//	Re-Start of Generated Code
-		return false;
-	}
 	return true;
 }
 //+----------------------------------------------------------------------------
@@ -995,13 +787,9 @@ bool ImgBeamAnalyzer::is_UserROIWidth_allowed(Tango::AttReqType type)
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_UserROIHeight_allowed(Tango::AttReqType type)
 {
-	if (get_state() == Tango::FAULT)
-	{
 		//	End of Generated Code
 
 		//	Re-Start of Generated Code
-		return false;
-	}
 	return true;
 }
 //+----------------------------------------------------------------------------
@@ -1013,13 +801,9 @@ bool ImgBeamAnalyzer::is_UserROIHeight_allowed(Tango::AttReqType type)
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_AutoROIOriginX_allowed(Tango::AttReqType type)
 {
-	if (get_state() == Tango::FAULT)
-	{
 		//	End of Generated Code
 
 		//	Re-Start of Generated Code
-		return false;
-	}
 	return true;
 }
 //+----------------------------------------------------------------------------
@@ -1031,13 +815,9 @@ bool ImgBeamAnalyzer::is_AutoROIOriginX_allowed(Tango::AttReqType type)
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_AutoROIOriginY_allowed(Tango::AttReqType type)
 {
-	if (get_state() == Tango::FAULT)
-	{
 		//	End of Generated Code
 
 		//	Re-Start of Generated Code
-		return false;
-	}
 	return true;
 }
 //+----------------------------------------------------------------------------
@@ -1049,13 +829,9 @@ bool ImgBeamAnalyzer::is_AutoROIOriginY_allowed(Tango::AttReqType type)
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_AutoROIWidth_allowed(Tango::AttReqType type)
 {
-	if (get_state() == Tango::FAULT)
-	{
 		//	End of Generated Code
 
 		//	Re-Start of Generated Code
-		return false;
-	}
 	return true;
 }
 //+----------------------------------------------------------------------------
@@ -1067,13 +843,9 @@ bool ImgBeamAnalyzer::is_AutoROIWidth_allowed(Tango::AttReqType type)
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_AutoROIHeight_allowed(Tango::AttReqType type)
 {
-	if (get_state() == Tango::FAULT)
-	{
 		//	End of Generated Code
 
 		//	Re-Start of Generated Code
-		return false;
-	}
 	return true;
 }
 //+----------------------------------------------------------------------------
@@ -1085,13 +857,9 @@ bool ImgBeamAnalyzer::is_AutoROIHeight_allowed(Tango::AttReqType type)
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_XProfileFWHM_allowed(Tango::AttReqType type)
 {
-	if (get_state() == Tango::FAULT)
-	{
 		//	End of Generated Code
 
 		//	Re-Start of Generated Code
-		return false;
-	}
 	return true;
 }
 //+----------------------------------------------------------------------------
@@ -1103,13 +871,9 @@ bool ImgBeamAnalyzer::is_XProfileFWHM_allowed(Tango::AttReqType type)
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_YProfileFWHM_allowed(Tango::AttReqType type)
 {
-	if (get_state() == Tango::FAULT)
-	{
 		//	End of Generated Code
 
 		//	Re-Start of Generated Code
-		return false;
-	}
 	return true;
 }
 //+----------------------------------------------------------------------------
@@ -1121,13 +885,9 @@ bool ImgBeamAnalyzer::is_YProfileFWHM_allowed(Tango::AttReqType type)
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_GaussianFitMajorAxisFWHM_allowed(Tango::AttReqType type)
 {
-	if (get_state() == Tango::FAULT)
-	{
 		//	End of Generated Code
 
 		//	Re-Start of Generated Code
-		return false;
-	}
 	return true;
 }
 //+----------------------------------------------------------------------------
@@ -1139,13 +899,9 @@ bool ImgBeamAnalyzer::is_GaussianFitMajorAxisFWHM_allowed(Tango::AttReqType type
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_GaussianFitMinorAxisFWHM_allowed(Tango::AttReqType type)
 {
-	if (get_state() == Tango::FAULT)
-	{
 		//	End of Generated Code
 
 		//	Re-Start of Generated Code
-		return false;
-	}
 	return true;
 }
 //+----------------------------------------------------------------------------
@@ -1157,13 +913,9 @@ bool ImgBeamAnalyzer::is_GaussianFitMinorAxisFWHM_allowed(Tango::AttReqType type
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_XProfileFitted_allowed(Tango::AttReqType type)
 {
-	if (get_state() == Tango::FAULT)
-	{
 		//	End of Generated Code
 
 		//	Re-Start of Generated Code
-		return false;
-	}
 	return true;
 }
 //+----------------------------------------------------------------------------
@@ -1175,13 +927,9 @@ bool ImgBeamAnalyzer::is_XProfileFitted_allowed(Tango::AttReqType type)
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_XProfileError_allowed(Tango::AttReqType type)
 {
-	if (get_state() == Tango::FAULT)
-	{
 		//	End of Generated Code
 
 		//	Re-Start of Generated Code
-		return false;
-	}
 	return true;
 }
 //+----------------------------------------------------------------------------
@@ -1193,13 +941,9 @@ bool ImgBeamAnalyzer::is_XProfileError_allowed(Tango::AttReqType type)
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_YProfileFitted_allowed(Tango::AttReqType type)
 {
-	if (get_state() == Tango::FAULT)
-	{
 		//	End of Generated Code
 
 		//	Re-Start of Generated Code
-		return false;
-	}
 	return true;
 }
 //+----------------------------------------------------------------------------
@@ -1211,13 +955,9 @@ bool ImgBeamAnalyzer::is_YProfileFitted_allowed(Tango::AttReqType type)
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_YProfileError_allowed(Tango::AttReqType type)
 {
-	if (get_state() == Tango::FAULT)
-	{
 		//	End of Generated Code
 
 		//	Re-Start of Generated Code
-		return false;
-	}
 	return true;
 }
 //+----------------------------------------------------------------------------
@@ -1229,13 +969,9 @@ bool ImgBeamAnalyzer::is_YProfileError_allowed(Tango::AttReqType type)
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_Rotation_allowed(Tango::AttReqType type)
 {
-	if (get_state() == Tango::FAULT)
-	{
 		//	End of Generated Code
 
 		//	Re-Start of Generated Code
-		return false;
-	}
 	return true;
 }
 //+----------------------------------------------------------------------------
@@ -1247,13 +983,9 @@ bool ImgBeamAnalyzer::is_Rotation_allowed(Tango::AttReqType type)
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_HorizontalFlip_allowed(Tango::AttReqType type)
 {
-	if (get_state() == Tango::FAULT)
-	{
 		//	End of Generated Code
 
 		//	Re-Start of Generated Code
-		return false;
-	}
 	return true;
 }
 //+----------------------------------------------------------------------------
@@ -1265,13 +997,9 @@ bool ImgBeamAnalyzer::is_HorizontalFlip_allowed(Tango::AttReqType type)
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_GammaCorrection_allowed(Tango::AttReqType type)
 {
-	if (get_state() == Tango::FAULT)
-	{
 		//	End of Generated Code
 
 		//	Re-Start of Generated Code
-		return false;
-	}
 	return true;
 }
 //+----------------------------------------------------------------------------
@@ -1283,13 +1011,9 @@ bool ImgBeamAnalyzer::is_GammaCorrection_allowed(Tango::AttReqType type)
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_BitsPerPixel_allowed(Tango::AttReqType type)
 {
-	if (get_state() == Tango::FAULT)
-	{
 		//	End of Generated Code
 
 		//	Re-Start of Generated Code
-		return false;
-	}
 	return true;
 }
 //+----------------------------------------------------------------------------
@@ -1301,13 +1025,9 @@ bool ImgBeamAnalyzer::is_BitsPerPixel_allowed(Tango::AttReqType type)
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_NbNoiseImage_allowed(Tango::AttReqType type)
 {
-	if (get_state() == Tango::FAULT)
-	{
 		//	End of Generated Code
 
 		//	Re-Start of Generated Code
-		return false;
-	}
 	return true;
 }
 //+----------------------------------------------------------------------------
@@ -1319,13 +1039,9 @@ bool ImgBeamAnalyzer::is_NbNoiseImage_allowed(Tango::AttReqType type)
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_MeanNoiseImage_allowed(Tango::AttReqType type)
 {
-	if (get_state() == Tango::FAULT)
-	{
 		//	End of Generated Code
 
 		//	Re-Start of Generated Code
-		return false;
-	}
 	return true;
 }
 //+----------------------------------------------------------------------------
@@ -1337,13 +1053,9 @@ bool ImgBeamAnalyzer::is_MeanNoiseImage_allowed(Tango::AttReqType type)
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_PixelSizeX_allowed(Tango::AttReqType type)
 {
-	if (get_state() == Tango::FAULT)
-	{
 		//	End of Generated Code
 
 		//	Re-Start of Generated Code
-		return false;
-	}
 	return true;
 }
 //+----------------------------------------------------------------------------
@@ -1355,31 +1067,79 @@ bool ImgBeamAnalyzer::is_PixelSizeX_allowed(Tango::AttReqType type)
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_PixelSizeY_allowed(Tango::AttReqType type)
 {
-	if (get_state() == Tango::FAULT)
-	{
 		//	End of Generated Code
 
 		//	Re-Start of Generated Code
-		return false;
-	}
 	return true;
 }
 //+----------------------------------------------------------------------------
 //
-// method : 		ImgBeamAnalyzer::is_Growth_allowed
+// method : 		ImgBeamAnalyzer::is_OpticalMagnification_allowed
 // 
-// description : 	Read/Write allowed for Growth attribute.
+// description : 	Read/Write allowed for OpticalMagnification attribute.
 //
 //-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_Growth_allowed(Tango::AttReqType type)
+bool ImgBeamAnalyzer::is_OpticalMagnification_allowed(Tango::AttReqType type)
 {
-	if (get_state() == Tango::FAULT)
-	{
 		//	End of Generated Code
 
 		//	Re-Start of Generated Code
-		return false;
-	}
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_AutoROIFound_allowed
+// 
+// description : 	Read/Write allowed for AutoROIFound attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_AutoROIFound_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_XProfileFitConverged_allowed
+// 
+// description : 	Read/Write allowed for XProfileFitConverged attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_XProfileFitConverged_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_YProfileFitConverged_allowed
+// 
+// description : 	Read/Write allowed for YProfileFitConverged attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_YProfileFitConverged_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_GaussianFitConverged_allowed
+// 
+// description : 	Read/Write allowed for GaussianFitConverged attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_GaussianFitConverged_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
 	return true;
 }
 
@@ -1396,8 +1156,7 @@ bool ImgBeamAnalyzer::is_Growth_allowed(Tango::AttReqType type)
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_Start_allowed(const CORBA::Any &any)
 {
-	if (get_state() == Tango::FAULT	||
-		get_state() == Tango::RUNNING)
+	if (get_state() == Tango::RUNNING)
 	{
 		//	End of Generated Code
 
@@ -1415,8 +1174,7 @@ bool ImgBeamAnalyzer::is_Start_allowed(const CORBA::Any &any)
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_Stop_allowed(const CORBA::Any &any)
 {
-	if (get_state() == Tango::FAULT	||
-		get_state() == Tango::STANDBY)
+	if (get_state() == Tango::STANDBY)
 	{
 		//	End of Generated Code
 
@@ -1434,13 +1192,9 @@ bool ImgBeamAnalyzer::is_Stop_allowed(const CORBA::Any &any)
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_Process_allowed(const CORBA::Any &any)
 {
-	if (get_state() == Tango::FAULT)
-	{
 		//	End of Generated Code
 
 		//	Re-Start of Generated Code
-		return false;
-	}
 	return true;
 }
 //+----------------------------------------------------------------------------
@@ -1466,13 +1220,9 @@ bool ImgBeamAnalyzer::is_SaveCurrentSettings_allowed(const CORBA::Any &any)
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_StartLearnNoise_allowed(const CORBA::Any &any)
 {
-	if (get_state() == Tango::FAULT)
-	{
 		//	End of Generated Code
 
 		//	Re-Start of Generated Code
-		return false;
-	}
 	return true;
 }
 //+----------------------------------------------------------------------------
@@ -1484,13 +1234,9 @@ bool ImgBeamAnalyzer::is_StartLearnNoise_allowed(const CORBA::Any &any)
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_StopLearnNoise_allowed(const CORBA::Any &any)
 {
-	if (get_state() == Tango::FAULT)
-	{
 		//	End of Generated Code
 
 		//	Re-Start of Generated Code
-		return false;
-	}
 	return true;
 }
 //+----------------------------------------------------------------------------

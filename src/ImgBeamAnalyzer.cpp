@@ -1,4 +1,4 @@
-static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzer.cpp,v 1.8 2007-04-19 08:39:39 julien_malik Exp $";
+static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzer.cpp,v 1.9 2007-04-23 13:58:26 julien_malik Exp $";
 //+=============================================================================
 //
 // file :         ImgBeamAnalyzer.cpp
@@ -13,7 +13,7 @@ static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/Im
 //
 // $Author: julien_malik $
 //
-// $Revision: 1.8 $
+// $Revision: 1.9 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -313,7 +313,7 @@ void ImgBeamAnalyzer::get_device_property()
   this->autoROIMagFactor = kDEFAULT_AUTOROI_MAGFACTOR;
   this->pixelSizeX = kDEFAULT_PIXELSIZE_X;
   this->pixelSizeY = kDEFAULT_PIXELSIZE_Y;
-  this->growth = kDEFAULT_GROWTH;
+  this->opticalMagnification = kDEFAULT_OPTICAL_MAGNIFICATION;
   this->rotation = kDEFAULT_ROTATION;
   this->horizontalFlip = kDEFAULT_HORIZONTAL_FLIP;
   this->gammaCorrection = kDEFAULT_GAMMA_CORRECTION;
@@ -335,7 +335,7 @@ void ImgBeamAnalyzer::get_device_property()
 	dev_prop.push_back(Tango::DbDatum("Mode"));
 	dev_prop.push_back(Tango::DbDatum("PixelSizeX"));
 	dev_prop.push_back(Tango::DbDatum("PixelSizeY"));
-	dev_prop.push_back(Tango::DbDatum("Growth"));
+	dev_prop.push_back(Tango::DbDatum("OpticalMagnification"));
 	dev_prop.push_back(Tango::DbDatum("Rotation"));
 	dev_prop.push_back(Tango::DbDatum("HorizontalFlip"));
 	dev_prop.push_back(Tango::DbDatum("GammaCorrection"));
@@ -467,14 +467,14 @@ void ImgBeamAnalyzer::get_device_property()
 	//	And try to extract PixelSizeY value from database
 	if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  pixelSizeY;
 
-	//	Try to initialize Growth from class property
+	//	Try to initialize OpticalMagnification from class property
 	cl_prop = ds_class->get_class_property(dev_prop[++i].name);
-	if (cl_prop.is_empty()==false)	cl_prop  >>  growth;
-	//	Try to initialize Growth from default device value
+	if (cl_prop.is_empty()==false)	cl_prop  >>  opticalMagnification;
+	//	Try to initialize OpticalMagnification from default device value
 	def_prop = ds_class->get_default_device_property(dev_prop[i].name);
-	if (def_prop.is_empty()==false)	def_prop  >>  growth;
-	//	And try to extract Growth value from database
-	if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  growth;
+	if (def_prop.is_empty()==false)	def_prop  >>  opticalMagnification;
+	//	And try to extract OpticalMagnification value from database
+	if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  opticalMagnification;
 
 	//	Try to initialize Rotation from class property
 	cl_prop = ds_class->get_class_property(dev_prop[++i].name);
@@ -538,7 +538,7 @@ void ImgBeamAnalyzer::get_device_property()
   this->current_config_.comput_period = computationPeriod;
   this->current_config_.pixel_size_x = pixelSizeX;
   this->current_config_.pixel_size_y = pixelSizeY;
-  this->current_config_.growth = growth;
+  this->current_config_.optical_mag = opticalMagnification;
   this->current_config_.auto_roi_mag_factor = autoROIMagFactor;
   this->current_config_.rotation = rotation;
   this->current_config_.horizontal_flip = horizontalFlip;
@@ -600,6 +600,78 @@ void ImgBeamAnalyzer::read_attr_hardware(vector<long> &attr_list)
 }
 //+----------------------------------------------------------------------------
 //
+// method : 		ImgBeamAnalyzer::read_AutoROIFound
+// 
+// description : 	Extract real attribute values for AutoROIFound acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_AutoROIFound(Tango::Attribute &attr)
+{
+  READ_OUTPUT_SCALAR_ATTR(auto_roi_found, enable_auto_roi, Tango::DevBoolean);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_XProfileFitConverged
+// 
+// description : 	Extract real attribute values for XProfileFitConverged acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_XProfileFitConverged(Tango::Attribute &attr)
+{
+  READ_OUTPUT_SCALAR_ATTR(profile_x_fit_converged, enable_profile, Tango::DevBoolean);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_YProfileFitConverged
+// 
+// description : 	Extract real attribute values for YProfileFitConverged acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_YProfileFitConverged(Tango::Attribute &attr)
+{
+  READ_OUTPUT_SCALAR_ATTR(profile_y_fit_converged, enable_profile, Tango::DevBoolean);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_GaussianFitConverged
+// 
+// description : 	Extract real attribute values for GaussianFitConverged acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_GaussianFitConverged(Tango::Attribute &attr)
+{
+  READ_OUTPUT_SCALAR_ATTR(auto_roi_found, enable_2d_gaussian_fit, Tango::DevBoolean);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_OpticalMagnification
+// 
+// description : 	Extract real attribute values for OpticalMagnification acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_OpticalMagnification(Tango::Attribute &attr)
+{
+  READ_INPUT_ATTR(optical_mag);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::write_OpticalMagnification
+// 
+// description : 	Write OpticalMagnification attribute values to hardware.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::write_OpticalMagnification(Tango::WAttribute &attr)
+{
+  WRITE_INPUT_ATTR(optical_mag, Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
 // method : 		ImgBeamAnalyzer::read_PixelSizeX
 // 
 // description : 	Extract real attribute values for PixelSizeX acquisition result.
@@ -646,29 +718,6 @@ void ImgBeamAnalyzer::write_PixelSizeY(Tango::WAttribute &attr)
   WRITE_INPUT_ATTR(pixel_size_y, Tango::DevDouble);
 }
 
-//+----------------------------------------------------------------------------
-//
-// method : 		ImgBeamAnalyzer::read_Growth
-// 
-// description : 	Extract real attribute values for Growth acquisition result.
-//
-//-----------------------------------------------------------------------------
-void ImgBeamAnalyzer::read_Growth(Tango::Attribute &attr)
-{
-  READ_INPUT_ATTR(growth);
-}
-
-//+----------------------------------------------------------------------------
-//
-// method : 		ImgBeamAnalyzer::write_Growth
-// 
-// description : 	Write Growth attribute values to hardware.
-//
-//-----------------------------------------------------------------------------
-void ImgBeamAnalyzer::write_Growth(Tango::WAttribute &attr)
-{
-  WRITE_INPUT_ATTR(growth, Tango::DevDouble);
-}
 
 //+----------------------------------------------------------------------------
 //
@@ -2026,7 +2075,7 @@ void ImgBeamAnalyzer::save_current_settings()
   ADD_DATUM( EnableUserROI,       this->current_config_.enable_user_roi );
   ADD_DATUM( PixelSizeX,          this->current_config_.pixel_size_x );
   ADD_DATUM( PixelSizeY,          this->current_config_.pixel_size_y );
-  ADD_DATUM( Growth,              this->current_config_.growth );
+  ADD_DATUM( OpticalMagnification,this->current_config_.optical_mag );
   ADD_DATUM( Rotation,            this->current_config_.rotation );
   ADD_DATUM( HorizontalFlip,      this->current_config_.horizontal_flip );
   ADD_DATUM( GammaCorrection,     this->current_config_.gamma_correction );
@@ -2173,17 +2222,6 @@ Tango::DevString ImgBeamAnalyzer::get_version_number()
 	//	See "TANGO Device Server Programmer's Manual"
 	//		(chapter : Writing a TANGO DS / Exchanging data)
 	//------------------------------------------------------------
-/*
-#define STRINGIFY(x) #x
-#define MAKE_STRING(x) STRINGIFY(x)
-
-  string version;
-#ifdef DS_VERSION_NUMBER
-  version = MAKE_STRING(DS_VERSION_NUMBER);
-#else
-  version = "development";
-#endif
-*/
   string version(BIA_VERSION);
 	Tango::DevString	argout  = new char[version.length()];
 	strcpy(argout, version.c_str());

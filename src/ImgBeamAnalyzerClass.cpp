@@ -1,4 +1,4 @@
-static const char *RcsId     = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzerClass.cpp,v 1.6 2007-04-19 08:39:39 julien_malik Exp $";
+static const char *RcsId     = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzerClass.cpp,v 1.7 2007-04-23 13:58:26 julien_malik Exp $";
 static const char *TagName   = "$Name: not supported by cvs2svn $";
 static const char *HttpServer= "http://www.esrf.fr/computing/cs/tango/tango_doc/ds_doc/";
 //+=============================================================================
@@ -14,7 +14,7 @@ static const char *HttpServer= "http://www.esrf.fr/computing/cs/tango/tango_doc/
 //
 // $Author: julien_malik $
 //
-// $Revision: 1.6 $
+// $Revision: 1.7 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -453,7 +453,7 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	Tango::UserDefaultAttrProp	computation_period_prop;
 	computation_period_prop.set_label("ComputationPeriod");
 	computation_period_prop.set_unit("ms");
-	computation_period_prop.set_format("%4d");
+	computation_period_prop.set_format("%5d");
 	computation_period_prop.set_description("period in millisecond at which a new image is read and processed");
 	computation_period->set_default_properties(computation_period_prop);
 	att_list.push_back(computation_period);
@@ -472,7 +472,7 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	RotationAttrib	*rotation = new RotationAttrib();
 	Tango::UserDefaultAttrProp	rotation_prop;
 	rotation_prop.set_label("Rotation");
-	rotation_prop.set_unit("Â°");
+	rotation_prop.set_unit("°");
 	rotation_prop.set_format("%4d");
 	rotation_prop.set_description("the rotation applied in preprocessing. only multiple of 90 are recognized as valid values");
 	rotation->set_default_properties(rotation_prop);
@@ -501,7 +501,7 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	Tango::UserDefaultAttrProp	gamma_correction_prop;
 	gamma_correction_prop.set_label("GammaCorrection");
 	gamma_correction_prop.set_unit(" ");
-	gamma_correction_prop.set_format("%6.5f");
+	gamma_correction_prop.set_format("%4.2f");
 	gamma_correction_prop.set_description("the gamma value of the camera, used to correct the ROI image by raising to its inverse power");
 	gamma_correction->set_default_properties(gamma_correction_prop);
 	att_list.push_back(gamma_correction);
@@ -531,8 +531,8 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	PixelSizeXAttrib	*pixel_size_x = new PixelSizeXAttrib();
 	Tango::UserDefaultAttrProp	pixel_size_x_prop;
 	pixel_size_x_prop.set_label("PixelSizeX");
-	pixel_size_x_prop.set_unit("mm/pix");
-	pixel_size_x_prop.set_format("%5.4f");
+	pixel_size_x_prop.set_unit("µm/pix");
+	pixel_size_x_prop.set_format("%5.2f");
 	pixel_size_x_prop.set_description("The correspondence between pixel width and mm");
 	pixel_size_x->set_default_properties(pixel_size_x_prop);
 	att_list.push_back(pixel_size_x);
@@ -541,21 +541,21 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	PixelSizeYAttrib	*pixel_size_y = new PixelSizeYAttrib();
 	Tango::UserDefaultAttrProp	pixel_size_y_prop;
 	pixel_size_y_prop.set_label("PixelSizeY");
-	pixel_size_y_prop.set_unit("mm/pix");
-	pixel_size_y_prop.set_format("%5.4f");
+	pixel_size_y_prop.set_unit("µm/pix");
+	pixel_size_y_prop.set_format("%5.2f");
 	pixel_size_y_prop.set_description("The correspondence between pixel height and mm");
 	pixel_size_y->set_default_properties(pixel_size_y_prop);
 	att_list.push_back(pixel_size_y);
 
-	//	Attribute : Growth
-	GrowthAttrib	*growth = new GrowthAttrib();
-	Tango::UserDefaultAttrProp	growth_prop;
-	growth_prop.set_label("Growth");
-	growth_prop.set_unit(" ");
-	growth_prop.set_format("%5.4f");
-	growth_prop.set_description("the growth of the optical system (no unit). ");
-	growth->set_default_properties(growth_prop);
-	att_list.push_back(growth);
+	//	Attribute : OpticalMagnification
+	OpticalMagnificationAttrib	*optical_magnification = new OpticalMagnificationAttrib();
+	Tango::UserDefaultAttrProp	optical_magnification_prop;
+	optical_magnification_prop.set_label("OpticalMagnification");
+	optical_magnification_prop.set_unit(" ");
+	optical_magnification_prop.set_format("%5.2f");
+	optical_magnification_prop.set_description("the magnification factor of the optical system (no unit)");
+	optical_magnification->set_default_properties(optical_magnification_prop);
+	att_list.push_back(optical_magnification);
 
 	//	Attribute : UserROIOriginX
 	UserROIOriginXAttrib	*user_roiorigin_x = new UserROIOriginXAttrib();
@@ -600,6 +600,14 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	user_roiheight_prop.set_description("the height of the ROI in pixels");
 	user_roiheight->set_default_properties(user_roiheight_prop);
 	att_list.push_back(user_roiheight);
+
+	//	Attribute : AutoROIFound
+	AutoROIFoundAttrib	*auto_roifound = new AutoROIFoundAttrib();
+	Tango::UserDefaultAttrProp	auto_roifound_prop;
+	auto_roifound_prop.set_label("AutoROI Found");
+	auto_roifound_prop.set_description("true if the AutoROI algorithm was used and did found a beam inside the image");
+	auto_roifound->set_default_properties(auto_roifound_prop);
+	att_list.push_back(auto_roifound);
 
 	//	Attribute : AutoROIOriginX
 	AutoROIOriginXAttrib	*auto_roiorigin_x = new AutoROIOriginXAttrib();
@@ -683,7 +691,7 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	Tango::UserDefaultAttrProp	max_intensity_prop;
 	max_intensity_prop.set_label("MaxIntensity");
 	max_intensity_prop.set_unit(" ");
-	max_intensity_prop.set_format("%10.2f");
+	max_intensity_prop.set_format("%10d");
 	max_intensity_prop.set_description("the maximal intensity inside the ROI");
 	max_intensity->set_default_properties(max_intensity_prop);
 	att_list.push_back(max_intensity);
@@ -702,8 +710,8 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	CentroidXAttrib	*centroid_x = new CentroidXAttrib();
 	Tango::UserDefaultAttrProp	centroid_x_prop;
 	centroid_x_prop.set_label("CentroidX");
-	centroid_x_prop.set_unit("mm");
-	centroid_x_prop.set_format("%10.2f");
+	centroid_x_prop.set_unit("µm");
+	centroid_x_prop.set_format("%10.4f");
 	centroid_x_prop.set_description("the X coordinate of the centroid");
 	centroid_x->set_default_properties(centroid_x_prop);
 	att_list.push_back(centroid_x);
@@ -712,8 +720,8 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	CentroidYAttrib	*centroid_y = new CentroidYAttrib();
 	Tango::UserDefaultAttrProp	centroid_y_prop;
 	centroid_y_prop.set_label("CentroidY");
-	centroid_y_prop.set_unit("mm");
-	centroid_y_prop.set_format("%10.2f");
+	centroid_y_prop.set_unit("µm");
+	centroid_y_prop.set_format("%10.4f");
 	centroid_y_prop.set_description("the Y coordinate of the centroid");
 	centroid_y->set_default_properties(centroid_y_prop);
 	att_list.push_back(centroid_y);
@@ -722,8 +730,8 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	VarianceXAttrib	*variance_x = new VarianceXAttrib();
 	Tango::UserDefaultAttrProp	variance_x_prop;
 	variance_x_prop.set_label("VarianceX");
-	variance_x_prop.set_unit("mmÂ²");
-	variance_x_prop.set_format("%10.2f");
+	variance_x_prop.set_unit("µm²");
+	variance_x_prop.set_format("%10.4f");
 	variance_x_prop.set_description("the variance along the X axis");
 	variance_x->set_default_properties(variance_x_prop);
 	att_list.push_back(variance_x);
@@ -732,8 +740,8 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	VarianceYAttrib	*variance_y = new VarianceYAttrib();
 	Tango::UserDefaultAttrProp	variance_y_prop;
 	variance_y_prop.set_label("VarianceY");
-	variance_y_prop.set_unit("mmÂ²");
-	variance_y_prop.set_format("%10.2f");
+	variance_y_prop.set_unit("µm²");
+	variance_y_prop.set_format("%10.4f");
 	variance_y_prop.set_description("the variance along the Y axis");
 	variance_y->set_default_properties(variance_y_prop);
 	att_list.push_back(variance_y);
@@ -742,8 +750,8 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	CovarianceXYAttrib	*covariance_xy = new CovarianceXYAttrib();
 	Tango::UserDefaultAttrProp	covariance_xy_prop;
 	covariance_xy_prop.set_label("Covariance X-Y");
-	covariance_xy_prop.set_unit("mmÂ²");
-	covariance_xy_prop.set_format("%10.2f");
+	covariance_xy_prop.set_unit("µm²");
+	covariance_xy_prop.set_format("%10.4f");
 	covariance_xy_prop.set_description("the covariance with respect to the X and Y axis");
 	covariance_xy->set_default_properties(covariance_xy_prop);
 	att_list.push_back(covariance_xy);
@@ -753,7 +761,7 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	Tango::UserDefaultAttrProp	correlation_xy_prop;
 	correlation_xy_prop.set_label("Correlation Coefficient");
 	correlation_xy_prop.set_unit(" ");
-	correlation_xy_prop.set_format("%10.2f");
+	correlation_xy_prop.set_format("%10.4f");
 	correlation_xy_prop.set_description("the correlation coefficient between the X and Y axises");
 	correlation_xy->set_default_properties(correlation_xy_prop);
 	att_list.push_back(correlation_xy);
@@ -762,8 +770,8 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	SkewXAttrib	*skew_x = new SkewXAttrib();
 	Tango::UserDefaultAttrProp	skew_x_prop;
 	skew_x_prop.set_label("Skew X^3");
-	skew_x_prop.set_unit("mm3");
-	skew_x_prop.set_format("%10.2f");
+	skew_x_prop.set_unit("µm3");
+	skew_x_prop.set_format("%10.4f");
 	skew_x_prop.set_description("the skew along the X axis");
 	skew_x->set_default_properties(skew_x_prop);
 	att_list.push_back(skew_x);
@@ -772,8 +780,8 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	SkewYAttrib	*skew_y = new SkewYAttrib();
 	Tango::UserDefaultAttrProp	skew_y_prop;
 	skew_y_prop.set_label("Skew Y^3");
-	skew_y_prop.set_unit("mm3");
-	skew_y_prop.set_format("%10.2f");
+	skew_y_prop.set_unit("µm3");
+	skew_y_prop.set_format("%10.4f");
 	skew_y_prop.set_description("the skew along the Y axis");
 	skew_y->set_default_properties(skew_y_prop);
 	att_list.push_back(skew_y);
@@ -781,20 +789,20 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	//	Attribute : SkewX2Y
 	SkewX2YAttrib	*skew_x2_y = new SkewX2YAttrib();
 	Tango::UserDefaultAttrProp	skew_x2_y_prop;
-	skew_x2_y_prop.set_label("Skew Xï¿½.Y");
-	skew_x2_y_prop.set_unit("mm3");
-	skew_x2_y_prop.set_format("%10.2f");
-	skew_x2_y_prop.set_description("the skew cross coefficient for Xï¿½.Y");
+	skew_x2_y_prop.set_label("Skew X².Y");
+	skew_x2_y_prop.set_unit("µm3");
+	skew_x2_y_prop.set_format("%10.4f");
+	skew_x2_y_prop.set_description("the skew cross coefficient for X².Y");
 	skew_x2_y->set_default_properties(skew_x2_y_prop);
 	att_list.push_back(skew_x2_y);
 
 	//	Attribute : SkewXY2
 	SkewXY2Attrib	*skew_xy2 = new SkewXY2Attrib();
 	Tango::UserDefaultAttrProp	skew_xy2_prop;
-	skew_xy2_prop.set_label("Skew X.Yï¿½");
-	skew_xy2_prop.set_unit("mm3");
-	skew_xy2_prop.set_format("%10.2f");
-	skew_xy2_prop.set_description("the skew cross coefficient for X.Yï¿½");
+	skew_xy2_prop.set_label("Skew X.Y²");
+	skew_xy2_prop.set_unit("µm3");
+	skew_xy2_prop.set_format("%10.4f");
+	skew_xy2_prop.set_description("the skew cross coefficient for X.Y²");
 	skew_xy2->set_default_properties(skew_xy2_prop);
 	att_list.push_back(skew_xy2);
 
@@ -807,6 +815,14 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	xprofile_prop.set_description("the cumulative sum along the X axis");
 	xprofile->set_default_properties(xprofile_prop);
 	att_list.push_back(xprofile);
+
+	//	Attribute : XProfileFitConverged
+	XProfileFitConvergedAttrib	*xprofile_fit_converged = new XProfileFitConvergedAttrib();
+	Tango::UserDefaultAttrProp	xprofile_fit_converged_prop;
+	xprofile_fit_converged_prop.set_label("XProfile Fit Converged");
+	xprofile_fit_converged_prop.set_description("true of the profile fitting algorithm has converged");
+	xprofile_fit_converged->set_default_properties(xprofile_fit_converged_prop);
+	att_list.push_back(xprofile_fit_converged);
 
 	//	Attribute : XProfileFitted
 	XProfileFittedAttrib	*xprofile_fitted = new XProfileFittedAttrib();
@@ -834,8 +850,8 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	XProfileCenterAttrib	*xprofile_center = new XProfileCenterAttrib();
 	Tango::UserDefaultAttrProp	xprofile_center_prop;
 	xprofile_center_prop.set_label("XProfile Center");
-	xprofile_center_prop.set_unit("mm");
-	xprofile_center_prop.set_format("%10.2f");
+	xprofile_center_prop.set_unit("µm");
+	xprofile_center_prop.set_format("%10.4f");
 	xprofile_center_prop.set_description("the X position of the center of the fitted gaussian corresponding to the X profile");
 	xprofile_center->set_default_properties(xprofile_center_prop);
 	att_list.push_back(xprofile_center);
@@ -854,7 +870,7 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	XProfileSigmaAttrib	*xprofile_sigma = new XProfileSigmaAttrib();
 	Tango::UserDefaultAttrProp	xprofile_sigma_prop;
 	xprofile_sigma_prop.set_label("XProfile Sigma");
-	xprofile_sigma_prop.set_unit("mm");
+	xprofile_sigma_prop.set_unit("µm");
 	xprofile_sigma_prop.set_format("%10.2f");
 	xprofile_sigma_prop.set_description("the standard deviation of  fitted gaussian corresponding to the X profile");
 	xprofile_sigma->set_default_properties(xprofile_sigma_prop);
@@ -864,7 +880,7 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	XProfileFWHMAttrib	*xprofile_fwhm = new XProfileFWHMAttrib();
 	Tango::UserDefaultAttrProp	xprofile_fwhm_prop;
 	xprofile_fwhm_prop.set_label("XProfile FWHM");
-	xprofile_fwhm_prop.set_unit("mm");
+	xprofile_fwhm_prop.set_unit("µm");
 	xprofile_fwhm_prop.set_format("%10.2f");
 	xprofile_fwhm_prop.set_description("the full width at half maximum of the fitted gaussian corresponding to the X profile, calculated approximately as 2.35 * XProfileSigma");
 	xprofile_fwhm->set_default_properties(xprofile_fwhm_prop);
@@ -900,6 +916,14 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	yprofile->set_default_properties(yprofile_prop);
 	att_list.push_back(yprofile);
 
+	//	Attribute : YProfileFitConverged
+	YProfileFitConvergedAttrib	*yprofile_fit_converged = new YProfileFitConvergedAttrib();
+	Tango::UserDefaultAttrProp	yprofile_fit_converged_prop;
+	yprofile_fit_converged_prop.set_label("YProfile Fit Converged");
+	yprofile_fit_converged_prop.set_description("true of the profile fitting algorithm has converged");
+	yprofile_fit_converged->set_default_properties(yprofile_fit_converged_prop);
+	att_list.push_back(yprofile_fit_converged);
+
 	//	Attribute : YProfileFitted
 	YProfileFittedAttrib	*yprofile_fitted = new YProfileFittedAttrib();
 	Tango::UserDefaultAttrProp	yprofile_fitted_prop;
@@ -926,7 +950,7 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	YProfileCenterAttrib	*yprofile_center = new YProfileCenterAttrib();
 	Tango::UserDefaultAttrProp	yprofile_center_prop;
 	yprofile_center_prop.set_label("YProfile Center");
-	yprofile_center_prop.set_unit("mm");
+	yprofile_center_prop.set_unit("µm");
 	yprofile_center_prop.set_format("%10.2f");
 	yprofile_center_prop.set_description("the Y position of the center of the fitted gaussian corresponding to the Y profile");
 	yprofile_center->set_default_properties(yprofile_center_prop);
@@ -946,7 +970,7 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	YProfileSigmaAttrib	*yprofile_sigma = new YProfileSigmaAttrib();
 	Tango::UserDefaultAttrProp	yprofile_sigma_prop;
 	yprofile_sigma_prop.set_label("YProfile Sigma");
-	yprofile_sigma_prop.set_unit("mm");
+	yprofile_sigma_prop.set_unit("µm");
 	yprofile_sigma_prop.set_format("%10.2f");
 	yprofile_sigma_prop.set_description("the standard deviation of  fitted gaussian corresponding to the Y profile");
 	yprofile_sigma->set_default_properties(yprofile_sigma_prop);
@@ -956,7 +980,7 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	YProfileFWHMAttrib	*yprofile_fwhm = new YProfileFWHMAttrib();
 	Tango::UserDefaultAttrProp	yprofile_fwhm_prop;
 	yprofile_fwhm_prop.set_label("YProfile FWHM");
-	yprofile_fwhm_prop.set_unit("mm");
+	yprofile_fwhm_prop.set_unit("µm");
 	yprofile_fwhm_prop.set_format("%10.2f");
 	yprofile_fwhm_prop.set_description("the full width at half maximum of the fitted gaussian corresponding to the Y profile, calculated approximately as 2.35 * YProfileSigma");
 	yprofile_fwhm->set_default_properties(yprofile_fwhm_prop);
@@ -982,6 +1006,14 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	yprofile_chi2->set_default_properties(yprofile_chi2_prop);
 	att_list.push_back(yprofile_chi2);
 
+	//	Attribute : GaussianFitConverged
+	GaussianFitConvergedAttrib	*gaussian_fit_converged = new GaussianFitConvergedAttrib();
+	Tango::UserDefaultAttrProp	gaussian_fit_converged_prop;
+	gaussian_fit_converged_prop.set_label("GaussianFitConverged");
+	gaussian_fit_converged_prop.set_description("true of the 2D gaussian fitting algorithm has converged");
+	gaussian_fit_converged->set_default_properties(gaussian_fit_converged_prop);
+	att_list.push_back(gaussian_fit_converged);
+
 	//	Attribute : GaussianFitMagnitude
 	GaussianFitMagnitudeAttrib	*gaussian_fit_magnitude = new GaussianFitMagnitudeAttrib();
 	Tango::UserDefaultAttrProp	gaussian_fit_magnitude_prop;
@@ -996,7 +1028,7 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	GaussianFitCenterXAttrib	*gaussian_fit_center_x = new GaussianFitCenterXAttrib();
 	Tango::UserDefaultAttrProp	gaussian_fit_center_x_prop;
 	gaussian_fit_center_x_prop.set_label("GaussianFitCenterX");
-	gaussian_fit_center_x_prop.set_unit("mm");
+	gaussian_fit_center_x_prop.set_unit("µm");
 	gaussian_fit_center_x_prop.set_format("%10.2f");
 	gaussian_fit_center_x_prop.set_description("the X coordinate of the centroid of the 2D gaussian fitted to the image");
 	gaussian_fit_center_x->set_default_properties(gaussian_fit_center_x_prop);
@@ -1006,7 +1038,7 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	GaussianFitCenterYAttrib	*gaussian_fit_center_y = new GaussianFitCenterYAttrib();
 	Tango::UserDefaultAttrProp	gaussian_fit_center_y_prop;
 	gaussian_fit_center_y_prop.set_label("GaussianFitCenterY");
-	gaussian_fit_center_y_prop.set_unit("mm");
+	gaussian_fit_center_y_prop.set_unit("µm");
 	gaussian_fit_center_y_prop.set_format("%10.2f");
 	gaussian_fit_center_y_prop.set_description("the Y coordinate of the centroid of the 2D gaussian fitted to the image");
 	gaussian_fit_center_y->set_default_properties(gaussian_fit_center_y_prop);
@@ -1016,7 +1048,7 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	GaussianFitVarianceXAttrib	*gaussian_fit_variance_x = new GaussianFitVarianceXAttrib();
 	Tango::UserDefaultAttrProp	gaussian_fit_variance_x_prop;
 	gaussian_fit_variance_x_prop.set_label("GaussianFitVarianceX");
-	gaussian_fit_variance_x_prop.set_unit("mmÂ²");
+	gaussian_fit_variance_x_prop.set_unit("µm²");
 	gaussian_fit_variance_x_prop.set_format("%10.2f");
 	gaussian_fit_variance_x_prop.set_description("the variance of the 2D gaussian along the X axis");
 	gaussian_fit_variance_x->set_default_properties(gaussian_fit_variance_x_prop);
@@ -1026,7 +1058,7 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	GaussianFitVarianceYAttrib	*gaussian_fit_variance_y = new GaussianFitVarianceYAttrib();
 	Tango::UserDefaultAttrProp	gaussian_fit_variance_y_prop;
 	gaussian_fit_variance_y_prop.set_label("GaussianFitVarianceY");
-	gaussian_fit_variance_y_prop.set_unit("mmÂ²");
+	gaussian_fit_variance_y_prop.set_unit("µm²");
 	gaussian_fit_variance_y_prop.set_format("%10.2f");
 	gaussian_fit_variance_y_prop.set_description("the variance of the 2D gaussian along the Y axis");
 	gaussian_fit_variance_y->set_default_properties(gaussian_fit_variance_y_prop);
@@ -1036,7 +1068,7 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	GaussianFitCovarianceXYAttrib	*gaussian_fit_covariance_xy = new GaussianFitCovarianceXYAttrib();
 	Tango::UserDefaultAttrProp	gaussian_fit_covariance_xy_prop;
 	gaussian_fit_covariance_xy_prop.set_label("GaussianFitCovarianceXY");
-	gaussian_fit_covariance_xy_prop.set_unit("mmÂ²");
+	gaussian_fit_covariance_xy_prop.set_unit("µm²");
 	gaussian_fit_covariance_xy_prop.set_format("%10.2f");
 	gaussian_fit_covariance_xy_prop.set_description("the covariance of the 2D gaussian");
 	gaussian_fit_covariance_xy->set_default_properties(gaussian_fit_covariance_xy_prop);
@@ -1046,7 +1078,7 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	GaussianFitMajorAxisFWHMAttrib	*gaussian_fit_major_axis_fwhm = new GaussianFitMajorAxisFWHMAttrib();
 	Tango::UserDefaultAttrProp	gaussian_fit_major_axis_fwhm_prop;
 	gaussian_fit_major_axis_fwhm_prop.set_label("GaussianFitMajorAxisFWHM");
-	gaussian_fit_major_axis_fwhm_prop.set_unit("mm");
+	gaussian_fit_major_axis_fwhm_prop.set_unit("µm");
 	gaussian_fit_major_axis_fwhm_prop.set_format("%10.2f");
 	gaussian_fit_major_axis_fwhm_prop.set_description("the FWHM along the major axis of the fitted gaussian, calculated approximately as 2.35 * sqrt(GaussianFitVarianceX)");
 	gaussian_fit_major_axis_fwhm->set_default_properties(gaussian_fit_major_axis_fwhm_prop);
@@ -1056,7 +1088,7 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	GaussianFitMinorAxisFWHMAttrib	*gaussian_fit_minor_axis_fwhm = new GaussianFitMinorAxisFWHMAttrib();
 	Tango::UserDefaultAttrProp	gaussian_fit_minor_axis_fwhm_prop;
 	gaussian_fit_minor_axis_fwhm_prop.set_label("GaussianFitMinorAxisFWHM");
-	gaussian_fit_minor_axis_fwhm_prop.set_unit("mm");
+	gaussian_fit_minor_axis_fwhm_prop.set_unit("µm");
 	gaussian_fit_minor_axis_fwhm_prop.set_format("%10.2f");
 	gaussian_fit_minor_axis_fwhm_prop.set_description("the FWHM along the minor axis of the fitted gaussian, calculated approximately as 2.35 * sqrt(GaussianFitVarianceY)");
 	gaussian_fit_minor_axis_fwhm->set_default_properties(gaussian_fit_minor_axis_fwhm_prop);
@@ -1066,7 +1098,7 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	GaussianFitTiltAttrib	*gaussian_fit_tilt = new GaussianFitTiltAttrib();
 	Tango::UserDefaultAttrProp	gaussian_fit_tilt_prop;
 	gaussian_fit_tilt_prop.set_label("GaussianFitTilt");
-	gaussian_fit_tilt_prop.set_unit("rad");
+	gaussian_fit_tilt_prop.set_unit("°");
 	gaussian_fit_tilt_prop.set_format("%10.2f");
 	gaussian_fit_tilt_prop.set_description("the angle made by the major axis of the gaussian and the X axis");
 	gaussian_fit_tilt->set_default_properties(gaussian_fit_tilt_prop);
@@ -1385,8 +1417,8 @@ void ImgBeamAnalyzerClass::set_default_property()
 	else
 		add_wiz_dev_prop(prop_name, prop_desc);
 
-	prop_name = "Growth";
-	prop_desc = "the initial value of the Growth attribute";
+	prop_name = "OpticalMagnification";
+	prop_desc = "the initial value of the OpticalMagnification attribute";
 	prop_def  = "";
 	if (prop_def.length()>0)
 	{
