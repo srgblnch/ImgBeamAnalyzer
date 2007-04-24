@@ -1,4 +1,4 @@
-static const char *RcsId     = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzerClass.cpp,v 1.7 2007-04-23 13:58:26 julien_malik Exp $";
+static const char *RcsId     = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzerClass.cpp,v 1.8 2007-04-24 09:44:19 julien_malik Exp $";
 static const char *TagName   = "$Name: not supported by cvs2svn $";
 static const char *HttpServer= "http://www.esrf.fr/computing/cs/tango/tango_doc/ds_doc/";
 //+=============================================================================
@@ -14,7 +14,7 @@ static const char *HttpServer= "http://www.esrf.fr/computing/cs/tango/tango_doc/
 //
 // $Author: julien_malik $
 //
-// $Revision: 1.7 $
+// $Revision: 1.8 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -711,7 +711,7 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	Tango::UserDefaultAttrProp	centroid_x_prop;
 	centroid_x_prop.set_label("CentroidX");
 	centroid_x_prop.set_unit("µm");
-	centroid_x_prop.set_format("%10.4f");
+	centroid_x_prop.set_format("%10.2f");
 	centroid_x_prop.set_description("the X coordinate of the centroid");
 	centroid_x->set_default_properties(centroid_x_prop);
 	att_list.push_back(centroid_x);
@@ -721,7 +721,7 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	Tango::UserDefaultAttrProp	centroid_y_prop;
 	centroid_y_prop.set_label("CentroidY");
 	centroid_y_prop.set_unit("µm");
-	centroid_y_prop.set_format("%10.4f");
+	centroid_y_prop.set_format("%10.2f");
 	centroid_y_prop.set_description("the Y coordinate of the centroid");
 	centroid_y->set_default_properties(centroid_y_prop);
 	att_list.push_back(centroid_y);
@@ -731,7 +731,7 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	Tango::UserDefaultAttrProp	variance_x_prop;
 	variance_x_prop.set_label("VarianceX");
 	variance_x_prop.set_unit("µm²");
-	variance_x_prop.set_format("%10.4f");
+	variance_x_prop.set_format("%10.2f");
 	variance_x_prop.set_description("the variance along the X axis");
 	variance_x->set_default_properties(variance_x_prop);
 	att_list.push_back(variance_x);
@@ -741,7 +741,7 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	Tango::UserDefaultAttrProp	variance_y_prop;
 	variance_y_prop.set_label("VarianceY");
 	variance_y_prop.set_unit("µm²");
-	variance_y_prop.set_format("%10.4f");
+	variance_y_prop.set_format("%10.2f");
 	variance_y_prop.set_description("the variance along the Y axis");
 	variance_y->set_default_properties(variance_y_prop);
 	att_list.push_back(variance_y);
@@ -751,7 +751,7 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	Tango::UserDefaultAttrProp	covariance_xy_prop;
 	covariance_xy_prop.set_label("Covariance X-Y");
 	covariance_xy_prop.set_unit("µm²");
-	covariance_xy_prop.set_format("%10.4f");
+	covariance_xy_prop.set_format("%10.2f");
 	covariance_xy_prop.set_description("the covariance with respect to the X and Y axis");
 	covariance_xy->set_default_properties(covariance_xy_prop);
 	att_list.push_back(covariance_xy);
@@ -771,7 +771,7 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	Tango::UserDefaultAttrProp	skew_x_prop;
 	skew_x_prop.set_label("Skew X^3");
 	skew_x_prop.set_unit("µm3");
-	skew_x_prop.set_format("%10.4f");
+	skew_x_prop.set_format("%10.2f");
 	skew_x_prop.set_description("the skew along the X axis");
 	skew_x->set_default_properties(skew_x_prop);
 	att_list.push_back(skew_x);
@@ -781,7 +781,7 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	Tango::UserDefaultAttrProp	skew_y_prop;
 	skew_y_prop.set_label("Skew Y^3");
 	skew_y_prop.set_unit("µm3");
-	skew_y_prop.set_format("%10.4f");
+	skew_y_prop.set_format("%10.2f");
 	skew_y_prop.set_description("the skew along the Y axis");
 	skew_y->set_default_properties(skew_y_prop);
 	att_list.push_back(skew_y);
@@ -791,7 +791,7 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	Tango::UserDefaultAttrProp	skew_x2_y_prop;
 	skew_x2_y_prop.set_label("Skew X².Y");
 	skew_x2_y_prop.set_unit("µm3");
-	skew_x2_y_prop.set_format("%10.4f");
+	skew_x2_y_prop.set_format("%10.2f");
 	skew_x2_y_prop.set_description("the skew cross coefficient for X².Y");
 	skew_x2_y->set_default_properties(skew_x2_y_prop);
 	att_list.push_back(skew_x2_y);
@@ -801,7 +801,7 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	Tango::UserDefaultAttrProp	skew_xy2_prop;
 	skew_xy2_prop.set_label("Skew X.Y²");
 	skew_xy2_prop.set_unit("µm3");
-	skew_xy2_prop.set_format("%10.4f");
+	skew_xy2_prop.set_format("%10.2f");
 	skew_xy2_prop.set_description("the skew cross coefficient for X.Y²");
 	skew_xy2->set_default_properties(skew_xy2_prop);
 	att_list.push_back(skew_xy2);
@@ -851,7 +851,7 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	Tango::UserDefaultAttrProp	xprofile_center_prop;
 	xprofile_center_prop.set_label("XProfile Center");
 	xprofile_center_prop.set_unit("µm");
-	xprofile_center_prop.set_format("%10.4f");
+	xprofile_center_prop.set_format("%10.2f");
 	xprofile_center_prop.set_description("the X position of the center of the fitted gaussian corresponding to the X profile");
 	xprofile_center->set_default_properties(xprofile_center_prop);
 	att_list.push_back(xprofile_center);

@@ -1,4 +1,4 @@
-static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzer.cpp,v 1.9 2007-04-23 13:58:26 julien_malik Exp $";
+static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzer.cpp,v 1.10 2007-04-24 09:44:19 julien_malik Exp $";
 //+=============================================================================
 //
 // file :         ImgBeamAnalyzer.cpp
@@ -13,7 +13,7 @@ static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/Im
 //
 // $Author: julien_malik $
 //
-// $Revision: 1.9 $
+// $Revision: 1.10 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -253,7 +253,8 @@ void ImgBeamAnalyzer::init_device()
     if (this->task_ == 0)
       throw std::bad_alloc();
 
-    this->task_->go();
+    double dummy = 0;
+    this->task_->go(dummy);
   }
   catch (const std::bad_alloc &)
   {
@@ -643,7 +644,7 @@ void ImgBeamAnalyzer::read_YProfileFitConverged(Tango::Attribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_GaussianFitConverged(Tango::Attribute &attr)
 {
-  READ_OUTPUT_SCALAR_ATTR(auto_roi_found, enable_2d_gaussian_fit, Tango::DevBoolean);
+  READ_OUTPUT_SCALAR_ATTR(gaussfit_converged, enable_2d_gaussian_fit, Tango::DevBoolean);
 }
 
 //+----------------------------------------------------------------------------
@@ -1853,7 +1854,7 @@ void ImgBeamAnalyzer::start()
       msg = new adtb::Message(kMSG_START);
       if (msg == 0)
         throw std::bad_alloc();
-      msg->make_waitable();
+      //msg->make_waitable();
     }
     catch(...)
     {
@@ -1912,7 +1913,7 @@ void ImgBeamAnalyzer::stop()
       msg = new adtb::Message(kMSG_STOP);
       if (msg == 0)
         throw std::bad_alloc();
-      msg->make_waitable();
+      //msg->make_waitable();
     }
     catch(...)
     {
@@ -1990,7 +1991,7 @@ void ImgBeamAnalyzer::process()
     msg = new adtb::Message(kMSG_PROCESS);
     if (msg == 0)
       throw std::bad_alloc();
-    msg->make_waitable();
+    //msg->make_waitable();
   }
   catch(...)
   {
@@ -2124,7 +2125,7 @@ void ImgBeamAnalyzer::start_learn_noise()
       msg = new adtb::Message(kMSG_START_LEARN_NOISE);
       if (msg == 0)
         throw std::bad_alloc();
-      msg->make_waitable();
+      //msg->make_waitable();
     }
     catch(...)
     {
@@ -2174,7 +2175,7 @@ void ImgBeamAnalyzer::stop_learn_noise()
       msg = new adtb::Message(kMSG_STOP_LEARN_NOISE);
       if (msg == 0)
         throw std::bad_alloc();
-      msg->make_waitable();
+      //msg->make_waitable();
     }
     catch(...)
     {
