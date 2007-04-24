@@ -68,6 +68,7 @@ BIAProcessor::process (const isl::Image& image, const BIAConfig& config, BIAData
   //-	Process the image
 	//------------------------------------------
   isl::Image* input_image = 0; //- the preprocessed image
+  isl::Image* user_roi_image = 0;
   isl::Image* roi_image = 0;
   isl::Image* roi_image_d = 0;
   isl::Image* noise_roi_image = 0;
@@ -126,76 +127,91 @@ BIAProcessor::process (const isl::Image& image, const BIAConfig& config, BIAData
       double py = config.pixel_size_y / config.optical_mag;
 
       //- Determine the ROI
-      isl::Rectangle roi;
+      isl::Rectangle user_roi;
       if (config.enable_user_roi)
       {
         if ( config.is_user_roi_empty()
              || config.user_roi_origin_x >=  input_image->width()
              || config.user_roi_origin_y >=  input_image->height() )
         {
-          roi = isl::Rectangle(0,
-                               0,
-                               input_image->width(),
-                               input_image->height());
+          user_roi = isl::Rectangle(0,
+                                    0,
+                                    input_image->width(),
+                                    input_image->height());
           data.user_roi_alarm = true;
         }
         else
         {
-          roi = isl::Rectangle(config.user_roi_origin_x,
-                               config.user_roi_origin_y,
-                               config.user_roi_width,
-                               config.user_roi_height);
+          user_roi = isl::Rectangle(config.user_roi_origin_x,
+                                    config.user_roi_origin_y,
+                                    config.user_roi_width,
+                                    config.user_roi_height);
         }
-        roi_image = input_image->get_roi(roi);
+        user_roi_image = input_image->get_roi(user_roi);
       }
-      else if (config.enable_auto_roi)
+      else
       {
-        
+        //- duplicate the input image
+        user_roi = isl::Rectangle(0,
+                                  0,
+                                  input_image->width(),
+                                  input_image->height());
+        user_roi_image = new isl::Image(*input_image);
+      }
+
+
+
+      isl::Rectangle auto_roi;
+      if (config.enable_auto_roi)
+      {
         try
         {
-          roi = isl::AutoROI(*input_image, config.auto_roi_mag_factor);
+          auto_roi = isl::AutoROI(*user_roi_image, config.auto_roi_mag_factor);
 
-          if (roi.is_empty())
+          if (auto_roi.is_empty())
           {
-            roi = isl::Rectangle(0,
-                                 0,
-                                 input_image->width(),
-                                 input_image->height());
+            auto_roi = isl::Rectangle(0,
+                                      0,
+                                      user_roi_image->width(),
+                                      user_roi_image->height());
           }
           else
           {
             data.auto_roi_found = true;
           }
 
-          roi_image = input_image->get_roi(roi);
+          roi_image = user_roi_image->get_roi(auto_roi);
         }
         catch(isl::Exception&)
         {
           isl::ErrorHandler::reset();
           // failed to determine the ROI automatically : take the whole image
-          roi = isl::Rectangle(0,
-                               0,
-                               input_image->width(),
-                               input_image->height());
+          auto_roi = isl::Rectangle(0,
+                                    0,
+                                    input_image->width(),
+                                    input_image->height());
           roi_image = new isl::Image(*input_image);
         }
 
-        data.auto_roi_origin_x = roi.origin().x();
-        data.auto_roi_origin_y = roi.origin().y();
-        data.auto_roi_width    = roi.width();
-        data.auto_roi_height   = roi.height();
+        auto_roi.translate(user_roi.x(), user_roi.y());
+        data.auto_roi_origin_x = auto_roi.origin().x();
+        data.auto_roi_origin_y = auto_roi.origin().y();
+        data.auto_roi_width    = auto_roi.width();
+        data.auto_roi_height   = auto_roi.height();
       }
       else
       {
-        //- roi is set to the whole image
-        roi = isl::Rectangle(0,
-                             0,
-                             input_image->width(),
-                             input_image->height());
+        //- roi is set to the whole image (already clipped by user roi)
+        auto_roi = isl::Rectangle(0,
+                                  0,
+                                  user_roi_image->width(),
+                                  user_roi_image->height());
 
-
-        roi_image = new isl::Image(*input_image);
+        roi_image = new isl::Image(*user_roi_image);
       }
+
+      //- the roi currently in use (intersection of user roi and auto roi)
+      isl::Rectangle roi = auto_roi;
 
       if (this->noise_estim_.nb_image() > 0)
       {
@@ -306,9 +322,6 @@ BIAProcessor::process (const isl::Image& image, const BIAConfig& config, BIAData
               gauss_fit2d.nb_iter(config.fit2d_nb_iter);
               gauss_fit2d.epsilon(config.fit2d_max_rel_change);
 
-              TIMEVAL	before_fit, after_fit;
-
-              GET_TIME(before_fit);
               gauss_fit2d.compute(*roi_image_d,
                                   initial_magnitude,
                                   img_moments.m10() / m00,
@@ -318,44 +331,64 @@ BIAProcessor::process (const isl::Image& image, const BIAConfig& config, BIAData
                                   img_moments.mu02() / m00,
                                   0);
 
-              GET_TIME(after_fit);
-              data.gaussfit_magnitude = gauss_fit2d.magnitude();
-              data.gaussfit_centroid_x = ( gauss_fit2d.mean().x() + roi.origin().x() ) * px;
-              data.gaussfit_centroid_y = ( gauss_fit2d.mean().y() + roi.origin().y() ) * py;
+              if (gauss_fit2d.has_converged())
+              {
+                data.gaussfit_magnitude = gauss_fit2d.magnitude();
+                data.gaussfit_centroid_x = ( gauss_fit2d.mean().x() + roi.origin().x() ) * px;
+                data.gaussfit_centroid_y = ( gauss_fit2d.mean().y() + roi.origin().y() ) * py;
 
-              gauss_fit2d.covariance(data.gaussfit_variance_x,
-                                     data.gaussfit_covariance_xy,
-                                     data.gaussfit_variance_y);
-              data.gaussfit_correlation_xy = data.gaussfit_covariance_xy  
-                                             / ::sqrt(data.gaussfit_variance_x * data.gaussfit_variance_y);
+                gauss_fit2d.covariance(data.gaussfit_variance_x,
+                                       data.gaussfit_covariance_xy,
+                                       data.gaussfit_variance_y);
+                data.gaussfit_correlation_xy = data.gaussfit_covariance_xy  
+                                               / ::sqrt(data.gaussfit_variance_x * data.gaussfit_variance_y);
       
-              data.gaussfit_variance_x    *= px * px;
-              data.gaussfit_variance_y    *= py * py;
-              data.gaussfit_covariance_xy *= px * py;
+                data.gaussfit_variance_x    *= px * px;
+                data.gaussfit_variance_y    *= py * py;
+                data.gaussfit_covariance_xy *= px * py;
 
-              data.gaussfit_bg = gauss_fit2d.background();
+                data.gaussfit_bg = gauss_fit2d.background();
 
-              data.gaussfit_parameters_covariance.set_dimensions(7, 7);
-              gauss_fit2d.parameters_cov(data.gaussfit_parameters_covariance.base());
+                data.gaussfit_parameters_covariance.set_dimensions(7, 7);
+                gauss_fit2d.parameters_cov(data.gaussfit_parameters_covariance.base());
 
-              data.gaussfit_chi2 = gauss_fit2d.chi2();
+                data.gaussfit_chi2 = gauss_fit2d.chi2();
+
+                //- Principal Axis of the gaussian
+                isl::PrincipalAxis princ_ax(data.gaussfit_centroid_x,
+                                            data.gaussfit_centroid_y,
+                                            data.gaussfit_variance_x,
+                                            data.gaussfit_covariance_xy,
+                                            data.gaussfit_variance_y);
+                double x,y;
+                princ_ax.get_first (x,y, data.gaussfit_major_axis_fwhm);
+                data.gaussfit_major_axis_fwhm *= SIGMA2FWHM_SCALE_FACTOR * px;
       
-              //- Principal Axis of the gaussian
-              isl::PrincipalAxis princ_ax(data.gaussfit_centroid_x,
-                                          data.gaussfit_centroid_y,
-                                          data.gaussfit_variance_x,
-                                          data.gaussfit_covariance_xy,
-                                          data.gaussfit_variance_y);
-              double x,y;
-              princ_ax.get_first (x,y, data.gaussfit_major_axis_fwhm);
-              data.gaussfit_major_axis_fwhm *= SIGMA2FWHM_SCALE_FACTOR * px;
+                princ_ax.get_second(x,y, data.gaussfit_minor_axis_fwhm);
+                data.gaussfit_minor_axis_fwhm *= SIGMA2FWHM_SCALE_FACTOR * py;
       
-              princ_ax.get_second(x,y, data.gaussfit_minor_axis_fwhm);
-              data.gaussfit_minor_axis_fwhm *= SIGMA2FWHM_SCALE_FACTOR * py;
-      
-              data.gaussfit_tilt = princ_ax.get_angle () * 180 / kPI;
+                data.gaussfit_tilt = princ_ax.get_angle () * 180 / kPI;
 
-              data.gaussfit_converged = true;
+                data.gaussfit_converged = true;
+              }
+              else
+              {
+                data.gaussfit_magnitude = 0;
+                data.gaussfit_centroid_x = 0;
+                data.gaussfit_centroid_y = 0;
+                data.gaussfit_variance_x = 0;
+                data.gaussfit_variance_y = 0;
+                data.gaussfit_covariance_xy = 0;
+                data.gaussfit_correlation_xy = 0;
+                data.gaussfit_major_axis_fwhm = 0;
+                data.gaussfit_minor_axis_fwhm = 0;
+                data.gaussfit_tilt = 0;
+                data.gaussfit_bg = 0;
+                data.gaussfit_chi2 = 0;
+                data.gaussfit_parameters_covariance.set_dimensions(7, 7);
+                data.gaussfit_parameters_covariance.fill(0);
+              }
+
             }
             catch(isl::Exception &)
             {
@@ -398,20 +431,34 @@ BIAProcessor::process (const isl::Image& image, const BIAConfig& config, BIAData
 
           gaussian_fit.compute(profiles.get_x_profile(), profiles.size_x());
           
-          data.profile_x_center  = (gaussian_fit.mean() + roi.origin().x()) * px;
-          data.profile_x_mag     = gaussian_fit.magnitude();
-          data.profile_x_sigma   = gaussian_fit.standard_deviation() * px;
-          data.profile_x_fwhm    = data.profile_x_sigma * SIGMA2FWHM_SCALE_FACTOR;
-          data.profile_x_bg      = gaussian_fit.background();
-          data.profile_x_chi2    = gaussian_fit.chi2();
-          
-          for (size_t i = 0; i < profiles.size_x(); i++)
+          if (gaussian_fit.has_converged())
           {
-            data.profile_x_fitted[i] = gaussian_fit.get_fitted_value(i);
-            data.profile_x_error[i]  = gaussian_fit.get_fitted_error(i);
-          }
+            data.profile_x_center  = (gaussian_fit.mean() + roi.origin().x()) * px;
+            data.profile_x_mag     = gaussian_fit.magnitude();
+            data.profile_x_sigma   = gaussian_fit.standard_deviation() * px;
+            data.profile_x_fwhm    = data.profile_x_sigma * SIGMA2FWHM_SCALE_FACTOR;
+            data.profile_x_bg      = gaussian_fit.background();
+            data.profile_x_chi2    = gaussian_fit.chi2();
+          
+            for (size_t i = 0; i < profiles.size_x(); i++)
+            {
+              data.profile_x_fitted[i] = gaussian_fit.get_fitted_value(i);
+              data.profile_x_error[i]  = gaussian_fit.get_fitted_error(i);
+            }
 
-          data.profile_x_fit_converged = true;
+            data.profile_x_fit_converged = true;
+          }
+          else
+          {
+            data.profile_x_center  = 0;
+            data.profile_x_mag     = 0;
+            data.profile_x_sigma   = 0;
+            data.profile_x_fwhm    = 0;
+            data.profile_x_bg      = 0;
+            data.profile_x_chi2    = 0;
+            data.profile_x_fitted.fill(0);
+            data.profile_x_error.fill(0);
+          }
         }
         catch(isl::Exception&)
         {
@@ -439,20 +486,35 @@ BIAProcessor::process (const isl::Image& image, const BIAConfig& config, BIAData
 
           gaussian_fit.compute(profiles.get_y_profile(), profiles.size_y());
           
-          data.profile_y_center  = (gaussian_fit.mean() + roi.origin().y()) * py;
-          data.profile_y_mag     = gaussian_fit.magnitude();
-          data.profile_y_sigma   = gaussian_fit.standard_deviation() * py;
-          data.profile_y_fwhm    = data.profile_y_sigma * SIGMA2FWHM_SCALE_FACTOR;
-          data.profile_y_bg      = gaussian_fit.background();
-          data.profile_y_chi2    = gaussian_fit.chi2();
-          
-          for (size_t i = 0; i < profiles.size_y(); i++)
+          if (gaussian_fit.has_converged())
           {
-            data.profile_y_fitted[i] = gaussian_fit.get_fitted_value(i);
-            data.profile_y_error[i]  = gaussian_fit.get_fitted_error(i);
-          }
+            data.profile_y_center  = (gaussian_fit.mean() + roi.origin().y()) * py;
+            data.profile_y_mag     = gaussian_fit.magnitude();
+            data.profile_y_sigma   = gaussian_fit.standard_deviation() * py;
+            data.profile_y_fwhm    = data.profile_y_sigma * SIGMA2FWHM_SCALE_FACTOR;
+            data.profile_y_bg      = gaussian_fit.background();
+            data.profile_y_chi2    = gaussian_fit.chi2();
+          
+            for (size_t i = 0; i < profiles.size_y(); i++)
+            {
+              data.profile_y_fitted[i] = gaussian_fit.get_fitted_value(i);
+              data.profile_y_error[i]  = gaussian_fit.get_fitted_error(i);
+            }
 
-          data.profile_y_fit_converged = true;
+            data.profile_y_fit_converged = true;
+          }
+          else
+          {
+            data.profile_y_center  = 0;
+            data.profile_y_mag     = 0;
+            data.profile_y_sigma   = 0;
+            data.profile_y_fwhm    = 0;
+            data.profile_y_bg      = 0;
+            data.profile_y_chi2    = 0;
+
+            data.profile_y_fitted.fill(0);
+            data.profile_y_error.fill(0);
+          }
         }
         catch(isl::Exception&)
         {
@@ -476,12 +538,14 @@ BIAProcessor::process (const isl::Image& image, const BIAConfig& config, BIAData
     data.estim_comput_time = ELAPSED_TIME_MS(start_time, end_time);
 
     SAFE_DELETE_PTR(input_image);
+    SAFE_DELETE_PTR(user_roi_image);
     SAFE_DELETE_PTR(roi_image);
     SAFE_DELETE_PTR(roi_image_d);
   }
   catch(isl::Exception & ex)
   {
     SAFE_DELETE_PTR(input_image);
+    SAFE_DELETE_PTR(user_roi_image);
     SAFE_DELETE_PTR(roi_image);
     SAFE_DELETE_PTR(roi_image_d);
     Tango::DevFailed df = BIATask::isl_to_tango_exception(ex);
@@ -494,6 +558,7 @@ BIAProcessor::process (const isl::Image& image, const BIAConfig& config, BIAData
   catch(...)
   {
     SAFE_DELETE_PTR(input_image);
+    SAFE_DELETE_PTR(user_roi_image);
     SAFE_DELETE_PTR(roi_image);
     SAFE_DELETE_PTR(roi_image_d);
     THROW_DEVFAILED("UNKNOWN_ERROR",
