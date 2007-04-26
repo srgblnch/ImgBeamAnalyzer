@@ -1,4 +1,4 @@
-static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzer.cpp,v 1.10 2007-04-24 09:44:19 julien_malik Exp $";
+static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzer.cpp,v 1.11 2007-04-26 08:50:40 julien_malik Exp $";
 //+=============================================================================
 //
 // file :         ImgBeamAnalyzer.cpp
@@ -13,7 +13,7 @@ static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/Im
 //
 // $Author: julien_malik $
 //
-// $Revision: 1.10 $
+// $Revision: 1.11 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -67,6 +67,7 @@ template <> Tango::DevBoolean ImgBeamAnalyzer::DummyValue<Tango::DevBoolean>::du
 template <> Tango::DevUChar   ImgBeamAnalyzer::DummyValue<Tango::DevUChar>  ::dummy = std::numeric_limits<unsigned char>::quiet_NaN();
 template <> Tango::DevUShort  ImgBeamAnalyzer::DummyValue<Tango::DevUShort> ::dummy = std::numeric_limits<unsigned short>::quiet_NaN();
 template <> Tango::DevLong    ImgBeamAnalyzer::DummyValue<Tango::DevLong>   ::dummy = std::numeric_limits<long>::quiet_NaN();
+template <> Tango::DevFloat   ImgBeamAnalyzer::DummyValue<Tango::DevFloat>  ::dummy = std::numeric_limits<float>::quiet_NaN();
 template <> Tango::DevDouble  ImgBeamAnalyzer::DummyValue<Tango::DevDouble> ::dummy = std::numeric_limits<double>::quiet_NaN();
 
 //+----------------------------------------------------------------------------
@@ -304,21 +305,30 @@ void ImgBeamAnalyzer::get_device_property()
   this->imageDevice = "unspecified";
   this->imageAttributeName = "unspecified";
   this->autoStart = false;
-  this->computationPeriod = kDEFAULT_COMPUT_PERIOD;
-  this->enableImageStats = kDEFAULT_ENABLE_IMAGE_STATS;
-  this->enableProfiles = kDEFAULT_ENABLE_PROFILE;
-  this->enableUserROI = kDEFAULT_ENABLE_USER_ROI;
-  this->enableAutoROI = kDEFAULT_ENABLE_AUTO_ROI;
-  this->enable2DGaussianFit = kDEFAULT_ENABLE_2D_GAUSSIAN_FIT;
   this->mode = "unspecified";
-  this->autoROIMagFactor = kDEFAULT_AUTOROI_MAGFACTOR;
-  this->pixelSizeX = kDEFAULT_PIXELSIZE_X;
-  this->pixelSizeY = kDEFAULT_PIXELSIZE_Y;
-  this->opticalMagnification = kDEFAULT_OPTICAL_MAGNIFICATION;
-  this->rotation = kDEFAULT_ROTATION;
-  this->horizontalFlip = kDEFAULT_HORIZONTAL_FLIP;
-  this->gammaCorrection = kDEFAULT_GAMMA_CORRECTION;
-  this->bitsPerPixel = kDEFAULT_PIXEL_DEPTH;
+
+  
+  //- Generate a default configuration object
+  BIAConfig default_config;
+
+  this->computationPeriod = default_config.comput_period;
+  this->enableImageStats = default_config.enable_image_stats;
+  this->enableProfiles = default_config.enable_profile;
+  this->enableHistogram = default_config.enable_histogram;
+  this->enableUserROI = default_config.enable_user_roi;
+  this->enableAutoROI = default_config.enable_auto_roi;
+  this->enable2DGaussianFit = default_config.enable_2d_gaussian_fit;
+  this->autoROIMagFactor = default_config.auto_roi_mag_factor;
+  this->pixelSizeX = default_config.pixel_size_x;
+  this->pixelSizeY = default_config.pixel_size_y;
+  this->opticalMagnification = default_config.optical_mag;
+  this->rotation = default_config.rotation;
+  this->horizontalFlip = default_config.horizontal_flip;
+  this->gammaCorrection = default_config.gamma_correction;
+  this->bitsPerPixel = default_config.pixel_depth;
+  this->histogramNbBins = default_config.histo_nb_bins;
+  this->histogramRangeMin = default_config.histo_range_min;
+  this->histogramRangeMax = default_config.histo_range_max;
 
   //	Read device properties from database.(Automatic code generation)
 	//------------------------------------------------------------------
@@ -329,6 +339,7 @@ void ImgBeamAnalyzer::get_device_property()
 	dev_prop.push_back(Tango::DbDatum("Enable2DGaussianFit"));
 	dev_prop.push_back(Tango::DbDatum("EnableAutoROI"));
 	dev_prop.push_back(Tango::DbDatum("EnableImageStats"));
+	dev_prop.push_back(Tango::DbDatum("EnableHistogram"));
 	dev_prop.push_back(Tango::DbDatum("EnableProfiles"));
 	dev_prop.push_back(Tango::DbDatum("EnableUserROI"));
 	dev_prop.push_back(Tango::DbDatum("ImageAttributeName"));
@@ -341,6 +352,9 @@ void ImgBeamAnalyzer::get_device_property()
 	dev_prop.push_back(Tango::DbDatum("HorizontalFlip"));
 	dev_prop.push_back(Tango::DbDatum("GammaCorrection"));
 	dev_prop.push_back(Tango::DbDatum("BitsPerPixel"));
+	dev_prop.push_back(Tango::DbDatum("HistogramNbBins"));
+	dev_prop.push_back(Tango::DbDatum("HistogramRangeMin"));
+	dev_prop.push_back(Tango::DbDatum("HistogramRangeMax"));
 
 	//	Call database and extract values
 	//--------------------------------------------
@@ -404,6 +418,15 @@ void ImgBeamAnalyzer::get_device_property()
 	if (def_prop.is_empty()==false)	def_prop  >>  enableImageStats;
 	//	And try to extract EnableImageStats value from database
 	if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  enableImageStats;
+
+	//	Try to initialize EnableHistogram from class property
+	cl_prop = ds_class->get_class_property(dev_prop[++i].name);
+	if (cl_prop.is_empty()==false)	cl_prop  >>  enableHistogram;
+	//	Try to initialize EnableHistogram from default device value
+	def_prop = ds_class->get_default_device_property(dev_prop[i].name);
+	if (def_prop.is_empty()==false)	def_prop  >>  enableHistogram;
+	//	And try to extract EnableHistogram value from database
+	if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  enableHistogram;
 
 	//	Try to initialize EnableProfiles from class property
 	cl_prop = ds_class->get_class_property(dev_prop[++i].name);
@@ -513,6 +536,33 @@ void ImgBeamAnalyzer::get_device_property()
 	//	And try to extract BitsPerPixel value from database
 	if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  bitsPerPixel;
 
+	//	Try to initialize HistogramNbBins from class property
+	cl_prop = ds_class->get_class_property(dev_prop[++i].name);
+	if (cl_prop.is_empty()==false)	cl_prop  >>  histogramNbBins;
+	//	Try to initialize HistogramNbBins from default device value
+	def_prop = ds_class->get_default_device_property(dev_prop[i].name);
+	if (def_prop.is_empty()==false)	def_prop  >>  histogramNbBins;
+	//	And try to extract HistogramNbBins value from database
+	if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  histogramNbBins;
+
+	//	Try to initialize HistogramRangeMin from class property
+	cl_prop = ds_class->get_class_property(dev_prop[++i].name);
+	if (cl_prop.is_empty()==false)	cl_prop  >>  histogramRangeMin;
+	//	Try to initialize HistogramRangeMin from default device value
+	def_prop = ds_class->get_default_device_property(dev_prop[i].name);
+	if (def_prop.is_empty()==false)	def_prop  >>  histogramRangeMin;
+	//	And try to extract HistogramRangeMin value from database
+	if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  histogramRangeMin;
+
+	//	Try to initialize HistogramRangeMax from class property
+	cl_prop = ds_class->get_class_property(dev_prop[++i].name);
+	if (cl_prop.is_empty()==false)	cl_prop  >>  histogramRangeMax;
+	//	Try to initialize HistogramRangeMax from default device value
+	def_prop = ds_class->get_default_device_property(dev_prop[i].name);
+	if (def_prop.is_empty()==false)	def_prop  >>  histogramRangeMax;
+	//	And try to extract HistogramRangeMax value from database
+	if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  histogramRangeMax;
+
 
 
 	//	End of Automatic code generation
@@ -533,6 +583,7 @@ void ImgBeamAnalyzer::get_device_property()
 
   this->current_config_.enable_image_stats = enableImageStats;
   this->current_config_.enable_profile = enableProfiles;
+  this->current_config_.enable_histogram = enableHistogram;
   this->current_config_.enable_2d_gaussian_fit = enable2DGaussianFit;
   this->current_config_.enable_auto_roi = enableAutoROI;
   this->current_config_.enable_user_roi = enableUserROI;
@@ -545,6 +596,9 @@ void ImgBeamAnalyzer::get_device_property()
   this->current_config_.horizontal_flip = horizontalFlip;
   this->current_config_.gamma_correction = gammaCorrection;
   this->current_config_.pixel_depth = bitsPerPixel;
+  this->current_config_.histo_nb_bins = histogramNbBins;
+  this->current_config_.histo_range_min = histogramRangeMin;
+  this->current_config_.histo_range_max = histogramRangeMax;
 
   //- leave the other members to their default values
 }
@@ -599,6 +653,187 @@ void ImgBeamAnalyzer::read_attr_hardware(vector<long> &attr_list)
   this->update_state();
 
 }
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_HistogramRangeMin
+// 
+// description : 	Extract real attribute values for HistogramRangeMin acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_HistogramRangeMin(Tango::Attribute &attr)
+{
+  READ_INPUT_ATTR(histo_range_min);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::write_HistogramRangeMin
+// 
+// description : 	Write HistogramRangeMin attribute values to hardware.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::write_HistogramRangeMin(Tango::WAttribute &attr)
+{
+  WRITE_INPUT_ATTR(histo_range_min, Tango::DevLong);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_HistogramRangeMax
+// 
+// description : 	Extract real attribute values for HistogramRangeMax acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_HistogramRangeMax(Tango::Attribute &attr)
+{
+  READ_INPUT_ATTR(histo_range_max);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::write_HistogramRangeMax
+// 
+// description : 	Write HistogramRangeMax attribute values to hardware.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::write_HistogramRangeMax(Tango::WAttribute &attr)
+{
+  WRITE_INPUT_ATTR(histo_range_max, Tango::DevLong);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_EnableHistogram
+// 
+// description : 	Extract real attribute values for EnableHistogram acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_EnableHistogram(Tango::Attribute &attr)
+{
+  READ_INPUT_ATTR(enable_histogram);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::write_EnableHistogram
+// 
+// description : 	Write EnableHistogram attribute values to hardware.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::write_EnableHistogram(Tango::WAttribute &attr)
+{
+  WRITE_INPUT_ATTR(enable_histogram, Tango::DevBoolean);
+}
+
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_HistogramNbBins
+// 
+// description : 	Extract real attribute values for HistogramNbBins acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_HistogramNbBins(Tango::Attribute &attr)
+{
+  READ_INPUT_ATTR(histo_nb_bins);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::write_HistogramNbBins
+// 
+// description : 	Write HistogramNbBins attribute values to hardware.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::write_HistogramNbBins(Tango::WAttribute &attr)
+{
+  WRITE_INPUT_ATTR(histo_nb_bins, Tango::DevLong);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_Histogram
+// 
+// description : 	Extract real attribute values for Histogram acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_Histogram(Tango::Attribute &attr)
+{
+  READ_OUTPUT_SPECTRUM_ATTR(histogram, enable_histogram, Tango::DevFloat);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_XProfileNbIter
+// 
+// description : 	Extract real attribute values for XProfileNbIter acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_XProfileNbIter(Tango::Attribute &attr)
+{
+  READ_OUTPUT_SCALAR_ATTR(profile_x_nb_iter, enable_profile, Tango::DevLong);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_XProfileFitRelChange
+// 
+// description : 	Extract real attribute values for XProfileFitRelChange acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_XProfileFitRelChange(Tango::Attribute &attr)
+{
+  READ_OUTPUT_SCALAR_ATTR(profile_x_eps, enable_profile, Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_YProfileNbIter
+// 
+// description : 	Extract real attribute values for YProfileNbIter acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_YProfileNbIter(Tango::Attribute &attr)
+{
+  READ_OUTPUT_SCALAR_ATTR(profile_y_nb_iter, enable_profile, Tango::DevLong);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_YProfileFitRelChange
+// 
+// description : 	Extract real attribute values for YProfileFitRelChange acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_YProfileFitRelChange(Tango::Attribute &attr)
+{
+  READ_OUTPUT_SCALAR_ATTR(profile_y_eps, enable_profile, Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_GaussianFitNbIter
+// 
+// description : 	Extract real attribute values for GaussianFitNbIter acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_GaussianFitNbIter(Tango::Attribute &attr)
+{
+  READ_OUTPUT_SCALAR_ATTR(gaussfit_nb_iter, enable_2d_gaussian_fit, Tango::DevLong);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_GaussianFitRelChange
+// 
+// description : 	Extract real attribute values for GaussianFitRelChange acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_GaussianFitRelChange(Tango::Attribute &attr)
+{
+  READ_OUTPUT_SCALAR_ATTR(gaussfit_eps, enable_2d_gaussian_fit, Tango::DevDouble);
+}
+
 //+----------------------------------------------------------------------------
 //
 // method : 		ImgBeamAnalyzer::read_AutoROIFound
@@ -2081,6 +2316,9 @@ void ImgBeamAnalyzer::save_current_settings()
   ADD_DATUM( HorizontalFlip,      this->current_config_.horizontal_flip );
   ADD_DATUM( GammaCorrection,     this->current_config_.gamma_correction );
   ADD_DATUM( BitsPerPixel,        this->current_config_.pixel_depth );
+  ADD_DATUM( HistogramNbBins,     this->current_config_.histo_nb_bins );
+  ADD_DATUM( HistogramRangeMin,   this->current_config_.histo_range_min );
+  ADD_DATUM( HistogramRangeMax,   this->current_config_.histo_range_max );
 
 # undef ADD_DATUM
 

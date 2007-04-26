@@ -12,7 +12,7 @@
 //
 // $Author: julien_malik $
 //
-// $Revision: 1.6 $
+// $Revision: 1.7 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -39,32 +39,76 @@ namespace ImgBeamAnalyzer_ns
 //=====================================
 //	Define classes for attributes
 //=====================================
-class Fit1DMaxRelChangeAttrib: public Tango::Attr
+class GaussianFitRelChangeAttrib: public Tango::Attr
 {
 public:
-	Fit1DMaxRelChangeAttrib():Attr("Fit1DMaxRelChange", Tango::DEV_DOUBLE, Tango::READ_WRITE) {};
-	~Fit1DMaxRelChangeAttrib() {};
+	GaussianFitRelChangeAttrib():Attr("GaussianFitRelChange", Tango::DEV_DOUBLE, Tango::READ) {};
+	~GaussianFitRelChangeAttrib() {};
 	
 	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
-	{(static_cast<ImgBeamAnalyzer *>(dev))->read_Fit1DMaxRelChange(att);}
-	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
-	{(static_cast<ImgBeamAnalyzer *>(dev))->write_Fit1DMaxRelChange(att);}
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_GaussianFitRelChange(att);}
 	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
-	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_Fit1DMaxRelChange_allowed(ty);}
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_GaussianFitRelChange_allowed(ty);}
 };
 
-class Fit1DNbIterMaxAttrib: public Tango::Attr
+class GaussianFitNbIterAttrib: public Tango::Attr
 {
 public:
-	Fit1DNbIterMaxAttrib():Attr("Fit1DNbIterMax", Tango::DEV_LONG, Tango::READ_WRITE) {};
-	~Fit1DNbIterMaxAttrib() {};
+	GaussianFitNbIterAttrib():Attr("GaussianFitNbIter", Tango::DEV_LONG, Tango::READ) {};
+	~GaussianFitNbIterAttrib() {};
 	
 	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
-	{(static_cast<ImgBeamAnalyzer *>(dev))->read_Fit1DNbIterMax(att);}
-	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
-	{(static_cast<ImgBeamAnalyzer *>(dev))->write_Fit1DNbIterMax(att);}
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_GaussianFitNbIter(att);}
 	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
-	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_Fit1DNbIterMax_allowed(ty);}
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_GaussianFitNbIter_allowed(ty);}
+};
+
+class YProfileFitRelChangeAttrib: public Tango::Attr
+{
+public:
+	YProfileFitRelChangeAttrib():Attr("YProfileFitRelChange", Tango::DEV_DOUBLE, Tango::READ) {};
+	~YProfileFitRelChangeAttrib() {};
+	
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_YProfileFitRelChange(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_YProfileFitRelChange_allowed(ty);}
+};
+
+class YProfileNbIterAttrib: public Tango::Attr
+{
+public:
+	YProfileNbIterAttrib():Attr("YProfileNbIter", Tango::DEV_LONG, Tango::READ) {};
+	~YProfileNbIterAttrib() {};
+	
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_YProfileNbIter(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_YProfileNbIter_allowed(ty);}
+};
+
+class XProfileFitRelChangeAttrib: public Tango::Attr
+{
+public:
+	XProfileFitRelChangeAttrib():Attr("XProfileFitRelChange", Tango::DEV_DOUBLE, Tango::READ) {};
+	~XProfileFitRelChangeAttrib() {};
+	
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_XProfileFitRelChange(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_XProfileFitRelChange_allowed(ty);}
+};
+
+class XProfileNbIterAttrib: public Tango::Attr
+{
+public:
+	XProfileNbIterAttrib():Attr("XProfileNbIter", Tango::DEV_LONG, Tango::READ) {};
+	~XProfileNbIterAttrib() {};
+	
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_XProfileNbIter(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_XProfileNbIter_allowed(ty);}
 };
 
 class Fit2DMaxRelChangeAttrib: public Tango::Attr
@@ -93,6 +137,34 @@ public:
 	{(static_cast<ImgBeamAnalyzer *>(dev))->write_Fit2DNbIterMax(att);}
 	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
 	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_Fit2DNbIterMax_allowed(ty);}
+};
+
+class Fit1DMaxRelChangeAttrib: public Tango::Attr
+{
+public:
+	Fit1DMaxRelChangeAttrib():Attr("Fit1DMaxRelChange", Tango::DEV_DOUBLE, Tango::READ_WRITE) {};
+	~Fit1DMaxRelChangeAttrib() {};
+	
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_Fit1DMaxRelChange(att);}
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+	{(static_cast<ImgBeamAnalyzer *>(dev))->write_Fit1DMaxRelChange(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_Fit1DMaxRelChange_allowed(ty);}
+};
+
+class Fit1DNbIterMaxAttrib: public Tango::Attr
+{
+public:
+	Fit1DNbIterMaxAttrib():Attr("Fit1DNbIterMax", Tango::DEV_LONG, Tango::READ_WRITE) {};
+	~Fit1DNbIterMaxAttrib() {};
+	
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_Fit1DNbIterMax(att);}
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+	{(static_cast<ImgBeamAnalyzer *>(dev))->write_Fit1DNbIterMax(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_Fit1DNbIterMax_allowed(ty);}
 };
 
 class GaussianFitParameterCovarianceAttrib: public Tango::ImageAttr
@@ -249,6 +321,18 @@ public:
 	{(static_cast<ImgBeamAnalyzer *>(dev))->read_GaussianFitConverged(att);}
 	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
 	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_GaussianFitConverged_allowed(ty);}
+};
+
+class HistogramAttrib: public Tango::SpectrumAttr
+{
+public:
+	HistogramAttrib():SpectrumAttr("Histogram", Tango::DEV_FLOAT, Tango::READ, 131072) {};
+	~HistogramAttrib() {};
+	
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_Histogram(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_Histogram_allowed(ty);}
 };
 
 class YProfileChi2Attrib: public Tango::Attr
@@ -885,6 +969,48 @@ public:
 	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_GammaCorrection_allowed(ty);}
 };
 
+class HistogramRangeMaxAttrib: public Tango::Attr
+{
+public:
+	HistogramRangeMaxAttrib():Attr("HistogramRangeMax", Tango::DEV_LONG, Tango::READ_WRITE) {};
+	~HistogramRangeMaxAttrib() {};
+	
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_HistogramRangeMax(att);}
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+	{(static_cast<ImgBeamAnalyzer *>(dev))->write_HistogramRangeMax(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_HistogramRangeMax_allowed(ty);}
+};
+
+class HistogramRangeMinAttrib: public Tango::Attr
+{
+public:
+	HistogramRangeMinAttrib():Attr("HistogramRangeMin", Tango::DEV_LONG, Tango::READ_WRITE) {};
+	~HistogramRangeMinAttrib() {};
+	
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_HistogramRangeMin(att);}
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+	{(static_cast<ImgBeamAnalyzer *>(dev))->write_HistogramRangeMin(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_HistogramRangeMin_allowed(ty);}
+};
+
+class HistogramNbBinsAttrib: public Tango::Attr
+{
+public:
+	HistogramNbBinsAttrib():Attr("HistogramNbBins", Tango::DEV_LONG, Tango::READ_WRITE) {};
+	~HistogramNbBinsAttrib() {};
+	
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_HistogramNbBins(att);}
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+	{(static_cast<ImgBeamAnalyzer *>(dev))->write_HistogramNbBins(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_HistogramNbBins_allowed(ty);}
+};
+
 class BitsPerPixelAttrib: public Tango::Attr
 {
 public:
@@ -993,6 +1119,20 @@ public:
 	{(static_cast<ImgBeamAnalyzer *>(dev))->write_EnableUserROI(att);}
 	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
 	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_EnableUserROI_allowed(ty);}
+};
+
+class EnableHistogramAttrib: public Tango::Attr
+{
+public:
+	EnableHistogramAttrib():Attr("EnableHistogram", Tango::DEV_BOOLEAN, Tango::READ_WRITE) {};
+	~EnableHistogramAttrib() {};
+	
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_EnableHistogram(att);}
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+	{(static_cast<ImgBeamAnalyzer *>(dev))->write_EnableHistogram(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_EnableHistogram_allowed(ty);}
 };
 
 class EnableProfilesAttrib: public Tango::Attr

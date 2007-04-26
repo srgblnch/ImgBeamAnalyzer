@@ -18,12 +18,6 @@
 // DEPENDENCIES
 // ============================================================================
 #include <isl/Image.h>
-#include <isl/statistics/Moments.h>
-#include <isl/statistics/Profiles.h>
-#include <isl/statistics/PrincipalAxis.h>
-#include <isl/BeamBox.h>
-#include <isl/statistics/GaussianFit1D.h>
-#include <isl/statistics/GaussianFit2D.h>
 #include <isl/statistics/NoiseEstimator.h>
 #include <isl/Exception.h>
 #include <isl/ErrorHandler.h>

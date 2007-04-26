@@ -59,6 +59,8 @@ BIAData::BIAData (void)
     profile_x_fwhm(0),
     profile_x_bg(0),
     profile_x_chi2(0),
+    profile_x_nb_iter(0),
+    profile_x_eps(0),
     profile_y(0),
     profile_y_fit_converged(false),
     profile_y_center(0),
@@ -67,6 +69,8 @@ BIAData::BIAData (void)
     profile_y_fwhm(0),
     profile_y_bg(0),
     profile_y_chi2(0),
+    profile_y_nb_iter(0),
+    profile_y_eps(0),
     gaussfit_converged(false),
     gaussfit_magnitude(0),
     gaussfit_centroid_x(0),
@@ -80,6 +84,8 @@ BIAData::BIAData (void)
     gaussfit_tilt(0),
     gaussfit_bg(0),
     gaussfit_chi2(0),
+    gaussfit_nb_iter(0),
+    gaussfit_eps(0),
     gaussfit_parameters_covariance(0,0),
     alarm(false)
 {

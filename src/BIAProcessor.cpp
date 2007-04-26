@@ -17,7 +17,15 @@
 #include "BIAProcessor.h"
 #include "BIATask.h"
 
+
+#include <isl/statistics/Moments.h>
+#include <isl/statistics/Profiles.h>
+#include <isl/statistics/PrincipalAxis.h>
+#include <isl/BeamBox.h>
+#include <isl/statistics/GaussianFit1D.h>
+#include <isl/statistics/GaussianFit2D.h>
 #include <isl/AutoROI.h>
+#include <isl/statistics/Histogram.h>
 
 #include <sys/timeb.h>
 // ============================================================================
@@ -70,6 +78,7 @@ BIAProcessor::process (const isl::Image& image, const BIAConfig& config, BIAData
   isl::Image* input_image = 0; //- the preprocessed image
   isl::Image* user_roi_image = 0;
   isl::Image* roi_image = 0;
+  isl::Image* roi_image_f = 0;
   isl::Image* roi_image_d = 0;
   isl::Image* noise_roi_image = 0;
 
@@ -241,6 +250,28 @@ BIAProcessor::process (const isl::Image& image, const BIAConfig& config, BIAData
       data.roi_image.set_dimensions( roi.width(), roi.height() );
       roi_image->serialize(data.roi_image.base());
 
+      //- Compute image histogram
+      if (config.enable_histogram)
+      {
+
+        int max_value = config.histo_range_max > 0
+                          ? config.histo_range_max
+                          : (1 << config.pixel_depth);
+
+        int nb_bins = config.histo_nb_bins > 0
+                        ? config.histo_nb_bins
+                        : max_value;
+
+        roi_image_f = new isl::Image(roi_image->width(), roi_image->height(), isl::ISL_STORAGE_FLOAT);
+    
+        //- copy integer ROI image to floating point representation
+        roi_image->convert(*roi_image_f);
+
+        isl::Histogram hist(*roi_image_f, nb_bins, config.histo_range_min, max_value);
+
+        data.histogram.length(nb_bins);
+        data.histogram = hist.bins();
+      }
 
       //- Compute image statistics
       if (config.enable_image_stats)
@@ -308,6 +339,8 @@ BIAProcessor::process (const isl::Image& image, const BIAConfig& config, BIAData
             data.gaussfit_tilt = 0;
             data.gaussfit_bg = 0;
             data.gaussfit_chi2 = 0;
+            data.gaussfit_nb_iter = 0;
+            data.gaussfit_eps = 0;
             data.gaussfit_parameters_covariance.set_dimensions(7, 7);
             data.gaussfit_parameters_covariance.fill(0);
           }
@@ -315,21 +348,11 @@ BIAProcessor::process (const isl::Image& image, const BIAConfig& config, BIAData
           {
             try
             {
-              double initial_magnitude = roi_image_d->value(static_cast<int>(img_moments.m10() / m00),
-                                                            static_cast<int>(img_moments.m01() / m00));
-
               isl::GaussianFit2D gauss_fit2d;
               gauss_fit2d.nb_iter(config.fit2d_nb_iter);
               gauss_fit2d.epsilon(config.fit2d_max_rel_change);
 
-              gauss_fit2d.compute(*roi_image_d,
-                                  initial_magnitude,
-                                  img_moments.m10() / m00,
-                                  img_moments.m01() / m00,
-                                  img_moments.mu20() / m00,
-                                  img_moments.mu11() / m00,
-                                  img_moments.mu02() / m00,
-                                  0);
+              gauss_fit2d.compute(*roi_image_d);
 
               if (gauss_fit2d.has_converged())
               {
@@ -369,6 +392,9 @@ BIAProcessor::process (const isl::Image& image, const BIAConfig& config, BIAData
       
                 data.gaussfit_tilt = princ_ax.get_angle () * 180 / kPI;
 
+                data.gaussfit_nb_iter = gauss_fit2d.nb_iter();
+                data.gaussfit_eps = gauss_fit2d.epsilon();
+
                 data.gaussfit_converged = true;
               }
               else
@@ -385,13 +411,16 @@ BIAProcessor::process (const isl::Image& image, const BIAConfig& config, BIAData
                 data.gaussfit_tilt = 0;
                 data.gaussfit_bg = 0;
                 data.gaussfit_chi2 = 0;
+                data.gaussfit_nb_iter = gauss_fit2d.nb_iter();
+                data.gaussfit_eps = gauss_fit2d.epsilon();
                 data.gaussfit_parameters_covariance.set_dimensions(7, 7);
                 data.gaussfit_parameters_covariance.fill(0);
               }
 
             }
-            catch(isl::Exception &)
+            catch(isl::Exception &ex)
             {
+              std::cout << ex << std::endl;
               isl::ErrorHandler::reset();
               //- Unable to do the fit
               data.gaussfit_magnitude = 0;
@@ -406,6 +435,8 @@ BIAProcessor::process (const isl::Image& image, const BIAConfig& config, BIAData
               data.gaussfit_tilt = 0;
               data.gaussfit_bg = 0;
               data.gaussfit_chi2 = 0;
+              data.gaussfit_nb_iter = 0;
+              data.gaussfit_eps = 0;
               data.gaussfit_parameters_covariance.set_dimensions(7, 7);
               data.gaussfit_parameters_covariance.fill(0);
             }
@@ -439,6 +470,8 @@ BIAProcessor::process (const isl::Image& image, const BIAConfig& config, BIAData
             data.profile_x_fwhm    = data.profile_x_sigma * SIGMA2FWHM_SCALE_FACTOR;
             data.profile_x_bg      = gaussian_fit.background();
             data.profile_x_chi2    = gaussian_fit.chi2();
+            data.profile_x_nb_iter = gaussian_fit.nb_iter();
+            data.profile_x_eps     = gaussian_fit.epsilon();
           
             for (size_t i = 0; i < profiles.size_x(); i++)
             {
@@ -456,6 +489,8 @@ BIAProcessor::process (const isl::Image& image, const BIAConfig& config, BIAData
             data.profile_x_fwhm    = 0;
             data.profile_x_bg      = 0;
             data.profile_x_chi2    = 0;
+            data.profile_x_nb_iter = gaussian_fit.nb_iter();
+            data.profile_x_eps     = gaussian_fit.epsilon();
             data.profile_x_fitted.fill(0);
             data.profile_x_error.fill(0);
           }
@@ -469,7 +504,8 @@ BIAProcessor::process (const isl::Image& image, const BIAConfig& config, BIAData
           data.profile_x_fwhm    = 0;
           data.profile_x_bg      = 0;
           data.profile_x_chi2    = 0;
-
+          data.profile_x_nb_iter = 0;
+          data.profile_x_eps     = 0;
           data.profile_x_fitted.fill(0);
           data.profile_x_error.fill(0);
         }
@@ -494,6 +530,8 @@ BIAProcessor::process (const isl::Image& image, const BIAConfig& config, BIAData
             data.profile_y_fwhm    = data.profile_y_sigma * SIGMA2FWHM_SCALE_FACTOR;
             data.profile_y_bg      = gaussian_fit.background();
             data.profile_y_chi2    = gaussian_fit.chi2();
+            data.profile_y_nb_iter = gaussian_fit.nb_iter();
+            data.profile_y_eps     = gaussian_fit.epsilon();
           
             for (size_t i = 0; i < profiles.size_y(); i++)
             {
@@ -511,7 +549,8 @@ BIAProcessor::process (const isl::Image& image, const BIAConfig& config, BIAData
             data.profile_y_fwhm    = 0;
             data.profile_y_bg      = 0;
             data.profile_y_chi2    = 0;
-
+            data.profile_y_nb_iter = gaussian_fit.nb_iter();
+            data.profile_y_eps     = gaussian_fit.epsilon();
             data.profile_y_fitted.fill(0);
             data.profile_y_error.fill(0);
           }
@@ -525,7 +564,8 @@ BIAProcessor::process (const isl::Image& image, const BIAConfig& config, BIAData
           data.profile_y_fwhm    = 0;
           data.profile_y_bg      = 0;
           data.profile_y_chi2    = 0;
-
+          data.profile_y_nb_iter = 0;
+          data.profile_y_eps     = 0;
           data.profile_y_fitted.fill(0);
           data.profile_y_error.fill(0);
         }
@@ -540,6 +580,7 @@ BIAProcessor::process (const isl::Image& image, const BIAConfig& config, BIAData
     SAFE_DELETE_PTR(input_image);
     SAFE_DELETE_PTR(user_roi_image);
     SAFE_DELETE_PTR(roi_image);
+    SAFE_DELETE_PTR(roi_image_f);
     SAFE_DELETE_PTR(roi_image_d);
   }
   catch(isl::Exception & ex)
@@ -547,6 +588,7 @@ BIAProcessor::process (const isl::Image& image, const BIAConfig& config, BIAData
     SAFE_DELETE_PTR(input_image);
     SAFE_DELETE_PTR(user_roi_image);
     SAFE_DELETE_PTR(roi_image);
+    SAFE_DELETE_PTR(roi_image_f);
     SAFE_DELETE_PTR(roi_image_d);
     Tango::DevFailed df = BIATask::isl_to_tango_exception(ex);
     isl::ErrorHandler::reset();
@@ -560,6 +602,7 @@ BIAProcessor::process (const isl::Image& image, const BIAConfig& config, BIAData
     SAFE_DELETE_PTR(input_image);
     SAFE_DELETE_PTR(user_roi_image);
     SAFE_DELETE_PTR(roi_image);
+    SAFE_DELETE_PTR(roi_image_f);
     SAFE_DELETE_PTR(roi_image_d);
     THROW_DEVFAILED("UNKNOWN_ERROR",
                     "Error during processing",

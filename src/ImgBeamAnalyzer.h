@@ -8,7 +8,7 @@
 //
 // $Author: julien_malik $
 //
-// $Revision: 1.8 $
+// $Revision: 1.9 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -30,7 +30,7 @@
 
 /**
  * @author	$Author: julien_malik $
- * @version	$Revision: 1.8 $
+ * @version	$Revision: 1.9 $
  */
 
  //	Add your own constants definitions here.
@@ -95,6 +95,8 @@ public :
 		Tango::DevBoolean	attr_EnableImageStats_write;
 		Tango::DevBoolean	*attr_EnableProfiles_read;
 		Tango::DevBoolean	attr_EnableProfiles_write;
+		Tango::DevBoolean	*attr_EnableHistogram_read;
+		Tango::DevBoolean	attr_EnableHistogram_write;
 		Tango::DevBoolean	*attr_EnableUserROI_read;
 		Tango::DevBoolean	attr_EnableUserROI_write;
 		Tango::DevBoolean	*attr_EnableAutoROI_read;
@@ -110,6 +112,12 @@ public :
 		Tango::DevBoolean	attr_HorizontalFlip_write;
 		Tango::DevLong	*attr_BitsPerPixel_read;
 		Tango::DevLong	attr_BitsPerPixel_write;
+		Tango::DevLong	*attr_HistogramNbBins_read;
+		Tango::DevLong	attr_HistogramNbBins_write;
+		Tango::DevLong	*attr_HistogramRangeMin_read;
+		Tango::DevLong	attr_HistogramRangeMin_write;
+		Tango::DevLong	*attr_HistogramRangeMax_read;
+		Tango::DevLong	attr_HistogramRangeMax_write;
 		Tango::DevDouble	*attr_GammaCorrection_read;
 		Tango::DevDouble	attr_GammaCorrection_write;
 		Tango::DevDouble	*attr_AutoROIMagFactor_read;
@@ -172,6 +180,7 @@ public :
 		Tango::DevDouble	*attr_YProfileFWHM_read;
 		Tango::DevDouble	*attr_YProfileBG_read;
 		Tango::DevDouble	*attr_YProfileChi2_read;
+		Tango::DevFloat	*attr_Histogram_read;
 		Tango::DevBoolean	*attr_GaussianFitConverged_read;
 		Tango::DevDouble	*attr_GaussianFitMagnitude_read;
 		Tango::DevDouble	*attr_GaussianFitCenterX_read;
@@ -185,14 +194,20 @@ public :
 		Tango::DevDouble	*attr_GaussianFitBG_read;
 		Tango::DevDouble	*attr_GaussianFitChi2_read;
 		Tango::DevDouble	*attr_GaussianFitParameterCovariance_read;
-		Tango::DevLong	*attr_Fit2DNbIterMax_read;
-		Tango::DevLong	attr_Fit2DNbIterMax_write;
-		Tango::DevDouble	*attr_Fit2DMaxRelChange_read;
-		Tango::DevDouble	attr_Fit2DMaxRelChange_write;
 		Tango::DevLong	*attr_Fit1DNbIterMax_read;
 		Tango::DevLong	attr_Fit1DNbIterMax_write;
 		Tango::DevDouble	*attr_Fit1DMaxRelChange_read;
 		Tango::DevDouble	attr_Fit1DMaxRelChange_write;
+		Tango::DevLong	*attr_Fit2DNbIterMax_read;
+		Tango::DevLong	attr_Fit2DNbIterMax_write;
+		Tango::DevDouble	*attr_Fit2DMaxRelChange_read;
+		Tango::DevDouble	attr_Fit2DMaxRelChange_write;
+		Tango::DevLong	*attr_XProfileNbIter_read;
+		Tango::DevDouble	*attr_XProfileFitRelChange_read;
+		Tango::DevLong	*attr_YProfileNbIter_read;
+		Tango::DevDouble	*attr_YProfileFitRelChange_read;
+		Tango::DevLong	*attr_GaussianFitNbIter_read;
+		Tango::DevDouble	*attr_GaussianFitRelChange_read;
 //@}
 
 /**
@@ -224,6 +239,10 @@ public :
  *	the initial value of the EnableImageStats attribute
  */
 	Tango::DevBoolean	enableImageStats;
+/**
+ *	the initial value of the EnableHistogram attribute
+ */
+	Tango::DevBoolean	enableHistogram;
 /**
  *	the initial value of the EnableProfiles attribute
  */
@@ -272,6 +291,18 @@ public :
  *	the initial value of the BitsPerPixel attribute
  */
 	Tango::DevLong	bitsPerPixel;
+/**
+ *	the initial value of the HistogramNbBins attribute
+ */
+	Tango::DevLong	histogramNbBins;
+/**
+ *	the lower bound of the histogram bins. must be >= 0
+ */
+	Tango::DevLong	histogramRangeMin;
+/**
+ *	the upper bound of the histogram bins. must be <= 2^BitsPerPixel
+ */
+	Tango::DevLong	histogramRangeMax;
 //@}
 
 /**@name Constructors
@@ -354,6 +385,14 @@ public :
  */
 	virtual void write_EnableProfiles(Tango::WAttribute &attr);
 /**
+ *	Extract real attribute values for EnableHistogram acquisition result.
+ */
+	virtual void read_EnableHistogram(Tango::Attribute &attr);
+/**
+ *	Write EnableHistogram attribute values to hardware.
+ */
+	virtual void write_EnableHistogram(Tango::WAttribute &attr);
+/**
  *	Extract real attribute values for EnableUserROI acquisition result.
  */
 	virtual void read_EnableUserROI(Tango::Attribute &attr);
@@ -413,6 +452,30 @@ public :
  *	Write BitsPerPixel attribute values to hardware.
  */
 	virtual void write_BitsPerPixel(Tango::WAttribute &attr);
+/**
+ *	Extract real attribute values for HistogramNbBins acquisition result.
+ */
+	virtual void read_HistogramNbBins(Tango::Attribute &attr);
+/**
+ *	Write HistogramNbBins attribute values to hardware.
+ */
+	virtual void write_HistogramNbBins(Tango::WAttribute &attr);
+/**
+ *	Extract real attribute values for HistogramRangeMin acquisition result.
+ */
+	virtual void read_HistogramRangeMin(Tango::Attribute &attr);
+/**
+ *	Write HistogramRangeMin attribute values to hardware.
+ */
+	virtual void write_HistogramRangeMin(Tango::WAttribute &attr);
+/**
+ *	Extract real attribute values for HistogramRangeMax acquisition result.
+ */
+	virtual void read_HistogramRangeMax(Tango::Attribute &attr);
+/**
+ *	Write HistogramRangeMax attribute values to hardware.
+ */
+	virtual void write_HistogramRangeMax(Tango::WAttribute &attr);
 /**
  *	Extract real attribute values for GammaCorrection acquisition result.
  */
@@ -662,6 +725,10 @@ public :
  */
 	virtual void read_YProfileChi2(Tango::Attribute &attr);
 /**
+ *	Extract real attribute values for Histogram acquisition result.
+ */
+	virtual void read_Histogram(Tango::Attribute &attr);
+/**
  *	Extract real attribute values for GaussianFitConverged acquisition result.
  */
 	virtual void read_GaussianFitConverged(Tango::Attribute &attr);
@@ -714,22 +781,6 @@ public :
  */
 	virtual void read_GaussianFitParameterCovariance(Tango::Attribute &attr);
 /**
- *	Extract real attribute values for Fit2DNbIterMax acquisition result.
- */
-	virtual void read_Fit2DNbIterMax(Tango::Attribute &attr);
-/**
- *	Write Fit2DNbIterMax attribute values to hardware.
- */
-	virtual void write_Fit2DNbIterMax(Tango::WAttribute &attr);
-/**
- *	Extract real attribute values for Fit2DMaxRelChange acquisition result.
- */
-	virtual void read_Fit2DMaxRelChange(Tango::Attribute &attr);
-/**
- *	Write Fit2DMaxRelChange attribute values to hardware.
- */
-	virtual void write_Fit2DMaxRelChange(Tango::WAttribute &attr);
-/**
  *	Extract real attribute values for Fit1DNbIterMax acquisition result.
  */
 	virtual void read_Fit1DNbIterMax(Tango::Attribute &attr);
@@ -746,6 +797,46 @@ public :
  */
 	virtual void write_Fit1DMaxRelChange(Tango::WAttribute &attr);
 /**
+ *	Extract real attribute values for Fit2DNbIterMax acquisition result.
+ */
+	virtual void read_Fit2DNbIterMax(Tango::Attribute &attr);
+/**
+ *	Write Fit2DNbIterMax attribute values to hardware.
+ */
+	virtual void write_Fit2DNbIterMax(Tango::WAttribute &attr);
+/**
+ *	Extract real attribute values for Fit2DMaxRelChange acquisition result.
+ */
+	virtual void read_Fit2DMaxRelChange(Tango::Attribute &attr);
+/**
+ *	Write Fit2DMaxRelChange attribute values to hardware.
+ */
+	virtual void write_Fit2DMaxRelChange(Tango::WAttribute &attr);
+/**
+ *	Extract real attribute values for XProfileNbIter acquisition result.
+ */
+	virtual void read_XProfileNbIter(Tango::Attribute &attr);
+/**
+ *	Extract real attribute values for XProfileFitRelChange acquisition result.
+ */
+	virtual void read_XProfileFitRelChange(Tango::Attribute &attr);
+/**
+ *	Extract real attribute values for YProfileNbIter acquisition result.
+ */
+	virtual void read_YProfileNbIter(Tango::Attribute &attr);
+/**
+ *	Extract real attribute values for YProfileFitRelChange acquisition result.
+ */
+	virtual void read_YProfileFitRelChange(Tango::Attribute &attr);
+/**
+ *	Extract real attribute values for GaussianFitNbIter acquisition result.
+ */
+	virtual void read_GaussianFitNbIter(Tango::Attribute &attr);
+/**
+ *	Extract real attribute values for GaussianFitRelChange acquisition result.
+ */
+	virtual void read_GaussianFitRelChange(Tango::Attribute &attr);
+/**
  *	Read/Write allowed for EnableImageStats attribute.
  */
 	virtual bool is_EnableImageStats_allowed(Tango::AttReqType type);
@@ -753,6 +844,10 @@ public :
  *	Read/Write allowed for EnableProfiles attribute.
  */
 	virtual bool is_EnableProfiles_allowed(Tango::AttReqType type);
+/**
+ *	Read/Write allowed for EnableHistogram attribute.
+ */
+	virtual bool is_EnableHistogram_allowed(Tango::AttReqType type);
 /**
  *	Read/Write allowed for EnableUserROI attribute.
  */
@@ -785,6 +880,18 @@ public :
  *	Read/Write allowed for BitsPerPixel attribute.
  */
 	virtual bool is_BitsPerPixel_allowed(Tango::AttReqType type);
+/**
+ *	Read/Write allowed for HistogramNbBins attribute.
+ */
+	virtual bool is_HistogramNbBins_allowed(Tango::AttReqType type);
+/**
+ *	Read/Write allowed for HistogramRangeMin attribute.
+ */
+	virtual bool is_HistogramRangeMin_allowed(Tango::AttReqType type);
+/**
+ *	Read/Write allowed for HistogramRangeMax attribute.
+ */
+	virtual bool is_HistogramRangeMax_allowed(Tango::AttReqType type);
 /**
  *	Read/Write allowed for GammaCorrection attribute.
  */
@@ -990,6 +1097,10 @@ public :
  */
 	virtual bool is_YProfileChi2_allowed(Tango::AttReqType type);
 /**
+ *	Read/Write allowed for Histogram attribute.
+ */
+	virtual bool is_Histogram_allowed(Tango::AttReqType type);
+/**
  *	Read/Write allowed for GaussianFitConverged attribute.
  */
 	virtual bool is_GaussianFitConverged_allowed(Tango::AttReqType type);
@@ -1042,6 +1153,14 @@ public :
  */
 	virtual bool is_GaussianFitParameterCovariance_allowed(Tango::AttReqType type);
 /**
+ *	Read/Write allowed for Fit1DNbIterMax attribute.
+ */
+	virtual bool is_Fit1DNbIterMax_allowed(Tango::AttReqType type);
+/**
+ *	Read/Write allowed for Fit1DMaxRelChange attribute.
+ */
+	virtual bool is_Fit1DMaxRelChange_allowed(Tango::AttReqType type);
+/**
  *	Read/Write allowed for Fit2DNbIterMax attribute.
  */
 	virtual bool is_Fit2DNbIterMax_allowed(Tango::AttReqType type);
@@ -1050,13 +1169,29 @@ public :
  */
 	virtual bool is_Fit2DMaxRelChange_allowed(Tango::AttReqType type);
 /**
- *	Read/Write allowed for Fit1DNbIterMax attribute.
+ *	Read/Write allowed for XProfileNbIter attribute.
  */
-	virtual bool is_Fit1DNbIterMax_allowed(Tango::AttReqType type);
+	virtual bool is_XProfileNbIter_allowed(Tango::AttReqType type);
 /**
- *	Read/Write allowed for Fit1DMaxRelChange attribute.
+ *	Read/Write allowed for XProfileFitRelChange attribute.
  */
-	virtual bool is_Fit1DMaxRelChange_allowed(Tango::AttReqType type);
+	virtual bool is_XProfileFitRelChange_allowed(Tango::AttReqType type);
+/**
+ *	Read/Write allowed for YProfileNbIter attribute.
+ */
+	virtual bool is_YProfileNbIter_allowed(Tango::AttReqType type);
+/**
+ *	Read/Write allowed for YProfileFitRelChange attribute.
+ */
+	virtual bool is_YProfileFitRelChange_allowed(Tango::AttReqType type);
+/**
+ *	Read/Write allowed for GaussianFitNbIter attribute.
+ */
+	virtual bool is_GaussianFitNbIter_allowed(Tango::AttReqType type);
+/**
+ *	Read/Write allowed for GaussianFitRelChange attribute.
+ */
+	virtual bool is_GaussianFitRelChange_allowed(Tango::AttReqType type);
 /**
  *	Execution allowed for Start command.
  */

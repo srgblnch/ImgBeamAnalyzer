@@ -67,6 +67,10 @@ Revision:  - Author:
 <Td><Center><Font Size=-1>DEV_BOOLEAN</Font></Center></Td><Td><Center><Font Size=-1>READ_WRITE</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
 
 <Font Size=-1>
+<Tr><Td><b>EnableHistogram</b>: <Font Size=-1>enables the computation of the histogram of the image</Font></Td>
+<Td><Center><Font Size=-1>DEV_BOOLEAN</Font></Center></Td><Td><Center><Font Size=-1>READ_WRITE</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Font Size=-1>
 <Tr><Td><b>EnableUserROI</b>: <Font Size=-1>enables the use of the UserROIOriginX, UserROIOriginY, UserROIWidth, UserROIHeight to define the ROI that will be processed</Font></Td>
 <Td><Center><Font Size=-1>DEV_BOOLEAN</Font></Center></Td><Td><Center><Font Size=-1>READ_WRITE</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
 
@@ -96,6 +100,10 @@ Revision:  - Author:
 
 <Font Size=-1>
 <Tr><Td><b>BitsPerPixel</b>: <Font Size=-1>the pixel depth for significative information in the image (usually 8 or 10). it is used only in the gamma correction to keep a constant dynamic range of pixel values when raising these values to a power</Font></Td>
+<Td><Center><Font Size=-1>DEV_LONG</Font></Center></Td><Td><Center><Font Size=-1>READ_WRITE</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>HistogramNbBins</b>: <Font Size=-1>the number of bins in the histogram. if set to 0, the maximum possible number of bins is used</Font></Td>
 <Td><Center><Font Size=-1>DEV_LONG</Font></Center></Td><Td><Center><Font Size=-1>READ_WRITE</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
 
 <Font Size=-1>
@@ -315,6 +323,14 @@ Revision:  - Author:
 <Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
 
 <Font Size=-1>
+<Tr><Td><b>Fit1DNbIterMax</b>: <Font Size=-1>the maximal number of iteration to converge to a solution</Font></Td>
+<Td><Center><Font Size=-1>DEV_LONG</Font></Center></Td><Td><Center><Font Size=-1>READ_WRITE</Font></Center></Td><Td><Center><Font Size=-1>Yes</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>Fit1DMaxRelChange</b>: <Font Size=-1>optimization stops when the relative change between 2 iterations falls below this threshold</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ_WRITE</Font></Center></Td><Td><Center><Font Size=-1>Yes</Font></Center></Td></Tr>
+
+<Font Size=-1>
 <Tr><Td><b>Fit2DNbIterMax</b>: <Font Size=-1>the maximal number of iteration to converge to a solution</Font></Td>
 <Td><Center><Font Size=-1>DEV_LONG</Font></Center></Td><Td><Center><Font Size=-1>READ_WRITE</Font></Center></Td><Td><Center><Font Size=-1>Yes</Font></Center></Td></Tr>
 
@@ -323,12 +339,28 @@ Revision:  - Author:
 <Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ_WRITE</Font></Center></Td><Td><Center><Font Size=-1>Yes</Font></Center></Td></Tr>
 
 <Font Size=-1>
-<Tr><Td><b>Fit1DNbIterMax</b>: <Font Size=-1>the maximal number of iteration to converge to a solution</Font></Td>
-<Td><Center><Font Size=-1>DEV_LONG</Font></Center></Td><Td><Center><Font Size=-1>READ_WRITE</Font></Center></Td><Td><Center><Font Size=-1>Yes</Font></Center></Td></Tr>
+<Tr><Td><b>XProfileNbIter</b>: <Font Size=-1>the number of iterations needed to converge to the fitted profile</Font></Td>
+<Td><Center><Font Size=-1>DEV_LONG</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>Yes</Font></Center></Td></Tr>
 
 <Font Size=-1>
-<Tr><Td><b>Fit1DMaxRelChange</b>: <Font Size=-1>optimization stops when the relative change between 2 iterations falls below this threshold</Font></Td>
-<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ_WRITE</Font></Center></Td><Td><Center><Font Size=-1>Yes</Font></Center></Td></Tr>
+<Tr><Td><b>XProfileFitRelChange</b>: <Font Size=-1>the relative change in the fit parameters between the two last iterations</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>Yes</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>YProfileNbIter</b>: <Font Size=-1>the number of iterations needed to converge to the fitted profile</Font></Td>
+<Td><Center><Font Size=-1>DEV_LONG</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>Yes</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>YProfileFitRelChange</b>: <Font Size=-1>the relative change in the fit parameters between the two last iterations</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>Yes</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>GaussianFitNbIter</b>: <Font Size=-1>the number of iterations needed to converge to the fitted image</Font></Td>
+<Td><Center><Font Size=-1>DEV_LONG</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>Yes</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>GaussianFitRelChange</b>: <Font Size=-1>the relative change in the fit parameters between the two last iterations</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>Yes</Font></Center></Td></Tr>
 
 </Table>
 </Center>
@@ -358,6 +390,9 @@ Revision:  - Author:
 
 <Tr><Td><b>YProfileError</b>: <Font Size=-1>the fitted profile error along the Y axis</Font></Td>
 <Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>131072</Font></Center></Td><Td><Center><Font Size=-1>Yes</Font></Center></Td></Tr>
+
+<Tr><Td><b>Histogram</b>: <Font Size=-1>the histogram of the image</Font></Td>
+<Td><Center><Font Size=-1>DEV_FLOAT</Font></Center></Td><Td><Center><Font Size=-1>131072</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
 
 </Table>
 </Center>

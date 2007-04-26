@@ -1,4 +1,4 @@
-static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzerStateMachine.cpp,v 1.6 2007-04-23 13:58:26 julien_malik Exp $";
+static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzerStateMachine.cpp,v 1.7 2007-04-26 08:50:41 julien_malik Exp $";
 //+=============================================================================
 //
 // file :         ImgBeamAnalyzerStateMachine.cpp
@@ -10,7 +10,7 @@ static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/Im
 //
 // $Author: julien_malik $
 //
-// $Revision: 1.6 $
+// $Revision: 1.7 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -1136,6 +1136,160 @@ bool ImgBeamAnalyzer::is_YProfileFitConverged_allowed(Tango::AttReqType type)
 //
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_GaussianFitConverged_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_XProfileNbIter_allowed
+// 
+// description : 	Read/Write allowed for XProfileNbIter attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_XProfileNbIter_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_XProfileFitRelChange_allowed
+// 
+// description : 	Read/Write allowed for XProfileFitRelChange attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_XProfileFitRelChange_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_YProfileNbIter_allowed
+// 
+// description : 	Read/Write allowed for YProfileNbIter attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_YProfileNbIter_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_YProfileFitRelChange_allowed
+// 
+// description : 	Read/Write allowed for YProfileFitRelChange attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_YProfileFitRelChange_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_GaussianFitNbIter_allowed
+// 
+// description : 	Read/Write allowed for GaussianFitNbIter attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_GaussianFitNbIter_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_GaussianFitRelChange_allowed
+// 
+// description : 	Read/Write allowed for GaussianFitRelChange attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_GaussianFitRelChange_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_HistogramNbBins_allowed
+// 
+// description : 	Read/Write allowed for HistogramNbBins attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_HistogramNbBins_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_Histogram_allowed
+// 
+// description : 	Read/Write allowed for Histogram attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_Histogram_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_EnableHistogram_allowed
+// 
+// description : 	Read/Write allowed for EnableHistogram attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_EnableHistogram_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_HistogramRangeMin_allowed
+// 
+// description : 	Read/Write allowed for HistogramRangeMin attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_HistogramRangeMin_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_HistogramRangeMax_allowed
+// 
+// description : 	Read/Write allowed for HistogramRangeMax attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_HistogramRangeMax_allowed(Tango::AttReqType type)
 {
 		//	End of Generated Code
 

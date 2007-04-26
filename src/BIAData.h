@@ -96,6 +96,8 @@ public:
   Tango::DevDouble               profile_x_fwhm;
   Tango::DevDouble               profile_x_bg;
   Tango::DevDouble               profile_x_chi2;
+  Tango::DevLong                 profile_x_nb_iter;
+  Tango::DevDouble               profile_x_eps;
 
   adtb::Buffer<Tango::DevDouble> profile_y;
   Tango::DevBoolean              profile_y_fit_converged;
@@ -107,7 +109,13 @@ public:
   Tango::DevDouble               profile_y_fwhm;
   Tango::DevDouble               profile_y_bg;
   Tango::DevDouble               profile_y_chi2;
+  Tango::DevLong                 profile_y_nb_iter;
+  Tango::DevDouble               profile_y_eps;
 
+  //- histogram
+  adtb::Buffer<Tango::DevFloat>  histogram;
+
+  
   //- gaussian fit
   Tango::DevBoolean              gaussfit_converged;
   Tango::DevDouble               gaussfit_magnitude;
@@ -122,6 +130,8 @@ public:
   Tango::DevDouble               gaussfit_tilt;
   Tango::DevDouble               gaussfit_bg;
   Tango::DevDouble               gaussfit_chi2;
+  Tango::DevLong                 gaussfit_nb_iter;
+  Tango::DevDouble               gaussfit_eps;
   adtb::ImageBuffer<Tango::DevDouble>     gaussfit_parameters_covariance;
 
   Tango::DevBoolean              alarm;

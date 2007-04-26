@@ -1,4 +1,4 @@
-static const char *RcsId     = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzerClass.cpp,v 1.8 2007-04-24 09:44:19 julien_malik Exp $";
+static const char *RcsId     = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzerClass.cpp,v 1.9 2007-04-26 08:50:41 julien_malik Exp $";
 static const char *TagName   = "$Name: not supported by cvs2svn $";
 static const char *HttpServer= "http://www.esrf.fr/computing/cs/tango/tango_doc/ds_doc/";
 //+=============================================================================
@@ -14,7 +14,7 @@ static const char *HttpServer= "http://www.esrf.fr/computing/cs/tango/tango_doc/
 //
 // $Author: julien_malik $
 //
-// $Revision: 1.8 $
+// $Revision: 1.9 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -424,6 +424,14 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	enable_profiles->set_default_properties(enable_profiles_prop);
 	att_list.push_back(enable_profiles);
 
+	//	Attribute : EnableHistogram
+	EnableHistogramAttrib	*enable_histogram = new EnableHistogramAttrib();
+	Tango::UserDefaultAttrProp	enable_histogram_prop;
+	enable_histogram_prop.set_label("Enable Histogram");
+	enable_histogram_prop.set_description("enables the computation of the histogram of the image");
+	enable_histogram->set_default_properties(enable_histogram_prop);
+	att_list.push_back(enable_histogram);
+
 	//	Attribute : EnableUserROI
 	EnableUserROIAttrib	*enable_user_roi = new EnableUserROIAttrib();
 	Tango::UserDefaultAttrProp	enable_user_roi_prop;
@@ -496,6 +504,36 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	bits_per_pixel->set_default_properties(bits_per_pixel_prop);
 	att_list.push_back(bits_per_pixel);
 
+	//	Attribute : HistogramNbBins
+	HistogramNbBinsAttrib	*histogram_nb_bins = new HistogramNbBinsAttrib();
+	Tango::UserDefaultAttrProp	histogram_nb_bins_prop;
+	histogram_nb_bins_prop.set_label("HistogramNbBins");
+	histogram_nb_bins_prop.set_unit(" ");
+	histogram_nb_bins_prop.set_format("%4d");
+	histogram_nb_bins_prop.set_description("the number of bins in the histogram. if set to 0, the maximum possible number of bins is used");
+	histogram_nb_bins->set_default_properties(histogram_nb_bins_prop);
+	att_list.push_back(histogram_nb_bins);
+
+	//	Attribute : HistogramRangeMin
+	HistogramRangeMinAttrib	*histogram_range_min = new HistogramRangeMinAttrib();
+	Tango::UserDefaultAttrProp	histogram_range_min_prop;
+	histogram_range_min_prop.set_label("HistogramRange Min");
+	histogram_range_min_prop.set_unit(" ");
+	histogram_range_min_prop.set_format("%4d");
+	histogram_range_min_prop.set_description("the lower bound of the histogram bins. must be >= 0");
+	histogram_range_min->set_default_properties(histogram_range_min_prop);
+	att_list.push_back(histogram_range_min);
+
+	//	Attribute : HistogramRangeMax
+	HistogramRangeMaxAttrib	*histogram_range_max = new HistogramRangeMaxAttrib();
+	Tango::UserDefaultAttrProp	histogram_range_max_prop;
+	histogram_range_max_prop.set_label("HistogramRange Max");
+	histogram_range_max_prop.set_unit(" ");
+	histogram_range_max_prop.set_format("%4d");
+	histogram_range_max_prop.set_description("the upper bound of the histogram bins. must be <= 2^BitsPerPixel\nif set to 0, the maximal possible value is taken (2^BitsPerPixel)");
+	histogram_range_max->set_default_properties(histogram_range_max_prop);
+	att_list.push_back(histogram_range_max);
+
 	//	Attribute : GammaCorrection
 	GammaCorrectionAttrib	*gamma_correction = new GammaCorrectionAttrib();
 	Tango::UserDefaultAttrProp	gamma_correction_prop;
@@ -511,7 +549,7 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	Tango::UserDefaultAttrProp	auto_roimag_factor_prop;
 	auto_roimag_factor_prop.set_label("AutoROI Magnification Factor");
 	auto_roimag_factor_prop.set_unit(" ");
-	auto_roimag_factor_prop.set_format("%3.2f");
+	auto_roimag_factor_prop.set_format("%4.2f");
 	auto_roimag_factor_prop.set_description("the scaling factor applied to the bounding rectangle of the longest contour to define the ROI automatically");
 	auto_roimag_factor->set_default_properties(auto_roimag_factor_prop);
 	att_list.push_back(auto_roimag_factor);
@@ -1006,6 +1044,10 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	yprofile_chi2->set_default_properties(yprofile_chi2_prop);
 	att_list.push_back(yprofile_chi2);
 
+	//	Attribute : Histogram
+	HistogramAttrib	*histogram = new HistogramAttrib();
+	att_list.push_back(histogram);
+
 	//	Attribute : GaussianFitConverged
 	GaussianFitConvergedAttrib	*gaussian_fit_converged = new GaussianFitConvergedAttrib();
 	Tango::UserDefaultAttrProp	gaussian_fit_converged_prop;
@@ -1135,6 +1177,28 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	gaussian_fit_parameter_covariance->set_disp_level(Tango::EXPERT);
 	att_list.push_back(gaussian_fit_parameter_covariance);
 
+	//	Attribute : Fit1DNbIterMax
+	Fit1DNbIterMaxAttrib	*fit1_dnb_iter_max = new Fit1DNbIterMaxAttrib();
+	Tango::UserDefaultAttrProp	fit1_dnb_iter_max_prop;
+	fit1_dnb_iter_max_prop.set_label("Fit1DNbIterMax");
+	fit1_dnb_iter_max_prop.set_unit(" ");
+	fit1_dnb_iter_max_prop.set_format("%5d");
+	fit1_dnb_iter_max_prop.set_description("the maximal number of iteration to converge to a solution");
+	fit1_dnb_iter_max->set_default_properties(fit1_dnb_iter_max_prop);
+	fit1_dnb_iter_max->set_disp_level(Tango::EXPERT);
+	att_list.push_back(fit1_dnb_iter_max);
+
+	//	Attribute : Fit1DMaxRelChange
+	Fit1DMaxRelChangeAttrib	*fit1_dmax_rel_change = new Fit1DMaxRelChangeAttrib();
+	Tango::UserDefaultAttrProp	fit1_dmax_rel_change_prop;
+	fit1_dmax_rel_change_prop.set_label("Fit1DMaxRelChange");
+	fit1_dmax_rel_change_prop.set_unit(" ");
+	fit1_dmax_rel_change_prop.set_format("%8.7f");
+	fit1_dmax_rel_change_prop.set_description("optimization stops when the relative change between 2 iterations falls below this threshold");
+	fit1_dmax_rel_change->set_default_properties(fit1_dmax_rel_change_prop);
+	fit1_dmax_rel_change->set_disp_level(Tango::EXPERT);
+	att_list.push_back(fit1_dmax_rel_change);
+
 	//	Attribute : Fit2DNbIterMax
 	Fit2DNbIterMaxAttrib	*fit2_dnb_iter_max = new Fit2DNbIterMaxAttrib();
 	Tango::UserDefaultAttrProp	fit2_dnb_iter_max_prop;
@@ -1157,27 +1221,71 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	fit2_dmax_rel_change->set_disp_level(Tango::EXPERT);
 	att_list.push_back(fit2_dmax_rel_change);
 
-	//	Attribute : Fit1DNbIterMax
-	Fit1DNbIterMaxAttrib	*fit1_dnb_iter_max = new Fit1DNbIterMaxAttrib();
-	Tango::UserDefaultAttrProp	fit1_dnb_iter_max_prop;
-	fit1_dnb_iter_max_prop.set_label("Fit1DNbIterMax");
-	fit1_dnb_iter_max_prop.set_unit(" ");
-	fit1_dnb_iter_max_prop.set_format("%5d");
-	fit1_dnb_iter_max_prop.set_description("the maximal number of iteration to converge to a solution");
-	fit1_dnb_iter_max->set_default_properties(fit1_dnb_iter_max_prop);
-	fit1_dnb_iter_max->set_disp_level(Tango::EXPERT);
-	att_list.push_back(fit1_dnb_iter_max);
+	//	Attribute : XProfileNbIter
+	XProfileNbIterAttrib	*xprofile_nb_iter = new XProfileNbIterAttrib();
+	Tango::UserDefaultAttrProp	xprofile_nb_iter_prop;
+	xprofile_nb_iter_prop.set_label("XProfile Nb Iter");
+	xprofile_nb_iter_prop.set_unit(" ");
+	xprofile_nb_iter_prop.set_format("%10d");
+	xprofile_nb_iter_prop.set_description("the number of iterations needed to converge to the fitted profile");
+	xprofile_nb_iter->set_default_properties(xprofile_nb_iter_prop);
+	xprofile_nb_iter->set_disp_level(Tango::EXPERT);
+	att_list.push_back(xprofile_nb_iter);
 
-	//	Attribute : Fit1DMaxRelChange
-	Fit1DMaxRelChangeAttrib	*fit1_dmax_rel_change = new Fit1DMaxRelChangeAttrib();
-	Tango::UserDefaultAttrProp	fit1_dmax_rel_change_prop;
-	fit1_dmax_rel_change_prop.set_label("Fit1DMaxRelChange");
-	fit1_dmax_rel_change_prop.set_unit(" ");
-	fit1_dmax_rel_change_prop.set_format("%8.7f");
-	fit1_dmax_rel_change_prop.set_description("optimization stops when the relative change between 2 iterations falls below this threshold");
-	fit1_dmax_rel_change->set_default_properties(fit1_dmax_rel_change_prop);
-	fit1_dmax_rel_change->set_disp_level(Tango::EXPERT);
-	att_list.push_back(fit1_dmax_rel_change);
+	//	Attribute : XProfileFitRelChange
+	XProfileFitRelChangeAttrib	*xprofile_fit_rel_change = new XProfileFitRelChangeAttrib();
+	Tango::UserDefaultAttrProp	xprofile_fit_rel_change_prop;
+	xprofile_fit_rel_change_prop.set_label("XProfile Fit Rel. Change");
+	xprofile_fit_rel_change_prop.set_unit(" ");
+	xprofile_fit_rel_change_prop.set_format("%10.6f");
+	xprofile_fit_rel_change_prop.set_description("the relative change in the fit parameters between the two last iterations");
+	xprofile_fit_rel_change->set_default_properties(xprofile_fit_rel_change_prop);
+	xprofile_fit_rel_change->set_disp_level(Tango::EXPERT);
+	att_list.push_back(xprofile_fit_rel_change);
+
+	//	Attribute : YProfileNbIter
+	YProfileNbIterAttrib	*yprofile_nb_iter = new YProfileNbIterAttrib();
+	Tango::UserDefaultAttrProp	yprofile_nb_iter_prop;
+	yprofile_nb_iter_prop.set_label("YProfile Nb Iter");
+	yprofile_nb_iter_prop.set_unit(" ");
+	yprofile_nb_iter_prop.set_format("%10d");
+	yprofile_nb_iter_prop.set_description("the number of iterations needed to converge to the fitted profile");
+	yprofile_nb_iter->set_default_properties(yprofile_nb_iter_prop);
+	yprofile_nb_iter->set_disp_level(Tango::EXPERT);
+	att_list.push_back(yprofile_nb_iter);
+
+	//	Attribute : YProfileFitRelChange
+	YProfileFitRelChangeAttrib	*yprofile_fit_rel_change = new YProfileFitRelChangeAttrib();
+	Tango::UserDefaultAttrProp	yprofile_fit_rel_change_prop;
+	yprofile_fit_rel_change_prop.set_label("YProfile Fit Rel. Change");
+	yprofile_fit_rel_change_prop.set_unit(" ");
+	yprofile_fit_rel_change_prop.set_format("%10.6f");
+	yprofile_fit_rel_change_prop.set_description("the relative change in the fit parameters between the two last iterations");
+	yprofile_fit_rel_change->set_default_properties(yprofile_fit_rel_change_prop);
+	yprofile_fit_rel_change->set_disp_level(Tango::EXPERT);
+	att_list.push_back(yprofile_fit_rel_change);
+
+	//	Attribute : GaussianFitNbIter
+	GaussianFitNbIterAttrib	*gaussian_fit_nb_iter = new GaussianFitNbIterAttrib();
+	Tango::UserDefaultAttrProp	gaussian_fit_nb_iter_prop;
+	gaussian_fit_nb_iter_prop.set_label("GaussianFit Nb Iter");
+	gaussian_fit_nb_iter_prop.set_unit(" ");
+	gaussian_fit_nb_iter_prop.set_format("%10d");
+	gaussian_fit_nb_iter_prop.set_description("the number of iterations needed to converge to the fitted image");
+	gaussian_fit_nb_iter->set_default_properties(gaussian_fit_nb_iter_prop);
+	gaussian_fit_nb_iter->set_disp_level(Tango::EXPERT);
+	att_list.push_back(gaussian_fit_nb_iter);
+
+	//	Attribute : GaussianFitRelChange
+	GaussianFitRelChangeAttrib	*gaussian_fit_rel_change = new GaussianFitRelChangeAttrib();
+	Tango::UserDefaultAttrProp	gaussian_fit_rel_change_prop;
+	gaussian_fit_rel_change_prop.set_label("GaussianFit Rel. Change");
+	gaussian_fit_rel_change_prop.set_unit(" ");
+	gaussian_fit_rel_change_prop.set_format("%10.6f");
+	gaussian_fit_rel_change_prop.set_description("the relative change in the fit parameters between the two last iterations");
+	gaussian_fit_rel_change->set_default_properties(gaussian_fit_rel_change_prop);
+	gaussian_fit_rel_change->set_disp_level(Tango::EXPERT);
+	att_list.push_back(gaussian_fit_rel_change);
 
 	//	End of Automatic code generation
 	//-------------------------------------------------------------
@@ -1310,6 +1418,19 @@ void ImgBeamAnalyzerClass::set_default_property()
 	prop_def  = "true";
 	vect_data.clear();
 	vect_data.push_back("true");
+	if (prop_def.length()>0)
+	{
+		Tango::DbDatum	data(prop_name);
+		data << vect_data ;
+		dev_def_prop.push_back(data);
+		add_wiz_dev_prop(prop_name, prop_desc,  prop_def);
+	}
+	else
+		add_wiz_dev_prop(prop_name, prop_desc);
+
+	prop_name = "EnableHistogram";
+	prop_desc = "the initial value of the EnableHistogram attribute";
+	prop_def  = "";
 	if (prop_def.length()>0)
 	{
 		Tango::DbDatum	data(prop_name);
@@ -1471,6 +1592,45 @@ void ImgBeamAnalyzerClass::set_default_property()
 
 	prop_name = "BitsPerPixel";
 	prop_desc = "the initial value of the BitsPerPixel attribute";
+	prop_def  = "";
+	if (prop_def.length()>0)
+	{
+		Tango::DbDatum	data(prop_name);
+		data << vect_data ;
+		dev_def_prop.push_back(data);
+		add_wiz_dev_prop(prop_name, prop_desc,  prop_def);
+	}
+	else
+		add_wiz_dev_prop(prop_name, prop_desc);
+
+	prop_name = "HistogramNbBins";
+	prop_desc = "the initial value of the HistogramNbBins attribute";
+	prop_def  = "";
+	if (prop_def.length()>0)
+	{
+		Tango::DbDatum	data(prop_name);
+		data << vect_data ;
+		dev_def_prop.push_back(data);
+		add_wiz_dev_prop(prop_name, prop_desc,  prop_def);
+	}
+	else
+		add_wiz_dev_prop(prop_name, prop_desc);
+
+	prop_name = "HistogramRangeMin";
+	prop_desc = "the lower bound of the histogram bins. must be >= 0";
+	prop_def  = "";
+	if (prop_def.length()>0)
+	{
+		Tango::DbDatum	data(prop_name);
+		data << vect_data ;
+		dev_def_prop.push_back(data);
+		add_wiz_dev_prop(prop_name, prop_desc,  prop_def);
+	}
+	else
+		add_wiz_dev_prop(prop_name, prop_desc);
+
+	prop_name = "HistogramRangeMax";
+	prop_desc = "the upper bound of the histogram bins. must be <= 2^BitsPerPixel";
 	prop_def  = "";
 	if (prop_def.length()>0)
 	{
