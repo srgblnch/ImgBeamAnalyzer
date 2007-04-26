@@ -256,7 +256,7 @@ BIAProcessor::process (const isl::Image& image, const BIAConfig& config, BIAData
 
         int max_value = config.histo_range_max > 0
                           ? config.histo_range_max
-                          : (1 << config.pixel_depth);
+                          : (1 << config.pixel_depth) - 1;
 
         int nb_bins = config.histo_nb_bins > 0
                         ? config.histo_nb_bins
@@ -473,7 +473,7 @@ BIAProcessor::process (const isl::Image& image, const BIAConfig& config, BIAData
             data.profile_x_nb_iter = gaussian_fit.nb_iter();
             data.profile_x_eps     = gaussian_fit.epsilon();
           
-            for (size_t i = 0; i < profiles.size_x(); i++)
+            for (int i = 0; i < profiles.size_x(); i++)
             {
               data.profile_x_fitted[i] = gaussian_fit.get_fitted_value(i);
               data.profile_x_error[i]  = gaussian_fit.get_fitted_error(i);
@@ -533,7 +533,7 @@ BIAProcessor::process (const isl::Image& image, const BIAConfig& config, BIAData
             data.profile_y_nb_iter = gaussian_fit.nb_iter();
             data.profile_y_eps     = gaussian_fit.epsilon();
           
-            for (size_t i = 0; i < profiles.size_y(); i++)
+            for (int i = 0; i < profiles.size_y(); i++)
             {
               data.profile_y_fitted[i] = gaussian_fit.get_fitted_value(i);
               data.profile_y_error[i]  = gaussian_fit.get_fitted_error(i);

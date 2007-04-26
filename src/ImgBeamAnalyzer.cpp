@@ -1,4 +1,4 @@
-static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzer.cpp,v 1.11 2007-04-26 08:50:40 julien_malik Exp $";
+static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzer.cpp,v 1.12 2007-04-26 10:07:57 julien_malik Exp $";
 //+=============================================================================
 //
 // file :         ImgBeamAnalyzer.cpp
@@ -13,7 +13,7 @@ static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/Im
 //
 // $Author: julien_malik $
 //
-// $Revision: 1.11 $
+// $Revision: 1.12 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -2308,6 +2308,7 @@ void ImgBeamAnalyzer::save_current_settings()
   ADD_DATUM( EnableAutoROI,       this->current_config_.enable_auto_roi );
   ADD_DATUM( EnableImageStats,    this->current_config_.enable_image_stats );
   ADD_DATUM( EnableProfiles,      this->current_config_.enable_profile );
+  ADD_DATUM( EnableHistogram,     this->current_config_.enable_histogram );
   ADD_DATUM( EnableUserROI,       this->current_config_.enable_user_roi );
   ADD_DATUM( PixelSizeX,          this->current_config_.pixel_size_x );
   ADD_DATUM( PixelSizeY,          this->current_config_.pixel_size_y );

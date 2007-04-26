@@ -50,6 +50,7 @@ namespace ImgBeamAnalyzer_ns
   BIAConfig::BIAConfig() :
     enable_image_stats(kDEFAULT_ENABLE_IMAGE_STATS),
     enable_profile(kDEFAULT_ENABLE_PROFILE),
+    enable_histogram(kDEFAULT_ENABLE_HISTOGRAM),
     enable_user_roi(kDEFAULT_ENABLE_USER_ROI),
     enable_auto_roi(kDEFAULT_ENABLE_AUTO_ROI),
     enable_2d_gaussian_fit(kDEFAULT_ENABLE_2D_GAUSSIAN_FIT),
@@ -161,7 +162,7 @@ namespace ImgBeamAnalyzer_ns
     CHECK( this->histo_range_min       < 0 , "HistogramRangeMin must be positive" );
     CHECK( this->histo_range_max       < 0 , "HistogramRangeMax must be positive" );
     CHECK( this->histo_range_max > 0 && this->histo_range_min >= this->histo_range_max  , "HistogramRangeMin must be inferior to HistogramRangeMax" );
-    CHECK( this->histo_range_max > (1 << pixel_depth) , "HistogramRangeMax must be inferior to 2^PixelDepth" );
+    CHECK( this->histo_range_max > ((1 << pixel_depth) - 1) , "HistogramRangeMax must be inferior to 2^PixelDepth - 1" );
 
   }
 

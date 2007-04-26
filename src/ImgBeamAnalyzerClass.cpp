@@ -1,4 +1,4 @@
-static const char *RcsId     = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzerClass.cpp,v 1.9 2007-04-26 08:50:41 julien_malik Exp $";
+static const char *RcsId     = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzerClass.cpp,v 1.10 2007-04-26 10:07:57 julien_malik Exp $";
 static const char *TagName   = "$Name: not supported by cvs2svn $";
 static const char *HttpServer= "http://www.esrf.fr/computing/cs/tango/tango_doc/ds_doc/";
 //+=============================================================================
@@ -14,7 +14,7 @@ static const char *HttpServer= "http://www.esrf.fr/computing/cs/tango/tango_doc/
 //
 // $Author: julien_malik $
 //
-// $Revision: 1.9 $
+// $Revision: 1.10 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -530,7 +530,7 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	histogram_range_max_prop.set_label("HistogramRange Max");
 	histogram_range_max_prop.set_unit(" ");
 	histogram_range_max_prop.set_format("%4d");
-	histogram_range_max_prop.set_description("the upper bound of the histogram bins. must be <= 2^BitsPerPixel\nif set to 0, the maximal possible value is taken (2^BitsPerPixel)");
+	histogram_range_max_prop.set_description("the upper bound of the histogram bins. must be <= 2^BitsPerPixel - 1\nif set to 0, the maximal possible value is taken (2^BitsPerPixel - 1)");
 	histogram_range_max->set_default_properties(histogram_range_max_prop);
 	att_list.push_back(histogram_range_max);
 
