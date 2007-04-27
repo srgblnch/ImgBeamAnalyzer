@@ -17,7 +17,7 @@ namespace ImgBeamAnalyzer_ns
 // ============================================================================
 // Data::duplicate
 // ============================================================================
-INLINE_IMPL BIAData *BIAData::duplicate (void)
+YAT_INLINE BIAData *BIAData::duplicate (void)
 {
   return reinterpret_cast < BIAData * >(SharedObject::duplicate ());
 }
@@ -25,7 +25,7 @@ INLINE_IMPL BIAData *BIAData::duplicate (void)
 // ============================================================================
 // Data::release
 // ============================================================================
-INLINE_IMPL void BIAData::release (void)
+YAT_INLINE void BIAData::release (void)
 {
   SharedObject::release ();
 }

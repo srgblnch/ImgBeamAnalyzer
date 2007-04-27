@@ -17,16 +17,16 @@
 // ============================================================================
 // DEPENDENCIES
 // ============================================================================
-#include <SharedObject.h>
-#include <DataBuffer.h>
 #include "BIAConfig.h"
+#include <yat/threading/SharedObject.h>
+#include <yat/DataBuffer.h>
 
 namespace ImgBeamAnalyzer_ns
 {
 
-class BIAData : private adtb::SharedObject
+class BIAData : private yat::SharedObject
 {
-  friend class BIATask;
+  friend class ImgBeamAnalyzerTask;
   friend class BIAProcessor;
 
 public:
@@ -48,93 +48,91 @@ public:
 
 
   //- processed image
-  adtb::ImageBuffer<Tango::DevUShort> input_image;
-  Tango::DevLong                 image_width;
-  Tango::DevLong                 image_height;
+  yat::ImageBuffer<unsigned short> input_image;
 
   //- input parameters
   BIAConfig                      config;
-  Tango::DevBoolean              user_roi_alarm;
+  bool              user_roi_alarm;
 
   //- computation time
-  Tango::DevLong                 estim_comput_time;
+  long                 estim_comput_time;
 
   //- beam box
-  Tango::DevBoolean              auto_roi_found;
-  Tango::DevLong                 auto_roi_origin_x;
-  Tango::DevLong                 auto_roi_origin_y;
-  Tango::DevLong                 auto_roi_width;
-  Tango::DevLong                 auto_roi_height;
-  adtb::ImageBuffer<Tango::DevUShort> roi_image;
+  bool              auto_roi_found;
+  long                 auto_roi_origin_x;
+  long                 auto_roi_origin_y;
+  long                 auto_roi_width;
+  long                 auto_roi_height;
+  yat::ImageBuffer<unsigned short> roi_image;
 
   //- noise
-  Tango::DevLong                 nb_noise_image;
-  adtb::ImageBuffer<Tango::DevUShort> mean_noise_image;
+  long                 nb_noise_image;
+  yat::ImageBuffer<unsigned short> mean_noise_image;
 
-  //- moments inside beam box
-  Tango::DevDouble               max_intensity;
-  Tango::DevDouble               mean_intensity;
-  Tango::DevDouble               centroid_x;
-  Tango::DevDouble               centroid_y;
-  Tango::DevDouble               variance_x;
-  Tango::DevDouble               variance_y;
-  Tango::DevDouble               covariance_xy;
-  Tango::DevDouble               correlation_xy;
-  Tango::DevDouble               skew_x;
-  Tango::DevDouble               skew_y;
-  Tango::DevDouble               skew_x2y;
-  Tango::DevDouble               skew_xy2;
+  //- moments inside ROI
+  double               max_intensity;
+  double               mean_intensity;
+  double               centroid_x;
+  double               centroid_y;
+  double               variance_x;
+  double               variance_y;
+  double               covariance_xy;
+  double               correlation_xy;
+  double               skew_x;
+  double               skew_y;
+  double               skew_x2y;
+  double               skew_xy2;
 
   //- profile
-  adtb::Buffer<Tango::DevDouble> profile_x;
-  Tango::DevBoolean              profile_x_fit_converged;
-  adtb::Buffer<Tango::DevDouble> profile_x_fitted;
-  adtb::Buffer<Tango::DevDouble> profile_x_error;
-  Tango::DevDouble               profile_x_center;
-  Tango::DevDouble               profile_x_mag;
-  Tango::DevDouble               profile_x_sigma;
-  Tango::DevDouble               profile_x_fwhm;
-  Tango::DevDouble               profile_x_bg;
-  Tango::DevDouble               profile_x_chi2;
-  Tango::DevLong                 profile_x_nb_iter;
-  Tango::DevDouble               profile_x_eps;
+  yat::Buffer<double>  profile_x;
+  bool              profile_x_fit_converged;
+  yat::Buffer<double>  profile_x_fitted;
+  yat::Buffer<double>  profile_x_error;
+  double               profile_x_center;
+  double               profile_x_mag;
+  double               profile_x_sigma;
+  double               profile_x_fwhm;
+  double               profile_x_bg;
+  double               profile_x_chi2;
+  long                 profile_x_nb_iter;
+  double               profile_x_eps;
 
-  adtb::Buffer<Tango::DevDouble> profile_y;
-  Tango::DevBoolean              profile_y_fit_converged;
-  adtb::Buffer<Tango::DevDouble> profile_y_fitted;
-  adtb::Buffer<Tango::DevDouble> profile_y_error;
-  Tango::DevDouble               profile_y_center;
-  Tango::DevDouble               profile_y_mag;
-  Tango::DevDouble               profile_y_sigma;
-  Tango::DevDouble               profile_y_fwhm;
-  Tango::DevDouble               profile_y_bg;
-  Tango::DevDouble               profile_y_chi2;
-  Tango::DevLong                 profile_y_nb_iter;
-  Tango::DevDouble               profile_y_eps;
+  yat::Buffer<double>  profile_y;
+  bool              profile_y_fit_converged;
+  yat::Buffer<double>  profile_y_fitted;
+  yat::Buffer<double>  profile_y_error;
+  double               profile_y_center;
+  double               profile_y_mag;
+  double               profile_y_sigma;
+  double               profile_y_fwhm;
+  double               profile_y_bg;
+  double               profile_y_chi2;
+  long                 profile_y_nb_iter;
+  double               profile_y_eps;
 
   //- histogram
-  adtb::Buffer<Tango::DevFloat>  histogram;
+  yat::Buffer<float>   histogram;
 
   
   //- gaussian fit
-  Tango::DevBoolean              gaussfit_converged;
-  Tango::DevDouble               gaussfit_magnitude;
-  Tango::DevDouble               gaussfit_centroid_x;
-  Tango::DevDouble               gaussfit_centroid_y;
-  Tango::DevDouble               gaussfit_variance_x;
-  Tango::DevDouble               gaussfit_variance_y;
-  Tango::DevDouble               gaussfit_covariance_xy;
-  Tango::DevDouble               gaussfit_correlation_xy;
-  Tango::DevDouble               gaussfit_major_axis_fwhm;
-  Tango::DevDouble               gaussfit_minor_axis_fwhm;
-  Tango::DevDouble               gaussfit_tilt;
-  Tango::DevDouble               gaussfit_bg;
-  Tango::DevDouble               gaussfit_chi2;
-  Tango::DevLong                 gaussfit_nb_iter;
-  Tango::DevDouble               gaussfit_eps;
-  adtb::ImageBuffer<Tango::DevDouble>     gaussfit_parameters_covariance;
+  bool              gaussfit_converged;
+  double               gaussfit_magnitude;
+  double               gaussfit_centroid_x;
+  double               gaussfit_centroid_y;
+  double               gaussfit_variance_x;
+  double               gaussfit_variance_y;
+  double               gaussfit_covariance_xy;
+  double               gaussfit_correlation_xy;
+  double               gaussfit_major_axis_fwhm;
+  double               gaussfit_minor_axis_fwhm;
+  double               gaussfit_tilt;
+  double               gaussfit_bg;
+  double               gaussfit_chi2;
+  long                 gaussfit_nb_iter;
+  double               gaussfit_eps;
+  yat::ImageBuffer<double> gaussfit_parameters_covariance;
 
-  Tango::DevBoolean              alarm;
+  bool              alarm;
 
 private:
 
@@ -152,8 +150,8 @@ private:
 
 } // namespace
 
-#if defined (__INLINE_IMPL__)
+#if defined (YAT_INLINE_IMPL)
 # include "BIAData.i"
-#endif // __INLINE_IMPL__
+#endif // YAT_INLINE_IMPL
 
 #endif

@@ -34,7 +34,7 @@ LISTEOBJ = \
    $(OBJDIR)\BIAConfig.OBJ \
    $(OBJDIR)\BIAData.OBJ \
    $(OBJDIR)\BIAProcessor.OBJ \
-   $(OBJDIR)\BIATask.OBJ
+   $(OBJDIR)\ImgBeamAnalyzerTask.OBJ
 
 !include $(make_dir)\common_target.opt
 

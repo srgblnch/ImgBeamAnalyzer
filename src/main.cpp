@@ -1,4 +1,4 @@
-static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/main.cpp,v 1.1 2006-10-16 16:19:16 stephle Exp $";
+static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/main.cpp,v 1.2 2007-04-27 16:21:01 julien_malik Exp $";
 //+=============================================================================
 //
 // file :        main.cpp
@@ -10,9 +10,9 @@ static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/Im
 //
 // project :     TANGO Device Server
 //
-// $Author: stephle $
+// $Author: julien_malik $
 //
-// $Revision: 1.1 $ $
+// $Revision: 1.2 $ $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -28,7 +28,21 @@ static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/Im
 //         (c) - Software Engineering Group - ESRF
 //=============================================================================
 
+
+#ifdef WIN32
+#  pragma warning (disable: 4786)
+#  pragma warning( disable: 4250 ) // 'x' inherits 'y' via dominance
+#  pragma warning( push )
+#  pragma warning( disable: 4267 ) // 'var' : conversion from 'size_t' to 'type', possible loss of data 
+#  pragma warning( disable: 4311 ) // 'variable' : pointer truncation from 'type' to 'type' 
+#  pragma warning( disable: 4312 ) // 'operation' : conversion from 'type1' to 'type2' of greater size 
+#endif
+
 #include <tango.h>
+
+#ifdef WIN32
+#  pragma warning( pop )
+#endif
 
 
 int main(int argc,char *argv[])

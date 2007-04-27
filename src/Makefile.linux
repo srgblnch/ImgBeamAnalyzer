@@ -113,7 +113,7 @@ SVC_OBJS = 	    $(OBJDIR)/ClassFactory.o  \
                 $(OBJDIR)/BIAConfig.o \
                 $(OBJDIR)/BIAData.o \
                 $(OBJDIR)/BIAProcessor.o \
-                $(OBJDIR)/BIATask.o
+                $(OBJDIR)/ImgBeamAnalyzerTask.o
 
 #
 # Verbose mode

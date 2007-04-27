@@ -18,33 +18,33 @@
 
 namespace ImgBeamAnalyzer_ns
 {
-  const Tango::DevBoolean kDEFAULT_ENABLE_IMAGE_STATS = true;
-  const Tango::DevBoolean kDEFAULT_ENABLE_PROFILE = true;
-  const Tango::DevBoolean kDEFAULT_ENABLE_HISTOGRAM = true;
-  const Tango::DevBoolean kDEFAULT_ENABLE_USER_ROI = true;
-  const Tango::DevBoolean kDEFAULT_ENABLE_AUTO_ROI = true;
-  const Tango::DevBoolean kDEFAULT_ENABLE_2D_GAUSSIAN_FIT = false;
-  const Tango::DevDouble  kDEFAULT_AUTOROI_MAGFACTOR = 1.0f;
-  const Tango::DevLong    kDEFAULT_COMPUT_PERIOD = 1000;
-  const Tango::DevLong    kDEFAULT_ALARM_ZONE = 10;
-  const Tango::DevLong    kDEFAULT_FIT2D_NB_ITER = 30;
-  const Tango::DevDouble  kDEFAULT_FIT2D_MAX_REL_CHANGE = 1.0E-6;
-  const Tango::DevLong    kDEFAULT_FIT1D_NB_ITER = 30;
-  const Tango::DevDouble  kDEFAULT_FIT1D_MAX_REL_CHANGE = 1.0E-6;
-  const Tango::DevDouble  kDEFAULT_PIXELSIZE_X = 1.0f;
-  const Tango::DevDouble  kDEFAULT_PIXELSIZE_Y = 1.0f;
-  const Tango::DevDouble  kDEFAULT_OPTICAL_MAGNIFICATION = 1.0f;
-  const Tango::DevLong    kDEFAULT_USER_ROI_ORIGIN_X = 0;
-  const Tango::DevLong    kDEFAULT_USER_ROI_ORIGIN_Y = 0;
-  const Tango::DevLong    kDEFAULT_USER_ROI_WIDTH = 0; //- means 'whole image'
-  const Tango::DevLong    kDEFAULT_USER_ROI_HEIGHT = 0; //- means 'whole image'
-  const Tango::DevLong    kDEFAULT_ROTATION = 0;
-  const Tango::DevBoolean kDEFAULT_HORIZONTAL_FLIP = false;
-  const Tango::DevDouble  kDEFAULT_GAMMA_CORRECTION = 1.0f;
-  const Tango::DevLong    kDEFAULT_PIXEL_DEPTH = 10;
-  const Tango::DevLong    kDEFAULT_HISTO_NB_BINS = 0; //- means : maximum nb of bins
-  const Tango::DevLong    kDEFAULT_HISTO_RANGE_MIN = 0;
-  const Tango::DevLong    kDEFAULT_HISTO_RANGE_MAX = 0; //- means : 2^pixel_depth
+  const bool kDEFAULT_ENABLE_IMAGE_STATS = true;
+  const bool kDEFAULT_ENABLE_PROFILE = true;
+  const bool kDEFAULT_ENABLE_HISTOGRAM = true;
+  const bool kDEFAULT_ENABLE_USER_ROI = true;
+  const bool kDEFAULT_ENABLE_AUTO_ROI = true;
+  const bool kDEFAULT_ENABLE_2D_GAUSSIAN_FIT = false;
+  const double  kDEFAULT_AUTOROI_MAGFACTOR = 1.0f;
+  const long    kDEFAULT_COMPUT_PERIOD = 1000;
+  const long    kDEFAULT_ALARM_ZONE = 10;
+  const long    kDEFAULT_FIT2D_NB_ITER = 30;
+  const double  kDEFAULT_FIT2D_MAX_REL_CHANGE = 1.0E-6;
+  const long    kDEFAULT_FIT1D_NB_ITER = 30;
+  const double  kDEFAULT_FIT1D_MAX_REL_CHANGE = 1.0E-6;
+  const double  kDEFAULT_PIXELSIZE_X = 1.0f;
+  const double  kDEFAULT_PIXELSIZE_Y = 1.0f;
+  const double  kDEFAULT_OPTICAL_MAGNIFICATION = 1.0f;
+  const long    kDEFAULT_USER_ROI_ORIGIN_X = 0;
+  const long    kDEFAULT_USER_ROI_ORIGIN_Y = 0;
+  const long    kDEFAULT_USER_ROI_WIDTH = 0; //- means 'whole image'
+  const long    kDEFAULT_USER_ROI_HEIGHT = 0; //- means 'whole image'
+  const long    kDEFAULT_ROTATION = 0;
+  const bool kDEFAULT_HORIZONTAL_FLIP = false;
+  const double  kDEFAULT_GAMMA_CORRECTION = 1.0f;
+  const long    kDEFAULT_PIXEL_DEPTH = 10;
+  const long    kDEFAULT_HISTO_NB_BINS = 0; //- means : maximum nb of bins
+  const long    kDEFAULT_HISTO_RANGE_MIN = 0;
+  const long    kDEFAULT_HISTO_RANGE_MAX = 0; //- means : 2^pixel_depth
 
 
   BIAConfig::BIAConfig() :
@@ -77,71 +77,24 @@ namespace ImgBeamAnalyzer_ns
     histo_range_max(kDEFAULT_HISTO_RANGE_MAX)
   {}
 
-  BIAConfig::~BIAConfig()
-  {}
-
-  BIAConfig::BIAConfig(const BIAConfig& _c)
-  {
-    *this = _c;
-  }
-
-  BIAConfig& BIAConfig::operator=(const BIAConfig& _c)
-  {
-    this->enable_image_stats     = _c.enable_image_stats;
-    this->enable_profile         = _c.enable_profile;
-    this->enable_histogram       = _c.enable_histogram;
-    this->enable_user_roi        = _c.enable_user_roi;
-    this->enable_auto_roi        = _c.enable_auto_roi;
-    this->enable_2d_gaussian_fit = _c.enable_2d_gaussian_fit;
-    this->auto_roi_mag_factor    = _c.auto_roi_mag_factor;
-    this->comput_period          = _c.comput_period;
-    this->alarm_zone             = _c.alarm_zone;
-    this->fit2d_nb_iter          = _c.fit2d_nb_iter;
-    this->fit2d_max_rel_change   = _c.fit2d_max_rel_change;
-    this->fit1d_nb_iter          = _c.fit1d_nb_iter;
-    this->fit1d_max_rel_change   = _c.fit1d_max_rel_change;
-    this->pixel_size_x           = _c.pixel_size_x;
-    this->pixel_size_y           = _c.pixel_size_y;
-    this->optical_mag            = _c.optical_mag;
-    this->user_roi_origin_x      = _c.user_roi_origin_x;
-    this->user_roi_origin_y      = _c.user_roi_origin_y;
-    this->user_roi_width         = _c.user_roi_width;
-    this->user_roi_height        = _c.user_roi_height;
-    this->rotation               = _c.rotation;
-    this->horizontal_flip        = _c.horizontal_flip;
-    this->gamma_correction       = _c.gamma_correction;
-    this->pixel_depth            = _c.pixel_depth;
-    this->histo_nb_bins          = _c.histo_nb_bins;
-    this->histo_range_min        = _c.histo_range_min;
-    this->histo_range_max        = _c.histo_range_max;
-    return *this;
-  }
-
   bool BIAConfig::is_user_roi_empty(void) const
   {
     return( this->user_roi_width == 0 || this->user_roi_height == 0 );
   }
 
-  void BIAConfig::check(void) const
-    throw (Tango::DevFailed)
+  void BIAConfig::validate(void) const
+    throw (yat::Exception)
   {
-
-    if (this->enable_2d_gaussian_fit && !this->enable_image_stats)
-    {
-      THROW_DEVFAILED("CONFIGURATION_ERROR",
-                      "EnableImageStats must be true if Enable2DGaussianFit is true",
-                      "BIAConfig::check");
-    }
-
 
 #define CHECK( condition, error_msg )                     \
     if ( condition )                                      \
     {                                                     \
-      THROW_DEVFAILED("CONFIGURATION_ERROR",              \
+      THROW_YAT_ERROR("CONFIGURATION_ERROR",              \
                       error_msg,                          \
                       "BIAConfig::check");                \
     }
 
+    CHECK( this->enable_2d_gaussian_fit == true && this->enable_image_stats == false , "EnableImageStats must be true when Enable2DGaussianFit is true" );
     CHECK( this->auto_roi_mag_factor   <=  0 , "AutoROIMagFactor must be stricly positive" );
     CHECK( this->comput_period         <=  0 , "ComputationPeriod must be stricly positive" );
     CHECK( this->alarm_zone            <=  0 , "AlarmZone must be stricly positive" );

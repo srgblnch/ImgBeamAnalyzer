@@ -4,7 +4,7 @@
 //    TANGO Project - ImgBeamAnalyzer DeviceServer - Data class
 //
 // = File
-//    BIATask.i
+//    ImgBeamAnalyzerTask.i
 //
 // = AUTHOR
 //    Julien Malik
@@ -15,39 +15,39 @@ namespace ImgBeamAnalyzer_ns
 {
 
 // ============================================================================
-// BIATask::get_state_status
+// ImgBeamAnalyzerTask::get_state_status
 // ============================================================================
-INLINE_IMPL
+YAT_INLINE
 void
-BIATask::get_state_status (Tango::DevState& state, std::string& status)
+ImgBeamAnalyzerTask::get_state_status (State& state, std::string& status)
 {
-  adtb::DeviceMutexLock<> guard(this->state_status_mutex_);
+  yat::MutexLock guard(this->state_status_mutex_);
   state = this->state_;
   status = this->status_;
 }
 
 // ============================================================================
-// BIATask::set_state_status
+// ImgBeamAnalyzerTask::set_state_status
 // ============================================================================
-INLINE_IMPL
+YAT_INLINE
 void
-BIATask::set_state_status (Tango::DevState state, const char* status)
+ImgBeamAnalyzerTask::set_state_status (State state, std::string status)
 {
-  adtb::DeviceMutexLock<> guard(this->state_status_mutex_);
+  yat::MutexLock guard(this->state_status_mutex_);
   this->state_ = state;
   this->status_ = status;
 }
 
 // ============================================================================
-// BIATask::get_data
+// ImgBeamAnalyzerTask::get_data
 // ============================================================================
-INLINE_IMPL
+YAT_INLINE
 void
-BIATask::get_data (BIAData*& data)
+ImgBeamAnalyzerTask::get_data (BIAData*& data)
   throw (Tango::DevFailed)
 {
   //- enter critical section
- adtb::DeviceMutexLock<> guard(this->data_mutex_);
+  yat::MutexLock guard(this->data_mutex_);
 
   if (this->mode_ == MODE_CONTINUOUS && this->state_ == Tango::STANDBY)
     data = 0;
@@ -56,27 +56,27 @@ BIATask::get_data (BIAData*& data)
 }
 
 // ============================================================================
-// BIATask::get_config
+// ImgBeamAnalyzerTask::get_config
 // ============================================================================
-INLINE_IMPL
+YAT_INLINE
 void
-BIATask::get_config(BIAConfig& c)
+ImgBeamAnalyzerTask::get_config(BIAConfig& c)
 {
   //- enter critical section
-  adtb::DeviceMutexLock<> guard(this->config_mutex_);
+  yat::MutexLock guard(this->config_mutex_);
   c = this->config_;
 }
 
 // ============================================================================
-// BIATask::configure
+// ImgBeamAnalyzerTask::configure
 // ============================================================================
-INLINE_IMPL
+YAT_INLINE
 void
-BIATask::configure(const BIAConfig& config)
+ImgBeamAnalyzerTask::configure(const BIAConfig& config)
 {
-  adtb::DeviceMutexLock<> guard(this->config_mutex_);
+  yat::MutexLock guard(this->config_mutex_);
   this->config_ = config;
-  this->set_periodic_timeout(config.comput_period);
+  this->set_periodic_msg_period(config.comput_period);
 }
 
 } // namespace

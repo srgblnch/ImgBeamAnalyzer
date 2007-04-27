@@ -1,4 +1,4 @@
-static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzer.cpp,v 1.12 2007-04-26 10:07:57 julien_malik Exp $";
+static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzer.cpp,v 1.13 2007-04-27 16:21:01 julien_malik Exp $";
 //+=============================================================================
 //
 // file :         ImgBeamAnalyzer.cpp
@@ -13,7 +13,7 @@ static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/Im
 //
 // $Author: julien_malik $
 //
-// $Revision: 1.12 $
+// $Revision: 1.13 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -55,6 +55,7 @@ static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/Im
 #include <ImgBeamAnalyzerClass.h>
 #include <limits>
 #include <ImgBeamAnalyzerVersion.h>
+#include <adtb/ExceptionHelper.h>
 
 #define kDEFAULT_CONTINUOUS_TIMEOUT 1000
 #define kCOMMAND_TIMEOUT 2000
@@ -69,6 +70,165 @@ template <> Tango::DevUShort  ImgBeamAnalyzer::DummyValue<Tango::DevUShort> ::du
 template <> Tango::DevLong    ImgBeamAnalyzer::DummyValue<Tango::DevLong>   ::dummy = std::numeric_limits<long>::quiet_NaN();
 template <> Tango::DevFloat   ImgBeamAnalyzer::DummyValue<Tango::DevFloat>  ::dummy = std::numeric_limits<float>::quiet_NaN();
 template <> Tango::DevDouble  ImgBeamAnalyzer::DummyValue<Tango::DevDouble> ::dummy = std::numeric_limits<double>::quiet_NaN();
+
+
+
+#define READ_OUTPUT_SCALAR_ATTR_ALWAYSACTIV( data_member, TangoType )                           \
+  {	                                                                                            \
+		if (this->available_data_ == 0                                                              \
+         || &this->available_data_->data_member == 0)                                           \
+		{                                                                                           \
+			attr.set_value(&DummyValue<TangoType>::dummy);                                            \
+			attr.set_quality(Tango::ATTR_ALARM);                                                      \
+		}                                                                                           \
+		else                                                                                        \
+		{                                                                                           \
+			attr.set_value(&this->available_data_->data_member);                                      \
+      if (this->available_data_->alarm == true)                                                 \
+        attr.set_quality(Tango::ATTR_ALARM);                                                    \
+      else                                                                                      \
+        attr.set_quality(Tango::ATTR_VALID);                                                    \
+		}                                                                                           \
+  }
+
+#define READ_OUTPUT_SCALAR_ATTR( data_member, activated, TangoType )                            \
+  {	                                                                                            \
+		if (this->available_data_ == 0                                                              \
+         || this->available_data_->config.activated == false                                    \
+         || &this->available_data_->data_member == 0)                                           \
+		{                                                                                           \
+			attr.set_value(&DummyValue<TangoType>::dummy);                                            \
+			attr.set_quality(Tango::ATTR_ALARM);                                                      \
+		}                                                                                           \
+		else                                                                                        \
+		{                                                                                           \
+			attr.set_value(&this->available_data_->data_member);                                      \
+      if (this->available_data_->alarm == true)                                                 \
+        attr.set_quality(Tango::ATTR_ALARM);                                                    \
+      else                                                                                      \
+        attr.set_quality(Tango::ATTR_VALID);                                                    \
+		}                                                                                           \
+  }
+
+#define READ_OUTPUT_SPECTRUM_ATTR( data_member, activated, TangoType )                          \
+  {	                                                                                            \
+		if (this->available_data_ == 0                                                              \
+         || this->available_data_->config.activated == false                                    \
+         || this->available_data_->data_member.base() == 0 )                                    \
+		{                                                                                           \
+			attr.set_value(&DummyValue<TangoType>::dummy, 1, 0);                                      \
+			attr.set_quality(Tango::ATTR_ALARM);                                                      \
+		}                                                                                           \
+		else                                                                                        \
+		{                                                                                           \
+			attr.set_value(this->available_data_->data_member.base(),                                 \
+                     this->available_data_->data_member.length());                              \
+      if (this->available_data_->alarm == true)                                                 \
+        attr.set_quality(Tango::ATTR_ALARM);                                                    \
+      else                                                                                      \
+        attr.set_quality(Tango::ATTR_VALID);                                                    \
+		}                                                                                           \
+  }
+
+#define READ_OUTPUT_IMAGE_ATTR_ALWAYSACTIV( data_member, TangoType )                            \
+  {	                                                                                            \
+		if (this->available_data_ == 0                                                              \
+         || this->available_data_->data_member.base() == 0 )                                    \
+		{                                                                                           \
+			attr.set_value(&DummyValue<TangoType>::dummy, 1, 1);                                      \
+			attr.set_quality(Tango::ATTR_ALARM);                                                      \
+		}                                                                                           \
+		else                                                                                        \
+		{                                                                                           \
+			attr.set_value(this->available_data_->data_member.base(),                                 \
+                     this->available_data_->data_member.width(),                                \
+                     this->available_data_->data_member.height());                              \
+      if (this->available_data_->alarm == true)                                                 \
+        attr.set_quality(Tango::ATTR_ALARM);                                                    \
+      else                                                                                      \
+        attr.set_quality(Tango::ATTR_VALID);                                                    \
+		}                                                                                           \
+  }
+
+#define READ_OUTPUT_IMAGE_ATTR( data_member, activated, TangoType )                             \
+  {	                                                                                            \
+		if (this->available_data_ == 0                                                              \
+         || this->available_data_->config.activated == false                                    \
+         || this->available_data_->data_member.base() == 0 )                                    \
+		{                                                                                           \
+			attr.set_value(&DummyValue<TangoType>::dummy, 1, 1);                                      \
+			attr.set_quality(Tango::ATTR_ALARM);                                                      \
+		}                                                                                           \
+		else                                                                                        \
+		{                                                                                           \
+			attr.set_value(this->available_data_->data_member.base(),                                 \
+                     this->available_data_->data_member.width(),                                \
+                     this->available_data_->data_member.height());                              \
+      if (this->available_data_->alarm == true)                                                 \
+        attr.set_quality(Tango::ATTR_ALARM);                                                    \
+      else                                                                                      \
+        attr.set_quality(Tango::ATTR_VALID);                                                    \
+		}                                                                                           \
+  }
+
+#define READ_INPUT_ATTR( config_member_name )                                                   \
+  {	                                                                                            \
+    if (this->available_data_ == 0 || this->get_state() == Tango::FAULT)                        \
+			attr.set_value(&this->current_config_.config_member_name);                                \
+		else                                                                                        \
+			attr.set_value(&this->available_data_->config.config_member_name);                        \
+  }
+
+#define READ_INPUT_ATTR_WITH_ALARM( config_member_name , alarm_boolean)                         \
+  {	                                                                                            \
+    if (this->available_data_ == 0 || this->get_state() == Tango::FAULT)                        \
+			attr.set_value(&this->current_config_.config_member_name);                                \
+		else                                                                                        \
+    {                                                                                           \
+			attr.set_value(&this->available_data_->config.config_member_name);                        \
+      if (this->available_data_->alarm_boolean == true)                                         \
+        attr.set_quality(Tango::ATTR_ALARM);                                                    \
+      else                                                                                      \
+        attr.set_quality(Tango::ATTR_VALID);                                                    \
+		}                                                                                           \
+  }
+
+
+#define WRITE_INPUT_ATTR( config_member_name, TangoType )                                       \
+  {	                                                                                            \
+		if (this->task_ == 0)                                                                       \
+			return;                                                                                   \
+   	                                                                                            \
+		TangoType value;                                                                            \
+		attr.get_write_value (value);                                                               \
+	 	if (value !=	this->current_config_.config_member_name)                                     \
+    {                                                                                           \
+      BIAConfig new_config(this->current_config_);                                              \
+      new_config.config_member_name = value;                                                    \
+			try                                                                                       \
+			{                                                                                         \
+        new_config.validate();                                                                  \
+        this->task_->configure(new_config);                                                     \
+			}                                                                                         \
+      catch (yat::Exception &ex)                                                                \
+      {                                                                                         \
+        adtb::YATDevFailed df(ex);                                                              \
+				RETHROW_DEVFAILED(df,                                                                   \
+													"SOFTWARE_FAILURE",                                                   \
+													"Tango error during configuration",                                   \
+													"ImgBeamAnalyzer::write_" #config_member_name);                       \
+      }                                                                                         \
+			catch(...)                                                                                \
+      {                                                                                         \
+				THROW_DEVFAILED("UNKNOWN_ERROR",                                                        \
+                        "Tango error during configuration",                                     \
+                        "ImgBeamAnalyzer::write_" #config_member_name);                         \
+      }                                                                                         \
+      this->current_config_ = new_config;                                                       \
+		}                                                                                           \
+  }
+
+
 
 //+----------------------------------------------------------------------------
 //
@@ -147,6 +307,8 @@ void ImgBeamAnalyzer::init_device()
 
 	// Initialise variables to default values
 	//--------------------------------------------
+  this->dev_proxy_allowed_ = false;
+  this->dev_proxy_ = 0;
   this->available_data_ = 0;
   this->task_ = 0;
   this->critical_property_missing_ = false;
@@ -158,7 +320,7 @@ void ImgBeamAnalyzer::init_device()
   }
 	catch (Tango::DevFailed &df)
   {
-    ERROR_STREAM << (Tango::DevFailed&)df << std::endl;
+    ERROR_STREAM << df << std::endl;
     this->set_status ("Initialization error [Tango Exception caught while getting device properties]");
     this->set_state (Tango::FAULT);
     this->delete_device();
@@ -240,43 +402,79 @@ void ImgBeamAnalyzer::init_device()
     }
   }
 
-  // Init BIATask
+  if (dev_proxy_allowed)
+  {
+    try
+    {
+      this->dev_proxy_ = new Tango::DeviceProxy(this->imageDevice);
+    }
+    catch( Tango::DevFailed& df )
+    {
+      ERROR_STREAM << df << std::endl;
+      this->set_status ("Initialization error [Tango Exception caught while instantiating DeviceProxy]");
+      this->set_state (Tango::FAULT);
+      this->delete_device();
+      return;
+    }
+    catch(...)
+    {
+      ERROR_STREAM << "unknown exception caught during instantiation of DeviceProxy" << std::endl;
+      this->set_status ("Initialization error [unknown exception caught while instantiating DeviceProxy]");
+      this->set_state (Tango::FAULT);
+      this->delete_device();
+      return;
+    }
+  }
+
+
+  // Init ImgBeamAnalyzerTask
 	//--------------------------------------------  
   try
   {
-    this->task_ = new BIATask (this,
-                               this->current_config_,
-                               dev_proxy_allowed,
-                               this->imageDevice,
-                               this->imageAttributeName,
-                               this->autoStart,
-                               this->device_mode_);
+    this->task_ = new ImgBeamAnalyzerTask ();
     if (this->task_ == 0)
       throw std::bad_alloc();
 
-    double dummy = 0;
-    this->task_->go(dummy);
+    ImgBeamAnalyzerInit init_config;
+
+    //- this function will be called to get the image from the remote device
+    init_config.get_img = GetImgCB::instantiate(*this, &ImgBeamAnalyzer::get_remote_image);
+    //- is the previous function authorized (a proxy has been configured ?)
+    init_config.get_img_allowed = dev_proxy_allowed;
+    //- the initial processing parameters, from the device properties
+    init_config.processing_config = this->current_config_;
+    //- if in CONTINUOUS mode, auto start the processing ?
+    init_config.auto_start = this->autoStart;
+    //- the mode ( CONTINUOUS or ONE_SHOT )
+    init_config.mode = this->device_mode_;
+
+    yat::Message* init_msg = yat::Message::allocate(yat::TASK_INIT, INIT_MSG_PRIORITY, true);
+    init_msg->attach_data(init_config);
+    this->task_->go(init_msg);
   }
   catch (const std::bad_alloc &)
   {
-    ERROR_STREAM << "std::bad_alloc caught during instantiation of DataProcessing" << std::endl;
-    this->set_status ("Initialization error [OUT_OF_MEMORY exception caught while instantiating DataProcessing]");
+    ERROR_STREAM << "std::bad_alloc caught during instantiation of ImgBeamAnalyzerTask" << std::endl;
+    this->set_status ("Initialization error [OUT_OF_MEMORY exception caught while instantiating ImgBeamAnalyzerTask]");
     this->set_state (Tango::FAULT);
     this->delete_device();
     return;
   }
-  catch (Tango::DevFailed & df)
+  catch (yat::Exception& ex)
   {
-  	ERROR_STREAM << df << std::endl;
-    this->set_status ("Initialization failed");
+    yat::OSStream os;
+    os << "Initialization error ["
+       << ex.errors[0].desc
+       << "]";
+    this->set_status (os.str());
     this->set_state (Tango::FAULT);
     this->delete_device ();
     return;
   }
   catch (...)
   {
-    ERROR_STREAM << "std::bad_alloc caught during instantiation of DataProcessing" << std::endl;
-    this->set_status ("Initialization error [unknown exception caught while instantiating DataProcessing]");
+    ERROR_STREAM << "unknown exception caught during instantiation of ImgBeamAnalyzerTask" << std::endl;
+    this->set_status ("Initialization error [unknown exception caught while instantiating ImgBeamAnalyzerTask]");
     this->set_state (Tango::FAULT);
     this->delete_device();
     return;
@@ -284,10 +482,8 @@ void ImgBeamAnalyzer::init_device()
   
   this->properly_initialized_ = true;
 
-  
   //- update the state
   this->always_executed_hook();
-
 }
 
 
@@ -311,24 +507,24 @@ void ImgBeamAnalyzer::get_device_property()
   //- Generate a default configuration object
   BIAConfig default_config;
 
-  this->computationPeriod = default_config.comput_period;
-  this->enableImageStats = default_config.enable_image_stats;
-  this->enableProfiles = default_config.enable_profile;
-  this->enableHistogram = default_config.enable_histogram;
-  this->enableUserROI = default_config.enable_user_roi;
-  this->enableAutoROI = default_config.enable_auto_roi;
-  this->enable2DGaussianFit = default_config.enable_2d_gaussian_fit;
-  this->autoROIMagFactor = default_config.auto_roi_mag_factor;
-  this->pixelSizeX = default_config.pixel_size_x;
-  this->pixelSizeY = default_config.pixel_size_y;
+  this->computationPeriod    = default_config.comput_period;
+  this->enableImageStats     = default_config.enable_image_stats;
+  this->enableProfiles       = default_config.enable_profile;
+  this->enableHistogram      = default_config.enable_histogram;
+  this->enableUserROI        = default_config.enable_user_roi;
+  this->enableAutoROI        = default_config.enable_auto_roi;
+  this->enable2DGaussianFit  = default_config.enable_2d_gaussian_fit;
+  this->autoROIMagFactor     = default_config.auto_roi_mag_factor;
+  this->pixelSizeX           = default_config.pixel_size_x;
+  this->pixelSizeY           = default_config.pixel_size_y;
   this->opticalMagnification = default_config.optical_mag;
-  this->rotation = default_config.rotation;
-  this->horizontalFlip = default_config.horizontal_flip;
-  this->gammaCorrection = default_config.gamma_correction;
-  this->bitsPerPixel = default_config.pixel_depth;
-  this->histogramNbBins = default_config.histo_nb_bins;
-  this->histogramRangeMin = default_config.histo_range_min;
-  this->histogramRangeMax = default_config.histo_range_max;
+  this->rotation             = default_config.rotation;
+  this->horizontalFlip       = default_config.horizontal_flip;
+  this->gammaCorrection      = default_config.gamma_correction;
+  this->bitsPerPixel         = default_config.pixel_depth;
+  this->histogramNbBins      = default_config.histo_nb_bins;
+  this->histogramRangeMin    = default_config.histo_range_min;
+  this->histogramRangeMax    = default_config.histo_range_max;
 
   //	Read device properties from database.(Automatic code generation)
 	//------------------------------------------------------------------
@@ -568,7 +764,6 @@ void ImgBeamAnalyzer::get_device_property()
 	//	End of Automatic code generation
 	//------------------------------------------------------------------
 
-
   std::transform(mode.begin(), mode.end(), mode.begin(), ::tolower);
   if (mode == "unspecified")
   {
@@ -581,24 +776,24 @@ void ImgBeamAnalyzer::get_device_property()
 	//------------------------------------------------------------------
   this->current_config_ = BIAConfig(); //- set all members to their default value
 
-  this->current_config_.enable_image_stats = enableImageStats;
-  this->current_config_.enable_profile = enableProfiles;
-  this->current_config_.enable_histogram = enableHistogram;
-  this->current_config_.enable_2d_gaussian_fit = enable2DGaussianFit;
-  this->current_config_.enable_auto_roi = enableAutoROI;
-  this->current_config_.enable_user_roi = enableUserROI;
-  this->current_config_.comput_period = computationPeriod;
-  this->current_config_.pixel_size_x = pixelSizeX;
-  this->current_config_.pixel_size_y = pixelSizeY;
-  this->current_config_.optical_mag = opticalMagnification;
-  this->current_config_.auto_roi_mag_factor = autoROIMagFactor;
-  this->current_config_.rotation = rotation;
-  this->current_config_.horizontal_flip = horizontalFlip;
-  this->current_config_.gamma_correction = gammaCorrection;
-  this->current_config_.pixel_depth = bitsPerPixel;
-  this->current_config_.histo_nb_bins = histogramNbBins;
-  this->current_config_.histo_range_min = histogramRangeMin;
-  this->current_config_.histo_range_max = histogramRangeMax;
+  this->current_config_.enable_image_stats      = enableImageStats;
+  this->current_config_.enable_profile          = enableProfiles;
+  this->current_config_.enable_histogram        = enableHistogram;
+  this->current_config_.enable_2d_gaussian_fit  = enable2DGaussianFit;
+  this->current_config_.enable_auto_roi         = enableAutoROI;
+  this->current_config_.enable_user_roi         = enableUserROI;
+  this->current_config_.comput_period           = computationPeriod;
+  this->current_config_.pixel_size_x            = pixelSizeX;
+  this->current_config_.pixel_size_y            = pixelSizeY;
+  this->current_config_.optical_mag             = opticalMagnification;
+  this->current_config_.auto_roi_mag_factor     = autoROIMagFactor;
+  this->current_config_.rotation                = rotation;
+  this->current_config_.horizontal_flip         = horizontalFlip;
+  this->current_config_.gamma_correction        = gammaCorrection;
+  this->current_config_.pixel_depth             = bitsPerPixel;
+  this->current_config_.histo_nb_bins           = histogramNbBins;
+  this->current_config_.histo_range_min         = histogramRangeMin;
+  this->current_config_.histo_range_max         = histogramRangeMax;
 
   //- leave the other members to their default values
 }
@@ -644,9 +839,9 @@ void ImgBeamAnalyzer::read_attr_hardware(vector<long> &attr_list)
   }
   catch(...)
   {
-    Tango::Except::throw_exception (_CPTC ("UNKNOWN_ERROR"),
-                                    _CPTC ("An unknown error occured"),
-                                    _CPTC ("ImgBeamAnalyzer::read_attr_hardware()"));
+    THROW_DEVFAILED("UNKNOWN_ERROR",
+                    "An unknown error occured",
+                    "ImgBeamAnalyzer::read_attr_hardware()");
   }
 
   //- the state/status may be updated by the call to this->task_->get_data()
@@ -2079,41 +2274,24 @@ void ImgBeamAnalyzer::start()
                     "ImgBeamAnalyzer::start()");
   }
 
-  
   if (this->properly_initialized_)
   {
-    //- try to send a START message
-    adtb::Message* msg = 0;
     try
     {
-      msg = new adtb::Message(kMSG_START);
-      if (msg == 0)
-        throw std::bad_alloc();
-      //msg->make_waitable();
+      this->task_->start(kCOMMAND_TIMEOUT);
     }
-    catch(...)
+    catch( yat::Exception& ex )
     {
-      THROW_DEVFAILED("OUT_OF_MEMORY",
-                      "Error while creating a STOP message",
-                      "ImgBeamAnalyzer::start()");
-    }
-
-    //- post the message
-    try
-    {
-      this->task_->wait_msg_handled(msg, kCOMMAND_TIMEOUT);
-    }
-	  catch (Tango::DevFailed &ex)
-    {
-      RETHROW_DEVFAILED(ex,
+      adtb::YATDevFailed df(ex);
+      RETHROW_DEVFAILED(df,
                         "SOFTWARE_FAILURE",
-                        "Error while posting a START message",
+                        "Error while trying to START",
                         "ImgBeamAnalyzer::start()");
     }
     catch(...)
     {
-	    THROW_DEVFAILED("UNKNOWN_ERROR",
-                      "Unknown error while posting a START message",
+      THROW_DEVFAILED("UNKNWON_ERROR",
+                      "Unknown error while trying to START",
                       "ImgBeamAnalyzer::start()");
     }
   }
@@ -2138,41 +2316,24 @@ void ImgBeamAnalyzer::stop()
                     "ImgBeamAnalyzer::stop()");
   }
 
-  
   if (this->properly_initialized_)
   {
-    //- try to send a STOP message
-    adtb::Message* msg = 0;
     try
     {
-      msg = new adtb::Message(kMSG_STOP);
-      if (msg == 0)
-        throw std::bad_alloc();
-      //msg->make_waitable();
+      this->task_->stop(kCOMMAND_TIMEOUT);
     }
-    catch(...)
+    catch( yat::Exception& ex )
     {
-      THROW_DEVFAILED("OUT_OF_MEMORY",
-                      "Error while creating a STOP message",
-                      "ImgBeamAnalyzer::stop()");
-    }
-
-    //- post the message
-    try
-    {
-      this->task_->wait_msg_handled(msg, kCOMMAND_TIMEOUT);
-    }
-	  catch (Tango::DevFailed &ex)
-    {
-      RETHROW_DEVFAILED(ex,
+      adtb::YATDevFailed df(ex);
+      RETHROW_DEVFAILED(df,
                         "SOFTWARE_FAILURE",
-                        "Error while posting a STOP message",
+                        "Error while trying to STOP",
                         "ImgBeamAnalyzer::stop()");
     }
     catch(...)
     {
-	    THROW_DEVFAILED("UNKNOWN_ERROR",
-                      "Unknown error while posting a STOP message",
+      THROW_DEVFAILED("UNKNWON_ERROR",
+                      "Unknown error while trying to STOP",
                       "ImgBeamAnalyzer::stop()");
     }
   }
@@ -2197,17 +2358,16 @@ void ImgBeamAnalyzer::process()
                     "ImgBeamAnalyzer::process");
   }
 
-
   //- retrieve the image from the remote device
   isl::Image* image = 0;
-  
   try
   {
-    image = this->task_->get_remote_image();
+    this->get_remote_image(image);
   }
-  catch (Tango::DevFailed &ex)
+  catch (yat::Exception& ex)
   {
-	  RETHROW_DEVFAILED(ex,
+    adtb::YATDevFailed df(ex);
+	  RETHROW_DEVFAILED(df,
                       "SOFTWARE_FAILURE",
                       "Unable to get image from remote device",
                       "ImgBeamAnalyzer::process");
@@ -2219,63 +2379,26 @@ void ImgBeamAnalyzer::process()
                     "ImgBeamAnalyzer::process");
   }
 
-
-  adtb::Message* msg = 0;
   try
   {
-    msg = new adtb::Message(kMSG_PROCESS);
-    if (msg == 0)
-      throw std::bad_alloc();
-    //msg->make_waitable();
+    this->task_->process( image, true, kCOMMAND_TIMEOUT );
   }
-  catch(...)
+  catch (yat::Exception& ex)
   {
-    SAFE_DELETE_PTR( image );
-	  THROW_DEVFAILED("SOFTWARE_FAILURE",
-                    "Allocation of a message failed",
-                    "ImgBeamAnalyzer::process");
-  }
-
-  try
-  {
-    msg->attach_data(image);
-  }
-  catch (Tango::DevFailed &ex)
-  {
-    SAFE_DELETE_PTR( image );
-    SAFE_RELEASE( msg );
-	  RETHROW_DEVFAILED(ex,
+    adtb::YATDevFailed df(ex);
+	  RETHROW_DEVFAILED(df,
                       "SOFTWARE_FAILURE",
-                      "Attaching data to a adtb::Message failed",
-                      "ImgBeamAnalyzer::process");
-  }
-  catch(...)
-  {
-    SAFE_DELETE_PTR( image );
-    SAFE_RELEASE( msg );
-	  THROW_DEVFAILED("UNKNOWN_ERROR",
-                    "Attaching data to a adtb::Message failed",
-                    "ImgBeamAnalyzer::process");
-  }
-
-  //- post the message
-  try
-  {
-    this->task_->wait_msg_handled(msg, kCOMMAND_TIMEOUT);
-  }
-	catch (Tango::DevFailed &ex)
-  {
-    RETHROW_DEVFAILED(ex,
-                      "SOFTWARE_FAILURE",
-                      "Error while posting a PROCESS message",
+                      "Processing has failed",
                       "ImgBeamAnalyzer::process");
   }
   catch(...)
   {
 	  THROW_DEVFAILED("UNKNOWN_ERROR",
-                    "Unknown error while posting a PROCESS message",
+                    "Processing has failed",
                     "ImgBeamAnalyzer::process");
   }
+
+
 }
 
 //+------------------------------------------------------------------
@@ -2358,13 +2481,18 @@ void ImgBeamAnalyzer::start_learn_noise()
   if (this->properly_initialized_)
   {
     //- try to send a STOP message
-    adtb::Message* msg = 0;
+    yat::Message* msg = 0;
     try
     {
-      msg = new adtb::Message(kMSG_START_LEARN_NOISE);
-      if (msg == 0)
-        throw std::bad_alloc();
-      //msg->make_waitable();
+      msg = yat::Message::allocate(kMSG_START_LEARN_NOISE, DEFAULT_MSG_PRIORITY, true);
+    }
+    catch(yat::Exception& ex)
+    {
+      adtb::YATDevFailed df(ex);
+      RETHROW_DEVFAILED(df,
+                        "OUT_OF_MEMORY",
+                        "Error while creating a START_LEARN_NOISE message",
+                        "ImgBeamAnalyzer::start_learn_noise()");
     }
     catch(...)
     {
@@ -2378,9 +2506,10 @@ void ImgBeamAnalyzer::start_learn_noise()
     {
       this->task_->wait_msg_handled(msg, kCOMMAND_TIMEOUT);
     }
-	  catch (Tango::DevFailed &ex)
+    catch(yat::Exception& ex)
     {
-      RETHROW_DEVFAILED(ex,
+      adtb::YATDevFailed df(ex);
+      RETHROW_DEVFAILED(df,
                         "SOFTWARE_FAILURE",
                         "Error while posting a START_LEARN_NOISE message",
                         "ImgBeamAnalyzer::start_learn_noise()");
@@ -2408,13 +2537,18 @@ void ImgBeamAnalyzer::stop_learn_noise()
   if (this->properly_initialized_)
   {
     //- try to send a STOP message
-    adtb::Message* msg = 0;
+    yat::Message* msg = 0;
     try
     {
-      msg = new adtb::Message(kMSG_STOP_LEARN_NOISE);
-      if (msg == 0)
-        throw std::bad_alloc();
-      //msg->make_waitable();
+      msg = yat::Message::allocate(kMSG_STOP_LEARN_NOISE, DEFAULT_MSG_PRIORITY, true);
+    }
+    catch(yat::Exception& ex)
+    {
+      adtb::YATDevFailed df(ex);
+      RETHROW_DEVFAILED(df,
+                        "OUT_OF_MEMORY",
+                        "Error while creating a STOP_LEARN_NOISE message",
+                        "ImgBeamAnalyzer::stop_learn_noise()");
     }
     catch(...)
     {
@@ -2422,15 +2556,15 @@ void ImgBeamAnalyzer::stop_learn_noise()
                       "Error while creating a STOP_LEARN_NOISE message",
                       "ImgBeamAnalyzer::stop_learn_noise()");
     }
-
     //- post the message
     try
     {
       this->task_->wait_msg_handled(msg, kCOMMAND_TIMEOUT);
     }
-	  catch (Tango::DevFailed &ex)
+    catch(yat::Exception& ex)
     {
-      RETHROW_DEVFAILED(ex,
+      adtb::YATDevFailed df(ex);
+      RETHROW_DEVFAILED(df,
                         "SOFTWARE_FAILURE",
                         "Error while posting a STOP_LEARN_NOISE message",
                         "ImgBeamAnalyzer::stop_learn_noise()");
@@ -2466,6 +2600,345 @@ Tango::DevString ImgBeamAnalyzer::get_version_number()
 	Tango::DevString	argout  = new char[version.length()];
 	strcpy(argout, version.c_str());
 	return argout;
+}
+
+
+void ImgBeamAnalyzer::get_remote_image(isl::Image*& image)
+  throw (yat::Exception)
+{
+  image = 0;
+
+  //-	Read the attribute
+	//------------------------------------------
+  Tango::DeviceAttribute dev_attr;
+  int dim_x = 0;
+  int dim_y = 0;
+  
+  try
+  {
+    dev_attr = this->dev_proxy_->read_attribute(this->imageAttributeName);
+    dim_x = dev_attr.get_dim_x();
+    dim_y = dev_attr.get_dim_y();
+
+		//- just make a call to get_type() to test if the dev_attr is empty 
+    //- if the attr is empty, a Tango::DevFailed will be thrown
+    dev_attr.get_type();
+
+  }
+	catch (Tango::DevFailed &df)
+  {
+    TangoYATException ex(df);
+    RETHROW_YAT_ERROR(ex,
+                      "SOFTWARE_FAILURE",
+                      "Error while getting remote image",
+                      "ImgBeamAnalyzerTask::get_remote_image");
+  }
+  catch(...)
+  {
+    THROW_YAT_ERROR("UNKNOWN_ERROR",
+                    "Error while getting remote image",
+                    "ImgBeamAnalyzerTask::get_remote_image");
+  }
+
+
+  try
+  {
+    image = new isl::Image(dim_x, dim_y, isl::ISL_STORAGE_USHORT);
+    if (image == 0)
+      throw std::bad_alloc();
+  }
+  catch(std::bad_alloc &)
+  {
+    THROW_YAT_ERROR("OUT_OF_MEMORY",
+                    "Allocation of isl::Image failed [std::bad_alloc]",
+                    "ImgBeamAnalyzerTask::get_remote_image");
+  }
+  catch(isl::Exception & ex)
+  {
+    ISL2YATException yat_exc(ex);
+    isl::ErrorHandler::reset();
+    RETHROW_YAT_ERROR(yat_exc,
+                      "SOFTWARE_FAILURE",
+                      "Allocation of isl::Image failed [isl::Exception]",
+                      "ImgBeamAnalyzerTask::get_remote_image");
+  }
+  catch(...)
+  {
+    THROW_YAT_ERROR("UNKNOWN_ERROR",
+                    "Allocation of isl::Image failed [Unknown exception caught]",
+                    "ImgBeamAnalyzerTask::get_remote_image");
+  }
+
+  switch(dev_attr.get_type())
+  {
+  case Tango::DEV_UCHAR:
+    {
+      Tango::DevVarUCharArray* serialized_image = 0;
+      
+      try
+      {
+        if ((dev_attr >> serialized_image) == false)
+        {
+          SAFE_DELETE_PTR(image);
+          THROW_YAT_ERROR("OUT_OF_MEMORY",
+                          "Extraction of data from Tango::Attribute failed",
+                          "ImgBeamAnalyzerTask::get_remote_image");
+        }
+      }
+      catch(std::bad_alloc &)
+      {
+        SAFE_DELETE_PTR(image);
+        THROW_YAT_ERROR("OUT_OF_MEMORY",
+                        "Extraction of data from Tango::Attribute failed [std::bad_alloc]",
+                        "ImgBeamAnalyzerTask::get_remote_image");
+      }
+      catch(Tango::DevFailed & df)
+      {
+        SAFE_DELETE_PTR(image);
+        TangoYATException ex(df);
+        RETHROW_YAT_ERROR(ex,
+                          "SOFTWARE_FAILURE",
+                          "Extraction of data from Tango::Attribute failed [Tango::DevFailed]",
+                          "ImgBeamAnalyzerTask::get_remote_image");
+      }
+      catch(...)
+      {
+        SAFE_DELETE_PTR(image);
+        THROW_YAT_ERROR("UNKNOWN_ERROR",
+                        "Extraction of data from Tango::Attribute failed [unknown exception]",
+                        "ImgBeamAnalyzerTask::get_remote_image");
+      }
+
+      isl::Image* uchar_image = 0;
+      try
+      {
+        uchar_image = new isl::Image(dim_x, dim_y, isl::ISL_STORAGE_UCHAR);
+        if (uchar_image == 0)
+          throw std::bad_alloc();
+      }
+      catch(std::bad_alloc &)
+      {
+        THROW_YAT_ERROR("OUT_OF_MEMORY",
+                        "Allocation of isl::Image failed [std::bad_alloc]",
+                        "ImgBeamAnalyzerTask::get_remote_image");
+      }
+      catch(isl::Exception & ex)
+      {
+        ISL2YATException yat_exc(ex);
+        isl::ErrorHandler::reset();
+        RETHROW_YAT_ERROR(yat_exc,
+                          "OUT_OF_MEMORY",
+                          "Allocation of isl::Image failed [isl::Exception]",
+                          "ImgBeamAnalyzerTask::get_remote_image");
+      }
+      catch(...)
+      {
+        THROW_YAT_ERROR("UNKNOWN_ERROR",
+                        "Allocation of isl::Image failed [Tango::DevFailed]",
+                        "ImgBeamAnalyzerTask::get_remote_image");
+      }
+      
+      try
+      {
+        uchar_image->unserialize( serialized_image->get_buffer() );
+        uchar_image->convert( *image );
+      }
+      catch(isl::Exception & ex)
+      {
+        ISL2YATException yat_exc(ex);
+        isl::ErrorHandler::reset();
+        RETHROW_YAT_ERROR(yat_exc,
+                          "SOFTWARE_FAILURE",
+                          "Unable to convert the UChar image to a UShort image",
+                          "ImgBeamAnalyzerTask::get_remote_image");
+      }
+      catch(...)
+      {
+        THROW_YAT_ERROR("UNKNOWN_ERROR",
+                        "Unable to convert the UChar image to a UShort image",
+                        "ImgBeamAnalyzerTask::get_remote_image");
+      }
+      SAFE_DELETE_PTR(serialized_image);
+      SAFE_DELETE_PTR(uchar_image);
+    }
+    break;
+  case Tango::DEV_SHORT:
+    {
+      Tango::DevVarShortArray* serialized_image = 0;
+      
+      try
+      {
+        if ((dev_attr >> serialized_image) == false)
+        {
+          SAFE_DELETE_PTR(image);
+          THROW_YAT_ERROR("OUT_OF_MEMORY",
+                          "Extraction of data from Tango::Attribute failed",
+                          "ImgBeamAnalyzerTask::get_remote_image");
+        }
+      }
+      catch(std::bad_alloc &)
+      {
+        SAFE_DELETE_PTR(image);
+        THROW_YAT_ERROR("OUT_OF_MEMORY",
+                        "Extraction of data from Tango::Attribute failed [std::bad_alloc]",
+                        "ImgBeamAnalyzerTask::get_remote_image");
+      }
+      catch(Tango::DevFailed & df)
+      {
+        SAFE_DELETE_PTR(image);
+        TangoYATException ex(df);
+        RETHROW_YAT_ERROR(ex,
+                          "SOFTWARE_FAILURE",
+                          "Extraction of data from Tango::Attribute failed [Tango::DevFailed]",
+                          "ImgBeamAnalyzerTask::get_remote_image");
+      }
+      catch(...)
+      {
+        SAFE_DELETE_PTR(image);
+        THROW_YAT_ERROR("UNKNOWN_ERROR",
+                        "Extraction of data from Tango::Attribute failed [unknown exception]",
+                        "ImgBeamAnalyzerTask::get_remote_image");
+      }
+
+      try
+      {
+        image->unserialize(serialized_image->get_buffer());
+      }
+      catch(isl::Exception & ex)
+      {
+        ISL2YATException yat_exc(ex);
+        isl::ErrorHandler::reset();
+        RETHROW_YAT_ERROR(yat_exc,
+                          "SOFTWARE_FAILURE",
+                          "Unable to unserialize image",
+                          "ImgBeamAnalyzerTask::get_remote_image");
+      }
+      catch(...)
+      {
+        THROW_YAT_ERROR("UNKNOWN_ERROR",
+                        "Unable to unserialize image",
+                        "ImgBeamAnalyzerTask::get_remote_image");
+      }
+      SAFE_DELETE_PTR(serialized_image);
+     }
+    break;
+  case Tango::DEV_USHORT:
+    {
+      Tango::DevVarUShortArray* serialized_image = 0;
+      
+      try
+      {
+        if ((dev_attr >> serialized_image) == false)
+        {
+          SAFE_DELETE_PTR(image);
+          THROW_YAT_ERROR("OUT_OF_MEMORY",
+                          "Extraction of data from Tango::Attribute failed",
+                          "ImgBeamAnalyzerTask::get_remote_image");
+        }
+      }
+      catch(std::bad_alloc &)
+      {
+        SAFE_DELETE_PTR(image);
+        THROW_YAT_ERROR("OUT_OF_MEMORY",
+                        "Extraction of data from Tango::Attribute failed [std::bad_alloc]",
+                        "ImgBeamAnalyzerTask::get_remote_image");
+      }
+      catch(Tango::DevFailed & df)
+      {
+        SAFE_DELETE_PTR(image);
+        TangoYATException ex(df);
+        RETHROW_YAT_ERROR(ex,
+                          "SOFTWARE_FAILURE",
+                          "Extraction of data from Tango::Attribute failed [Tango::DevFailed]",
+                          "ImgBeamAnalyzerTask::get_remote_image");
+      }
+      catch(...)
+      {
+        SAFE_DELETE_PTR(image);
+        THROW_YAT_ERROR("UNKNOWN_ERROR",
+                        "Extraction of data from Tango::Attribute failed [unknown exception]",
+                        "ImgBeamAnalyzerTask::get_remote_image");
+      }
+
+      try
+      {
+        image->unserialize(serialized_image->get_buffer());
+      }
+      catch(isl::Exception & ex)
+      {
+        ISL2YATException yat_exc(ex);
+        isl::ErrorHandler::reset();
+        RETHROW_YAT_ERROR(yat_exc,
+                          "SOFTWARE_FAILURE",
+                          "Unable to unserialize image",
+                          "ImgBeamAnalyzerTask::get_remote_image");
+      }
+      catch(...)
+      {
+        THROW_YAT_ERROR("UNKNOWN_ERROR",
+                        "Unable to unserialize image",
+                        "ImgBeamAnalyzerTask::get_remote_image");
+      }
+      SAFE_DELETE_PTR(serialized_image);
+    }
+    break;
+  default:
+    {
+      SAFE_DELETE_PTR(image);
+      THROW_YAT_ERROR("SOFTWARE_FAILURE",
+                      "The remote attribute must be of type DEV_UCHAR, DEV_SHORT or DEV_USHORT",
+                      "ImgBeamAnalyzerTask::get_remote_image");
+     }
+    break;
+  }
+}
+
+void ImgBeamAnalyzer::update_state()
+{
+  if (this->properly_initialized_ == false)
+  {
+    //- the state and status are set up during init()
+    //- just do nothing here...
+  }
+  else if (this->task_)
+  {
+    ImgBeamAnalyzerTask::State state;
+    std::string status;
+    this->task_->get_state_status(state, status);
+    
+    Tango::DevState tango_state;
+    switch(state)
+    {
+    case ImgBeamAnalyzerTask::INIT:    tango_state = Tango::INIT;    break;
+    case ImgBeamAnalyzerTask::STANDBY: tango_state = Tango::STANDBY; break;
+    case ImgBeamAnalyzerTask::RUNNING: tango_state = Tango::RUNNING; break;
+    case ImgBeamAnalyzerTask::FAULT:   tango_state = Tango::FAULT;   break;
+    default:                           tango_state = Tango::UNKNOWN; break;
+    }
+
+    this->set_state (tango_state);
+    this->set_status(status);
+  }
+};
+
+
+ImgBeamAnalyzer::TangoYATException::TangoYATException( Tango::DevFailed& df )
+{
+  const Tango::DevErrorList& tango_err_list = df.errors;
+  for (size_t i = 0; i < tango_err_list.length(); i++) 
+  {
+    Tango::ErrSeverity df_sev = df.errors[i].severity;
+    yat::ErrorSeverity yat_sev = (df_sev == Tango::WARN ? yat::WARN
+                                  : (df_sev == Tango::ERR ? yat::ERR
+                                     : (df_sev == Tango::PANIC ? yat::PANIC
+                                        : yat::ERR)));
+    
+    this->push_error( df.errors[i].reason,
+                      df.errors[i].desc,
+                      df.errors[i].origin,
+                      -1,
+                      yat_sev);
+  }
 }
 
 }	//	namespace

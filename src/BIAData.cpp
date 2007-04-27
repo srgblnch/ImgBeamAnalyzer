@@ -16,9 +16,9 @@
 // ============================================================================
 #include "BIAData.h"
 
-#if !defined (__INLINE_IMPL__)
+#if !defined (YAT_INLINE_IMPL)
 # include "BIAData.i"
-#endif // __INLINE_IMPL___
+#endif // YAT_INLINE_IMPL
 
 
 namespace ImgBeamAnalyzer_ns
@@ -27,8 +27,6 @@ namespace ImgBeamAnalyzer_ns
 BIAData::BIAData (void)
   : SharedObject (),
     input_image (0,0),
-    image_width(0),
-    image_height(0),
     user_roi_alarm(false),
     estim_comput_time(0),
     auto_roi_found(false),

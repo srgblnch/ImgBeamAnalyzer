@@ -14,58 +14,47 @@
 #ifndef _BIA_CONFIG_H_
 #define _BIA_CONFIG_H_
 
-// ============================================================================
-// DEPENDENCIES
-// ============================================================================
-#include <tango.h>
-
-#include <DeviceTask.h>
+#include <yat/CommonHeader.h>
 
 namespace ImgBeamAnalyzer_ns
 {
 
-
-class BIAConfig
+struct BIAConfig
 {
-public:
-
   BIAConfig();
-  BIAConfig(const BIAConfig&);
-  ~BIAConfig();
-  BIAConfig& operator = (const BIAConfig&);
 
-  Tango::DevBoolean enable_image_stats;
-  Tango::DevBoolean enable_profile;
-  Tango::DevBoolean enable_histogram;
-  Tango::DevBoolean enable_user_roi;
-  Tango::DevBoolean enable_auto_roi;
-  Tango::DevBoolean enable_2d_gaussian_fit;
-  Tango::DevDouble  auto_roi_mag_factor;
-  Tango::DevLong    comput_period;
-  Tango::DevLong    alarm_zone;
-  Tango::DevLong    fit2d_nb_iter;
-  Tango::DevDouble  fit2d_max_rel_change;
-  Tango::DevLong    fit1d_nb_iter;
-  Tango::DevDouble  fit1d_max_rel_change;
-  Tango::DevDouble  pixel_size_x;
-  Tango::DevDouble  pixel_size_y;
-  Tango::DevDouble  optical_mag;
-  Tango::DevLong    user_roi_origin_x;
-  Tango::DevLong    user_roi_origin_y;
-  Tango::DevLong    user_roi_width;
-  Tango::DevLong    user_roi_height;
-  Tango::DevLong    rotation;
-  Tango::DevBoolean horizontal_flip;
-  Tango::DevDouble  gamma_correction;
-  Tango::DevLong    pixel_depth;
-  Tango::DevLong    histo_nb_bins;
-  Tango::DevLong    histo_range_min;
-  Tango::DevLong    histo_range_max;
+  bool enable_image_stats;
+  bool enable_profile;
+  bool enable_histogram;
+  bool enable_user_roi;
+  bool enable_auto_roi;
+  bool enable_2d_gaussian_fit;
+  double  auto_roi_mag_factor;
+  long    comput_period;
+  long    alarm_zone;
+  long    fit2d_nb_iter;
+  double  fit2d_max_rel_change;
+  long    fit1d_nb_iter;
+  double  fit1d_max_rel_change;
+  double  pixel_size_x;
+  double  pixel_size_y;
+  double  optical_mag;
+  long    user_roi_origin_x;
+  long    user_roi_origin_y;
+  long    user_roi_width;
+  long    user_roi_height;
+  long    rotation;
+  bool horizontal_flip;
+  double  gamma_correction;
+  long    pixel_depth;
+  long    histo_nb_bins;
+  long    histo_range_min;
+  long    histo_range_max;
  
   bool is_user_roi_empty(void) const;
 
-  void check(void) const
-    throw (Tango::DevFailed);
+  void validate(void) const
+    throw (yat::Exception);
 };
 
 

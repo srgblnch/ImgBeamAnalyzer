@@ -8,7 +8,7 @@
 //
 // $Author: julien_malik $
 //
-// $Revision: 1.9 $
+// $Revision: 1.10 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -30,19 +30,32 @@
 
 /**
  * @author	$Author: julien_malik $
- * @version	$Revision: 1.9 $
+ * @version	$Revision: 1.10 $
  */
 
  //	Add your own constants definitions here.
  //-----------------------------------------------
+
 #ifdef WIN32
-#  pragma warning (disable : 4786)
+#  pragma warning (disable: 4786)
+#  pragma warning( disable: 4250 ) // 'x' inherits 'y' via dominance
+#  pragma warning( push )
+#  pragma warning( disable: 4267 ) // 'var' : conversion from 'size_t' to 'type', possible loss of data 
+#  pragma warning( disable: 4311 ) // 'variable' : pointer truncation from 'type' to 'type' 
+#  pragma warning( disable: 4312 ) // 'operation' : conversion from 'type1' to 'type2' of greater size 
 #endif
 
-#include "BIATask.h"
-#include "BIAConfig.h"
-
 #include <tango.h>
+
+#ifdef WIN32
+#  pragma warning( pop )
+#endif
+
+
+
+
+#include "ImgBeamAnalyzerTask.h"
+#include "BIAConfig.h"
 
 namespace ImgBeamAnalyzer_ns
 {
@@ -1271,11 +1284,28 @@ public :
 protected :	
 	//	Add your own data members here
 	//-----------------------------------------
+  class TangoYATException : public yat::Exception
+  {
+  public:
+    TangoYATException( Tango::DevFailed& );
+  };
+    
+  
+  bool                dev_proxy_allowed_;
+  Tango::DeviceProxy* dev_proxy_;
+  
+  //- read the image from the device proxy
+  //- and construct a isl::Image containing its data
+  void get_remote_image(isl::Image*& image)
+    throw (yat::Exception);
+
+
   BIAConfig current_config_;
   BIAData*  available_data_;
-  BIATask*  task_;
+  ImgBeamAnalyzerTask*  task_;
   bool      critical_property_missing_;
   bool      properly_initialized_;
+  
   int       device_mode_;
   bool      process_command_allowed_;
 
@@ -1285,177 +1315,8 @@ protected :
     public: static T dummy;
   };
 
-  void update_state()
-  {
-    if (this->properly_initialized_ == false)
-    {
-      //- the state and status are set up during init()
-      //- just do nothing here...
-    }
-    else if (this->task_)
-    {
-      Tango::DevState state;
-      std::string status;
-      this->task_->get_state_status(state, status);
-      
-      this->set_state (state);
-      this->set_status(status);
-    }
-  };
+  void update_state();
 
-
-#define READ_OUTPUT_SCALAR_ATTR_ALWAYSACTIV( data_member, TangoType )                           \
-  {	                                                                                            \
-		if (this->available_data_ == 0                                                              \
-         || &this->available_data_->data_member == 0)                                           \
-		{                                                                                           \
-			attr.set_value(&DummyValue<TangoType>::dummy);                                            \
-			attr.set_quality(Tango::ATTR_ALARM);                                                      \
-		}                                                                                           \
-		else                                                                                        \
-		{                                                                                           \
-			attr.set_value(&this->available_data_->data_member);                                      \
-      if (this->available_data_->alarm == true)                                                 \
-        attr.set_quality(Tango::ATTR_ALARM);                                                    \
-      else                                                                                      \
-        attr.set_quality(Tango::ATTR_VALID);                                                    \
-		}                                                                                           \
-  }
-
-#define READ_OUTPUT_SCALAR_ATTR( data_member, activated, TangoType )                            \
-  {	                                                                                            \
-		if (this->available_data_ == 0                                                              \
-         || this->available_data_->config.activated == false                                    \
-         || &this->available_data_->data_member == 0)                                           \
-		{                                                                                           \
-			attr.set_value(&DummyValue<TangoType>::dummy);                                            \
-			attr.set_quality(Tango::ATTR_ALARM);                                                      \
-		}                                                                                           \
-		else                                                                                        \
-		{                                                                                           \
-			attr.set_value(&this->available_data_->data_member);                                      \
-      if (this->available_data_->alarm == true)                                                 \
-        attr.set_quality(Tango::ATTR_ALARM);                                                    \
-      else                                                                                      \
-        attr.set_quality(Tango::ATTR_VALID);                                                    \
-		}                                                                                           \
-  }
-
-#define READ_OUTPUT_SPECTRUM_ATTR( data_member, activated, TangoType )                          \
-  {	                                                                                            \
-		if (this->available_data_ == 0                                                              \
-         || this->available_data_->config.activated == false                                    \
-         || this->available_data_->data_member.base() == 0 )                                    \
-		{                                                                                           \
-			attr.set_value(&DummyValue<TangoType>::dummy, 1, 0);                                      \
-			attr.set_quality(Tango::ATTR_ALARM);                                                      \
-		}                                                                                           \
-		else                                                                                        \
-		{                                                                                           \
-			attr.set_value(this->available_data_->data_member.base(),                                 \
-                     this->available_data_->data_member.length());                              \
-      if (this->available_data_->alarm == true)                                                 \
-        attr.set_quality(Tango::ATTR_ALARM);                                                    \
-      else                                                                                      \
-        attr.set_quality(Tango::ATTR_VALID);                                                    \
-		}                                                                                           \
-  }
-
-#define READ_OUTPUT_IMAGE_ATTR_ALWAYSACTIV( data_member, TangoType )                            \
-  {	                                                                                            \
-		if (this->available_data_ == 0                                                              \
-         || this->available_data_->data_member.base() == 0 )                                    \
-		{                                                                                           \
-			attr.set_value(&DummyValue<TangoType>::dummy, 1, 1);                                      \
-			attr.set_quality(Tango::ATTR_ALARM);                                                      \
-		}                                                                                           \
-		else                                                                                        \
-		{                                                                                           \
-			attr.set_value(this->available_data_->data_member.base(),                                 \
-                     this->available_data_->data_member.width(),                                \
-                     this->available_data_->data_member.height());                              \
-      if (this->available_data_->alarm == true)                                                 \
-        attr.set_quality(Tango::ATTR_ALARM);                                                    \
-      else                                                                                      \
-        attr.set_quality(Tango::ATTR_VALID);                                                    \
-		}                                                                                           \
-  }
-
-#define READ_OUTPUT_IMAGE_ATTR( data_member, activated, TangoType )                             \
-  {	                                                                                            \
-		if (this->available_data_ == 0                                                              \
-         || this->available_data_->config.activated == false                                    \
-         || this->available_data_->data_member.base() == 0 )                                    \
-		{                                                                                           \
-			attr.set_value(&DummyValue<TangoType>::dummy, 1, 1);                                      \
-			attr.set_quality(Tango::ATTR_ALARM);                                                      \
-		}                                                                                           \
-		else                                                                                        \
-		{                                                                                           \
-			attr.set_value(this->available_data_->data_member.base(),                                 \
-                     this->available_data_->data_member.width(),                                \
-                     this->available_data_->data_member.height());                              \
-      if (this->available_data_->alarm == true)                                                 \
-        attr.set_quality(Tango::ATTR_ALARM);                                                    \
-      else                                                                                      \
-        attr.set_quality(Tango::ATTR_VALID);                                                    \
-		}                                                                                           \
-  }
-
-#define READ_INPUT_ATTR( config_member_name )                                                   \
-  {	                                                                                            \
-    if (this->available_data_ == 0 || this->get_state() == Tango::FAULT)                        \
-			attr.set_value(&this->current_config_.config_member_name);                                \
-		else                                                                                        \
-			attr.set_value(&this->available_data_->config.config_member_name);                        \
-  }
-
-#define READ_INPUT_ATTR_WITH_ALARM( config_member_name , alarm_boolean)                         \
-  {	                                                                                            \
-    if (this->available_data_ == 0 || this->get_state() == Tango::FAULT)                        \
-			attr.set_value(&this->current_config_.config_member_name);                                \
-		else                                                                                        \
-    {                                                                                           \
-			attr.set_value(&this->available_data_->config.config_member_name);                        \
-      if (this->available_data_->alarm_boolean == true)                                         \
-        attr.set_quality(Tango::ATTR_ALARM);                                                    \
-      else                                                                                      \
-        attr.set_quality(Tango::ATTR_VALID);                                                    \
-		}                                                                                           \
-  }
-
-
-#define WRITE_INPUT_ATTR( config_member_name, TangoType )                                       \
-  {	                                                                                            \
-		if (this->task_ == 0)                                                                       \
-			return;                                                                                   \
-   	                                                                                            \
-		TangoType value;                                                                            \
-		attr.get_write_value (value);                                                               \
-	 	if (value !=	this->current_config_.config_member_name)                                     \
-    {                                                                                           \
-      BIAConfig new_config(this->current_config_);                                              \
-      new_config.config_member_name = value;                                                    \
-			try                                                                                       \
-			{                                                                                         \
-        this->task_->configure(new_config);                                                     \
-			}                                                                                         \
-			catch (Tango::DevFailed &ex)                                                              \
-      {                                                                                         \
-				RETHROW_DEVFAILED(ex,                                                                   \
-													"SOFTWARE_FAILURE",                                                   \
-													"Tango error during configuration",                                   \
-													"ImgBeamAnalyzer::read_" #config_member_name);                        \
-      }                                                                                         \
-			catch(...)                                                                                \
-      {                                                                                         \
-				THROW_DEVFAILED("UNKNOWN_ERROR",                                                        \
-                        "Tango error during configuration",                                     \
-                        "ImgBeamAnalyzer::read_" #config_member_name);                          \
-      }                                                                                         \
-      this->current_config_ = new_config;                                                       \
-		}                                                                                           \
-  }
 };
 
 }	// namespace_ns
