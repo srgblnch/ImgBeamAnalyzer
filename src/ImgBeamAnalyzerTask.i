@@ -44,12 +44,12 @@ ImgBeamAnalyzerTask::set_state_status (State state, std::string status)
 YAT_INLINE
 void
 ImgBeamAnalyzerTask::get_data (BIAData*& data)
-  throw (Tango::DevFailed)
+  throw (yat::Exception)
 {
   //- enter critical section
   yat::MutexLock guard(this->data_mutex_);
 
-  if (this->mode_ == MODE_CONTINUOUS && this->state_ == Tango::STANDBY)
+  if (this->mode_ == MODE_CONTINUOUS && this->state_ == STANDBY)
     data = 0;
   else
     data = this->data_ ? this->data_->duplicate() : 0;

@@ -86,7 +86,6 @@ namespace ImgBeamAnalyzer_ns
     isl::Image* roi_image = 0;
     isl::Image* roi_image_f = 0;
     isl::Image* roi_image_d = 0;
-    isl::Image* noise_roi_image = 0;
 
     try
     {    
@@ -334,7 +333,7 @@ namespace ImgBeamAnalyzer_ns
 
   
   void
-  BIAProcessor::gamma_correction(isl::Image& roi_image, const BIAConfig& config, BIAData& data)
+  BIAProcessor::gamma_correction(isl::Image& roi_image, const BIAConfig& config, BIAData&)
     throw (isl::Exception)
   {
     if (::fabs(config.gamma_correction - 1) > DBL_EPSILON)

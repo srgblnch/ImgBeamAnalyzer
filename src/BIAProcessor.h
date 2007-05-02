@@ -50,21 +50,29 @@ namespace ImgBeamAnalyzer_ns
     void stop_learn_noise(void);
 
   private:
-    void preprocess(isl::Image& image, const BIAConfig& config, BIAData& data);
+    void preprocess(isl::Image& image, const BIAConfig& config, BIAData& data)
+      throw (isl::Exception);
 
-    void clip(const isl::Image& image, const BIAConfig& config, isl::Image*& roi_image, isl::Rectangle& roi, BIAData& data);
+    void clip(const isl::Image& image, const BIAConfig& config, isl::Image*& roi_image, isl::Rectangle& roi, BIAData& data)
+      throw (isl::Exception);
 
-    void substract_noise(isl::Image& roi_image, const isl::Rectangle& roi, BIAData& data);
+    void substract_noise(isl::Image& roi_image, const isl::Rectangle& roi, BIAData& data)
+      throw (isl::Exception);
 
-    void gamma_correction(isl::Image& roi_image_d, const BIAConfig& config, BIAData& data);
+    void gamma_correction(isl::Image& roi_image_d, const BIAConfig& config, BIAData& data)
+      throw (isl::Exception);
 
-    void histogram(isl::Image& roi_image, const BIAConfig& config, BIAData& data);
+    void histogram(isl::Image& roi_image, const BIAConfig& config, BIAData& data)
+      throw (isl::Exception);
 
-    void moments(isl::Image& roi_image, isl::Rectangle& roi, const BIAConfig& config, BIAData& data);
+    void moments(isl::Image& roi_image, isl::Rectangle& roi, const BIAConfig& config, BIAData& data)
+      throw (isl::Exception);
     
-    void profiles(isl::Image& roi_image_d, isl::Rectangle& roi, const BIAConfig& config, BIAData& data);
+    void profiles(isl::Image& roi_image_d, isl::Rectangle& roi, const BIAConfig& config, BIAData& data)
+      throw (isl::Exception);
 
-    void gaussian_fit_2d(isl::Image& roi_image_d, isl::Rectangle& roi, const BIAConfig& config, BIAData& data);
+    void gaussian_fit_2d(isl::Image& roi_image_d, isl::Rectangle& roi, const BIAConfig& config, BIAData& data)
+      throw (isl::Exception);
 
 
     isl::NoiseEstimator noise_estim_;
