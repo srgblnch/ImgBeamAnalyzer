@@ -1,0 +1,46 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual C++ Express 2005
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ds_ImgBeamAnalyzer", "ds_ImgBeamAnalyzer.vcproj", "{77B80930-E2DD-4D99-B5C0-BBA8D65C88F6}"
+	ProjectSection(ProjectDependencies) = postProject
+		{4936F10A-A503-4564-BB81-07155C49B7F1} = {4936F10A-A503-4564-BB81-07155C49B7F1}
+		{4A0EAE6E-A3A4-4035-B373-4A7D3E4B082A} = {4A0EAE6E-A3A4-4035-B373-4A7D3E4B082A}
+		{E40EBA76-ECFC-49A4-B553-2A02ED7665D5} = {E40EBA76-ECFC-49A4-B553-2A02ED7665D5}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "YAT_Static", "..\..\..\..\Libraries\YAT\msvc\8.0\YAT_Static.vcproj", "{4A0EAE6E-A3A4-4035-B373-4A7D3E4B082A}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ADTB_Static", "..\..\..\..\Libraries\ADTB\msvc\8.0\ADTB_Static.vcproj", "{E40EBA76-ECFC-49A4-B553-2A02ED7665D5}"
+	ProjectSection(ProjectDependencies) = postProject
+		{4A0EAE6E-A3A4-4035-B373-4A7D3E4B082A} = {4A0EAE6E-A3A4-4035-B373-4A7D3E4B082A}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ISL_Static", "..\..\..\..\Libraries\ISL\msvc\8.0\ISL_Static.vcproj", "{4936F10A-A503-4564-BB81-07155C49B7F1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{77B80930-E2DD-4D99-B5C0-BBA8D65C88F6}.Debug|Win32.ActiveCfg = Debug|Win32
+		{77B80930-E2DD-4D99-B5C0-BBA8D65C88F6}.Debug|Win32.Build.0 = Debug|Win32
+		{77B80930-E2DD-4D99-B5C0-BBA8D65C88F6}.Release|Win32.ActiveCfg = Release|Win32
+		{77B80930-E2DD-4D99-B5C0-BBA8D65C88F6}.Release|Win32.Build.0 = Release|Win32
+		{4A0EAE6E-A3A4-4035-B373-4A7D3E4B082A}.Debug|Win32.ActiveCfg = Debug|Win32
+		{4A0EAE6E-A3A4-4035-B373-4A7D3E4B082A}.Debug|Win32.Build.0 = Debug|Win32
+		{4A0EAE6E-A3A4-4035-B373-4A7D3E4B082A}.Release|Win32.ActiveCfg = Release|Win32
+		{4A0EAE6E-A3A4-4035-B373-4A7D3E4B082A}.Release|Win32.Build.0 = Release|Win32
+		{E40EBA76-ECFC-49A4-B553-2A02ED7665D5}.Debug|Win32.ActiveCfg = Debug|Win32
+		{E40EBA76-ECFC-49A4-B553-2A02ED7665D5}.Debug|Win32.Build.0 = Debug|Win32
+		{E40EBA76-ECFC-49A4-B553-2A02ED7665D5}.Release|Win32.ActiveCfg = Release|Win32
+		{E40EBA76-ECFC-49A4-B553-2A02ED7665D5}.Release|Win32.Build.0 = Release|Win32
+		{4936F10A-A503-4564-BB81-07155C49B7F1}.Debug|Win32.ActiveCfg = Debug|Win32
+		{4936F10A-A503-4564-BB81-07155C49B7F1}.Debug|Win32.Build.0 = Debug|Win32
+		{4936F10A-A503-4564-BB81-07155C49B7F1}.Release|Win32.ActiveCfg = Release|Win32
+		{4936F10A-A503-4564-BB81-07155C49B7F1}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
