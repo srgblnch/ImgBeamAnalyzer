@@ -107,6 +107,14 @@ Revision:  - Author:
 <Td><Center><Font Size=-1>DEV_LONG</Font></Center></Td><Td><Center><Font Size=-1>READ_WRITE</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
 
 <Font Size=-1>
+<Tr><Td><b>HistogramRangeMin</b>: <Font Size=-1>the lower bound of the histogram bins. must be >= 0</Font></Td>
+<Td><Center><Font Size=-1>DEV_LONG</Font></Center></Td><Td><Center><Font Size=-1>READ_WRITE</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>HistogramRangeMax</b>: <Font Size=-1>the upper bound of the histogram bins. must be <= 2^BitsPerPixel - 1 if set to 0, the maximal possible value is taken (2^BitsPerPixel - 1)</Font></Td>
+<Td><Center><Font Size=-1>DEV_LONG</Font></Center></Td><Td><Center><Font Size=-1>READ_WRITE</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Font Size=-1>
 <Tr><Td><b>GammaCorrection</b>: <Font Size=-1>the gamma value of the camera, used to correct the ROI image by raising to its inverse power</Font></Td>
 <Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ_WRITE</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
 
@@ -391,7 +399,7 @@ Revision:  - Author:
 <Tr><Td><b>YProfileError</b>: <Font Size=-1>the fitted profile error along the Y axis</Font></Td>
 <Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>131072</Font></Center></Td><Td><Center><Font Size=-1>Yes</Font></Center></Td></Tr>
 
-<Tr><Td><b>Histogram</b>: <Font Size=-1>the histogram of the image</Font></Td>
+<Tr><Td><b>Histogram</b></Td>
 <Td><Center><Font Size=-1>DEV_FLOAT</Font></Center></Td><Td><Center><Font Size=-1>131072</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
 
 </Table>
