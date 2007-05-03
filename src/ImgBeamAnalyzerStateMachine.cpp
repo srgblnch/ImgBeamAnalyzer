@@ -1,4 +1,4 @@
-static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzerStateMachine.cpp,v 1.7 2007-04-26 08:50:41 julien_malik Exp $";
+static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzerStateMachine.cpp,v 1.8 2007-05-03 17:10:27 julien_malik Exp $";
 //+=============================================================================
 //
 // file :         ImgBeamAnalyzerStateMachine.cpp
@@ -10,7 +10,7 @@ static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/Im
 //
 // $Author: julien_malik $
 //
-// $Revision: 1.7 $
+// $Revision: 1.8 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -407,20 +407,6 @@ bool ImgBeamAnalyzer::is_GaussianFitBG_allowed(Tango::AttReqType type)
 //
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_EnableAutoROI_allowed(Tango::AttReqType type)
-{
-		//	End of Generated Code
-
-		//	Re-Start of Generated Code
-	return true;
-}
-//+----------------------------------------------------------------------------
-//
-// method : 		ImgBeamAnalyzer::is_AutoROIMagFactor_allowed
-// 
-// description : 	Read/Write allowed for AutoROIMagFactor attribute.
-//
-//-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_AutoROIMagFactor_allowed(Tango::AttReqType type)
 {
 		//	End of Generated Code
 
@@ -1290,6 +1276,48 @@ bool ImgBeamAnalyzer::is_HistogramRangeMin_allowed(Tango::AttReqType type)
 //
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_HistogramRangeMax_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_AutoROIMagFactorX_allowed
+// 
+// description : 	Read/Write allowed for AutoROIMagFactorX attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_AutoROIMagFactorX_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_AutoROIMagFactorY_allowed
+// 
+// description : 	Read/Write allowed for AutoROIMagFactorY attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_AutoROIMagFactorY_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_ProfileFitFixedBg_allowed
+// 
+// description : 	Read/Write allowed for ProfileFitFixedBg attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_ProfileFitFixedBg_allowed(Tango::AttReqType type)
 {
 		//	End of Generated Code
 

@@ -1,4 +1,4 @@
-static const char *RcsId     = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzerClass.cpp,v 1.10 2007-04-26 10:07:57 julien_malik Exp $";
+static const char *RcsId     = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzerClass.cpp,v 1.11 2007-05-03 17:10:27 julien_malik Exp $";
 static const char *TagName   = "$Name: not supported by cvs2svn $";
 static const char *HttpServer= "http://www.esrf.fr/computing/cs/tango/tango_doc/ds_doc/";
 //+=============================================================================
@@ -14,7 +14,7 @@ static const char *HttpServer= "http://www.esrf.fr/computing/cs/tango/tango_doc/
 //
 // $Author: julien_malik $
 //
-// $Revision: 1.10 $
+// $Revision: 1.11 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -544,15 +544,25 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	gamma_correction->set_default_properties(gamma_correction_prop);
 	att_list.push_back(gamma_correction);
 
-	//	Attribute : AutoROIMagFactor
-	AutoROIMagFactorAttrib	*auto_roimag_factor = new AutoROIMagFactorAttrib();
-	Tango::UserDefaultAttrProp	auto_roimag_factor_prop;
-	auto_roimag_factor_prop.set_label("AutoROI Magnification Factor");
-	auto_roimag_factor_prop.set_unit(" ");
-	auto_roimag_factor_prop.set_format("%4.2f");
-	auto_roimag_factor_prop.set_description("the scaling factor applied to the bounding rectangle of the longest contour to define the ROI automatically");
-	auto_roimag_factor->set_default_properties(auto_roimag_factor_prop);
-	att_list.push_back(auto_roimag_factor);
+	//	Attribute : AutoROIMagFactorX
+	AutoROIMagFactorXAttrib	*auto_roimag_factor_x = new AutoROIMagFactorXAttrib();
+	Tango::UserDefaultAttrProp	auto_roimag_factor_x_prop;
+	auto_roimag_factor_x_prop.set_label("AutoROI Magnification Factor X");
+	auto_roimag_factor_x_prop.set_unit(" ");
+	auto_roimag_factor_x_prop.set_format("%4.2f");
+	auto_roimag_factor_x_prop.set_description("the scaling factor in the X direction applied to the AutoROI");
+	auto_roimag_factor_x->set_default_properties(auto_roimag_factor_x_prop);
+	att_list.push_back(auto_roimag_factor_x);
+
+	//	Attribute : AutoROIMagFactorY
+	AutoROIMagFactorYAttrib	*auto_roimag_factor_y = new AutoROIMagFactorYAttrib();
+	Tango::UserDefaultAttrProp	auto_roimag_factor_y_prop;
+	auto_roimag_factor_y_prop.set_label("AutoROI Magnification Factor Y");
+	auto_roimag_factor_y_prop.set_unit(" ");
+	auto_roimag_factor_y_prop.set_format("%4.2f");
+	auto_roimag_factor_y_prop.set_description("the scaling factor in the Y direction applied to the AutoROI");
+	auto_roimag_factor_y->set_default_properties(auto_roimag_factor_y_prop);
+	att_list.push_back(auto_roimag_factor_y);
 
 	//	Attribute : AlarmZone
 	AlarmZoneAttrib	*alarm_zone = new AlarmZoneAttrib();
@@ -594,6 +604,14 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	optical_magnification_prop.set_description("the magnification factor of the optical system (no unit)");
 	optical_magnification->set_default_properties(optical_magnification_prop);
 	att_list.push_back(optical_magnification);
+
+	//	Attribute : ProfileFitFixedBg
+	ProfileFitFixedBgAttrib	*profile_fit_fixed_bg = new ProfileFitFixedBgAttrib();
+	Tango::UserDefaultAttrProp	profile_fit_fixed_bg_prop;
+	profile_fit_fixed_bg_prop.set_label("Profiles Fit with Fixed Background");
+	profile_fit_fixed_bg_prop.set_description("if true, the background noise is estimated from the border of the whole image and this background value stays fixed during the fit");
+	profile_fit_fixed_bg->set_default_properties(profile_fit_fixed_bg_prop);
+	att_list.push_back(profile_fit_fixed_bg);
 
 	//	Attribute : UserROIOriginX
 	UserROIOriginXAttrib	*user_roiorigin_x = new UserROIOriginXAttrib();
@@ -1338,11 +1356,24 @@ void ImgBeamAnalyzerClass::set_default_property()
 	vector<string>	vect_data;
 	//	Set Default Class Properties
 	//	Set Default Device Properties
-	prop_name = "AutoROIMagFactor";
-	prop_desc = "initial value of AutoROIMagFactor attribute. if not defined, it is set to 1";
+	prop_name = "AutoROIMagFactorX";
+	prop_desc = "initial value of AutoROIMagFactorX attribute. if not defined, it is set to 1";
 	prop_def  = "1";
 	vect_data.clear();
 	vect_data.push_back("1");
+	if (prop_def.length()>0)
+	{
+		Tango::DbDatum	data(prop_name);
+		data << vect_data ;
+		dev_def_prop.push_back(data);
+		add_wiz_dev_prop(prop_name, prop_desc,  prop_def);
+	}
+	else
+		add_wiz_dev_prop(prop_name, prop_desc);
+
+	prop_name = "AutoROIMagFactorY";
+	prop_desc = "initial value of AutoROIMagFactorY attribute. if not defined, it is set to 1";
+	prop_def  = "";
 	if (prop_def.length()>0)
 	{
 		Tango::DbDatum	data(prop_name);
@@ -1631,6 +1662,19 @@ void ImgBeamAnalyzerClass::set_default_property()
 
 	prop_name = "HistogramRangeMax";
 	prop_desc = "the upper bound of the histogram bins. must be <= 2^BitsPerPixel";
+	prop_def  = "";
+	if (prop_def.length()>0)
+	{
+		Tango::DbDatum	data(prop_name);
+		data << vect_data ;
+		dev_def_prop.push_back(data);
+		add_wiz_dev_prop(prop_name, prop_desc,  prop_def);
+	}
+	else
+		add_wiz_dev_prop(prop_name, prop_desc);
+
+	prop_name = "ProfileFitFixedBg";
+	prop_desc = "the initial value of the ProfileFitFixedBg attribute";
 	prop_def  = "";
 	if (prop_def.length()>0)
 	{

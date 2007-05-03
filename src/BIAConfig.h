@@ -23,13 +23,14 @@ struct BIAConfig
 {
   BIAConfig();
 
-  bool enable_image_stats;
-  bool enable_profile;
-  bool enable_histogram;
-  bool enable_user_roi;
-  bool enable_auto_roi;
-  bool enable_2d_gaussian_fit;
-  double  auto_roi_mag_factor;
+  bool    enable_image_stats;
+  bool    enable_profile;
+  bool    enable_histogram;
+  bool    enable_user_roi;
+  bool    enable_auto_roi;
+  bool    enable_2d_gaussian_fit;
+  double  auto_roi_mag_factor_x;
+  double  auto_roi_mag_factor_y;
   long    comput_period;
   long    alarm_zone;
   long    fit2d_nb_iter;
@@ -39,12 +40,13 @@ struct BIAConfig
   double  pixel_size_x;
   double  pixel_size_y;
   double  optical_mag;
+  bool    profilefit_fixedbg;
   long    user_roi_origin_x;
   long    user_roi_origin_y;
   long    user_roi_width;
   long    user_roi_height;
   long    rotation;
-  bool horizontal_flip;
+  bool    horizontal_flip;
   double  gamma_correction;
   long    pixel_depth;
   long    histo_nb_bins;

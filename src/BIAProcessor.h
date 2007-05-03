@@ -68,7 +68,7 @@ namespace ImgBeamAnalyzer_ns
     void moments(isl::Image& roi_image, isl::Rectangle& roi, const BIAConfig& config, BIAData& data)
       throw (isl::Exception);
     
-    void profiles(isl::Image& roi_image_d, isl::Rectangle& roi, const BIAConfig& config, BIAData& data)
+    void profiles(isl::Image& roi_image_d, isl::Rectangle& roi, const BIAConfig& config, BIAData& data, bool fixed_bg, double bg_value)
       throw (isl::Exception);
 
     void gaussian_fit_2d(isl::Image& roi_image_d, isl::Rectangle& roi, const BIAConfig& config, BIAData& data)

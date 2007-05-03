@@ -12,7 +12,7 @@
 //
 // $Author: julien_malik $
 //
-// $Revision: 1.7 $
+// $Revision: 1.8 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -885,6 +885,20 @@ public:
 	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_UserROIOriginX_allowed(ty);}
 };
 
+class ProfileFitFixedBgAttrib: public Tango::Attr
+{
+public:
+	ProfileFitFixedBgAttrib():Attr("ProfileFitFixedBg", Tango::DEV_BOOLEAN, Tango::READ_WRITE) {};
+	~ProfileFitFixedBgAttrib() {};
+	
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_ProfileFitFixedBg(att);}
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+	{(static_cast<ImgBeamAnalyzer *>(dev))->write_ProfileFitFixedBg(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_ProfileFitFixedBg_allowed(ty);}
+};
+
 class OpticalMagnificationAttrib: public Tango::Attr
 {
 public:
@@ -941,18 +955,32 @@ public:
 	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_AlarmZone_allowed(ty);}
 };
 
-class AutoROIMagFactorAttrib: public Tango::Attr
+class AutoROIMagFactorYAttrib: public Tango::Attr
 {
 public:
-	AutoROIMagFactorAttrib():Attr("AutoROIMagFactor", Tango::DEV_DOUBLE, Tango::READ_WRITE) {};
-	~AutoROIMagFactorAttrib() {};
+	AutoROIMagFactorYAttrib():Attr("AutoROIMagFactorY", Tango::DEV_DOUBLE, Tango::READ_WRITE) {};
+	~AutoROIMagFactorYAttrib() {};
 	
 	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
-	{(static_cast<ImgBeamAnalyzer *>(dev))->read_AutoROIMagFactor(att);}
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_AutoROIMagFactorY(att);}
 	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
-	{(static_cast<ImgBeamAnalyzer *>(dev))->write_AutoROIMagFactor(att);}
+	{(static_cast<ImgBeamAnalyzer *>(dev))->write_AutoROIMagFactorY(att);}
 	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
-	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_AutoROIMagFactor_allowed(ty);}
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_AutoROIMagFactorY_allowed(ty);}
+};
+
+class AutoROIMagFactorXAttrib: public Tango::Attr
+{
+public:
+	AutoROIMagFactorXAttrib():Attr("AutoROIMagFactorX", Tango::DEV_DOUBLE, Tango::READ_WRITE) {};
+	~AutoROIMagFactorXAttrib() {};
+	
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_AutoROIMagFactorX(att);}
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+	{(static_cast<ImgBeamAnalyzer *>(dev))->write_AutoROIMagFactorX(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_AutoROIMagFactorX_allowed(ty);}
 };
 
 class GammaCorrectionAttrib: public Tango::Attr

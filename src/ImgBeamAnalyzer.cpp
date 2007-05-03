@@ -1,4 +1,4 @@
-static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzer.cpp,v 1.13 2007-04-27 16:21:01 julien_malik Exp $";
+static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzer.cpp,v 1.14 2007-05-03 17:10:27 julien_malik Exp $";
 //+=============================================================================
 //
 // file :         ImgBeamAnalyzer.cpp
@@ -13,7 +13,7 @@ static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/Im
 //
 // $Author: julien_malik $
 //
-// $Revision: 1.13 $
+// $Revision: 1.14 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -514,10 +514,12 @@ void ImgBeamAnalyzer::get_device_property()
   this->enableUserROI        = default_config.enable_user_roi;
   this->enableAutoROI        = default_config.enable_auto_roi;
   this->enable2DGaussianFit  = default_config.enable_2d_gaussian_fit;
-  this->autoROIMagFactor     = default_config.auto_roi_mag_factor;
+  this->autoROIMagFactorX    = default_config.auto_roi_mag_factor_x;
+  this->autoROIMagFactorY    = default_config.auto_roi_mag_factor_y;
   this->pixelSizeX           = default_config.pixel_size_x;
   this->pixelSizeY           = default_config.pixel_size_y;
   this->opticalMagnification = default_config.optical_mag;
+  this->profileFitFixedBg    = default_config.profilefit_fixedbg;
   this->rotation             = default_config.rotation;
   this->horizontalFlip       = default_config.horizontal_flip;
   this->gammaCorrection      = default_config.gamma_correction;
@@ -529,7 +531,8 @@ void ImgBeamAnalyzer::get_device_property()
   //	Read device properties from database.(Automatic code generation)
 	//------------------------------------------------------------------
 	Tango::DbData	dev_prop;
-	dev_prop.push_back(Tango::DbDatum("AutoROIMagFactor"));
+	dev_prop.push_back(Tango::DbDatum("AutoROIMagFactorX"));
+	dev_prop.push_back(Tango::DbDatum("AutoROIMagFactorY"));
 	dev_prop.push_back(Tango::DbDatum("AutoStart"));
 	dev_prop.push_back(Tango::DbDatum("ComputationPeriod"));
 	dev_prop.push_back(Tango::DbDatum("Enable2DGaussianFit"));
@@ -551,6 +554,7 @@ void ImgBeamAnalyzer::get_device_property()
 	dev_prop.push_back(Tango::DbDatum("HistogramNbBins"));
 	dev_prop.push_back(Tango::DbDatum("HistogramRangeMin"));
 	dev_prop.push_back(Tango::DbDatum("HistogramRangeMax"));
+	dev_prop.push_back(Tango::DbDatum("ProfileFitFixedBg"));
 
 	//	Call database and extract values
 	//--------------------------------------------
@@ -561,14 +565,23 @@ void ImgBeamAnalyzer::get_device_property()
 		(static_cast<ImgBeamAnalyzerClass *>(get_device_class()));
 	int	i = -1;
 
-	//	Try to initialize AutoROIMagFactor from class property
+	//	Try to initialize AutoROIMagFactorX from class property
 	cl_prop = ds_class->get_class_property(dev_prop[++i].name);
-	if (cl_prop.is_empty()==false)	cl_prop  >>  autoROIMagFactor;
-	//	Try to initialize AutoROIMagFactor from default device value
+	if (cl_prop.is_empty()==false)	cl_prop  >>  autoROIMagFactorX;
+	//	Try to initialize AutoROIMagFactorX from default device value
 	def_prop = ds_class->get_default_device_property(dev_prop[i].name);
-	if (def_prop.is_empty()==false)	def_prop  >>  autoROIMagFactor;
-	//	And try to extract AutoROIMagFactor value from database
-	if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  autoROIMagFactor;
+	if (def_prop.is_empty()==false)	def_prop  >>  autoROIMagFactorX;
+	//	And try to extract AutoROIMagFactorX value from database
+	if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  autoROIMagFactorX;
+
+	//	Try to initialize AutoROIMagFactorY from class property
+	cl_prop = ds_class->get_class_property(dev_prop[++i].name);
+	if (cl_prop.is_empty()==false)	cl_prop  >>  autoROIMagFactorY;
+	//	Try to initialize AutoROIMagFactorY from default device value
+	def_prop = ds_class->get_default_device_property(dev_prop[i].name);
+	if (def_prop.is_empty()==false)	def_prop  >>  autoROIMagFactorY;
+	//	And try to extract AutoROIMagFactorY value from database
+	if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  autoROIMagFactorY;
 
 	//	Try to initialize AutoStart from class property
 	cl_prop = ds_class->get_class_property(dev_prop[++i].name);
@@ -759,6 +772,15 @@ void ImgBeamAnalyzer::get_device_property()
 	//	And try to extract HistogramRangeMax value from database
 	if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  histogramRangeMax;
 
+	//	Try to initialize ProfileFitFixedBg from class property
+	cl_prop = ds_class->get_class_property(dev_prop[++i].name);
+	if (cl_prop.is_empty()==false)	cl_prop  >>  profileFitFixedBg;
+	//	Try to initialize ProfileFitFixedBg from default device value
+	def_prop = ds_class->get_default_device_property(dev_prop[i].name);
+	if (def_prop.is_empty()==false)	def_prop  >>  profileFitFixedBg;
+	//	And try to extract ProfileFitFixedBg value from database
+	if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  profileFitFixedBg;
+
 
 
 	//	End of Automatic code generation
@@ -786,7 +808,9 @@ void ImgBeamAnalyzer::get_device_property()
   this->current_config_.pixel_size_x            = pixelSizeX;
   this->current_config_.pixel_size_y            = pixelSizeY;
   this->current_config_.optical_mag             = opticalMagnification;
-  this->current_config_.auto_roi_mag_factor     = autoROIMagFactor;
+  this->current_config_.profilefit_fixedbg      = profileFitFixedBg;
+  this->current_config_.auto_roi_mag_factor_x   = autoROIMagFactorX;
+  this->current_config_.auto_roi_mag_factor_y   = autoROIMagFactorY;
   this->current_config_.rotation                = rotation;
   this->current_config_.horizontal_flip         = horizontalFlip;
   this->current_config_.gamma_correction        = gammaCorrection;
@@ -848,6 +872,78 @@ void ImgBeamAnalyzer::read_attr_hardware(vector<long> &attr_list)
   this->update_state();
 
 }
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_ProfileFitFixedBg
+// 
+// description : 	Extract real attribute values for ProfileFitFixedBg acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_ProfileFitFixedBg(Tango::Attribute &attr)
+{
+	DEBUG_STREAM << "ImgBeamAnalyzer::read_ProfileFitFixedBg(Tango::Attribute &attr) entering... "<< endl;
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::write_ProfileFitFixedBg
+// 
+// description : 	Write ProfileFitFixedBg attribute values to hardware.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::write_ProfileFitFixedBg(Tango::WAttribute &attr)
+{
+	DEBUG_STREAM << "ImgBeamAnalyzer::write_ProfileFitFixedBg(Tango::WAttribute &attr) entering... "<< endl;
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_AutoROIMagFactorX
+// 
+// description : 	Extract real attribute values for AutoROIMagFactorX acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_AutoROIMagFactorX(Tango::Attribute &attr)
+{
+  READ_INPUT_ATTR(auto_roi_mag_factor_x);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::write_AutoROIMagFactorX
+// 
+// description : 	Write AutoROIMagFactorX attribute values to hardware.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::write_AutoROIMagFactorX(Tango::WAttribute &attr)
+{
+  WRITE_INPUT_ATTR(auto_roi_mag_factor_x, Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_AutoROIMagFactorY
+// 
+// description : 	Extract real attribute values for AutoROIMagFactorY acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_AutoROIMagFactorY(Tango::Attribute &attr)
+{
+  READ_INPUT_ATTR(auto_roi_mag_factor_y);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::write_AutoROIMagFactorY
+// 
+// description : 	Write AutoROIMagFactorY attribute values to hardware.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::write_AutoROIMagFactorY(Tango::WAttribute &attr)
+{
+  WRITE_INPUT_ATTR(auto_roi_mag_factor_y, Tango::DevDouble);
+}
+
 //+----------------------------------------------------------------------------
 //
 // method : 		ImgBeamAnalyzer::read_HistogramRangeMin
@@ -1568,30 +1664,6 @@ void ImgBeamAnalyzer::read_EnableAutoROI(Tango::Attribute &attr)
 void ImgBeamAnalyzer::write_EnableAutoROI(Tango::WAttribute &attr)
 {
   WRITE_INPUT_ATTR(enable_auto_roi, Tango::DevBoolean);
-}
-
-//+----------------------------------------------------------------------------
-//
-// method : 		ImgBeamAnalyzer::read_AutoROIMagFactor
-// 
-// description : 	Extract real attribute values for AutoROIMagFactor acquisition result.
-//
-//-----------------------------------------------------------------------------
-void ImgBeamAnalyzer::read_AutoROIMagFactor(Tango::Attribute &attr)
-{
-  READ_INPUT_ATTR(auto_roi_mag_factor);
-}
-
-//+----------------------------------------------------------------------------
-//
-// method : 		ImgBeamAnalyzer::write_AutoROIMagFactor
-// 
-// description : 	Write AutoROIMagFactor attribute values to hardware.
-//
-//-----------------------------------------------------------------------------
-void ImgBeamAnalyzer::write_AutoROIMagFactor(Tango::WAttribute &attr)
-{
-  WRITE_INPUT_ATTR(auto_roi_mag_factor, Tango::DevDouble);
 }
 
 //+----------------------------------------------------------------------------
@@ -2425,7 +2497,8 @@ void ImgBeamAnalyzer::save_current_settings()
     data.push_back(datum); \
   }
 
-  ADD_DATUM( AutoROIMagFactor,    this->current_config_.auto_roi_mag_factor );
+  ADD_DATUM( AutoROIMagFactorX,   this->current_config_.auto_roi_mag_factor_x );
+  ADD_DATUM( AutoROIMagFactorY,   this->current_config_.auto_roi_mag_factor_y );
   ADD_DATUM( ComputationPeriod,   this->current_config_.comput_period );
   ADD_DATUM( Enable2DGaussianFit, this->current_config_.enable_2d_gaussian_fit );
   ADD_DATUM( EnableAutoROI,       this->current_config_.enable_auto_roi );
@@ -2443,6 +2516,7 @@ void ImgBeamAnalyzer::save_current_settings()
   ADD_DATUM( HistogramNbBins,     this->current_config_.histo_nb_bins );
   ADD_DATUM( HistogramRangeMin,   this->current_config_.histo_range_min );
   ADD_DATUM( HistogramRangeMax,   this->current_config_.histo_range_max );
+  ADD_DATUM( ProfileFitFixedBg,   this->current_config_.profilefit_fixedbg );
 
 # undef ADD_DATUM
 

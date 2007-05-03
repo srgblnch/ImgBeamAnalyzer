@@ -8,7 +8,7 @@
 //
 // $Author: julien_malik $
 //
-// $Revision: 1.10 $
+// $Revision: 1.11 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -30,7 +30,7 @@
 
 /**
  * @author	$Author: julien_malik $
- * @version	$Revision: 1.10 $
+ * @version	$Revision: 1.11 $
  */
 
  //	Add your own constants definitions here.
@@ -133,8 +133,10 @@ public :
 		Tango::DevLong	attr_HistogramRangeMax_write;
 		Tango::DevDouble	*attr_GammaCorrection_read;
 		Tango::DevDouble	attr_GammaCorrection_write;
-		Tango::DevDouble	*attr_AutoROIMagFactor_read;
-		Tango::DevDouble	attr_AutoROIMagFactor_write;
+		Tango::DevDouble	*attr_AutoROIMagFactorX_read;
+		Tango::DevDouble	attr_AutoROIMagFactorX_write;
+		Tango::DevDouble	*attr_AutoROIMagFactorY_read;
+		Tango::DevDouble	attr_AutoROIMagFactorY_write;
 		Tango::DevLong	*attr_AlarmZone_read;
 		Tango::DevLong	attr_AlarmZone_write;
 		Tango::DevDouble	*attr_PixelSizeX_read;
@@ -143,6 +145,8 @@ public :
 		Tango::DevDouble	attr_PixelSizeY_write;
 		Tango::DevDouble	*attr_OpticalMagnification_read;
 		Tango::DevDouble	attr_OpticalMagnification_write;
+		Tango::DevBoolean	*attr_ProfileFitFixedBg_read;
+		Tango::DevBoolean	attr_ProfileFitFixedBg_write;
 		Tango::DevLong	*attr_UserROIOriginX_read;
 		Tango::DevLong	attr_UserROIOriginX_write;
 		Tango::DevLong	*attr_UserROIOriginY_read;
@@ -229,9 +233,13 @@ public :
  */
 //@{
 /**
- *	initial value of AutoROIMagFactor attribute. if not defined, it is set to 1
+ *	initial value of AutoROIMagFactorX attribute. if not defined, it is set to 1
  */
-	Tango::DevDouble	autoROIMagFactor;
+	Tango::DevDouble	autoROIMagFactorX;
+/**
+ *	initial value of AutoROIMagFactorY attribute. if not defined, it is set to 1
+ */
+	Tango::DevDouble	autoROIMagFactorY;
 /**
  *	if set to 'true' and mode is 'CONTINUOUS', the computation starts automatically when the device is launched
  */
@@ -316,6 +324,10 @@ public :
  *	the upper bound of the histogram bins. must be <= 2^BitsPerPixel
  */
 	Tango::DevLong	histogramRangeMax;
+/**
+ *	the initial value of the ProfileFitFixedBg attribute
+ */
+	Tango::DevBoolean	profileFitFixedBg;
 //@}
 
 /**@name Constructors
@@ -498,13 +510,21 @@ public :
  */
 	virtual void write_GammaCorrection(Tango::WAttribute &attr);
 /**
- *	Extract real attribute values for AutoROIMagFactor acquisition result.
+ *	Extract real attribute values for AutoROIMagFactorX acquisition result.
  */
-	virtual void read_AutoROIMagFactor(Tango::Attribute &attr);
+	virtual void read_AutoROIMagFactorX(Tango::Attribute &attr);
 /**
- *	Write AutoROIMagFactor attribute values to hardware.
+ *	Write AutoROIMagFactorX attribute values to hardware.
  */
-	virtual void write_AutoROIMagFactor(Tango::WAttribute &attr);
+	virtual void write_AutoROIMagFactorX(Tango::WAttribute &attr);
+/**
+ *	Extract real attribute values for AutoROIMagFactorY acquisition result.
+ */
+	virtual void read_AutoROIMagFactorY(Tango::Attribute &attr);
+/**
+ *	Write AutoROIMagFactorY attribute values to hardware.
+ */
+	virtual void write_AutoROIMagFactorY(Tango::WAttribute &attr);
 /**
  *	Extract real attribute values for AlarmZone acquisition result.
  */
@@ -537,6 +557,14 @@ public :
  *	Write OpticalMagnification attribute values to hardware.
  */
 	virtual void write_OpticalMagnification(Tango::WAttribute &attr);
+/**
+ *	Extract real attribute values for ProfileFitFixedBg acquisition result.
+ */
+	virtual void read_ProfileFitFixedBg(Tango::Attribute &attr);
+/**
+ *	Write ProfileFitFixedBg attribute values to hardware.
+ */
+	virtual void write_ProfileFitFixedBg(Tango::WAttribute &attr);
 /**
  *	Extract real attribute values for UserROIOriginX acquisition result.
  */
@@ -910,9 +938,13 @@ public :
  */
 	virtual bool is_GammaCorrection_allowed(Tango::AttReqType type);
 /**
- *	Read/Write allowed for AutoROIMagFactor attribute.
+ *	Read/Write allowed for AutoROIMagFactorX attribute.
  */
-	virtual bool is_AutoROIMagFactor_allowed(Tango::AttReqType type);
+	virtual bool is_AutoROIMagFactorX_allowed(Tango::AttReqType type);
+/**
+ *	Read/Write allowed for AutoROIMagFactorY attribute.
+ */
+	virtual bool is_AutoROIMagFactorY_allowed(Tango::AttReqType type);
 /**
  *	Read/Write allowed for AlarmZone attribute.
  */
@@ -929,6 +961,10 @@ public :
  *	Read/Write allowed for OpticalMagnification attribute.
  */
 	virtual bool is_OpticalMagnification_allowed(Tango::AttReqType type);
+/**
+ *	Read/Write allowed for ProfileFitFixedBg attribute.
+ */
+	virtual bool is_ProfileFitFixedBg_allowed(Tango::AttReqType type);
 /**
  *	Read/Write allowed for UserROIOriginX attribute.
  */

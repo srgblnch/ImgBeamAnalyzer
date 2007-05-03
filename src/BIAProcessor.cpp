@@ -105,6 +105,12 @@ namespace ImgBeamAnalyzer_ns
       }
       else
       {
+        double estim_bg = 0;
+        if (config.profilefit_fixedbg == true)
+        {
+          estim_bg = input_image->estimate_background( 5 );
+        }
+
         isl::Rectangle roi;
 
         this->clip(*input_image, config, roi_image, roi, data);
@@ -125,7 +131,7 @@ namespace ImgBeamAnalyzer_ns
 
         this->moments(*roi_image, roi, config, data);
 
-        this->profiles(*roi_image_d, roi, config, data);
+        this->profiles(*roi_image_d, roi, config, data, config.profilefit_fixedbg, estim_bg);
 
         this->gaussian_fit_2d(*roi_image_d, roi, config, data);
 
@@ -269,7 +275,7 @@ namespace ImgBeamAnalyzer_ns
     {
       try
       {
-        auto_roi = isl::AutoROI(*user_roi_image, config.auto_roi_mag_factor);
+        auto_roi = isl::AutoROI(*user_roi_image, config.auto_roi_mag_factor_x, config.auto_roi_mag_factor_y);
 
         if (auto_roi.is_empty())
         {
@@ -384,7 +390,7 @@ namespace ImgBeamAnalyzer_ns
 
   
   void
-  BIAProcessor::profiles(isl::Image& roi_image_d, isl::Rectangle& roi, const BIAConfig& config, BIAData& data)
+  BIAProcessor::profiles(isl::Image& roi_image_d, isl::Rectangle& roi, const BIAConfig& config, BIAData& data, bool fixed_bg, double bg_value)
     throw (isl::Exception)
   {
     if (config.enable_profile)
@@ -404,7 +410,14 @@ namespace ImgBeamAnalyzer_ns
         gaussian_fit.nb_iter(config.fit1d_nb_iter);
         gaussian_fit.epsilon(config.fit1d_max_rel_change);
 
-        gaussian_fit.compute(profiles.get_x_profile(), profiles.size_x());
+        if (fixed_bg == false)
+        {
+          gaussian_fit.compute(profiles.get_x_profile(), profiles.size_x());
+        }
+        else
+        {
+          gaussian_fit.compute_fixed_bg(profiles.get_x_profile(), profiles.size_x(), bg_value);
+        }
         
         if (gaussian_fit.has_converged())
         {
@@ -464,7 +477,14 @@ namespace ImgBeamAnalyzer_ns
         gaussian_fit.nb_iter(config.fit1d_nb_iter);
         gaussian_fit.epsilon(config.fit1d_max_rel_change);
 
-        gaussian_fit.compute(profiles.get_y_profile(), profiles.size_y());
+        if (fixed_bg == false)
+        {
+          gaussian_fit.compute(profiles.get_y_profile(), profiles.size_y());
+        }
+        else
+        {
+          gaussian_fit.compute_fixed_bg(profiles.get_y_profile(), profiles.size_y(), bg_value);
+        }
         
         if (gaussian_fit.has_converged())
         {
