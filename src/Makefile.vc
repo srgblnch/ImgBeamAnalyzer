@@ -3,18 +3,12 @@ device_server= ImgBeamAnalyzer
 
 INCUSER =	/I$(SOLEIL_ROOT)/sw-support/OpenCV/include \
 			/I$(SOLEIL_ROOT)/sw-support/ISL/include \
-			/I$(SOLEIL_ROOT)/sw-support/adtb/include
+			/I$(SOLEIL_ROOT)/sw-support/YAT/include \
+			/I$(SOLEIL_ROOT)/sw-support/YAT4tango/include
 
-LIBUSER= $(SOLEIL_ROOT)/sw-support/OpenCV/lib/libOpenCV_cx.lib \
-		 $(SOLEIL_ROOT)/sw-support/OpenCV/lib/libOpenCV_cv.lib \
-		 $(SOLEIL_ROOT)/sw-support/OpenCV/lib/libOpenCV_highgui.lib \
-		 $(SOLEIL_ROOT)/sw-support/GraphicFiles/libjpeg/lib/libjpeg.lib \
-		 $(SOLEIL_ROOT)/sw-support/GraphicFiles/libtiff/lib/libtiff.lib \
-		 $(SOLEIL_ROOT)/sw-support/GraphicFiles/libpng/lib/libpng.lib \
-		 $(SOLEIL_ROOT)/sw-support/Zlib/lib/libz.lib \
-		 $(SOLEIL_ROOT)/sw-support/ISL/lib/libISL.lib \
-		 $(SOLEIL_ROOT)/sw-support/adtb/lib/static/libADTB.lib
-
+LIBUSER= $(SOLEIL_ROOT)/sw-support/ISL/lib/libISL.lib \
+		 $(SOLEIL_ROOT)/sw-support/YAT/lib/static/msvc-6.0/libYAT.lib \
+		 $(SOLEIL_ROOT)/sw-support/YAT4tango/lib/static/msvc-6.0/libYAT4tango.lib
 
 CPPDIRUSER=
 

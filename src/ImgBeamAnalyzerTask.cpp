@@ -14,8 +14,8 @@
 // ============================================================================
 // DEPENDENCIES
 // ============================================================================
-#include <adtb/ExceptionHelper.h>
 #include "ImgBeamAnalyzerTask.h"
+#include <yat4tango/ExceptionHelper.h>
 
 #if !defined (YAT_INLINE_IMPL)
 # include "ImgBeamAnalyzerTask.i"

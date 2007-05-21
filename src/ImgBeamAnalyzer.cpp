@@ -1,4 +1,4 @@
-static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzer.cpp,v 1.14 2007-05-03 17:10:27 julien_malik Exp $";
+static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzer.cpp,v 1.15 2007-05-21 14:30:17 julien_malik Exp $";
 //+=============================================================================
 //
 // file :         ImgBeamAnalyzer.cpp
@@ -13,7 +13,7 @@ static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/Im
 //
 // $Author: julien_malik $
 //
-// $Revision: 1.14 $
+// $Revision: 1.15 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -55,7 +55,7 @@ static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/Im
 #include <ImgBeamAnalyzerClass.h>
 #include <limits>
 #include <ImgBeamAnalyzerVersion.h>
-#include <adtb/ExceptionHelper.h>
+#include <yat4tango/ExceptionHelper.h>
 
 #define kDEFAULT_CONTINUOUS_TIMEOUT 1000
 #define kCOMMAND_TIMEOUT 2000
@@ -212,7 +212,7 @@ template <> Tango::DevDouble  ImgBeamAnalyzer::DummyValue<Tango::DevDouble> ::du
 			}                                                                                         \
       catch (yat::Exception &ex)                                                                \
       {                                                                                         \
-        adtb::YATDevFailed df(ex);                                                              \
+        yat4tango::YATDevFailed df(ex);                                                         \
 				RETHROW_DEVFAILED(df,                                                                   \
 													"SOFTWARE_FAILURE",                                                   \
 													"Tango error during configuration",                                   \
@@ -881,7 +881,7 @@ void ImgBeamAnalyzer::read_attr_hardware(vector<long> &attr_list)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_ProfileFitFixedBg(Tango::Attribute &attr)
 {
-	DEBUG_STREAM << "ImgBeamAnalyzer::read_ProfileFitFixedBg(Tango::Attribute &attr) entering... "<< endl;
+  READ_INPUT_ATTR(profilefit_fixedbg);
 }
 
 //+----------------------------------------------------------------------------
@@ -893,7 +893,7 @@ void ImgBeamAnalyzer::read_ProfileFitFixedBg(Tango::Attribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::write_ProfileFitFixedBg(Tango::WAttribute &attr)
 {
-	DEBUG_STREAM << "ImgBeamAnalyzer::write_ProfileFitFixedBg(Tango::WAttribute &attr) entering... "<< endl;
+  WRITE_INPUT_ATTR(profilefit_fixedbg, Tango::DevBoolean);
 }
 
 //+----------------------------------------------------------------------------
@@ -2354,7 +2354,7 @@ void ImgBeamAnalyzer::start()
     }
     catch( yat::Exception& ex )
     {
-      adtb::YATDevFailed df(ex);
+      yat4tango::YATDevFailed df(ex);
       RETHROW_DEVFAILED(df,
                         "SOFTWARE_FAILURE",
                         "Error while trying to START",
@@ -2396,7 +2396,7 @@ void ImgBeamAnalyzer::stop()
     }
     catch( yat::Exception& ex )
     {
-      adtb::YATDevFailed df(ex);
+      yat4tango::YATDevFailed df(ex);
       RETHROW_DEVFAILED(df,
                         "SOFTWARE_FAILURE",
                         "Error while trying to STOP",
@@ -2438,7 +2438,7 @@ void ImgBeamAnalyzer::process()
   }
   catch (yat::Exception& ex)
   {
-    adtb::YATDevFailed df(ex);
+    yat4tango::YATDevFailed df(ex);
 	  RETHROW_DEVFAILED(df,
                       "SOFTWARE_FAILURE",
                       "Unable to get image from remote device",
@@ -2457,7 +2457,7 @@ void ImgBeamAnalyzer::process()
   }
   catch (yat::Exception& ex)
   {
-    adtb::YATDevFailed df(ex);
+    yat4tango::YATDevFailed df(ex);
 	  RETHROW_DEVFAILED(df,
                       "SOFTWARE_FAILURE",
                       "Processing has failed",
@@ -2562,7 +2562,7 @@ void ImgBeamAnalyzer::start_learn_noise()
     }
     catch(yat::Exception& ex)
     {
-      adtb::YATDevFailed df(ex);
+      yat4tango::YATDevFailed df(ex);
       RETHROW_DEVFAILED(df,
                         "OUT_OF_MEMORY",
                         "Error while creating a START_LEARN_NOISE message",
@@ -2582,7 +2582,7 @@ void ImgBeamAnalyzer::start_learn_noise()
     }
     catch(yat::Exception& ex)
     {
-      adtb::YATDevFailed df(ex);
+      yat4tango::YATDevFailed df(ex);
       RETHROW_DEVFAILED(df,
                         "SOFTWARE_FAILURE",
                         "Error while posting a START_LEARN_NOISE message",
@@ -2618,7 +2618,7 @@ void ImgBeamAnalyzer::stop_learn_noise()
     }
     catch(yat::Exception& ex)
     {
-      adtb::YATDevFailed df(ex);
+      yat4tango::YATDevFailed df(ex);
       RETHROW_DEVFAILED(df,
                         "OUT_OF_MEMORY",
                         "Error while creating a STOP_LEARN_NOISE message",
@@ -2637,7 +2637,7 @@ void ImgBeamAnalyzer::stop_learn_noise()
     }
     catch(yat::Exception& ex)
     {
-      adtb::YATDevFailed df(ex);
+      yat4tango::YATDevFailed df(ex);
       RETHROW_DEVFAILED(df,
                         "SOFTWARE_FAILURE",
                         "Error while posting a STOP_LEARN_NOISE message",
@@ -2672,7 +2672,7 @@ Tango::DevString ImgBeamAnalyzer::get_version_number()
 	//------------------------------------------------------------
   string version(BIA_VERSION);
 	Tango::DevString	argout  = new char[version.length()];
-	strcpy(argout, version.c_str());
+  ::strcpy(argout, version.c_str());
 	return argout;
 }
 

@@ -8,7 +8,7 @@
 //
 // $Author: julien_malik $
 //
-// $Revision: 1.11 $
+// $Revision: 1.12 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -30,11 +30,13 @@
 
 /**
  * @author	$Author: julien_malik $
- * @version	$Revision: 1.11 $
+ * @version	$Revision: 1.12 $
  */
 
  //	Add your own constants definitions here.
  //-----------------------------------------------
+#include "ImgBeamAnalyzerTask.h"
+#include "BIAConfig.h"
 
 #ifdef WIN32
 #  pragma warning (disable: 4786)
@@ -54,8 +56,6 @@
 
 
 
-#include "ImgBeamAnalyzerTask.h"
-#include "BIAConfig.h"
 
 namespace ImgBeamAnalyzer_ns
 {

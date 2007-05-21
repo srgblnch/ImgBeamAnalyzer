@@ -17,13 +17,14 @@
 // ============================================================================
 // DEPENDENCIES
 // ============================================================================
-#include "BIAData.h"
-#include "BIAConfig.h"
-
 #include <isl/Image.h>
 #include <isl/statistics/NoiseEstimator.h>
 #include <isl/Exception.h>
 #include <isl/ErrorHandler.h>
+
+#include "BIAData.h"
+#include "BIAConfig.h"
+
 
 
 namespace ImgBeamAnalyzer_ns
