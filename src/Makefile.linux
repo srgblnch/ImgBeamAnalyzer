@@ -47,8 +47,9 @@ PACKAGE_NAME = ImgBeamAnalyzer
 # ...etc
 #
 INC_DIR_USER=-I $(SOLEIL_ROOT)/sw-support/ISL/include \
-    -I $(SOLEIL_ROOT)/sw-support/OpenCV/include \
-    -I $(SOLEIL_ROOT)/sw-support/adtb/include    
+             -I $(SOLEIL_ROOT)/sw-support/OpenCV/include \
+             -I $(SOLEIL_ROOT)/sw-support/YAT/include \
+             -I $(SOLEIL_ROOT)/sw-support/YAT4tango/include    
 
 #=============================================================================
 # LIB_DIR_USER is the list of user library directories
@@ -60,7 +61,8 @@ INC_DIR_USER=-I $(SOLEIL_ROOT)/sw-support/ISL/include \
 # ...etc
 #
 LIB_DIR_USER=-L $(SOLEIL_ROOT)/sw-support/ISL/lib \
-		-L $(SOLEIL_ROOT)/sw-support/adtb/lib
+		         -L $(SOLEIL_ROOT)/sw-support/YAT/lib/static/linux \
+		         -L $(SOLEIL_ROOT)/sw-support/YAT4tango/lib/static/linux
 
 
 #=============================================================================
@@ -78,7 +80,7 @@ LIB_DIR_USER=-L $(SOLEIL_ROOT)/sw-support/ISL/lib \
 # -lASL for ASL
 # -lHKL for HKL
 #
-LFLAGS_USR=	-lISL -lADTB
+LFLAGS_USR=	-lISL -lYAT -lYAT4tango
 
 
 #=============================================================================
@@ -87,14 +89,8 @@ LFLAGS_USR=	-lISL -lADTB
 #
 # -DACE_HAS_EXCEPTIONS -D__ACE_INLINE__ for ACE
 #
-ifdef VERSION
-  DS_VERSION_NUMBER=$(VERSION)
-else
-  DS_VERSION_NUMBER=development
-endif
 
-CXXFLAGS_USR=-DDS_VERSION_NUMBER=$(DS_VERSION_NUMBER)
-
+CXXFLAGS_USR=
 
 #
 #	include Standard TANGO compilation options
