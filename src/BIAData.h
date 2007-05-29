@@ -51,14 +51,14 @@ public:
   yat::ImageBuffer<unsigned short> input_image;
 
   //- input parameters
-  BIAConfig                      config;
-  bool              user_roi_alarm;
+  BIAConfig            config;
+  bool                 user_roi_alarm;
 
   //- computation time
   long                 estim_comput_time;
 
   //- beam box
-  bool              auto_roi_found;
+  bool                 auto_roi_found;
   long                 auto_roi_origin_x;
   long                 auto_roi_origin_y;
   long                 auto_roi_width;
@@ -85,7 +85,7 @@ public:
 
   //- profile
   yat::Buffer<double>  profile_x;
-  bool              profile_x_fit_converged;
+  bool                 profile_x_fit_converged;
   yat::Buffer<double>  profile_x_fitted;
   yat::Buffer<double>  profile_x_error;
   double               profile_x_center;
@@ -98,7 +98,7 @@ public:
   double               profile_x_eps;
 
   yat::Buffer<double>  profile_y;
-  bool              profile_y_fit_converged;
+  bool                 profile_y_fit_converged;
   yat::Buffer<double>  profile_y_fitted;
   yat::Buffer<double>  profile_y_error;
   double               profile_y_center;
@@ -115,7 +115,7 @@ public:
 
   
   //- gaussian fit
-  bool              gaussfit_converged;
+  bool                 gaussfit_converged;
   double               gaussfit_magnitude;
   double               gaussfit_centroid_x;
   double               gaussfit_centroid_y;

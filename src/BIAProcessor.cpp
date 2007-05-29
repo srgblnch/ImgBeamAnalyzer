@@ -416,7 +416,7 @@ namespace ImgBeamAnalyzer_ns
         }
         else
         {
-          gaussian_fit.compute_fixed_bg(profiles.get_x_profile(), profiles.size_x(), bg_value);
+          gaussian_fit.compute_fixed_bg(profiles.get_x_profile(), profiles.size_x(), bg_value * roi_image_d.height());
         }
         
         if (gaussian_fit.has_converged())
@@ -435,7 +435,6 @@ namespace ImgBeamAnalyzer_ns
             data.profile_x_fitted[i] = gaussian_fit.get_fitted_value(i);
             data.profile_x_error[i]  = gaussian_fit.get_fitted_error(i);
           }
-
           data.profile_x_fit_converged = true;
         }
         else
@@ -483,7 +482,7 @@ namespace ImgBeamAnalyzer_ns
         }
         else
         {
-          gaussian_fit.compute_fixed_bg(profiles.get_y_profile(), profiles.size_y(), bg_value);
+          gaussian_fit.compute_fixed_bg(profiles.get_y_profile(), profiles.size_y(), bg_value * roi_image_d.width());
         }
         
         if (gaussian_fit.has_converged())
