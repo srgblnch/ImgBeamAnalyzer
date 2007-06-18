@@ -8,7 +8,7 @@
 //
 // $Author: julien_malik $
 //
-// $Revision: 1.12 $
+// $Revision: 1.13 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -30,7 +30,7 @@
 
 /**
  * @author	$Author: julien_malik $
- * @version	$Revision: 1.12 $
+ * @version	$Revision: 1.13 $
  */
 
  //	Add your own constants definitions here.
@@ -39,20 +39,11 @@
 #include "BIAConfig.h"
 
 #ifdef WIN32
-#  pragma warning (disable: 4786)
-#  pragma warning( disable: 4250 ) // 'x' inherits 'y' via dominance
 #  pragma warning( push )
-#  pragma warning( disable: 4267 ) // 'var' : conversion from 'size_t' to 'type', possible loss of data 
-#  pragma warning( disable: 4311 ) // 'variable' : pointer truncation from 'type' to 'type' 
-#  pragma warning( disable: 4312 ) // 'operation' : conversion from 'type1' to 'type2' of greater size 
+#  pragma warning( disable: 4250 ) // 'x' inherits 'y' via dominance
 #endif
-
-#include <tango.h>
-
-#ifdef WIN32
-#  pragma warning( pop )
-#endif
-
+//- this will #include <tango.h>
+#include <yat4tango/CommonHeader.h>
 
 
 
@@ -1354,6 +1345,10 @@ protected :
   void update_state();
 
 };
+
+#ifdef WIN32
+#  pragma warning( pop )
+#endif
 
 }	// namespace_ns
 
