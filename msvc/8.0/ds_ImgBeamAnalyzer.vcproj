@@ -41,7 +41,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\..\src;&quot;$(SOLEIL_ROOT)\msvc8\omniorb\include&quot;;&quot;$(SOLEIL_ROOT)\msvc8\tango\include&quot;;&quot;$(SOLEIL_ROOT)\msvc8\log4tango\include&quot;;D:\dev\Libraries\YAT\include;D:\dev\Libraries\YAT4tango\include;D:\dev\Libraries\ISL\include;&quot;$(SOLEIL_ROOT)\sw-support\OpenCV\include&quot;"
-				PreprocessorDefinitions="_DEBUG;LOG4TANGO_HAVE_INT64_T;LOG4TANGO_HAS_DLL;TANGO_HAS_DLL;WIN32;_CONSOLE;HAS_TANGO_5"
+				PreprocessorDefinitions="_DEBUG;WIN32;_CONSOLE;WIN32_LEAN_AND_MEAN;STRICT;VC_EXTRALEAN;LOG4TANGO_HAS_DLL"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -122,7 +122,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="..\..\src;&quot;$(SOLEIL_ROOT)\msvc8\omniorb\include&quot;;&quot;$(SOLEIL_ROOT)\msvc8\tango\include&quot;;&quot;$(SOLEIL_ROOT)\msvc8\log4tango\include&quot;;D:\dev\Libraries\YAT\include;D:\dev\Libraries\YAT4tango\include;D:\dev\Libraries\ISL\include;&quot;$(SOLEIL_ROOT)\sw-support\OpenCV\include&quot;"
-				PreprocessorDefinitions="NDEBUG;LOG4TANGO_HAS_DLL;TANGO_HAS_DLL;WIN32;_CONSOLE;HAS_TANGO_5;LOG4TANGO_HAVE_INT64_T"
+				PreprocessorDefinitions="NDEBUG;WIN32;_CONSOLE;WIN32_LEAN_AND_MEAN;STRICT;VC_EXTRALEAN;LOG4TANGO_HAS_DLL"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
