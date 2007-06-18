@@ -1,4 +1,4 @@
-static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzer.cpp,v 1.15 2007-05-21 14:30:17 julien_malik Exp $";
+static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzer.cpp,v 1.16 2007-06-18 15:13:59 julien_malik Exp $";
 //+=============================================================================
 //
 // file :         ImgBeamAnalyzer.cpp
@@ -13,7 +13,7 @@ static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/Im
 //
 // $Author: julien_malik $
 //
-// $Revision: 1.15 $
+// $Revision: 1.16 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -438,7 +438,7 @@ void ImgBeamAnalyzer::init_device()
     ImgBeamAnalyzerInit init_config;
 
     //- this function will be called to get the image from the remote device
-    init_config.get_img = GetImgCB::instantiate(*this, &ImgBeamAnalyzer::get_remote_image);
+    init_config.get_img = GetImgCB::instanciate(*this, &ImgBeamAnalyzer::get_remote_image);
     //- is the previous function authorized (a proxy has been configured ?)
     init_config.get_img_allowed = dev_proxy_allowed;
     //- the initial processing parameters, from the device properties
