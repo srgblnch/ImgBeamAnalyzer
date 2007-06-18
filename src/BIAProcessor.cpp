@@ -383,7 +383,8 @@ namespace ImgBeamAnalyzer_ns
 
       isl::Histogram hist(*roi_image_f, nb_bins, config.histo_range_min, max_value);
 
-      data.histogram.length(nb_bins);
+      data.histogram.capacity(nb_bins);
+      data.histogram.force_length(nb_bins);
       data.histogram = hist.bins();
     }
   }
@@ -400,9 +401,12 @@ namespace ImgBeamAnalyzer_ns
 
       isl::Profiles profiles(roi_image_d);
       
-      data.profile_x.length(profiles.size_x());
-      data.profile_x_fitted.length(profiles.size_x());
-      data.profile_x_error.length(profiles.size_x());
+      data.profile_x.capacity(profiles.size_x());
+      data.profile_x.force_length(profiles.size_x());
+      data.profile_x_fitted.capacity(profiles.size_x());
+      data.profile_x_fitted.force_length(profiles.size_x());
+      data.profile_x_error.capacity(profiles.size_x());
+      data.profile_x_error.force_length(profiles.size_x());
       data.profile_x = profiles.get_x_profile();
       try
       {
@@ -466,9 +470,12 @@ namespace ImgBeamAnalyzer_ns
         data.profile_x_error.fill(0);
       }
 
-      data.profile_y.length(profiles.size_y());
-      data.profile_y_fitted.length(profiles.size_y());
-      data.profile_y_error.length(profiles.size_y());
+      data.profile_y.capacity(profiles.size_y());
+      data.profile_y.force_length(profiles.size_y());
+      data.profile_y_fitted.capacity(profiles.size_y());
+      data.profile_y_fitted.force_length(profiles.size_y());
+      data.profile_y_error.capacity(profiles.size_y());
+      data.profile_y_error.force_length(profiles.size_y());
       data.profile_y = profiles.get_y_profile();
       try
       {
