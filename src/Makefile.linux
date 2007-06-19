@@ -80,7 +80,7 @@ LIB_DIR_USER=-L $(SOLEIL_ROOT)/sw-support/ISL/lib \
 # -lASL for ASL
 # -lHKL for HKL
 #
-LFLAGS_USR=	-lISL -lYAT -lYAT4tango
+LFLAGS_USR=	-lISL -lYAT -lYAT4Tango
 
 
 #=============================================================================
