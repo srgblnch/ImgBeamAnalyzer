@@ -6,7 +6,7 @@ INCUSER =	/I$(SOLEIL_ROOT)/sw-support/OpenCV/include \
 			/I$(SOLEIL_ROOT)/sw-support/YAT/include \
 			/I$(SOLEIL_ROOT)/sw-support/YAT4tango/include
 
-LIBUSER= $(SOLEIL_ROOT)/sw-support/ISL/lib/libISL.lib \
+LIBUSER= $(SOLEIL_ROOT)/sw-support/ISL/lib/static/msvc-6.0/libISL.lib \
 		 $(SOLEIL_ROOT)/sw-support/YAT/lib/static/msvc-6.0/libYAT.lib \
 		 $(SOLEIL_ROOT)/sw-support/YAT4tango/lib/static/msvc-6.0/libYAT4tango.lib
 
