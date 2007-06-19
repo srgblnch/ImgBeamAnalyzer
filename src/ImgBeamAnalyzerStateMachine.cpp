@@ -1,4 +1,4 @@
-static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzerStateMachine.cpp,v 1.8 2007-05-03 17:10:27 julien_malik Exp $";
+static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzerStateMachine.cpp,v 1.9 2007-06-19 15:46:10 julien_malik Exp $";
 //+=============================================================================
 //
 // file :         ImgBeamAnalyzerStateMachine.cpp
@@ -10,7 +10,7 @@ static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/Im
 //
 // $Author: julien_malik $
 //
-// $Revision: 1.8 $
+// $Revision: 1.9 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -1318,6 +1318,20 @@ bool ImgBeamAnalyzer::is_AutoROIMagFactorY_allowed(Tango::AttReqType type)
 //
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_ProfileFitFixedBg_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_AutoROIThreshold_allowed
+// 
+// description : 	Read/Write allowed for AutoROIThreshold attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_AutoROIThreshold_allowed(Tango::AttReqType type)
 {
 		//	End of Generated Code
 

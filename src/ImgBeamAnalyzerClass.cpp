@@ -1,4 +1,4 @@
-static const char *RcsId     = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzerClass.cpp,v 1.11 2007-05-03 17:10:27 julien_malik Exp $";
+static const char *RcsId     = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzerClass.cpp,v 1.12 2007-06-19 15:46:10 julien_malik Exp $";
 static const char *TagName   = "$Name: not supported by cvs2svn $";
 static const char *HttpServer= "http://www.esrf.fr/computing/cs/tango/tango_doc/ds_doc/";
 //+=============================================================================
@@ -14,7 +14,7 @@ static const char *HttpServer= "http://www.esrf.fr/computing/cs/tango/tango_doc/
 //
 // $Author: julien_malik $
 //
-// $Revision: 1.11 $
+// $Revision: 1.12 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -563,6 +563,16 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	auto_roimag_factor_y_prop.set_description("the scaling factor in the Y direction applied to the AutoROI");
 	auto_roimag_factor_y->set_default_properties(auto_roimag_factor_y_prop);
 	att_list.push_back(auto_roimag_factor_y);
+
+	//	Attribute : AutoROIThreshold
+	AutoROIThresholdAttrib	*auto_roithreshold = new AutoROIThresholdAttrib();
+	Tango::UserDefaultAttrProp	auto_roithreshold_prop;
+	auto_roithreshold_prop.set_label("AutoROIThreshold");
+	auto_roithreshold_prop.set_unit(" ");
+	auto_roithreshold_prop.set_format("%4d");
+	auto_roithreshold_prop.set_description("the threshold, used only if AutoROIMethod is set to THRESHOLD");
+	auto_roithreshold->set_default_properties(auto_roithreshold_prop);
+	att_list.push_back(auto_roithreshold);
 
 	//	Attribute : AlarmZone
 	AlarmZoneAttrib	*alarm_zone = new AlarmZoneAttrib();
@@ -1384,11 +1394,39 @@ void ImgBeamAnalyzerClass::set_default_property()
 	else
 		add_wiz_dev_prop(prop_name, prop_desc);
 
+	prop_name = "AutoROIMethod";
+	prop_desc = "the method used for computing the AutoROI. can be 'PROFILES' or 'THRESHOLD'.\nPROFILES method means the AutoROI is computed from the profiles fitted to gaussian functions.\nTHRESHOLD means that the image is first thresholded using the 'AutoROIThreshold' attribute then the largest blob is selected.\n";
+	prop_def  = "PROFILES";
+	vect_data.clear();
+	vect_data.push_back("PROFILES");
+	if (prop_def.length()>0)
+	{
+		Tango::DbDatum	data(prop_name);
+		data << vect_data ;
+		dev_def_prop.push_back(data);
+		add_wiz_dev_prop(prop_name, prop_desc,  prop_def);
+	}
+	else
+		add_wiz_dev_prop(prop_name, prop_desc);
+
 	prop_name = "AutoStart";
 	prop_desc = "if set to 'true' and mode is 'CONTINUOUS', the computation starts automatically when the device is launched";
 	prop_def  = "true";
 	vect_data.clear();
 	vect_data.push_back("true");
+	if (prop_def.length()>0)
+	{
+		Tango::DbDatum	data(prop_name);
+		data << vect_data ;
+		dev_def_prop.push_back(data);
+		add_wiz_dev_prop(prop_name, prop_desc,  prop_def);
+	}
+	else
+		add_wiz_dev_prop(prop_name, prop_desc);
+
+	prop_name = "BitsPerPixel";
+	prop_desc = "the initial value of the BitsPerPixel attribute";
+	prop_def  = "";
 	if (prop_def.length()>0)
 	{
 		Tango::DbDatum	data(prop_name);
@@ -1444,11 +1482,9 @@ void ImgBeamAnalyzerClass::set_default_property()
 	else
 		add_wiz_dev_prop(prop_name, prop_desc);
 
-	prop_name = "EnableImageStats";
-	prop_desc = "the initial value of the EnableImageStats attribute";
-	prop_def  = "true";
-	vect_data.clear();
-	vect_data.push_back("true");
+	prop_name = "EnableHistogram";
+	prop_desc = "the initial value of the EnableHistogram attribute";
+	prop_def  = "";
 	if (prop_def.length()>0)
 	{
 		Tango::DbDatum	data(prop_name);
@@ -1459,9 +1495,11 @@ void ImgBeamAnalyzerClass::set_default_property()
 	else
 		add_wiz_dev_prop(prop_name, prop_desc);
 
-	prop_name = "EnableHistogram";
-	prop_desc = "the initial value of the EnableHistogram attribute";
-	prop_def  = "";
+	prop_name = "EnableImageStats";
+	prop_desc = "the initial value of the EnableImageStats attribute";
+	prop_def  = "true";
+	vect_data.clear();
+	vect_data.push_back("true");
 	if (prop_def.length()>0)
 	{
 		Tango::DbDatum	data(prop_name);
@@ -1492,6 +1530,71 @@ void ImgBeamAnalyzerClass::set_default_property()
 	prop_def  = "true";
 	vect_data.clear();
 	vect_data.push_back("true");
+	if (prop_def.length()>0)
+	{
+		Tango::DbDatum	data(prop_name);
+		data << vect_data ;
+		dev_def_prop.push_back(data);
+		add_wiz_dev_prop(prop_name, prop_desc,  prop_def);
+	}
+	else
+		add_wiz_dev_prop(prop_name, prop_desc);
+
+	prop_name = "GammaCorrection";
+	prop_desc = "the initial value of the GammaCorrection attribute";
+	prop_def  = "";
+	if (prop_def.length()>0)
+	{
+		Tango::DbDatum	data(prop_name);
+		data << vect_data ;
+		dev_def_prop.push_back(data);
+		add_wiz_dev_prop(prop_name, prop_desc,  prop_def);
+	}
+	else
+		add_wiz_dev_prop(prop_name, prop_desc);
+
+	prop_name = "HistogramNbBins";
+	prop_desc = "the initial value of the HistogramNbBins attribute";
+	prop_def  = "";
+	if (prop_def.length()>0)
+	{
+		Tango::DbDatum	data(prop_name);
+		data << vect_data ;
+		dev_def_prop.push_back(data);
+		add_wiz_dev_prop(prop_name, prop_desc,  prop_def);
+	}
+	else
+		add_wiz_dev_prop(prop_name, prop_desc);
+
+	prop_name = "HistogramRangeMax";
+	prop_desc = "the upper bound of the histogram bins. must be <= 2^BitsPerPixel";
+	prop_def  = "";
+	if (prop_def.length()>0)
+	{
+		Tango::DbDatum	data(prop_name);
+		data << vect_data ;
+		dev_def_prop.push_back(data);
+		add_wiz_dev_prop(prop_name, prop_desc,  prop_def);
+	}
+	else
+		add_wiz_dev_prop(prop_name, prop_desc);
+
+	prop_name = "HistogramRangeMin";
+	prop_desc = "the lower bound of the histogram bins. must be >= 0";
+	prop_def  = "";
+	if (prop_def.length()>0)
+	{
+		Tango::DbDatum	data(prop_name);
+		data << vect_data ;
+		dev_def_prop.push_back(data);
+		add_wiz_dev_prop(prop_name, prop_desc,  prop_def);
+	}
+	else
+		add_wiz_dev_prop(prop_name, prop_desc);
+
+	prop_name = "HorizontalFlip";
+	prop_desc = "the initial value of the HorizontalFlip attribute";
+	prop_def  = "";
 	if (prop_def.length()>0)
 	{
 		Tango::DbDatum	data(prop_name);
@@ -1543,6 +1646,19 @@ void ImgBeamAnalyzerClass::set_default_property()
 	else
 		add_wiz_dev_prop(prop_name, prop_desc);
 
+	prop_name = "OpticalMagnification";
+	prop_desc = "the initial value of the OpticalMagnification attribute";
+	prop_def  = "";
+	if (prop_def.length()>0)
+	{
+		Tango::DbDatum	data(prop_name);
+		data << vect_data ;
+		dev_def_prop.push_back(data);
+		add_wiz_dev_prop(prop_name, prop_desc,  prop_def);
+	}
+	else
+		add_wiz_dev_prop(prop_name, prop_desc);
+
 	prop_name = "PixelSizeX";
 	prop_desc = "the initial value of the PixelSizeX attribute";
 	prop_def  = "";
@@ -1569,8 +1685,8 @@ void ImgBeamAnalyzerClass::set_default_property()
 	else
 		add_wiz_dev_prop(prop_name, prop_desc);
 
-	prop_name = "OpticalMagnification";
-	prop_desc = "the initial value of the OpticalMagnification attribute";
+	prop_name = "ProfileFitFixedBg";
+	prop_desc = "the initial value of the ProfileFitFixedBg attribute";
 	prop_def  = "";
 	if (prop_def.length()>0)
 	{
@@ -1584,97 +1700,6 @@ void ImgBeamAnalyzerClass::set_default_property()
 
 	prop_name = "Rotation";
 	prop_desc = "the initial value of the Rotation attribute";
-	prop_def  = "";
-	if (prop_def.length()>0)
-	{
-		Tango::DbDatum	data(prop_name);
-		data << vect_data ;
-		dev_def_prop.push_back(data);
-		add_wiz_dev_prop(prop_name, prop_desc,  prop_def);
-	}
-	else
-		add_wiz_dev_prop(prop_name, prop_desc);
-
-	prop_name = "HorizontalFlip";
-	prop_desc = "the initial value of the HorizontalFlip attribute";
-	prop_def  = "";
-	if (prop_def.length()>0)
-	{
-		Tango::DbDatum	data(prop_name);
-		data << vect_data ;
-		dev_def_prop.push_back(data);
-		add_wiz_dev_prop(prop_name, prop_desc,  prop_def);
-	}
-	else
-		add_wiz_dev_prop(prop_name, prop_desc);
-
-	prop_name = "GammaCorrection";
-	prop_desc = "the initial value of the GammaCorrection attribute";
-	prop_def  = "";
-	if (prop_def.length()>0)
-	{
-		Tango::DbDatum	data(prop_name);
-		data << vect_data ;
-		dev_def_prop.push_back(data);
-		add_wiz_dev_prop(prop_name, prop_desc,  prop_def);
-	}
-	else
-		add_wiz_dev_prop(prop_name, prop_desc);
-
-	prop_name = "BitsPerPixel";
-	prop_desc = "the initial value of the BitsPerPixel attribute";
-	prop_def  = "";
-	if (prop_def.length()>0)
-	{
-		Tango::DbDatum	data(prop_name);
-		data << vect_data ;
-		dev_def_prop.push_back(data);
-		add_wiz_dev_prop(prop_name, prop_desc,  prop_def);
-	}
-	else
-		add_wiz_dev_prop(prop_name, prop_desc);
-
-	prop_name = "HistogramNbBins";
-	prop_desc = "the initial value of the HistogramNbBins attribute";
-	prop_def  = "";
-	if (prop_def.length()>0)
-	{
-		Tango::DbDatum	data(prop_name);
-		data << vect_data ;
-		dev_def_prop.push_back(data);
-		add_wiz_dev_prop(prop_name, prop_desc,  prop_def);
-	}
-	else
-		add_wiz_dev_prop(prop_name, prop_desc);
-
-	prop_name = "HistogramRangeMin";
-	prop_desc = "the lower bound of the histogram bins. must be >= 0";
-	prop_def  = "";
-	if (prop_def.length()>0)
-	{
-		Tango::DbDatum	data(prop_name);
-		data << vect_data ;
-		dev_def_prop.push_back(data);
-		add_wiz_dev_prop(prop_name, prop_desc,  prop_def);
-	}
-	else
-		add_wiz_dev_prop(prop_name, prop_desc);
-
-	prop_name = "HistogramRangeMax";
-	prop_desc = "the upper bound of the histogram bins. must be <= 2^BitsPerPixel";
-	prop_def  = "";
-	if (prop_def.length()>0)
-	{
-		Tango::DbDatum	data(prop_name);
-		data << vect_data ;
-		dev_def_prop.push_back(data);
-		add_wiz_dev_prop(prop_name, prop_desc,  prop_def);
-	}
-	else
-		add_wiz_dev_prop(prop_name, prop_desc);
-
-	prop_name = "ProfileFitFixedBg";
-	prop_desc = "the initial value of the ProfileFitFixedBg attribute";
 	prop_def  = "";
 	if (prop_def.length()>0)
 	{

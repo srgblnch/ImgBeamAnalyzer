@@ -21,6 +21,12 @@ namespace ImgBeamAnalyzer_ns
 
 struct BIAConfig
 {
+  typedef enum
+  {
+    AUTOROI_PROFILES,
+    AUTOROI_THRESHOLD
+  } AutoROIMethod;
+
   BIAConfig();
 
   bool    enable_image_stats;
@@ -29,6 +35,8 @@ struct BIAConfig
   bool    enable_user_roi;
   bool    enable_auto_roi;
   bool    enable_2d_gaussian_fit;
+  AutoROIMethod auto_roi_method;
+  long    auto_roi_threshold;
   double  auto_roi_mag_factor_x;
   double  auto_roi_mag_factor_y;
   long    comput_period;

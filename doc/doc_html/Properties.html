@@ -67,9 +67,20 @@ Revision:  - Author:
 <Td><Font Size=-1>Tango::DEV_DOUBLE</Font></Td>
 <Td><Font Size=-1>initial value of AutoROIMagFactorY attribute. if not defined, it is set to 1</Font></Td></Tr>
 
+<Tr><Td><b>AutoROIMethod</b></Td>
+<Td><Font Size=-1>Tango::DEV_STRING</Font></Td>
+<Td><Font Size=-1>the method used for computing the AutoROI. can be 'PROFILES' or 'THRESHOLD'.
+PROFILES method means the AutoROI is computed from the profiles fitted to gaussian functions.
+THRESHOLD means that the image is first thresholded using the 'AutoROIThreshold' attribute then the largest blob is selected.
+</Font></Td></Tr>
+
 <Tr><Td><b>AutoStart</b></Td>
 <Td><Font Size=-1>Tango::DEV_BOOLEAN</Font></Td>
 <Td><Font Size=-1>if set to 'true' and mode is 'CONTINUOUS', the computation starts automatically when the device is launched</Font></Td></Tr>
+
+<Tr><Td><b>BitsPerPixel</b></Td>
+<Td><Font Size=-1>Tango::DEV_LONG</Font></Td>
+<Td><Font Size=-1>the initial value of the BitsPerPixel attribute</Font></Td></Tr>
 
 <Tr><Td><b>ComputationPeriod</b></Td>
 <Td><Font Size=-1>Tango::DEV_LONG</Font></Td>
@@ -83,13 +94,13 @@ Revision:  - Author:
 <Td><Font Size=-1>Tango::DEV_BOOLEAN</Font></Td>
 <Td><Font Size=-1>the initial value of the EnableAutoROI attribute</Font></Td></Tr>
 
-<Tr><Td><b>EnableImageStats</b></Td>
-<Td><Font Size=-1>Tango::DEV_BOOLEAN</Font></Td>
-<Td><Font Size=-1>the initial value of the EnableImageStats attribute</Font></Td></Tr>
-
 <Tr><Td><b>EnableHistogram</b></Td>
 <Td><Font Size=-1>Tango::DEV_BOOLEAN</Font></Td>
 <Td><Font Size=-1>the initial value of the EnableHistogram attribute</Font></Td></Tr>
+
+<Tr><Td><b>EnableImageStats</b></Td>
+<Td><Font Size=-1>Tango::DEV_BOOLEAN</Font></Td>
+<Td><Font Size=-1>the initial value of the EnableImageStats attribute</Font></Td></Tr>
 
 <Tr><Td><b>EnableProfiles</b></Td>
 <Td><Font Size=-1>Tango::DEV_BOOLEAN</Font></Td>
@@ -98,6 +109,26 @@ Revision:  - Author:
 <Tr><Td><b>EnableUserROI</b></Td>
 <Td><Font Size=-1>Tango::DEV_BOOLEAN</Font></Td>
 <Td><Font Size=-1>the initial value of the EnableUserROI attribute</Font></Td></Tr>
+
+<Tr><Td><b>GammaCorrection</b></Td>
+<Td><Font Size=-1>Tango::DEV_DOUBLE</Font></Td>
+<Td><Font Size=-1>the initial value of the GammaCorrection attribute</Font></Td></Tr>
+
+<Tr><Td><b>HistogramNbBins</b></Td>
+<Td><Font Size=-1>Tango::DEV_LONG</Font></Td>
+<Td><Font Size=-1>the initial value of the HistogramNbBins attribute</Font></Td></Tr>
+
+<Tr><Td><b>HistogramRangeMax</b></Td>
+<Td><Font Size=-1>Tango::DEV_LONG</Font></Td>
+<Td><Font Size=-1>the upper bound of the histogram bins. must be <= 2^BitsPerPixel</Font></Td></Tr>
+
+<Tr><Td><b>HistogramRangeMin</b></Td>
+<Td><Font Size=-1>Tango::DEV_LONG</Font></Td>
+<Td><Font Size=-1>the lower bound of the histogram bins. must be >= 0</Font></Td></Tr>
+
+<Tr><Td><b>HorizontalFlip</b></Td>
+<Td><Font Size=-1>Tango::DEV_BOOLEAN</Font></Td>
+<Td><Font Size=-1>the initial value of the HorizontalFlip attribute</Font></Td></Tr>
 
 <Tr><Td><b>ImageAttributeName</b></Td>
 <Td><Font Size=-1>Tango::DEV_STRING</Font></Td>
@@ -111,6 +142,10 @@ Revision:  - Author:
 <Td><Font Size=-1>Tango::DEV_STRING</Font></Td>
 <Td><Font Size=-1>ONESHOT or CONTINUOUS</Font></Td></Tr>
 
+<Tr><Td><b>OpticalMagnification</b></Td>
+<Td><Font Size=-1>Tango::DEV_DOUBLE</Font></Td>
+<Td><Font Size=-1>the initial value of the OpticalMagnification attribute</Font></Td></Tr>
+
 <Tr><Td><b>PixelSizeX</b></Td>
 <Td><Font Size=-1>Tango::DEV_DOUBLE</Font></Td>
 <Td><Font Size=-1>the initial value of the PixelSizeX attribute</Font></Td></Tr>
@@ -119,41 +154,13 @@ Revision:  - Author:
 <Td><Font Size=-1>Tango::DEV_DOUBLE</Font></Td>
 <Td><Font Size=-1>the initial value of the PixelSizeY attribute</Font></Td></Tr>
 
-<Tr><Td><b>OpticalMagnification</b></Td>
-<Td><Font Size=-1>Tango::DEV_DOUBLE</Font></Td>
-<Td><Font Size=-1>the initial value of the OpticalMagnification attribute</Font></Td></Tr>
+<Tr><Td><b>ProfileFitFixedBg</b></Td>
+<Td><Font Size=-1>Tango::DEV_BOOLEAN</Font></Td>
+<Td><Font Size=-1>the initial value of the ProfileFitFixedBg attribute</Font></Td></Tr>
 
 <Tr><Td><b>Rotation</b></Td>
 <Td><Font Size=-1>Tango::DEV_LONG</Font></Td>
 <Td><Font Size=-1>the initial value of the Rotation attribute</Font></Td></Tr>
-
-<Tr><Td><b>HorizontalFlip</b></Td>
-<Td><Font Size=-1>Tango::DEV_BOOLEAN</Font></Td>
-<Td><Font Size=-1>the initial value of the HorizontalFlip attribute</Font></Td></Tr>
-
-<Tr><Td><b>GammaCorrection</b></Td>
-<Td><Font Size=-1>Tango::DEV_DOUBLE</Font></Td>
-<Td><Font Size=-1>the initial value of the GammaCorrection attribute</Font></Td></Tr>
-
-<Tr><Td><b>BitsPerPixel</b></Td>
-<Td><Font Size=-1>Tango::DEV_LONG</Font></Td>
-<Td><Font Size=-1>the initial value of the BitsPerPixel attribute</Font></Td></Tr>
-
-<Tr><Td><b>HistogramNbBins</b></Td>
-<Td><Font Size=-1>Tango::DEV_LONG</Font></Td>
-<Td><Font Size=-1>the initial value of the HistogramNbBins attribute</Font></Td></Tr>
-
-<Tr><Td><b>HistogramRangeMin</b></Td>
-<Td><Font Size=-1>Tango::DEV_LONG</Font></Td>
-<Td><Font Size=-1>the lower bound of the histogram bins. must be >= 0</Font></Td></Tr>
-
-<Tr><Td><b>HistogramRangeMax</b></Td>
-<Td><Font Size=-1>Tango::DEV_LONG</Font></Td>
-<Td><Font Size=-1>the upper bound of the histogram bins. must be <= 2^BitsPerPixel</Font></Td></Tr>
-
-<Tr><Td><b>ProfileFitFixedBg</b></Td>
-<Td><Font Size=-1>Tango::DEV_BOOLEAN</Font></Td>
-<Td><Font Size=-1>the initial value of the ProfileFitFixedBg attribute</Font></Td></Tr>
 
 </Table>
 

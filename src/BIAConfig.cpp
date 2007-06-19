@@ -25,6 +25,7 @@ namespace ImgBeamAnalyzer_ns
   const bool    kDEFAULT_ENABLE_AUTO_ROI = true;
   const bool    kDEFAULT_ENABLE_2D_GAUSSIAN_FIT = false;
   const double  kDEFAULT_AUTOROI_MAGFACTOR = 1.0f;
+  const long    kDEFAULT_AUTOROI_THRESHOLD = 200;
   const long    kDEFAULT_COMPUT_PERIOD = 1000;
   const long    kDEFAULT_ALARM_ZONE = 10;
   const long    kDEFAULT_FIT2D_NB_ITER = 30;
@@ -55,6 +56,7 @@ namespace ImgBeamAnalyzer_ns
     enable_user_roi(kDEFAULT_ENABLE_USER_ROI),
     enable_auto_roi(kDEFAULT_ENABLE_AUTO_ROI),
     enable_2d_gaussian_fit(kDEFAULT_ENABLE_2D_GAUSSIAN_FIT),
+    auto_roi_threshold(kDEFAULT_AUTOROI_THRESHOLD),
     auto_roi_mag_factor_x(kDEFAULT_AUTOROI_MAGFACTOR),
     auto_roi_mag_factor_y(kDEFAULT_AUTOROI_MAGFACTOR),
     comput_period(kDEFAULT_COMPUT_PERIOD),
@@ -98,6 +100,7 @@ namespace ImgBeamAnalyzer_ns
     }
 
     CHECK( this->enable_2d_gaussian_fit == true && this->enable_image_stats == false , "EnableImageStats must be true when Enable2DGaussianFit is true" );
+    CHECK( this->auto_roi_threshold >= (1 << pixel_depth) , "AutoROIMagFactorX must be stricly positive" );
     CHECK( this->auto_roi_mag_factor_x <=  0 , "AutoROIMagFactorX must be stricly positive" );
     CHECK( this->auto_roi_mag_factor_y <=  0 , "AutoROIMagFactorY must be stricly positive" );
     CHECK( this->comput_period         <=  0 , "ComputationPeriod must be stricly positive" );
@@ -109,15 +112,15 @@ namespace ImgBeamAnalyzer_ns
     CHECK( this->pixel_size_x          <=  0 , "PixelSizeX must be stricly positive" );
     CHECK( this->pixel_size_y          <=  0 , "PixelSizeY must be stricly positive" );
     CHECK( this->optical_mag           <=  0 , "OpticalMagnification must be stricly positive" );
-    CHECK( this->user_roi_origin_x     < 0 , "UserROIOriginX must be positive" );
-    CHECK( this->user_roi_origin_y     < 0 , "UserROIOriginY must be positive" );
-    CHECK( this->user_roi_width        < 0 , "UserROIWidth must be positive" );
-    CHECK( this->user_roi_height       < 0 , "UserROIHeight must be positive" );
+    CHECK( this->user_roi_origin_x     < 0   , "UserROIOriginX must be positive" );
+    CHECK( this->user_roi_origin_y     < 0   , "UserROIOriginY must be positive" );
+    CHECK( this->user_roi_width        < 0   , "UserROIWidth must be positive" );
+    CHECK( this->user_roi_height       < 0   , "UserROIHeight must be positive" );
     CHECK( this->gamma_correction      <=  0 , "GammaCorrection must be stricly positive" );
     CHECK( this->pixel_depth           <=  0 , "PixelDepth must be stricly positive" );
-    CHECK( this->histo_nb_bins         < 0 , "HistogramNbBins must be positive" );
-    CHECK( this->histo_range_min       < 0 , "HistogramRangeMin must be positive" );
-    CHECK( this->histo_range_max       < 0 , "HistogramRangeMax must be positive" );
+    CHECK( this->histo_nb_bins         < 0   , "HistogramNbBins must be positive" );
+    CHECK( this->histo_range_min       < 0   , "HistogramRangeMin must be positive" );
+    CHECK( this->histo_range_max       < 0   , "HistogramRangeMax must be positive" );
     CHECK( this->histo_range_max > 0 && this->histo_range_min >= this->histo_range_max  , "HistogramRangeMin must be inferior to HistogramRangeMax" );
     CHECK( this->histo_range_max > ((1 << pixel_depth) - 1) , "HistogramRangeMax must be inferior to 2^PixelDepth - 1" );
 

@@ -12,7 +12,7 @@
 //
 // $Author: julien_malik $
 //
-// $Revision: 1.8 $
+// $Revision: 1.9 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -953,6 +953,20 @@ public:
 	{(static_cast<ImgBeamAnalyzer *>(dev))->write_AlarmZone(att);}
 	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
 	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_AlarmZone_allowed(ty);}
+};
+
+class AutoROIThresholdAttrib: public Tango::Attr
+{
+public:
+	AutoROIThresholdAttrib():Attr("AutoROIThreshold", Tango::DEV_LONG, Tango::READ_WRITE) {};
+	~AutoROIThresholdAttrib() {};
+	
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_AutoROIThreshold(att);}
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+	{(static_cast<ImgBeamAnalyzer *>(dev))->write_AutoROIThreshold(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_AutoROIThreshold_allowed(ty);}
 };
 
 class AutoROIMagFactorYAttrib: public Tango::Attr

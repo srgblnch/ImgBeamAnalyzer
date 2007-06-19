@@ -271,18 +271,16 @@ namespace ImgBeamAnalyzer_ns
     std::auto_ptr<isl::Image> user_roi_image_ptr(user_roi_image);
 
     isl::Rectangle auto_roi;
-    if (config.enable_auto_roi)
+    if (config.enable_auto_roi && config.auto_roi_method == BIAConfig::AUTOROI_PROFILES)
     {
       try
       {
+        //- here auto_roi is expressed in the user_roi_image coordinate system
         auto_roi = isl::AutoROI(*user_roi_image, config.auto_roi_mag_factor_x, config.auto_roi_mag_factor_y);
 
         if (auto_roi.is_empty())
         {
-          auto_roi = isl::Rectangle(0,
-                                    0,
-                                    user_roi_image->width(),
-                                    user_roi_image->height());
+          auto_roi = user_roi;
         }
         else
         {
@@ -291,18 +289,44 @@ namespace ImgBeamAnalyzer_ns
 
         auto_roi_image = user_roi_image->get_roi(auto_roi);
       }
-      catch(isl::Exception&)
+      catch(isl::Exception& ex)
       {
+        std::cerr << ex << std::endl;
+        isl::ErrorHandler::reset();
+       
+        // failed to determine the ROI automatically : take the user roi image (already clipped by user roi)
+        auto_roi = user_roi;
+        //- use the user_roi_image already allocated
+        auto_roi_image = user_roi_image_ptr.release();
+      }
+
+      auto_roi.translate(user_roi.x(), user_roi.y());
+      data.auto_roi_origin_x = auto_roi.origin().x();
+      data.auto_roi_origin_y = auto_roi.origin().y();
+      data.auto_roi_width    = auto_roi.width();
+      data.auto_roi_height   = auto_roi.height();
+    }
+    else if (config.enable_auto_roi && config.auto_roi_method == BIAConfig::AUTOROI_THRESHOLD)
+    {
+      try
+      {
+        isl::Image user_roi_img_working(*user_roi_image);
+        user_roi_img_working.convert(isl::ISL_STORAGE_FLOAT);
+        user_roi_img_working.threshold(config.auto_roi_threshold, 255);
+        user_roi_img_working.convert(isl::ISL_STORAGE_UCHAR);
+        auto_roi = isl::BeamBox(user_roi_img_working, config.auto_roi_mag_factor_x, config.auto_roi_mag_factor_y);
+        auto_roi_image = user_roi_image->get_roi(auto_roi);
+      }
+      catch(isl::Exception& ex)
+      {
+        std::cerr << ex << std::endl;
         isl::ErrorHandler::reset();
         // failed to determine the ROI automatically : take the whole image (already clipped by user roi)
-        auto_roi = isl::Rectangle(0,
-                                  0,
-                                  image.width(),
-                                  image.height());
-        auto_roi_image = new isl::Image(*user_roi_image);
+        auto_roi = user_roi;
+        //- use the user_roi_image already allocated
+        auto_roi_image = user_roi_image_ptr.release();
       }
       auto_roi.translate(user_roi.x(), user_roi.y());
-
       data.auto_roi_origin_x = auto_roi.origin().x();
       data.auto_roi_origin_y = auto_roi.origin().y();
       data.auto_roi_width    = auto_roi.width();
@@ -319,7 +343,6 @@ namespace ImgBeamAnalyzer_ns
     roi_image = auto_roi_image;
     roi = auto_roi;
   }
-
 
   
   void

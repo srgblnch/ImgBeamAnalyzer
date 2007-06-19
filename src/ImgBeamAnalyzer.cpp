@@ -1,4 +1,4 @@
-static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzer.cpp,v 1.16 2007-06-18 15:13:59 julien_malik Exp $";
+static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzer.cpp,v 1.17 2007-06-19 15:46:10 julien_malik Exp $";
 //+=============================================================================
 //
 // file :         ImgBeamAnalyzer.cpp
@@ -13,7 +13,7 @@ static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/Im
 //
 // $Author: julien_malik $
 //
-// $Revision: 1.16 $
+// $Revision: 1.17 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -502,6 +502,7 @@ void ImgBeamAnalyzer::get_device_property()
   this->imageAttributeName = "unspecified";
   this->autoStart = false;
   this->mode = "unspecified";
+  this->autoROIMethod = "unspecified";
 
   
   //- Generate a default configuration object
@@ -533,28 +534,29 @@ void ImgBeamAnalyzer::get_device_property()
 	Tango::DbData	dev_prop;
 	dev_prop.push_back(Tango::DbDatum("AutoROIMagFactorX"));
 	dev_prop.push_back(Tango::DbDatum("AutoROIMagFactorY"));
+	dev_prop.push_back(Tango::DbDatum("AutoROIMethod"));
 	dev_prop.push_back(Tango::DbDatum("AutoStart"));
+	dev_prop.push_back(Tango::DbDatum("BitsPerPixel"));
 	dev_prop.push_back(Tango::DbDatum("ComputationPeriod"));
 	dev_prop.push_back(Tango::DbDatum("Enable2DGaussianFit"));
 	dev_prop.push_back(Tango::DbDatum("EnableAutoROI"));
-	dev_prop.push_back(Tango::DbDatum("EnableImageStats"));
 	dev_prop.push_back(Tango::DbDatum("EnableHistogram"));
+	dev_prop.push_back(Tango::DbDatum("EnableImageStats"));
 	dev_prop.push_back(Tango::DbDatum("EnableProfiles"));
 	dev_prop.push_back(Tango::DbDatum("EnableUserROI"));
+	dev_prop.push_back(Tango::DbDatum("GammaCorrection"));
+	dev_prop.push_back(Tango::DbDatum("HistogramNbBins"));
+	dev_prop.push_back(Tango::DbDatum("HistogramRangeMax"));
+	dev_prop.push_back(Tango::DbDatum("HistogramRangeMin"));
+	dev_prop.push_back(Tango::DbDatum("HorizontalFlip"));
 	dev_prop.push_back(Tango::DbDatum("ImageAttributeName"));
 	dev_prop.push_back(Tango::DbDatum("ImageDevice"));
 	dev_prop.push_back(Tango::DbDatum("Mode"));
+	dev_prop.push_back(Tango::DbDatum("OpticalMagnification"));
 	dev_prop.push_back(Tango::DbDatum("PixelSizeX"));
 	dev_prop.push_back(Tango::DbDatum("PixelSizeY"));
-	dev_prop.push_back(Tango::DbDatum("OpticalMagnification"));
-	dev_prop.push_back(Tango::DbDatum("Rotation"));
-	dev_prop.push_back(Tango::DbDatum("HorizontalFlip"));
-	dev_prop.push_back(Tango::DbDatum("GammaCorrection"));
-	dev_prop.push_back(Tango::DbDatum("BitsPerPixel"));
-	dev_prop.push_back(Tango::DbDatum("HistogramNbBins"));
-	dev_prop.push_back(Tango::DbDatum("HistogramRangeMin"));
-	dev_prop.push_back(Tango::DbDatum("HistogramRangeMax"));
 	dev_prop.push_back(Tango::DbDatum("ProfileFitFixedBg"));
+	dev_prop.push_back(Tango::DbDatum("Rotation"));
 
 	//	Call database and extract values
 	//--------------------------------------------
@@ -583,6 +585,15 @@ void ImgBeamAnalyzer::get_device_property()
 	//	And try to extract AutoROIMagFactorY value from database
 	if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  autoROIMagFactorY;
 
+	//	Try to initialize AutoROIMethod from class property
+	cl_prop = ds_class->get_class_property(dev_prop[++i].name);
+	if (cl_prop.is_empty()==false)	cl_prop  >>  autoROIMethod;
+	//	Try to initialize AutoROIMethod from default device value
+	def_prop = ds_class->get_default_device_property(dev_prop[i].name);
+	if (def_prop.is_empty()==false)	def_prop  >>  autoROIMethod;
+	//	And try to extract AutoROIMethod value from database
+	if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  autoROIMethod;
+
 	//	Try to initialize AutoStart from class property
 	cl_prop = ds_class->get_class_property(dev_prop[++i].name);
 	if (cl_prop.is_empty()==false)	cl_prop  >>  autoStart;
@@ -591,6 +602,15 @@ void ImgBeamAnalyzer::get_device_property()
 	if (def_prop.is_empty()==false)	def_prop  >>  autoStart;
 	//	And try to extract AutoStart value from database
 	if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  autoStart;
+
+	//	Try to initialize BitsPerPixel from class property
+	cl_prop = ds_class->get_class_property(dev_prop[++i].name);
+	if (cl_prop.is_empty()==false)	cl_prop  >>  bitsPerPixel;
+	//	Try to initialize BitsPerPixel from default device value
+	def_prop = ds_class->get_default_device_property(dev_prop[i].name);
+	if (def_prop.is_empty()==false)	def_prop  >>  bitsPerPixel;
+	//	And try to extract BitsPerPixel value from database
+	if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  bitsPerPixel;
 
 	//	Try to initialize ComputationPeriod from class property
 	cl_prop = ds_class->get_class_property(dev_prop[++i].name);
@@ -619,15 +639,6 @@ void ImgBeamAnalyzer::get_device_property()
 	//	And try to extract EnableAutoROI value from database
 	if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  enableAutoROI;
 
-	//	Try to initialize EnableImageStats from class property
-	cl_prop = ds_class->get_class_property(dev_prop[++i].name);
-	if (cl_prop.is_empty()==false)	cl_prop  >>  enableImageStats;
-	//	Try to initialize EnableImageStats from default device value
-	def_prop = ds_class->get_default_device_property(dev_prop[i].name);
-	if (def_prop.is_empty()==false)	def_prop  >>  enableImageStats;
-	//	And try to extract EnableImageStats value from database
-	if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  enableImageStats;
-
 	//	Try to initialize EnableHistogram from class property
 	cl_prop = ds_class->get_class_property(dev_prop[++i].name);
 	if (cl_prop.is_empty()==false)	cl_prop  >>  enableHistogram;
@@ -636,6 +647,15 @@ void ImgBeamAnalyzer::get_device_property()
 	if (def_prop.is_empty()==false)	def_prop  >>  enableHistogram;
 	//	And try to extract EnableHistogram value from database
 	if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  enableHistogram;
+
+	//	Try to initialize EnableImageStats from class property
+	cl_prop = ds_class->get_class_property(dev_prop[++i].name);
+	if (cl_prop.is_empty()==false)	cl_prop  >>  enableImageStats;
+	//	Try to initialize EnableImageStats from default device value
+	def_prop = ds_class->get_default_device_property(dev_prop[i].name);
+	if (def_prop.is_empty()==false)	def_prop  >>  enableImageStats;
+	//	And try to extract EnableImageStats value from database
+	if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  enableImageStats;
 
 	//	Try to initialize EnableProfiles from class property
 	cl_prop = ds_class->get_class_property(dev_prop[++i].name);
@@ -654,6 +674,51 @@ void ImgBeamAnalyzer::get_device_property()
 	if (def_prop.is_empty()==false)	def_prop  >>  enableUserROI;
 	//	And try to extract EnableUserROI value from database
 	if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  enableUserROI;
+
+	//	Try to initialize GammaCorrection from class property
+	cl_prop = ds_class->get_class_property(dev_prop[++i].name);
+	if (cl_prop.is_empty()==false)	cl_prop  >>  gammaCorrection;
+	//	Try to initialize GammaCorrection from default device value
+	def_prop = ds_class->get_default_device_property(dev_prop[i].name);
+	if (def_prop.is_empty()==false)	def_prop  >>  gammaCorrection;
+	//	And try to extract GammaCorrection value from database
+	if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  gammaCorrection;
+
+	//	Try to initialize HistogramNbBins from class property
+	cl_prop = ds_class->get_class_property(dev_prop[++i].name);
+	if (cl_prop.is_empty()==false)	cl_prop  >>  histogramNbBins;
+	//	Try to initialize HistogramNbBins from default device value
+	def_prop = ds_class->get_default_device_property(dev_prop[i].name);
+	if (def_prop.is_empty()==false)	def_prop  >>  histogramNbBins;
+	//	And try to extract HistogramNbBins value from database
+	if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  histogramNbBins;
+
+	//	Try to initialize HistogramRangeMax from class property
+	cl_prop = ds_class->get_class_property(dev_prop[++i].name);
+	if (cl_prop.is_empty()==false)	cl_prop  >>  histogramRangeMax;
+	//	Try to initialize HistogramRangeMax from default device value
+	def_prop = ds_class->get_default_device_property(dev_prop[i].name);
+	if (def_prop.is_empty()==false)	def_prop  >>  histogramRangeMax;
+	//	And try to extract HistogramRangeMax value from database
+	if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  histogramRangeMax;
+
+	//	Try to initialize HistogramRangeMin from class property
+	cl_prop = ds_class->get_class_property(dev_prop[++i].name);
+	if (cl_prop.is_empty()==false)	cl_prop  >>  histogramRangeMin;
+	//	Try to initialize HistogramRangeMin from default device value
+	def_prop = ds_class->get_default_device_property(dev_prop[i].name);
+	if (def_prop.is_empty()==false)	def_prop  >>  histogramRangeMin;
+	//	And try to extract HistogramRangeMin value from database
+	if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  histogramRangeMin;
+
+	//	Try to initialize HorizontalFlip from class property
+	cl_prop = ds_class->get_class_property(dev_prop[++i].name);
+	if (cl_prop.is_empty()==false)	cl_prop  >>  horizontalFlip;
+	//	Try to initialize HorizontalFlip from default device value
+	def_prop = ds_class->get_default_device_property(dev_prop[i].name);
+	if (def_prop.is_empty()==false)	def_prop  >>  horizontalFlip;
+	//	And try to extract HorizontalFlip value from database
+	if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  horizontalFlip;
 
 	//	Try to initialize ImageAttributeName from class property
 	cl_prop = ds_class->get_class_property(dev_prop[++i].name);
@@ -682,6 +747,15 @@ void ImgBeamAnalyzer::get_device_property()
 	//	And try to extract Mode value from database
 	if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  mode;
 
+	//	Try to initialize OpticalMagnification from class property
+	cl_prop = ds_class->get_class_property(dev_prop[++i].name);
+	if (cl_prop.is_empty()==false)	cl_prop  >>  opticalMagnification;
+	//	Try to initialize OpticalMagnification from default device value
+	def_prop = ds_class->get_default_device_property(dev_prop[i].name);
+	if (def_prop.is_empty()==false)	def_prop  >>  opticalMagnification;
+	//	And try to extract OpticalMagnification value from database
+	if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  opticalMagnification;
+
 	//	Try to initialize PixelSizeX from class property
 	cl_prop = ds_class->get_class_property(dev_prop[++i].name);
 	if (cl_prop.is_empty()==false)	cl_prop  >>  pixelSizeX;
@@ -700,14 +774,14 @@ void ImgBeamAnalyzer::get_device_property()
 	//	And try to extract PixelSizeY value from database
 	if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  pixelSizeY;
 
-	//	Try to initialize OpticalMagnification from class property
+	//	Try to initialize ProfileFitFixedBg from class property
 	cl_prop = ds_class->get_class_property(dev_prop[++i].name);
-	if (cl_prop.is_empty()==false)	cl_prop  >>  opticalMagnification;
-	//	Try to initialize OpticalMagnification from default device value
+	if (cl_prop.is_empty()==false)	cl_prop  >>  profileFitFixedBg;
+	//	Try to initialize ProfileFitFixedBg from default device value
 	def_prop = ds_class->get_default_device_property(dev_prop[i].name);
-	if (def_prop.is_empty()==false)	def_prop  >>  opticalMagnification;
-	//	And try to extract OpticalMagnification value from database
-	if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  opticalMagnification;
+	if (def_prop.is_empty()==false)	def_prop  >>  profileFitFixedBg;
+	//	And try to extract ProfileFitFixedBg value from database
+	if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  profileFitFixedBg;
 
 	//	Try to initialize Rotation from class property
 	cl_prop = ds_class->get_class_property(dev_prop[++i].name);
@@ -717,69 +791,6 @@ void ImgBeamAnalyzer::get_device_property()
 	if (def_prop.is_empty()==false)	def_prop  >>  rotation;
 	//	And try to extract Rotation value from database
 	if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  rotation;
-
-	//	Try to initialize HorizontalFlip from class property
-	cl_prop = ds_class->get_class_property(dev_prop[++i].name);
-	if (cl_prop.is_empty()==false)	cl_prop  >>  horizontalFlip;
-	//	Try to initialize HorizontalFlip from default device value
-	def_prop = ds_class->get_default_device_property(dev_prop[i].name);
-	if (def_prop.is_empty()==false)	def_prop  >>  horizontalFlip;
-	//	And try to extract HorizontalFlip value from database
-	if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  horizontalFlip;
-
-	//	Try to initialize GammaCorrection from class property
-	cl_prop = ds_class->get_class_property(dev_prop[++i].name);
-	if (cl_prop.is_empty()==false)	cl_prop  >>  gammaCorrection;
-	//	Try to initialize GammaCorrection from default device value
-	def_prop = ds_class->get_default_device_property(dev_prop[i].name);
-	if (def_prop.is_empty()==false)	def_prop  >>  gammaCorrection;
-	//	And try to extract GammaCorrection value from database
-	if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  gammaCorrection;
-
-	//	Try to initialize BitsPerPixel from class property
-	cl_prop = ds_class->get_class_property(dev_prop[++i].name);
-	if (cl_prop.is_empty()==false)	cl_prop  >>  bitsPerPixel;
-	//	Try to initialize BitsPerPixel from default device value
-	def_prop = ds_class->get_default_device_property(dev_prop[i].name);
-	if (def_prop.is_empty()==false)	def_prop  >>  bitsPerPixel;
-	//	And try to extract BitsPerPixel value from database
-	if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  bitsPerPixel;
-
-	//	Try to initialize HistogramNbBins from class property
-	cl_prop = ds_class->get_class_property(dev_prop[++i].name);
-	if (cl_prop.is_empty()==false)	cl_prop  >>  histogramNbBins;
-	//	Try to initialize HistogramNbBins from default device value
-	def_prop = ds_class->get_default_device_property(dev_prop[i].name);
-	if (def_prop.is_empty()==false)	def_prop  >>  histogramNbBins;
-	//	And try to extract HistogramNbBins value from database
-	if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  histogramNbBins;
-
-	//	Try to initialize HistogramRangeMin from class property
-	cl_prop = ds_class->get_class_property(dev_prop[++i].name);
-	if (cl_prop.is_empty()==false)	cl_prop  >>  histogramRangeMin;
-	//	Try to initialize HistogramRangeMin from default device value
-	def_prop = ds_class->get_default_device_property(dev_prop[i].name);
-	if (def_prop.is_empty()==false)	def_prop  >>  histogramRangeMin;
-	//	And try to extract HistogramRangeMin value from database
-	if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  histogramRangeMin;
-
-	//	Try to initialize HistogramRangeMax from class property
-	cl_prop = ds_class->get_class_property(dev_prop[++i].name);
-	if (cl_prop.is_empty()==false)	cl_prop  >>  histogramRangeMax;
-	//	Try to initialize HistogramRangeMax from default device value
-	def_prop = ds_class->get_default_device_property(dev_prop[i].name);
-	if (def_prop.is_empty()==false)	def_prop  >>  histogramRangeMax;
-	//	And try to extract HistogramRangeMax value from database
-	if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  histogramRangeMax;
-
-	//	Try to initialize ProfileFitFixedBg from class property
-	cl_prop = ds_class->get_class_property(dev_prop[++i].name);
-	if (cl_prop.is_empty()==false)	cl_prop  >>  profileFitFixedBg;
-	//	Try to initialize ProfileFitFixedBg from default device value
-	def_prop = ds_class->get_default_device_property(dev_prop[i].name);
-	if (def_prop.is_empty()==false)	def_prop  >>  profileFitFixedBg;
-	//	And try to extract ProfileFitFixedBg value from database
-	if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  profileFitFixedBg;
 
 
 
@@ -793,6 +804,12 @@ void ImgBeamAnalyzer::get_device_property()
     this->critical_property_missing_ = true;
   }
 
+  std::transform(this->autoROIMethod.begin(), this->autoROIMethod.end(), this->autoROIMethod.begin(), ::tolower);
+  if (this->autoROIMethod == "unspecified")
+  {
+    ERROR_STREAM << "required device property <AutoROIMethod> is missing" << endl;
+    this->critical_property_missing_ = true;
+  }
 
   //- Build the initial configuration
 	//------------------------------------------------------------------
@@ -809,6 +826,7 @@ void ImgBeamAnalyzer::get_device_property()
   this->current_config_.pixel_size_y            = pixelSizeY;
   this->current_config_.optical_mag             = opticalMagnification;
   this->current_config_.profilefit_fixedbg      = profileFitFixedBg;
+  this->current_config_.auto_roi_method         = (autoROIMethod == "threshold" ? BIAConfig::AUTOROI_THRESHOLD : BIAConfig::AUTOROI_PROFILES);
   this->current_config_.auto_roi_mag_factor_x   = autoROIMagFactorX;
   this->current_config_.auto_roi_mag_factor_y   = autoROIMagFactorY;
   this->current_config_.rotation                = rotation;
@@ -872,6 +890,30 @@ void ImgBeamAnalyzer::read_attr_hardware(vector<long> &attr_list)
   this->update_state();
 
 }
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_AutoROIThreshold
+// 
+// description : 	Extract real attribute values for AutoROIThreshold acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_AutoROIThreshold(Tango::Attribute &attr)
+{
+  READ_INPUT_ATTR(auto_roi_threshold);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::write_AutoROIThreshold
+// 
+// description : 	Write AutoROIThreshold attribute values to hardware.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::write_AutoROIThreshold(Tango::WAttribute &attr)
+{
+  WRITE_INPUT_ATTR(auto_roi_threshold, Tango::DevLong);
+}
+
 //+----------------------------------------------------------------------------
 //
 // method : 		ImgBeamAnalyzer::read_ProfileFitFixedBg

@@ -8,7 +8,7 @@
 //
 // $Author: julien_malik $
 //
-// $Revision: 1.13 $
+// $Revision: 1.14 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -30,7 +30,7 @@
 
 /**
  * @author	$Author: julien_malik $
- * @version	$Revision: 1.13 $
+ * @version	$Revision: 1.14 $
  */
 
  //	Add your own constants definitions here.
@@ -128,6 +128,8 @@ public :
 		Tango::DevDouble	attr_AutoROIMagFactorX_write;
 		Tango::DevDouble	*attr_AutoROIMagFactorY_read;
 		Tango::DevDouble	attr_AutoROIMagFactorY_write;
+		Tango::DevLong	*attr_AutoROIThreshold_read;
+		Tango::DevLong	attr_AutoROIThreshold_write;
 		Tango::DevLong	*attr_AlarmZone_read;
 		Tango::DevLong	attr_AlarmZone_write;
 		Tango::DevDouble	*attr_PixelSizeX_read;
@@ -232,9 +234,20 @@ public :
  */
 	Tango::DevDouble	autoROIMagFactorY;
 /**
+ *	the method used for computing the AutoROI. can be 'PROFILES' or 'THRESHOLD'.
+ *	PROFILES method means the AutoROI is computed from the profiles fitted to gaussian functions.
+ *	THRESHOLD means that the image is first thresholded using the 'AutoROIThreshold' attribute then the largest blob is selected.
+ *	
+ */
+	string	autoROIMethod;
+/**
  *	if set to 'true' and mode is 'CONTINUOUS', the computation starts automatically when the device is launched
  */
 	Tango::DevBoolean	autoStart;
+/**
+ *	the initial value of the BitsPerPixel attribute
+ */
+	Tango::DevLong	bitsPerPixel;
 /**
  *	the initial value of the ComputationPeriod attribute
  */
@@ -248,13 +261,13 @@ public :
  */
 	Tango::DevBoolean	enableAutoROI;
 /**
- *	the initial value of the EnableImageStats attribute
- */
-	Tango::DevBoolean	enableImageStats;
-/**
  *	the initial value of the EnableHistogram attribute
  */
 	Tango::DevBoolean	enableHistogram;
+/**
+ *	the initial value of the EnableImageStats attribute
+ */
+	Tango::DevBoolean	enableImageStats;
 /**
  *	the initial value of the EnableProfiles attribute
  */
@@ -263,6 +276,26 @@ public :
  *	the initial value of the EnableUserROI attribute
  */
 	Tango::DevBoolean	enableUserROI;
+/**
+ *	the initial value of the GammaCorrection attribute
+ */
+	Tango::DevDouble	gammaCorrection;
+/**
+ *	the initial value of the HistogramNbBins attribute
+ */
+	Tango::DevLong	histogramNbBins;
+/**
+ *	the upper bound of the histogram bins. must be <= 2^BitsPerPixel
+ */
+	Tango::DevLong	histogramRangeMax;
+/**
+ *	the lower bound of the histogram bins. must be >= 0
+ */
+	Tango::DevLong	histogramRangeMin;
+/**
+ *	the initial value of the HorizontalFlip attribute
+ */
+	Tango::DevBoolean	horizontalFlip;
 /**
  *	the name of the image attribute to take in ImageDevice
  */
@@ -276,6 +309,10 @@ public :
  */
 	string	mode;
 /**
+ *	the initial value of the OpticalMagnification attribute
+ */
+	Tango::DevDouble	opticalMagnification;
+/**
  *	the initial value of the PixelSizeX attribute
  */
 	Tango::DevDouble	pixelSizeX;
@@ -284,41 +321,13 @@ public :
  */
 	Tango::DevDouble	pixelSizeY;
 /**
- *	the initial value of the OpticalMagnification attribute
+ *	the initial value of the ProfileFitFixedBg attribute
  */
-	Tango::DevDouble	opticalMagnification;
+	Tango::DevBoolean	profileFitFixedBg;
 /**
  *	the initial value of the Rotation attribute
  */
 	Tango::DevLong	rotation;
-/**
- *	the initial value of the HorizontalFlip attribute
- */
-	Tango::DevBoolean	horizontalFlip;
-/**
- *	the initial value of the GammaCorrection attribute
- */
-	Tango::DevDouble	gammaCorrection;
-/**
- *	the initial value of the BitsPerPixel attribute
- */
-	Tango::DevLong	bitsPerPixel;
-/**
- *	the initial value of the HistogramNbBins attribute
- */
-	Tango::DevLong	histogramNbBins;
-/**
- *	the lower bound of the histogram bins. must be >= 0
- */
-	Tango::DevLong	histogramRangeMin;
-/**
- *	the upper bound of the histogram bins. must be <= 2^BitsPerPixel
- */
-	Tango::DevLong	histogramRangeMax;
-/**
- *	the initial value of the ProfileFitFixedBg attribute
- */
-	Tango::DevBoolean	profileFitFixedBg;
 //@}
 
 /**@name Constructors
@@ -516,6 +525,14 @@ public :
  *	Write AutoROIMagFactorY attribute values to hardware.
  */
 	virtual void write_AutoROIMagFactorY(Tango::WAttribute &attr);
+/**
+ *	Extract real attribute values for AutoROIThreshold acquisition result.
+ */
+	virtual void read_AutoROIThreshold(Tango::Attribute &attr);
+/**
+ *	Write AutoROIThreshold attribute values to hardware.
+ */
+	virtual void write_AutoROIThreshold(Tango::WAttribute &attr);
 /**
  *	Extract real attribute values for AlarmZone acquisition result.
  */
@@ -936,6 +953,10 @@ public :
  *	Read/Write allowed for AutoROIMagFactorY attribute.
  */
 	virtual bool is_AutoROIMagFactorY_allowed(Tango::AttReqType type);
+/**
+ *	Read/Write allowed for AutoROIThreshold attribute.
+ */
+	virtual bool is_AutoROIThreshold_allowed(Tango::AttReqType type);
 /**
  *	Read/Write allowed for AlarmZone attribute.
  */
