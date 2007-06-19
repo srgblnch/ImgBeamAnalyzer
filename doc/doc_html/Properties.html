@@ -11,20 +11,20 @@
     <TR>
         <TD ALIGN="left">
 			<A HREF="http://www.esrf.fr/" TARGET=new>
-			<IMG SRC="http://www.esrf.fr/gifs/logo/80.gif" BORDER=0></A>
+			<IMG SRC="http://controle/icons/esrf_logo.gif" BORDER=0></A>
 		</Td>
         <TD ALIGN="center">
 			<A HREF="http://www.elettra.trieste.it/" TARGET=new>
-			<IMG SRC="http://www.esrf.fr/computing/cs/tango/elettra_logo.gif" BORDER=0></A>
+			<IMG SRC="http://controle/icons/elettra_logo.gif" BORDER=0></A>
 
 		</Td>
         <TD ALIGN="center">
 			<A HREF="http://www.synchrotron-soleil.fr/" TARGET=new>
-			<IMG SRC="http://www.esrf.fr/computing/cs/tango/soleil_logo.gif" BORDER=0></A>
+			<IMG SRC="http://controle/icons/soleil_logo.gif" BORDER=0></A>
 		</Td>
         <TD ALIGN="right">
 			<A HREF="http://www.cells.es/" TARGET=new>
-			<IMG SRC="http://www.esrf.fr/computing/cs/tango/alba.jpg" BORDER=0></A>
+			<IMG SRC="http://controle/icons/alba_logo.gif" BORDER=0></A>
 		</Td>
     	 <Td>
 			<H2><FONT COLOR="#7F00FF">
@@ -59,9 +59,13 @@ Revision:  - Author:
 <Td><Center><b>Property name</b></td></Center>
 <Td><Center><b>Property type</b></td></Center>
 <Td><Center><b>Description</b></td></Center>
-<Tr><Td><b>AutoROIMagFactor</b></Td>
+<Tr><Td><b>AutoROIMagFactorX</b></Td>
 <Td><Font Size=-1>Tango::DEV_DOUBLE</Font></Td>
-<Td><Font Size=-1>initial value of AutoROIMagFactor attribute. if not defined, it is set to 1</Font></Td></Tr>
+<Td><Font Size=-1>initial value of AutoROIMagFactorX attribute. if not defined, it is set to 1</Font></Td></Tr>
+
+<Tr><Td><b>AutoROIMagFactorY</b></Td>
+<Td><Font Size=-1>Tango::DEV_DOUBLE</Font></Td>
+<Td><Font Size=-1>initial value of AutoROIMagFactorY attribute. if not defined, it is set to 1</Font></Td></Tr>
 
 <Tr><Td><b>AutoStart</b></Td>
 <Td><Font Size=-1>Tango::DEV_BOOLEAN</Font></Td>
@@ -146,6 +150,10 @@ Revision:  - Author:
 <Tr><Td><b>HistogramRangeMax</b></Td>
 <Td><Font Size=-1>Tango::DEV_LONG</Font></Td>
 <Td><Font Size=-1>the upper bound of the histogram bins. must be <= 2^BitsPerPixel</Font></Td></Tr>
+
+<Tr><Td><b>ProfileFitFixedBg</b></Td>
+<Td><Font Size=-1>Tango::DEV_BOOLEAN</Font></Td>
+<Td><Font Size=-1>the initial value of the ProfileFitFixedBg attribute</Font></Td></Tr>
 
 </Table>
 
