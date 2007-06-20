@@ -4,11 +4,11 @@ device_server= ImgBeamAnalyzer
 INCUSER =	/I$(SOLEIL_ROOT)/sw-support/OpenCV/include \
 			/I$(SOLEIL_ROOT)/sw-support/ISL/include \
 			/I$(SOLEIL_ROOT)/sw-support/YAT/include \
-			/I$(SOLEIL_ROOT)/sw-support/YAT4tango/include
+			/I$(SOLEIL_ROOT)/sw-support/YAT4Tango/include
 
 LIBUSER= $(SOLEIL_ROOT)/sw-support/ISL/lib/static/msvc-6.0/libISL.lib \
 		 $(SOLEIL_ROOT)/sw-support/YAT/lib/static/msvc-6.0/libYAT.lib \
-		 $(SOLEIL_ROOT)/sw-support/YAT4tango/lib/static/msvc-6.0/libYAT4tango.lib
+		 $(SOLEIL_ROOT)/sw-support/YAT4Tango/lib/static/msvc-6.0/libYAT4Tango.lib
 
 CPPDIRUSER=
 
