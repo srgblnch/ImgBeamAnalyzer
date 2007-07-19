@@ -1,4 +1,4 @@
-static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzer.cpp,v 1.17 2007-06-19 15:46:10 julien_malik Exp $";
+static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzer.cpp,v 1.18 2007-07-19 13:38:51 julien_malik Exp $";
 //+=============================================================================
 //
 // file :         ImgBeamAnalyzer.cpp
@@ -13,7 +13,7 @@ static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/Im
 //
 // $Author: julien_malik $
 //
-// $Revision: 1.17 $
+// $Revision: 1.18 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -44,8 +44,6 @@ static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/Im
 //  Stop                 |  stop()
 //  Process              |  process()
 //  SaveCurrentSettings  |  save_current_settings()
-//  StartLearnNoise      |  start_learn_noise()
-//  StopLearnNoise       |  stop_learn_noise()
 //  GetVersionNumber     |  get_version_number()
 //
 //===================================================================
@@ -1285,31 +1283,6 @@ void ImgBeamAnalyzer::read_PixelSizeY(Tango::Attribute &attr)
 void ImgBeamAnalyzer::write_PixelSizeY(Tango::WAttribute &attr)
 {
   WRITE_INPUT_ATTR(pixel_size_y, Tango::DevDouble);
-}
-
-
-//+----------------------------------------------------------------------------
-//
-// method : 		ImgBeamAnalyzer::read_NbNoiseImage
-// 
-// description : 	Extract real attribute values for NbNoiseImage acquisition result.
-//
-//-----------------------------------------------------------------------------
-void ImgBeamAnalyzer::read_NbNoiseImage(Tango::Attribute &attr)
-{
-  READ_OUTPUT_SCALAR_ATTR_ALWAYSACTIV(nb_noise_image, Tango::DevLong);
-}
-
-//+----------------------------------------------------------------------------
-//
-// method : 		ImgBeamAnalyzer::read_MeanNoiseImage
-// 
-// description : 	Extract real attribute values for MeanNoiseImage acquisition result.
-//
-//-----------------------------------------------------------------------------
-void ImgBeamAnalyzer::read_MeanNoiseImage(Tango::Attribute &attr)
-{
-  READ_OUTPUT_IMAGE_ATTR_ALWAYSACTIV(mean_noise_image, Tango::DevUShort);
 }
 
 //+----------------------------------------------------------------------------
@@ -2581,117 +2554,6 @@ void ImgBeamAnalyzer::save_current_settings()
                     "ImgBeamAnalyzer::save_current_settings");
   }
 
-}
-
-//+------------------------------------------------------------------
-/**
- *	method:	ImgBeamAnalyzer::start_learn_noise
- *
- *	description:	method to execute "StartLearnNoise"
- *
- *
- */
-//+------------------------------------------------------------------
-void ImgBeamAnalyzer::start_learn_noise()
-{  
-  if (this->properly_initialized_)
-  {
-    //- try to send a STOP message
-    yat::Message* msg = 0;
-    try
-    {
-      msg = yat::Message::allocate(kMSG_START_LEARN_NOISE, DEFAULT_MSG_PRIORITY, true);
-    }
-    catch(yat::Exception& ex)
-    {
-      yat4tango::YATDevFailed df(ex);
-      RETHROW_DEVFAILED(df,
-                        "OUT_OF_MEMORY",
-                        "Error while creating a START_LEARN_NOISE message",
-                        "ImgBeamAnalyzer::start_learn_noise()");
-    }
-    catch(...)
-    {
-      THROW_DEVFAILED("OUT_OF_MEMORY",
-                      "Error while creating a START_LEARN_NOISE message",
-                      "ImgBeamAnalyzer::start_learn_noise()");
-    }
-
-    //- post the message
-    try
-    {
-      this->task_->wait_msg_handled(msg, kCOMMAND_TIMEOUT);
-    }
-    catch(yat::Exception& ex)
-    {
-      yat4tango::YATDevFailed df(ex);
-      RETHROW_DEVFAILED(df,
-                        "SOFTWARE_FAILURE",
-                        "Error while posting a START_LEARN_NOISE message",
-                        "ImgBeamAnalyzer::start_learn_noise()");
-    }
-    catch(...)
-    {
-	    THROW_DEVFAILED("UNKNOWN_ERROR",
-                      "Unknown error while posting a START_LEARN_NOISE message",
-                      "ImgBeamAnalyzer::start_learn_noise()");
-    }
-  }
-}
-
-//+------------------------------------------------------------------
-/**
- *	method:	ImgBeamAnalyzer::stop_learn_noise
- *
- *	description:	method to execute "StopLearnNoise"
- *
- *
- */
-//+------------------------------------------------------------------
-void ImgBeamAnalyzer::stop_learn_noise()
-{  
-  if (this->properly_initialized_)
-  {
-    //- try to send a STOP message
-    yat::Message* msg = 0;
-    try
-    {
-      msg = yat::Message::allocate(kMSG_STOP_LEARN_NOISE, DEFAULT_MSG_PRIORITY, true);
-    }
-    catch(yat::Exception& ex)
-    {
-      yat4tango::YATDevFailed df(ex);
-      RETHROW_DEVFAILED(df,
-                        "OUT_OF_MEMORY",
-                        "Error while creating a STOP_LEARN_NOISE message",
-                        "ImgBeamAnalyzer::stop_learn_noise()");
-    }
-    catch(...)
-    {
-      THROW_DEVFAILED("OUT_OF_MEMORY",
-                      "Error while creating a STOP_LEARN_NOISE message",
-                      "ImgBeamAnalyzer::stop_learn_noise()");
-    }
-    //- post the message
-    try
-    {
-      this->task_->wait_msg_handled(msg, kCOMMAND_TIMEOUT);
-    }
-    catch(yat::Exception& ex)
-    {
-      yat4tango::YATDevFailed df(ex);
-      RETHROW_DEVFAILED(df,
-                        "SOFTWARE_FAILURE",
-                        "Error while posting a STOP_LEARN_NOISE message",
-                        "ImgBeamAnalyzer::stop_learn_noise()");
-    }
-    catch(...)
-    {
-	    THROW_DEVFAILED("UNKNOWN_ERROR",
-                      "Unknown error while posting a STOP_LEARN_NOISE message",
-                      "ImgBeamAnalyzer::stop_learn_noise()");
-    }
-  }
 }
 
 //+------------------------------------------------------------------

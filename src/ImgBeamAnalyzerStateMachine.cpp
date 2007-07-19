@@ -1,4 +1,4 @@
-static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzerStateMachine.cpp,v 1.9 2007-06-19 15:46:10 julien_malik Exp $";
+static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzerStateMachine.cpp,v 1.10 2007-07-19 13:38:50 julien_malik Exp $";
 //+=============================================================================
 //
 // file :         ImgBeamAnalyzerStateMachine.cpp
@@ -10,7 +10,7 @@ static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/Im
 //
 // $Author: julien_malik $
 //
-// $Revision: 1.9 $
+// $Revision: 1.10 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -1004,34 +1004,6 @@ bool ImgBeamAnalyzer::is_BitsPerPixel_allowed(Tango::AttReqType type)
 }
 //+----------------------------------------------------------------------------
 //
-// method : 		ImgBeamAnalyzer::is_NbNoiseImage_allowed
-// 
-// description : 	Read/Write allowed for NbNoiseImage attribute.
-//
-//-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_NbNoiseImage_allowed(Tango::AttReqType type)
-{
-		//	End of Generated Code
-
-		//	Re-Start of Generated Code
-	return true;
-}
-//+----------------------------------------------------------------------------
-//
-// method : 		ImgBeamAnalyzer::is_MeanNoiseImage_allowed
-// 
-// description : 	Read/Write allowed for MeanNoiseImage attribute.
-//
-//-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_MeanNoiseImage_allowed(Tango::AttReqType type)
-{
-		//	End of Generated Code
-
-		//	Re-Start of Generated Code
-	return true;
-}
-//+----------------------------------------------------------------------------
-//
 // method : 		ImgBeamAnalyzer::is_PixelSizeX_allowed
 // 
 // description : 	Read/Write allowed for PixelSizeX attribute.
@@ -1401,34 +1373,6 @@ bool ImgBeamAnalyzer::is_Process_allowed(const CORBA::Any &any)
 //
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_SaveCurrentSettings_allowed(const CORBA::Any &any)
-{
-		//	End of Generated Code
-
-		//	Re-Start of Generated Code
-	return true;
-}
-//+----------------------------------------------------------------------------
-//
-// method : 		ImgBeamAnalyzer::is_StartLearnNoise_allowed
-// 
-// description : 	Execution allowed for StartLearnNoise command.
-//
-//-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_StartLearnNoise_allowed(const CORBA::Any &any)
-{
-		//	End of Generated Code
-
-		//	Re-Start of Generated Code
-	return true;
-}
-//+----------------------------------------------------------------------------
-//
-// method : 		ImgBeamAnalyzer::is_StopLearnNoise_allowed
-// 
-// description : 	Execution allowed for StopLearnNoise command.
-//
-//-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_StopLearnNoise_allowed(const CORBA::Any &any)
 {
 		//	End of Generated Code
 

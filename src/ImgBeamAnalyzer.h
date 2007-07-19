@@ -8,7 +8,7 @@
 //
 // $Author: julien_malik $
 //
-// $Revision: 1.14 $
+// $Revision: 1.15 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -30,7 +30,7 @@
 
 /**
  * @author	$Author: julien_malik $
- * @version	$Revision: 1.14 $
+ * @version	$Revision: 1.15 $
  */
 
  //	Add your own constants definitions here.
@@ -153,11 +153,9 @@ public :
 		Tango::DevLong	*attr_AutoROIOriginY_read;
 		Tango::DevLong	*attr_AutoROIWidth_read;
 		Tango::DevLong	*attr_AutoROIHeight_read;
-		Tango::DevLong	*attr_NbNoiseImage_read;
 		Tango::DevUShort	*attr_InputImage_read;
 		Tango::DevUShort	attr_InputImage_write;
 		Tango::DevUShort	*attr_ROIImage_read;
-		Tango::DevUShort	*attr_MeanNoiseImage_read;
 		Tango::DevDouble	*attr_MaxIntensity_read;
 		Tango::DevDouble	*attr_MeanIntensity_read;
 		Tango::DevDouble	*attr_CentroidX_read;
@@ -626,10 +624,6 @@ public :
  */
 	virtual void read_AutoROIHeight(Tango::Attribute &attr);
 /**
- *	Extract real attribute values for NbNoiseImage acquisition result.
- */
-	virtual void read_NbNoiseImage(Tango::Attribute &attr);
-/**
  *	Extract real attribute values for InputImage acquisition result.
  */
 	virtual void read_InputImage(Tango::Attribute &attr);
@@ -641,10 +635,6 @@ public :
  *	Extract real attribute values for ROIImage acquisition result.
  */
 	virtual void read_ROIImage(Tango::Attribute &attr);
-/**
- *	Extract real attribute values for MeanNoiseImage acquisition result.
- */
-	virtual void read_MeanNoiseImage(Tango::Attribute &attr);
 /**
  *	Extract real attribute values for MaxIntensity acquisition result.
  */
@@ -1014,10 +1004,6 @@ public :
  */
 	virtual bool is_AutoROIHeight_allowed(Tango::AttReqType type);
 /**
- *	Read/Write allowed for NbNoiseImage attribute.
- */
-	virtual bool is_NbNoiseImage_allowed(Tango::AttReqType type);
-/**
  *	Read/Write allowed for InputImage attribute.
  */
 	virtual bool is_InputImage_allowed(Tango::AttReqType type);
@@ -1025,10 +1011,6 @@ public :
  *	Read/Write allowed for ROIImage attribute.
  */
 	virtual bool is_ROIImage_allowed(Tango::AttReqType type);
-/**
- *	Read/Write allowed for MeanNoiseImage attribute.
- */
-	virtual bool is_MeanNoiseImage_allowed(Tango::AttReqType type);
 /**
  *	Read/Write allowed for MaxIntensity attribute.
  */
@@ -1270,14 +1252,6 @@ public :
  */
 	virtual bool is_SaveCurrentSettings_allowed(const CORBA::Any &any);
 /**
- *	Execution allowed for StartLearnNoise command.
- */
-	virtual bool is_StartLearnNoise_allowed(const CORBA::Any &any);
-/**
- *	Execution allowed for StopLearnNoise command.
- */
-	virtual bool is_StopLearnNoise_allowed(const CORBA::Any &any);
-/**
  *	Execution allowed for GetVersionNumber command.
  */
 	virtual bool is_GetVersionNumber_allowed(const CORBA::Any &any);
@@ -1301,16 +1275,6 @@ public :
  *	@exception DevFailed
  */
 	void	save_current_settings();
-/**
- * 
- *	@exception DevFailed
- */
-	void	start_learn_noise();
-/**
- * 
- *	@exception DevFailed
- */
-	void	stop_learn_noise();
 /**
  * returns the DeviceServer version number
  *	@return	the Device Server version number

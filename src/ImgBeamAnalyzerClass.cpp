@@ -1,4 +1,4 @@
-static const char *RcsId     = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzerClass.cpp,v 1.12 2007-06-19 15:46:10 julien_malik Exp $";
+static const char *RcsId     = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzerClass.cpp,v 1.13 2007-07-19 13:38:51 julien_malik Exp $";
 static const char *TagName   = "$Name: not supported by cvs2svn $";
 static const char *HttpServer= "http://www.esrf.fr/computing/cs/tango/tango_doc/ds_doc/";
 //+=============================================================================
@@ -14,7 +14,7 @@ static const char *HttpServer= "http://www.esrf.fr/computing/cs/tango/tango_doc/
 //
 // $Author: julien_malik $
 //
-// $Revision: 1.12 $
+// $Revision: 1.13 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -58,49 +58,6 @@ CORBA::Any *GetVersionNumberClass::execute(Tango::DeviceImpl *device,const CORBA
 	return insert((static_cast<ImgBeamAnalyzer *>(device))->get_version_number());
 }
 
-//+----------------------------------------------------------------------------
-//
-// method : 		StopLearnNoiseCmd::execute()
-// 
-// description : 	method to trigger the execution of the command.
-//                PLEASE DO NOT MODIFY this method core without pogo   
-//
-// in : - device : The device on which the command must be excuted
-//		- in_any : The command input data
-//
-// returns : The command output data (packed in the Any object)
-//
-//-----------------------------------------------------------------------------
-CORBA::Any *StopLearnNoiseCmd::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
-{
-
-	cout2 << "StopLearnNoiseCmd::execute(): arrived" << endl;
-
-	((static_cast<ImgBeamAnalyzer *>(device))->stop_learn_noise());
-	return new CORBA::Any();
-}
-
-//+----------------------------------------------------------------------------
-//
-// method : 		StartLearnNoiseCmd::execute()
-// 
-// description : 	method to trigger the execution of the command.
-//                PLEASE DO NOT MODIFY this method core without pogo   
-//
-// in : - device : The device on which the command must be excuted
-//		- in_any : The command input data
-//
-// returns : The command output data (packed in the Any object)
-//
-//-----------------------------------------------------------------------------
-CORBA::Any *StartLearnNoiseCmd::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
-{
-
-	cout2 << "StartLearnNoiseCmd::execute(): arrived" << endl;
-
-	((static_cast<ImgBeamAnalyzer *>(device))->start_learn_noise());
-	return new CORBA::Any();
-}
 
 //+----------------------------------------------------------------------------
 //
@@ -294,16 +251,6 @@ void ImgBeamAnalyzerClass::command_factory()
 		"",
 		Tango::OPERATOR));
 	command_list.push_back(new SaveCurrentSettingsCmd("SaveCurrentSettings",
-		Tango::DEV_VOID, Tango::DEV_VOID,
-		"",
-		"",
-		Tango::OPERATOR));
-	command_list.push_back(new StartLearnNoiseCmd("StartLearnNoise",
-		Tango::DEV_VOID, Tango::DEV_VOID,
-		"",
-		"",
-		Tango::OPERATOR));
-	command_list.push_back(new StopLearnNoiseCmd("StopLearnNoise",
 		Tango::DEV_VOID, Tango::DEV_VOID,
 		"",
 		"",
@@ -715,16 +662,6 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	auto_roiheight->set_default_properties(auto_roiheight_prop);
 	att_list.push_back(auto_roiheight);
 
-	//	Attribute : NbNoiseImage
-	NbNoiseImageAttrib	*nb_noise_image = new NbNoiseImageAttrib();
-	Tango::UserDefaultAttrProp	nb_noise_image_prop;
-	nb_noise_image_prop.set_label("NbNoiseImage");
-	nb_noise_image_prop.set_unit(" ");
-	nb_noise_image_prop.set_format("%3d");
-	nb_noise_image_prop.set_description("the number of noise image used to estimate the mean noise image");
-	nb_noise_image->set_default_properties(nb_noise_image_prop);
-	att_list.push_back(nb_noise_image);
-
 	//	Attribute : InputImage
 	InputImageAttrib	*input_image = new InputImageAttrib();
 	Tango::UserDefaultAttrProp	input_image_prop;
@@ -741,16 +678,6 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	roiimage_prop.set_description("the effective image on which are done all the calculation");
 	roiimage->set_default_properties(roiimage_prop);
 	att_list.push_back(roiimage);
-
-	//	Attribute : MeanNoiseImage
-	MeanNoiseImageAttrib	*mean_noise_image = new MeanNoiseImageAttrib();
-	Tango::UserDefaultAttrProp	mean_noise_image_prop;
-	mean_noise_image_prop.set_label("Mean Noise Image");
-	mean_noise_image_prop.set_unit(" ");
-	mean_noise_image_prop.set_description("the mean noise image, which is substracted from every processed image");
-	mean_noise_image->set_default_properties(mean_noise_image_prop);
-	mean_noise_image->set_disp_level(Tango::EXPERT);
-	att_list.push_back(mean_noise_image);
 
 	//	Attribute : MaxIntensity
 	MaxIntensityAttrib	*max_intensity = new MaxIntensityAttrib();
