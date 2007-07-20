@@ -42,7 +42,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /MD /W3 /GR /GX /Z7 /Ox /Gy /X /I "D:\dev\Libraries\YAT\include" /I "D:\dev\Libraries\YAT4tango\include" /I "$(SOLEIL_ROOT)\sw-support\opencv\include" /I "D:\dev\Libraries\ISL\include" /I "..\src" /I "c:\soleil_root\omniorb\include" /I "c:\soleil_root\tango\include" /I "c:\soleil_root\dev\include" /I "C:\PROGRA~1\Microsoft Visual Studio\VC98\INCLUDE" /D "WIN32" /D "NDEBUG" /D "INTEL86" /D "STRICT" /D "WIN32_LEAN_AND_MEAN" /D "VC_EXTRALEAN" /FR /FD /Zm1000 /c
+# ADD CPP /nologo /MD /W3 /GR /GX /Z7 /Ox /Gy /X /I "D:\dev\Libraries\YAT\include" /I "D:\dev\Libraries\YAT4tango\include" /I "$(SOLEIL_ROOT)\sw-support\opencv\include" /I "D:\dev\Libraries\ISL\include" /I "..\..\src" /I "$(SOLEIL_ROOT)\omniorb\include" /I "$(SOLEIL_ROOT)\tango\include" /I "$(SOLEIL_ROOT)\dev\include" /I "C:\PROGRA~1\Microsoft Visual Studio\VC98\INCLUDE" /D "WIN32" /D "NDEBUG" /D "INTEL86" /D "STRICT" /D "WIN32_LEAN_AND_MEAN" /D "VC_EXTRALEAN" /FR /FD /Zm1000 /c
 # ADD BASE RSC /l 0x40c /d "NDEBUG"
 # ADD RSC /l 0x40c /d "NDEBUG"
 BSC32=bscmake.exe
@@ -67,7 +67,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /MD /W3 /GR /GX /Zi /Ox /Gy /X /I "D:\dev\Libraries\YAT\include" /I "D:\dev\Libraries\YAT4tango\include" /I "$(SOLEIL_ROOT)\sw-support\opencv\include" /I "D:\dev\Libraries\ISL\include" /I "..\src" /I "c:\soleil_root\omniorb\include" /I "c:\soleil_root\tango\include" /I "c:\soleil_root\dev\include" /I "C:\PROGRA~1\Microsoft Visual Studio\VC98\INCLUDE" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /D "DEBUG" /D "INTEL86" /D "STRICT" /D "WIN32_LEAN_AND_MEAN" /D "VC_EXTRALEAN" /FR /FD /Zm1000 /c
+# ADD CPP /MD /W3 /GR /GX /Zi /Ox /Gy /X /I "D:\dev\Libraries\YAT\include" /I "D:\dev\Libraries\YAT4tango\include" /I "$(SOLEIL_ROOT)\sw-support\opencv\include" /I "D:\dev\Libraries\ISL\include" /I "..\..\src" /I "$(SOLEIL_ROOT)\omniorb\include" /I "$(SOLEIL_ROOT)\tango\include" /I "$(SOLEIL_ROOT)\dev\include" /I "C:\PROGRA~1\Microsoft Visual Studio\VC98\INCLUDE" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /D "DEBUG" /D "INTEL86" /D "STRICT" /D "WIN32_LEAN_AND_MEAN" /D "VC_EXTRALEAN" /FR /FD /Zm1000 /c
 # ADD BASE RSC /l 0x40c /d "_DEBUG"
 # ADD RSC /l 0x40c /d "_DEBUG"
 BSC32=bscmake.exe
@@ -88,75 +88,75 @@ LINK32=link.exe
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\src\BIAConfig.cpp
+SOURCE=..\..\src\BIAConfig.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\BIAConfig.h
+SOURCE=..\..\src\BIAConfig.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\BIAData.cpp
+SOURCE=..\..\src\BIAData.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\BIAData.h
+SOURCE=..\..\src\BIAData.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\BIAData.i
+SOURCE=..\..\src\BIAData.i
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\BIAProcessor.cpp
+SOURCE=..\..\src\BIAProcessor.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\BIAProcessor.h
+SOURCE=..\..\src\BIAProcessor.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\ClassFactory.cpp
+SOURCE=..\..\src\ClassFactory.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\ImgBeamAnalyzer.cpp
+SOURCE=..\..\src\ImgBeamAnalyzer.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\ImgBeamAnalyzer.h
+SOURCE=..\..\src\ImgBeamAnalyzer.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\ImgBeamAnalyzerClass.cpp
+SOURCE=..\..\src\ImgBeamAnalyzerClass.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\ImgBeamAnalyzerClass.h
+SOURCE=..\..\src\ImgBeamAnalyzerClass.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\ImgBeamAnalyzerStateMachine.cpp
+SOURCE=..\..\src\ImgBeamAnalyzerStateMachine.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\ImgBeamAnalyzerTask.cpp
+SOURCE=..\..\src\ImgBeamAnalyzerTask.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\ImgBeamAnalyzerTask.h
+SOURCE=..\..\src\ImgBeamAnalyzerTask.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\ImgBeamAnalyzerTask.i
+SOURCE=..\..\src\ImgBeamAnalyzerTask.i
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\ImgBeamAnalyzerVersion.h
+SOURCE=..\..\src\ImgBeamAnalyzerVersion.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\main.cpp
+SOURCE=..\..\src\main.cpp
 # End Source File
 # End Group
 # End Target
