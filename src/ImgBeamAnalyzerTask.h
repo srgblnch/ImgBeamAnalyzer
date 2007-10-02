@@ -30,8 +30,6 @@ const int MODE_CONTINUOUS = 1;
 #define kMSG_PROCESS           (yat::FIRST_USER_MSG + 1)
 #define kMSG_START             (yat::FIRST_USER_MSG + 2)
 #define kMSG_STOP              (yat::FIRST_USER_MSG + 3)
-#define kMSG_START_LEARN_NOISE (yat::FIRST_USER_MSG + 4)
-#define kMSG_STOP_LEARN_NOISE  (yat::FIRST_USER_MSG + 5)
 
 YAT_DEFINE_CALLBACK( GetImgCB, isl::Image*& );
 

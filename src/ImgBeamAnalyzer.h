@@ -8,7 +8,7 @@
 //
 // $Author: julien_malik $
 //
-// $Revision: 1.15 $
+// $Revision: 1.16 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -30,7 +30,7 @@
 
 /**
  * @author	$Author: julien_malik $
- * @version	$Revision: 1.15 $
+ * @version	$Revision: 1.16 $
  */
 
  //	Add your own constants definitions here.
@@ -130,6 +130,8 @@ public :
 		Tango::DevDouble	attr_AutoROIMagFactorY_write;
 		Tango::DevLong	*attr_AutoROIThreshold_read;
 		Tango::DevLong	attr_AutoROIThreshold_write;
+		Tango::DevDouble	*attr_BgSubstraction_read;
+		Tango::DevDouble	attr_BgSubstraction_write;
 		Tango::DevLong	*attr_AlarmZone_read;
 		Tango::DevLong	attr_AlarmZone_write;
 		Tango::DevDouble	*attr_PixelSizeX_read;
@@ -140,6 +142,16 @@ public :
 		Tango::DevDouble	attr_OpticalMagnification_write;
 		Tango::DevBoolean	*attr_ProfileFitFixedBg_read;
 		Tango::DevBoolean	attr_ProfileFitFixedBg_write;
+		Tango::DevLong	*attr_LineProfileOriginX_read;
+		Tango::DevLong	attr_LineProfileOriginX_write;
+		Tango::DevLong	*attr_LineProfileOriginY_read;
+		Tango::DevLong	attr_LineProfileOriginY_write;
+		Tango::DevLong	*attr_LineProfileEndX_read;
+		Tango::DevLong	attr_LineProfileEndX_write;
+		Tango::DevLong	*attr_LineProfileEndY_read;
+		Tango::DevLong	attr_LineProfileEndY_write;
+		Tango::DevLong	*attr_LineProfileThickness_read;
+		Tango::DevLong	attr_LineProfileThickness_write;
 		Tango::DevLong	*attr_UserROIOriginX_read;
 		Tango::DevLong	attr_UserROIOriginX_write;
 		Tango::DevLong	*attr_UserROIOriginY_read;
@@ -153,9 +165,6 @@ public :
 		Tango::DevLong	*attr_AutoROIOriginY_read;
 		Tango::DevLong	*attr_AutoROIWidth_read;
 		Tango::DevLong	*attr_AutoROIHeight_read;
-		Tango::DevUShort	*attr_InputImage_read;
-		Tango::DevUShort	attr_InputImage_write;
-		Tango::DevUShort	*attr_ROIImage_read;
 		Tango::DevDouble	*attr_MaxIntensity_read;
 		Tango::DevDouble	*attr_MeanIntensity_read;
 		Tango::DevDouble	*attr_CentroidX_read;
@@ -168,27 +177,27 @@ public :
 		Tango::DevDouble	*attr_SkewY_read;
 		Tango::DevDouble	*attr_SkewX2Y_read;
 		Tango::DevDouble	*attr_SkewXY2_read;
-		Tango::DevDouble	*attr_XProfile_read;
-		Tango::DevBoolean	*attr_XProfileFitConverged_read;
-		Tango::DevDouble	*attr_XProfileFitted_read;
-		Tango::DevDouble	*attr_XProfileError_read;
-		Tango::DevDouble	*attr_XProfileCenter_read;
-		Tango::DevDouble	*attr_XProfileMag_read;
-		Tango::DevDouble	*attr_XProfileSigma_read;
-		Tango::DevDouble	*attr_XProfileFWHM_read;
-		Tango::DevDouble	*attr_XProfileBG_read;
-		Tango::DevDouble	*attr_XProfileChi2_read;
-		Tango::DevDouble	*attr_YProfile_read;
-		Tango::DevBoolean	*attr_YProfileFitConverged_read;
-		Tango::DevDouble	*attr_YProfileFitted_read;
-		Tango::DevDouble	*attr_YProfileError_read;
-		Tango::DevDouble	*attr_YProfileCenter_read;
-		Tango::DevDouble	*attr_YProfileMag_read;
-		Tango::DevDouble	*attr_YProfileSigma_read;
-		Tango::DevDouble	*attr_YProfileFWHM_read;
-		Tango::DevDouble	*attr_YProfileBG_read;
-		Tango::DevDouble	*attr_YProfileChi2_read;
-		Tango::DevFloat	*attr_Histogram_read;
+		Tango::DevBoolean	*attr_XProjFitConverged_read;
+		Tango::DevDouble	*attr_XProjFitCenter_read;
+		Tango::DevDouble	*attr_XProjFitMag_read;
+		Tango::DevDouble	*attr_XProjFitSigma_read;
+		Tango::DevDouble	*attr_XProjFitFWHM_read;
+		Tango::DevDouble	*attr_XProjFitBG_read;
+		Tango::DevDouble	*attr_XProjFitChi2_read;
+		Tango::DevBoolean	*attr_YProjFitConverged_read;
+		Tango::DevDouble	*attr_YProjFitCenter_read;
+		Tango::DevDouble	*attr_YProjFitMag_read;
+		Tango::DevDouble	*attr_YProjFitSigma_read;
+		Tango::DevDouble	*attr_YProjFitFWHM_read;
+		Tango::DevDouble	*attr_YProjFitBG_read;
+		Tango::DevDouble	*attr_YProjFitChi2_read;
+		Tango::DevBoolean	*attr_LineProfileFitConverged_read;
+		Tango::DevDouble	*attr_LineProfileFitCenter_read;
+		Tango::DevDouble	*attr_LineProfileFitMag_read;
+		Tango::DevDouble	*attr_LineProfileFitSigma_read;
+		Tango::DevDouble	*attr_LineProfileFitFWHM_read;
+		Tango::DevDouble	*attr_LineProfileFitBG_read;
+		Tango::DevDouble	*attr_LineProfileFitChi2_read;
 		Tango::DevBoolean	*attr_GaussianFitConverged_read;
 		Tango::DevDouble	*attr_GaussianFitMagnitude_read;
 		Tango::DevDouble	*attr_GaussianFitCenterX_read;
@@ -201,7 +210,6 @@ public :
 		Tango::DevDouble	*attr_GaussianFitTilt_read;
 		Tango::DevDouble	*attr_GaussianFitBG_read;
 		Tango::DevDouble	*attr_GaussianFitChi2_read;
-		Tango::DevDouble	*attr_GaussianFitParameterCovariance_read;
 		Tango::DevLong	*attr_Fit1DNbIterMax_read;
 		Tango::DevLong	attr_Fit1DNbIterMax_write;
 		Tango::DevDouble	*attr_Fit1DMaxRelChange_read;
@@ -210,12 +218,28 @@ public :
 		Tango::DevLong	attr_Fit2DNbIterMax_write;
 		Tango::DevDouble	*attr_Fit2DMaxRelChange_read;
 		Tango::DevDouble	attr_Fit2DMaxRelChange_write;
-		Tango::DevLong	*attr_XProfileNbIter_read;
-		Tango::DevDouble	*attr_XProfileFitRelChange_read;
-		Tango::DevLong	*attr_YProfileNbIter_read;
-		Tango::DevDouble	*attr_YProfileFitRelChange_read;
+		Tango::DevLong	*attr_XProjFitNbIter_read;
+		Tango::DevDouble	*attr_XProjFitRelChange_read;
+		Tango::DevLong	*attr_YProjFitNbIter_read;
+		Tango::DevDouble	*attr_YProjFitRelChange_read;
+		Tango::DevLong	*attr_LineProfileFitNbIter_read;
+		Tango::DevDouble	*attr_LineProfileFitRelChange_read;
 		Tango::DevLong	*attr_GaussianFitNbIter_read;
 		Tango::DevDouble	*attr_GaussianFitRelChange_read;
+		Tango::DevDouble	*attr_XProj_read;
+		Tango::DevDouble	*attr_XProjFitted_read;
+		Tango::DevDouble	*attr_XProjError_read;
+		Tango::DevDouble	*attr_YProj_read;
+		Tango::DevDouble	*attr_YProjFitted_read;
+		Tango::DevDouble	*attr_YProjError_read;
+		Tango::DevDouble	*attr_LineProfile_read;
+		Tango::DevDouble	*attr_LineProfileFitted_read;
+		Tango::DevDouble	*attr_LineProfileError_read;
+		Tango::DevFloat	*attr_Histogram_read;
+		Tango::DevUShort	*attr_InputImage_read;
+		Tango::DevUShort	attr_InputImage_write;
+		Tango::DevUShort	*attr_ROIImage_read;
+		Tango::DevDouble	*attr_GaussianFitParameterCovariance_read;
 //@}
 
 /**
@@ -532,6 +556,14 @@ public :
  */
 	virtual void write_AutoROIThreshold(Tango::WAttribute &attr);
 /**
+ *	Extract real attribute values for BgSubstraction acquisition result.
+ */
+	virtual void read_BgSubstraction(Tango::Attribute &attr);
+/**
+ *	Write BgSubstraction attribute values to hardware.
+ */
+	virtual void write_BgSubstraction(Tango::WAttribute &attr);
+/**
  *	Extract real attribute values for AlarmZone acquisition result.
  */
 	virtual void read_AlarmZone(Tango::Attribute &attr);
@@ -571,6 +603,46 @@ public :
  *	Write ProfileFitFixedBg attribute values to hardware.
  */
 	virtual void write_ProfileFitFixedBg(Tango::WAttribute &attr);
+/**
+ *	Extract real attribute values for LineProfileOriginX acquisition result.
+ */
+	virtual void read_LineProfileOriginX(Tango::Attribute &attr);
+/**
+ *	Write LineProfileOriginX attribute values to hardware.
+ */
+	virtual void write_LineProfileOriginX(Tango::WAttribute &attr);
+/**
+ *	Extract real attribute values for LineProfileOriginY acquisition result.
+ */
+	virtual void read_LineProfileOriginY(Tango::Attribute &attr);
+/**
+ *	Write LineProfileOriginY attribute values to hardware.
+ */
+	virtual void write_LineProfileOriginY(Tango::WAttribute &attr);
+/**
+ *	Extract real attribute values for LineProfileEndX acquisition result.
+ */
+	virtual void read_LineProfileEndX(Tango::Attribute &attr);
+/**
+ *	Write LineProfileEndX attribute values to hardware.
+ */
+	virtual void write_LineProfileEndX(Tango::WAttribute &attr);
+/**
+ *	Extract real attribute values for LineProfileEndY acquisition result.
+ */
+	virtual void read_LineProfileEndY(Tango::Attribute &attr);
+/**
+ *	Write LineProfileEndY attribute values to hardware.
+ */
+	virtual void write_LineProfileEndY(Tango::WAttribute &attr);
+/**
+ *	Extract real attribute values for LineProfileThickness acquisition result.
+ */
+	virtual void read_LineProfileThickness(Tango::Attribute &attr);
+/**
+ *	Write LineProfileThickness attribute values to hardware.
+ */
+	virtual void write_LineProfileThickness(Tango::WAttribute &attr);
 /**
  *	Extract real attribute values for UserROIOriginX acquisition result.
  */
@@ -624,18 +696,6 @@ public :
  */
 	virtual void read_AutoROIHeight(Tango::Attribute &attr);
 /**
- *	Extract real attribute values for InputImage acquisition result.
- */
-	virtual void read_InputImage(Tango::Attribute &attr);
-/**
- *	Write InputImage attribute values to hardware.
- */
-	virtual void write_InputImage(Tango::WAttribute &attr);
-/**
- *	Extract real attribute values for ROIImage acquisition result.
- */
-	virtual void read_ROIImage(Tango::Attribute &attr);
-/**
  *	Extract real attribute values for MaxIntensity acquisition result.
  */
 	virtual void read_MaxIntensity(Tango::Attribute &attr);
@@ -684,89 +744,89 @@ public :
  */
 	virtual void read_SkewXY2(Tango::Attribute &attr);
 /**
- *	Extract real attribute values for XProfile acquisition result.
+ *	Extract real attribute values for XProjFitConverged acquisition result.
  */
-	virtual void read_XProfile(Tango::Attribute &attr);
+	virtual void read_XProjFitConverged(Tango::Attribute &attr);
 /**
- *	Extract real attribute values for XProfileFitConverged acquisition result.
+ *	Extract real attribute values for XProjFitCenter acquisition result.
  */
-	virtual void read_XProfileFitConverged(Tango::Attribute &attr);
+	virtual void read_XProjFitCenter(Tango::Attribute &attr);
 /**
- *	Extract real attribute values for XProfileFitted acquisition result.
+ *	Extract real attribute values for XProjFitMag acquisition result.
  */
-	virtual void read_XProfileFitted(Tango::Attribute &attr);
+	virtual void read_XProjFitMag(Tango::Attribute &attr);
 /**
- *	Extract real attribute values for XProfileError acquisition result.
+ *	Extract real attribute values for XProjFitSigma acquisition result.
  */
-	virtual void read_XProfileError(Tango::Attribute &attr);
+	virtual void read_XProjFitSigma(Tango::Attribute &attr);
 /**
- *	Extract real attribute values for XProfileCenter acquisition result.
+ *	Extract real attribute values for XProjFitFWHM acquisition result.
  */
-	virtual void read_XProfileCenter(Tango::Attribute &attr);
+	virtual void read_XProjFitFWHM(Tango::Attribute &attr);
 /**
- *	Extract real attribute values for XProfileMag acquisition result.
+ *	Extract real attribute values for XProjFitBG acquisition result.
  */
-	virtual void read_XProfileMag(Tango::Attribute &attr);
+	virtual void read_XProjFitBG(Tango::Attribute &attr);
 /**
- *	Extract real attribute values for XProfileSigma acquisition result.
+ *	Extract real attribute values for XProjFitChi2 acquisition result.
  */
-	virtual void read_XProfileSigma(Tango::Attribute &attr);
+	virtual void read_XProjFitChi2(Tango::Attribute &attr);
 /**
- *	Extract real attribute values for XProfileFWHM acquisition result.
+ *	Extract real attribute values for YProjFitConverged acquisition result.
  */
-	virtual void read_XProfileFWHM(Tango::Attribute &attr);
+	virtual void read_YProjFitConverged(Tango::Attribute &attr);
 /**
- *	Extract real attribute values for XProfileBG acquisition result.
+ *	Extract real attribute values for YProjFitCenter acquisition result.
  */
-	virtual void read_XProfileBG(Tango::Attribute &attr);
+	virtual void read_YProjFitCenter(Tango::Attribute &attr);
 /**
- *	Extract real attribute values for XProfileChi2 acquisition result.
+ *	Extract real attribute values for YProjFitMag acquisition result.
  */
-	virtual void read_XProfileChi2(Tango::Attribute &attr);
+	virtual void read_YProjFitMag(Tango::Attribute &attr);
 /**
- *	Extract real attribute values for YProfile acquisition result.
+ *	Extract real attribute values for YProjFitSigma acquisition result.
  */
-	virtual void read_YProfile(Tango::Attribute &attr);
+	virtual void read_YProjFitSigma(Tango::Attribute &attr);
 /**
- *	Extract real attribute values for YProfileFitConverged acquisition result.
+ *	Extract real attribute values for YProjFitFWHM acquisition result.
  */
-	virtual void read_YProfileFitConverged(Tango::Attribute &attr);
+	virtual void read_YProjFitFWHM(Tango::Attribute &attr);
 /**
- *	Extract real attribute values for YProfileFitted acquisition result.
+ *	Extract real attribute values for YProjFitBG acquisition result.
  */
-	virtual void read_YProfileFitted(Tango::Attribute &attr);
+	virtual void read_YProjFitBG(Tango::Attribute &attr);
 /**
- *	Extract real attribute values for YProfileError acquisition result.
+ *	Extract real attribute values for YProjFitChi2 acquisition result.
  */
-	virtual void read_YProfileError(Tango::Attribute &attr);
+	virtual void read_YProjFitChi2(Tango::Attribute &attr);
 /**
- *	Extract real attribute values for YProfileCenter acquisition result.
+ *	Extract real attribute values for LineProfileFitConverged acquisition result.
  */
-	virtual void read_YProfileCenter(Tango::Attribute &attr);
+	virtual void read_LineProfileFitConverged(Tango::Attribute &attr);
 /**
- *	Extract real attribute values for YProfileMag acquisition result.
+ *	Extract real attribute values for LineProfileFitCenter acquisition result.
  */
-	virtual void read_YProfileMag(Tango::Attribute &attr);
+	virtual void read_LineProfileFitCenter(Tango::Attribute &attr);
 /**
- *	Extract real attribute values for YProfileSigma acquisition result.
+ *	Extract real attribute values for LineProfileFitMag acquisition result.
  */
-	virtual void read_YProfileSigma(Tango::Attribute &attr);
+	virtual void read_LineProfileFitMag(Tango::Attribute &attr);
 /**
- *	Extract real attribute values for YProfileFWHM acquisition result.
+ *	Extract real attribute values for LineProfileFitSigma acquisition result.
  */
-	virtual void read_YProfileFWHM(Tango::Attribute &attr);
+	virtual void read_LineProfileFitSigma(Tango::Attribute &attr);
 /**
- *	Extract real attribute values for YProfileBG acquisition result.
+ *	Extract real attribute values for LineProfileFitFWHM acquisition result.
  */
-	virtual void read_YProfileBG(Tango::Attribute &attr);
+	virtual void read_LineProfileFitFWHM(Tango::Attribute &attr);
 /**
- *	Extract real attribute values for YProfileChi2 acquisition result.
+ *	Extract real attribute values for LineProfileFitBG acquisition result.
  */
-	virtual void read_YProfileChi2(Tango::Attribute &attr);
+	virtual void read_LineProfileFitBG(Tango::Attribute &attr);
 /**
- *	Extract real attribute values for Histogram acquisition result.
+ *	Extract real attribute values for LineProfileFitChi2 acquisition result.
  */
-	virtual void read_Histogram(Tango::Attribute &attr);
+	virtual void read_LineProfileFitChi2(Tango::Attribute &attr);
 /**
  *	Extract real attribute values for GaussianFitConverged acquisition result.
  */
@@ -816,10 +876,6 @@ public :
  */
 	virtual void read_GaussianFitChi2(Tango::Attribute &attr);
 /**
- *	Extract real attribute values for GaussianFitParameterCovariance acquisition result.
- */
-	virtual void read_GaussianFitParameterCovariance(Tango::Attribute &attr);
-/**
  *	Extract real attribute values for Fit1DNbIterMax acquisition result.
  */
 	virtual void read_Fit1DNbIterMax(Tango::Attribute &attr);
@@ -852,21 +908,29 @@ public :
  */
 	virtual void write_Fit2DMaxRelChange(Tango::WAttribute &attr);
 /**
- *	Extract real attribute values for XProfileNbIter acquisition result.
+ *	Extract real attribute values for XProjFitNbIter acquisition result.
  */
-	virtual void read_XProfileNbIter(Tango::Attribute &attr);
+	virtual void read_XProjFitNbIter(Tango::Attribute &attr);
 /**
- *	Extract real attribute values for XProfileFitRelChange acquisition result.
+ *	Extract real attribute values for XProjFitRelChange acquisition result.
  */
-	virtual void read_XProfileFitRelChange(Tango::Attribute &attr);
+	virtual void read_XProjFitRelChange(Tango::Attribute &attr);
 /**
- *	Extract real attribute values for YProfileNbIter acquisition result.
+ *	Extract real attribute values for YProjFitNbIter acquisition result.
  */
-	virtual void read_YProfileNbIter(Tango::Attribute &attr);
+	virtual void read_YProjFitNbIter(Tango::Attribute &attr);
 /**
- *	Extract real attribute values for YProfileFitRelChange acquisition result.
+ *	Extract real attribute values for YProjFitRelChange acquisition result.
  */
-	virtual void read_YProfileFitRelChange(Tango::Attribute &attr);
+	virtual void read_YProjFitRelChange(Tango::Attribute &attr);
+/**
+ *	Extract real attribute values for LineProfileFitNbIter acquisition result.
+ */
+	virtual void read_LineProfileFitNbIter(Tango::Attribute &attr);
+/**
+ *	Extract real attribute values for LineProfileFitRelChange acquisition result.
+ */
+	virtual void read_LineProfileFitRelChange(Tango::Attribute &attr);
 /**
  *	Extract real attribute values for GaussianFitNbIter acquisition result.
  */
@@ -875,6 +939,62 @@ public :
  *	Extract real attribute values for GaussianFitRelChange acquisition result.
  */
 	virtual void read_GaussianFitRelChange(Tango::Attribute &attr);
+/**
+ *	Extract real attribute values for XProj acquisition result.
+ */
+	virtual void read_XProj(Tango::Attribute &attr);
+/**
+ *	Extract real attribute values for XProjFitted acquisition result.
+ */
+	virtual void read_XProjFitted(Tango::Attribute &attr);
+/**
+ *	Extract real attribute values for XProjError acquisition result.
+ */
+	virtual void read_XProjError(Tango::Attribute &attr);
+/**
+ *	Extract real attribute values for YProj acquisition result.
+ */
+	virtual void read_YProj(Tango::Attribute &attr);
+/**
+ *	Extract real attribute values for YProjFitted acquisition result.
+ */
+	virtual void read_YProjFitted(Tango::Attribute &attr);
+/**
+ *	Extract real attribute values for YProjError acquisition result.
+ */
+	virtual void read_YProjError(Tango::Attribute &attr);
+/**
+ *	Extract real attribute values for LineProfile acquisition result.
+ */
+	virtual void read_LineProfile(Tango::Attribute &attr);
+/**
+ *	Extract real attribute values for LineProfileFitted acquisition result.
+ */
+	virtual void read_LineProfileFitted(Tango::Attribute &attr);
+/**
+ *	Extract real attribute values for LineProfileError acquisition result.
+ */
+	virtual void read_LineProfileError(Tango::Attribute &attr);
+/**
+ *	Extract real attribute values for Histogram acquisition result.
+ */
+	virtual void read_Histogram(Tango::Attribute &attr);
+/**
+ *	Extract real attribute values for InputImage acquisition result.
+ */
+	virtual void read_InputImage(Tango::Attribute &attr);
+/**
+ *	Write InputImage attribute values to hardware.
+ */
+	virtual void write_InputImage(Tango::WAttribute &attr);
+/**
+ *	Extract real attribute values for ROIImage acquisition result.
+ */
+	virtual void read_ROIImage(Tango::Attribute &attr);
+/**
+ *	Extract real attribute values for GaussianFitParameterCovariance acquisition result.
+ */
+	virtual void read_GaussianFitParameterCovariance(Tango::Attribute &attr);
 /**
  *	Read/Write allowed for EnableImageStats attribute.
  */
@@ -948,6 +1068,10 @@ public :
  */
 	virtual bool is_AutoROIThreshold_allowed(Tango::AttReqType type);
 /**
+ *	Read/Write allowed for BgSubstraction attribute.
+ */
+	virtual bool is_BgSubstraction_allowed(Tango::AttReqType type);
+/**
  *	Read/Write allowed for AlarmZone attribute.
  */
 	virtual bool is_AlarmZone_allowed(Tango::AttReqType type);
@@ -967,6 +1091,26 @@ public :
  *	Read/Write allowed for ProfileFitFixedBg attribute.
  */
 	virtual bool is_ProfileFitFixedBg_allowed(Tango::AttReqType type);
+/**
+ *	Read/Write allowed for LineProfileOriginX attribute.
+ */
+	virtual bool is_LineProfileOriginX_allowed(Tango::AttReqType type);
+/**
+ *	Read/Write allowed for LineProfileOriginY attribute.
+ */
+	virtual bool is_LineProfileOriginY_allowed(Tango::AttReqType type);
+/**
+ *	Read/Write allowed for LineProfileEndX attribute.
+ */
+	virtual bool is_LineProfileEndX_allowed(Tango::AttReqType type);
+/**
+ *	Read/Write allowed for LineProfileEndY attribute.
+ */
+	virtual bool is_LineProfileEndY_allowed(Tango::AttReqType type);
+/**
+ *	Read/Write allowed for LineProfileThickness attribute.
+ */
+	virtual bool is_LineProfileThickness_allowed(Tango::AttReqType type);
 /**
  *	Read/Write allowed for UserROIOriginX attribute.
  */
@@ -1003,14 +1147,6 @@ public :
  *	Read/Write allowed for AutoROIHeight attribute.
  */
 	virtual bool is_AutoROIHeight_allowed(Tango::AttReqType type);
-/**
- *	Read/Write allowed for InputImage attribute.
- */
-	virtual bool is_InputImage_allowed(Tango::AttReqType type);
-/**
- *	Read/Write allowed for ROIImage attribute.
- */
-	virtual bool is_ROIImage_allowed(Tango::AttReqType type);
 /**
  *	Read/Write allowed for MaxIntensity attribute.
  */
@@ -1060,89 +1196,89 @@ public :
  */
 	virtual bool is_SkewXY2_allowed(Tango::AttReqType type);
 /**
- *	Read/Write allowed for XProfile attribute.
+ *	Read/Write allowed for XProjFitConverged attribute.
  */
-	virtual bool is_XProfile_allowed(Tango::AttReqType type);
+	virtual bool is_XProjFitConverged_allowed(Tango::AttReqType type);
 /**
- *	Read/Write allowed for XProfileFitConverged attribute.
+ *	Read/Write allowed for XProjFitCenter attribute.
  */
-	virtual bool is_XProfileFitConverged_allowed(Tango::AttReqType type);
+	virtual bool is_XProjFitCenter_allowed(Tango::AttReqType type);
 /**
- *	Read/Write allowed for XProfileFitted attribute.
+ *	Read/Write allowed for XProjFitMag attribute.
  */
-	virtual bool is_XProfileFitted_allowed(Tango::AttReqType type);
+	virtual bool is_XProjFitMag_allowed(Tango::AttReqType type);
 /**
- *	Read/Write allowed for XProfileError attribute.
+ *	Read/Write allowed for XProjFitSigma attribute.
  */
-	virtual bool is_XProfileError_allowed(Tango::AttReqType type);
+	virtual bool is_XProjFitSigma_allowed(Tango::AttReqType type);
 /**
- *	Read/Write allowed for XProfileCenter attribute.
+ *	Read/Write allowed for XProjFitFWHM attribute.
  */
-	virtual bool is_XProfileCenter_allowed(Tango::AttReqType type);
+	virtual bool is_XProjFitFWHM_allowed(Tango::AttReqType type);
 /**
- *	Read/Write allowed for XProfileMag attribute.
+ *	Read/Write allowed for XProjFitBG attribute.
  */
-	virtual bool is_XProfileMag_allowed(Tango::AttReqType type);
+	virtual bool is_XProjFitBG_allowed(Tango::AttReqType type);
 /**
- *	Read/Write allowed for XProfileSigma attribute.
+ *	Read/Write allowed for XProjFitChi2 attribute.
  */
-	virtual bool is_XProfileSigma_allowed(Tango::AttReqType type);
+	virtual bool is_XProjFitChi2_allowed(Tango::AttReqType type);
 /**
- *	Read/Write allowed for XProfileFWHM attribute.
+ *	Read/Write allowed for YProjFitConverged attribute.
  */
-	virtual bool is_XProfileFWHM_allowed(Tango::AttReqType type);
+	virtual bool is_YProjFitConverged_allowed(Tango::AttReqType type);
 /**
- *	Read/Write allowed for XProfileBG attribute.
+ *	Read/Write allowed for YProjFitCenter attribute.
  */
-	virtual bool is_XProfileBG_allowed(Tango::AttReqType type);
+	virtual bool is_YProjFitCenter_allowed(Tango::AttReqType type);
 /**
- *	Read/Write allowed for XProfileChi2 attribute.
+ *	Read/Write allowed for YProjFitMag attribute.
  */
-	virtual bool is_XProfileChi2_allowed(Tango::AttReqType type);
+	virtual bool is_YProjFitMag_allowed(Tango::AttReqType type);
 /**
- *	Read/Write allowed for YProfile attribute.
+ *	Read/Write allowed for YProjFitSigma attribute.
  */
-	virtual bool is_YProfile_allowed(Tango::AttReqType type);
+	virtual bool is_YProjFitSigma_allowed(Tango::AttReqType type);
 /**
- *	Read/Write allowed for YProfileFitConverged attribute.
+ *	Read/Write allowed for YProjFitFWHM attribute.
  */
-	virtual bool is_YProfileFitConverged_allowed(Tango::AttReqType type);
+	virtual bool is_YProjFitFWHM_allowed(Tango::AttReqType type);
 /**
- *	Read/Write allowed for YProfileFitted attribute.
+ *	Read/Write allowed for YProjFitBG attribute.
  */
-	virtual bool is_YProfileFitted_allowed(Tango::AttReqType type);
+	virtual bool is_YProjFitBG_allowed(Tango::AttReqType type);
 /**
- *	Read/Write allowed for YProfileError attribute.
+ *	Read/Write allowed for YProjFitChi2 attribute.
  */
-	virtual bool is_YProfileError_allowed(Tango::AttReqType type);
+	virtual bool is_YProjFitChi2_allowed(Tango::AttReqType type);
 /**
- *	Read/Write allowed for YProfileCenter attribute.
+ *	Read/Write allowed for LineProfileFitConverged attribute.
  */
-	virtual bool is_YProfileCenter_allowed(Tango::AttReqType type);
+	virtual bool is_LineProfileFitConverged_allowed(Tango::AttReqType type);
 /**
- *	Read/Write allowed for YProfileMag attribute.
+ *	Read/Write allowed for LineProfileFitCenter attribute.
  */
-	virtual bool is_YProfileMag_allowed(Tango::AttReqType type);
+	virtual bool is_LineProfileFitCenter_allowed(Tango::AttReqType type);
 /**
- *	Read/Write allowed for YProfileSigma attribute.
+ *	Read/Write allowed for LineProfileFitMag attribute.
  */
-	virtual bool is_YProfileSigma_allowed(Tango::AttReqType type);
+	virtual bool is_LineProfileFitMag_allowed(Tango::AttReqType type);
 /**
- *	Read/Write allowed for YProfileFWHM attribute.
+ *	Read/Write allowed for LineProfileFitSigma attribute.
  */
-	virtual bool is_YProfileFWHM_allowed(Tango::AttReqType type);
+	virtual bool is_LineProfileFitSigma_allowed(Tango::AttReqType type);
 /**
- *	Read/Write allowed for YProfileBG attribute.
+ *	Read/Write allowed for LineProfileFitFWHM attribute.
  */
-	virtual bool is_YProfileBG_allowed(Tango::AttReqType type);
+	virtual bool is_LineProfileFitFWHM_allowed(Tango::AttReqType type);
 /**
- *	Read/Write allowed for YProfileChi2 attribute.
+ *	Read/Write allowed for LineProfileFitBG attribute.
  */
-	virtual bool is_YProfileChi2_allowed(Tango::AttReqType type);
+	virtual bool is_LineProfileFitBG_allowed(Tango::AttReqType type);
 /**
- *	Read/Write allowed for Histogram attribute.
+ *	Read/Write allowed for LineProfileFitChi2 attribute.
  */
-	virtual bool is_Histogram_allowed(Tango::AttReqType type);
+	virtual bool is_LineProfileFitChi2_allowed(Tango::AttReqType type);
 /**
  *	Read/Write allowed for GaussianFitConverged attribute.
  */
@@ -1192,10 +1328,6 @@ public :
  */
 	virtual bool is_GaussianFitChi2_allowed(Tango::AttReqType type);
 /**
- *	Read/Write allowed for GaussianFitParameterCovariance attribute.
- */
-	virtual bool is_GaussianFitParameterCovariance_allowed(Tango::AttReqType type);
-/**
  *	Read/Write allowed for Fit1DNbIterMax attribute.
  */
 	virtual bool is_Fit1DNbIterMax_allowed(Tango::AttReqType type);
@@ -1212,21 +1344,29 @@ public :
  */
 	virtual bool is_Fit2DMaxRelChange_allowed(Tango::AttReqType type);
 /**
- *	Read/Write allowed for XProfileNbIter attribute.
+ *	Read/Write allowed for XProjFitNbIter attribute.
  */
-	virtual bool is_XProfileNbIter_allowed(Tango::AttReqType type);
+	virtual bool is_XProjFitNbIter_allowed(Tango::AttReqType type);
 /**
- *	Read/Write allowed for XProfileFitRelChange attribute.
+ *	Read/Write allowed for XProjFitRelChange attribute.
  */
-	virtual bool is_XProfileFitRelChange_allowed(Tango::AttReqType type);
+	virtual bool is_XProjFitRelChange_allowed(Tango::AttReqType type);
 /**
- *	Read/Write allowed for YProfileNbIter attribute.
+ *	Read/Write allowed for YProjFitNbIter attribute.
  */
-	virtual bool is_YProfileNbIter_allowed(Tango::AttReqType type);
+	virtual bool is_YProjFitNbIter_allowed(Tango::AttReqType type);
 /**
- *	Read/Write allowed for YProfileFitRelChange attribute.
+ *	Read/Write allowed for YProjFitRelChange attribute.
  */
-	virtual bool is_YProfileFitRelChange_allowed(Tango::AttReqType type);
+	virtual bool is_YProjFitRelChange_allowed(Tango::AttReqType type);
+/**
+ *	Read/Write allowed for LineProfileFitNbIter attribute.
+ */
+	virtual bool is_LineProfileFitNbIter_allowed(Tango::AttReqType type);
+/**
+ *	Read/Write allowed for LineProfileFitRelChange attribute.
+ */
+	virtual bool is_LineProfileFitRelChange_allowed(Tango::AttReqType type);
 /**
  *	Read/Write allowed for GaussianFitNbIter attribute.
  */
@@ -1235,6 +1375,58 @@ public :
  *	Read/Write allowed for GaussianFitRelChange attribute.
  */
 	virtual bool is_GaussianFitRelChange_allowed(Tango::AttReqType type);
+/**
+ *	Read/Write allowed for XProj attribute.
+ */
+	virtual bool is_XProj_allowed(Tango::AttReqType type);
+/**
+ *	Read/Write allowed for XProjFitted attribute.
+ */
+	virtual bool is_XProjFitted_allowed(Tango::AttReqType type);
+/**
+ *	Read/Write allowed for XProjError attribute.
+ */
+	virtual bool is_XProjError_allowed(Tango::AttReqType type);
+/**
+ *	Read/Write allowed for YProj attribute.
+ */
+	virtual bool is_YProj_allowed(Tango::AttReqType type);
+/**
+ *	Read/Write allowed for YProjFitted attribute.
+ */
+	virtual bool is_YProjFitted_allowed(Tango::AttReqType type);
+/**
+ *	Read/Write allowed for YProjError attribute.
+ */
+	virtual bool is_YProjError_allowed(Tango::AttReqType type);
+/**
+ *	Read/Write allowed for LineProfile attribute.
+ */
+	virtual bool is_LineProfile_allowed(Tango::AttReqType type);
+/**
+ *	Read/Write allowed for LineProfileFitted attribute.
+ */
+	virtual bool is_LineProfileFitted_allowed(Tango::AttReqType type);
+/**
+ *	Read/Write allowed for LineProfileError attribute.
+ */
+	virtual bool is_LineProfileError_allowed(Tango::AttReqType type);
+/**
+ *	Read/Write allowed for Histogram attribute.
+ */
+	virtual bool is_Histogram_allowed(Tango::AttReqType type);
+/**
+ *	Read/Write allowed for InputImage attribute.
+ */
+	virtual bool is_InputImage_allowed(Tango::AttReqType type);
+/**
+ *	Read/Write allowed for ROIImage attribute.
+ */
+	virtual bool is_ROIImage_allowed(Tango::AttReqType type);
+/**
+ *	Read/Write allowed for GaussianFitParameterCovariance attribute.
+ */
+	virtual bool is_GaussianFitParameterCovariance_allowed(Tango::AttReqType type);
 /**
  *	Execution allowed for Start command.
  */

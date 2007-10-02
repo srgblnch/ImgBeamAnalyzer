@@ -339,18 +339,6 @@ void ImgBeamAnalyzerTask::handle_message (yat::Message& _msg)
         this->set_state_status(STANDBY, kSTANDBY_STATUS_MSG);
   		}
   		break;
-		case kMSG_START_LEARN_NOISE:
-		  {
-//  		  DEBUG_STREAM << "ImgBeamAnalyzerTask::handle_message::handling START_LEARN_NOISE" << std::endl;
-        this->proc_.start_learn_noise();
-  		}
-  		break;
-		case kMSG_STOP_LEARN_NOISE:
-		  {
-//  		  DEBUG_STREAM << "ImgBeamAnalyzerTask::handle_message::handling STOP_LEARN_NOISE" << std::endl;
-        this->proc_.stop_learn_noise();
-  		}
-  		break;
   	default:
 //  		DEBUG_STREAM << "ImgBeamAnalyzerTask::handle_message::unhandled msg type received"<< std::endl;
   		break;

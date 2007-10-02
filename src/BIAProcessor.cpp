@@ -20,11 +20,12 @@
 #include <isl/BeamBox.h>
 #include <isl/AutoROI.h>
 #include <isl/statistics/Moments.h>
-#include <isl/statistics/Profiles.h>
+#include <isl/statistics/Projections.h>
 #include <isl/statistics/PrincipalAxis.h>
 #include <isl/statistics/GaussianFit1D.h>
 #include <isl/statistics/GaussianFit2D.h>
 #include <isl/statistics/Histogram.h>
+#include <isl/statistics/LineProfile.h>
 
 #include <sys/timeb.h>
 // ============================================================================
@@ -55,8 +56,6 @@ namespace ImgBeamAnalyzer_ns
   }
 
   BIAProcessor::BIAProcessor()
-  : learn_noise_(false),
-    mean_noise_image_(0,0, isl::ISL_STORAGE_USHORT)
   {
   }
 
@@ -84,7 +83,6 @@ namespace ImgBeamAnalyzer_ns
 	  //------------------------------------------
     isl::Image* input_image = 0; //- the preprocessed image
     isl::Image* roi_image = 0;
-    isl::Image* roi_image_f = 0;
     isl::Image* roi_image_d = 0;
 
     try
@@ -93,65 +91,50 @@ namespace ImgBeamAnalyzer_ns
 
       this->preprocess( *input_image, config, data );
 
-      if (this->learn_noise_ == true)
+      double estim_bg = 0;
+      if (config.profilefit_fixedbg == true)
       {
-        this->mean_noise_image_ = this->noise_estim_.add_image(*input_image);
-
-        data.mean_noise_image.set_dimensions(this->mean_noise_image_.width(), this->mean_noise_image_.height());
-        this->mean_noise_image_.serialize(data.mean_noise_image.base());
-
-        data.nb_noise_image = this->noise_estim_.nb_image();
-        data.user_roi_alarm = true;
+        estim_bg = input_image->estimate_background( 5 );
       }
-      else
-      {
-        double estim_bg = 0;
-        if (config.profilefit_fixedbg == true)
-        {
-          estim_bg = input_image->estimate_background( 5 );
-        }
 
-        isl::Rectangle roi;
+      isl::Rectangle roi;
 
-        this->clip(*input_image, config, roi_image, roi, data);
-        
-        this->substract_noise(*roi_image, roi, data);
+      this->clip(*input_image, config, roi_image, roi, data);
+      
+      //- convert to roi_image to double
+      isl::Image* roi_image_d = new isl::Image(roi_image->width(), roi_image->height(), isl::ISL_STORAGE_DOUBLE);
+      std::auto_ptr<isl::Image> roi_image_d_guard(roi_image_d);
+      roi_image->convert(*roi_image_d);
 
-        data.roi_image.set_dimensions( roi.width(), roi.height() );
-        roi_image->serialize(data.roi_image.base());
+      this->gamma_correction(*roi_image_d, config, data);
 
-        //- convert to roi_image to double
-        isl::Image* roi_image_d = new isl::Image(roi_image->width(), roi_image->height(), isl::ISL_STORAGE_DOUBLE);
-        std::auto_ptr<isl::Image> roi_image_d_guard(roi_image_d);
-        roi_image->convert(*roi_image_d);
+      this->background_substraction(*roi_image_d, config, data);
 
-        this->gamma_correction(*roi_image_d, config, data);
+      roi_image_d->convert(*roi_image);
 
-        this->histogram(*roi_image, config, data);
+      data.roi_image.set_dimensions( roi.width(), roi.height() );
+      roi_image->serialize(data.roi_image.base());
 
-        this->moments(*roi_image, roi, config, data);
+      this->histogram(*roi_image_d, config, data);
 
-        this->profiles(*roi_image_d, roi, config, data, config.profilefit_fixedbg, estim_bg);
+      this->moments(*roi_image_d, roi, config, data);
 
-        this->gaussian_fit_2d(*roi_image_d, roi, config, data);
+      this->profiles(*roi_image_d, roi, config, data, config.profilefit_fixedbg, estim_bg);
 
-        data.update_alarm();
-      }
+      this->gaussian_fit_2d(*roi_image_d, roi, config, data);
+
+      data.update_alarm();
 
       GET_TIME(end_time);
       data.estim_comput_time = ELAPSED_TIME_MS(start_time, end_time);
 
       SAFE_DELETE_PTR(input_image);
       SAFE_DELETE_PTR(roi_image);
-      SAFE_DELETE_PTR(roi_image_f);
-      SAFE_DELETE_PTR(roi_image_d);
     }
     catch(isl::Exception & ex)
     {
       SAFE_DELETE_PTR(input_image);
       SAFE_DELETE_PTR(roi_image);
-      SAFE_DELETE_PTR(roi_image_f);
-      SAFE_DELETE_PTR(roi_image_d);
       ISL2YATException yat_exc(ex);
       isl::ErrorHandler::reset();
       RETHROW_YAT_ERROR(yat_exc,
@@ -163,32 +146,12 @@ namespace ImgBeamAnalyzer_ns
     {
       SAFE_DELETE_PTR(input_image);
       SAFE_DELETE_PTR(roi_image);
-      SAFE_DELETE_PTR(roi_image_f);
-      SAFE_DELETE_PTR(roi_image_d);
       THROW_YAT_ERROR("UNKNOWN_ERROR",
                       "Error during processing",
                       "BIAProcessor::process");
     }
   }
 
-
-  void
-  BIAProcessor::start_learn_noise (void)
-  {
-    this->noise_estim_.init();
-    this->learn_noise_ = true;
-  }
-
-
-  
-  void
-  BIAProcessor::stop_learn_noise (void)
-  {
-    this->learn_noise_ = false;
-  }
-
-
-  
   void
   BIAProcessor::preprocess ( isl::Image& image, const BIAConfig& config, BIAData& data )
     throw (isl::Exception)
@@ -343,60 +306,41 @@ namespace ImgBeamAnalyzer_ns
     roi_image = auto_roi_image;
     roi = auto_roi;
   }
-
   
   void
-  BIAProcessor::substract_noise(isl::Image& roi_image, const isl::Rectangle& roi, BIAData& data)
-    throw (isl::Exception)
-  {
-    if (this->noise_estim_.nb_image() > 0)
-    {
-      isl::Rectangle roi_copy(roi);
-      std::auto_ptr<isl::Image> noise_roi_image(this->mean_noise_image_.get_roi(roi_copy));
-      roi_image -= *noise_roi_image;
-      data.mean_noise_image.set_dimensions(this->mean_noise_image_.width(), this->mean_noise_image_.height());
-      this->mean_noise_image_.serialize(data.mean_noise_image.base());
-      data.nb_noise_image = this->noise_estim_.nb_image();
-    }
-  }
-
-  
-  void
-  BIAProcessor::gamma_correction(isl::Image& roi_image, const BIAConfig& config, BIAData&)
+  BIAProcessor::gamma_correction(isl::Image& roi_image_d, const BIAConfig& config, BIAData&)
     throw (isl::Exception)
   {
     if (::fabs(config.gamma_correction - 1) > DBL_EPSILON)
     {
-      isl::Image* roi_image_d = new isl::Image(roi_image.width(), roi_image.height(), isl::ISL_STORAGE_DOUBLE);
-
-      std::auto_ptr<isl::Image> roi_image_d_guard(roi_image_d);
-
-      //- copy integer ROI image to floating point representation
-      roi_image.convert(*roi_image_d);
-
       //- apply the gamma correction
       double max_pixel_value = ::pow(2.0, static_cast<double>(config.pixel_depth));
-
-      roi_image_d->gamma_correction(config.gamma_correction, max_pixel_value);
-
-      //- convert the floating point values back to the integer image
-      roi_image_d->convert(roi_image);
+      roi_image_d.gamma_correction(config.gamma_correction, max_pixel_value);
     }
   }
   
+  void
+  BIAProcessor::background_substraction(isl::Image& roi_image_d, const BIAConfig& config, BIAData&)
+    throw (isl::Exception)
+  {
+    roi_image_d -= config.bg_substraction;
+  }
+
   void
   BIAProcessor::histogram(isl::Image& roi_image, const BIAConfig& config, BIAData& data)
     throw (isl::Exception)
   {
     if (config.enable_histogram)
     {
-      int max_value = config.histo_range_max > 0
-                        ? config.histo_range_max
-                        : (1 << config.pixel_depth) - 1;
+      float low_thresh = float(config.histo_range_min);
+
+      float high_thresh = config.histo_range_max > 0
+                          ? float(config.histo_range_max)
+                          : float((1 << config.pixel_depth) - 1);
 
       int nb_bins = config.histo_nb_bins > 0
                       ? config.histo_nb_bins
-                      : max_value;
+                      : int(high_thresh - low_thresh);
 
       isl::Image* roi_image_f = new isl::Image(roi_image.width(), roi_image.height(), isl::ISL_STORAGE_FLOAT);
       std::auto_ptr<isl::Image> guard( roi_image_f );
@@ -404,7 +348,7 @@ namespace ImgBeamAnalyzer_ns
       //- copy integer ROI image to floating point representation
       roi_image.convert(*roi_image_f);
 
-      isl::Histogram hist(*roi_image_f, nb_bins, config.histo_range_min, max_value);
+      isl::Histogram hist(*roi_image_f, nb_bins, low_thresh, high_thresh);
 
       data.histogram.capacity(nb_bins);
       data.histogram.force_length(nb_bins);
@@ -422,15 +366,15 @@ namespace ImgBeamAnalyzer_ns
       double px = config.pixel_size_x / config.optical_mag;
       double py = config.pixel_size_y / config.optical_mag;
 
-      isl::Profiles profiles(roi_image_d);
+      isl::Projections projections(roi_image_d);
       
-      data.profile_x.capacity(profiles.size_x());
-      data.profile_x.force_length(profiles.size_x());
-      data.profile_x_fitted.capacity(profiles.size_x());
-      data.profile_x_fitted.force_length(profiles.size_x());
-      data.profile_x_error.capacity(profiles.size_x());
-      data.profile_x_error.force_length(profiles.size_x());
-      data.profile_x = profiles.get_x_profile();
+      data.xproj.capacity(projections.size_x());
+      data.xproj.force_length(projections.size_x());
+      data.xproj_fitted.capacity(projections.size_x());
+      data.xproj_fitted.force_length(projections.size_x());
+      data.xproj_error.capacity(projections.size_x());
+      data.xproj_error.force_length(projections.size_x());
+      data.xproj = projections.get_x_projection();
       try
       {
         isl::GaussianFit1D gaussian_fit;
@@ -439,67 +383,67 @@ namespace ImgBeamAnalyzer_ns
 
         if (fixed_bg == false)
         {
-          gaussian_fit.compute(profiles.get_x_profile(), profiles.size_x());
+          gaussian_fit.compute(projections.get_x_projection(), projections.size_x());
         }
         else
         {
-          gaussian_fit.compute_fixed_bg(profiles.get_x_profile(), profiles.size_x(), bg_value * roi_image_d.height());
+          gaussian_fit.compute_fixed_bg(projections.get_x_projection(), projections.size_x(), bg_value);
         }
         
         if (gaussian_fit.has_converged())
         {
-          data.profile_x_center  = (gaussian_fit.mean() + roi.origin().x()) * px;
-          data.profile_x_mag     = gaussian_fit.magnitude();
-          data.profile_x_sigma   = gaussian_fit.standard_deviation() * px;
-          data.profile_x_fwhm    = data.profile_x_sigma * SIGMA2FWHM_SCALE_FACTOR;
-          data.profile_x_bg      = gaussian_fit.background();
-          data.profile_x_chi2    = gaussian_fit.chi2();
-          data.profile_x_nb_iter = gaussian_fit.nb_iter();
-          data.profile_x_eps     = gaussian_fit.epsilon();
+          data.xproj_center  = (gaussian_fit.mean() + roi.origin().x()) * px;
+          data.xproj_mag     = gaussian_fit.magnitude();
+          data.xproj_sigma   = gaussian_fit.standard_deviation() * px;
+          data.xproj_fwhm    = data.xproj_sigma * SIGMA2FWHM_SCALE_FACTOR;
+          data.xproj_bg      = gaussian_fit.background();
+          data.xproj_chi2    = gaussian_fit.chi2();
+          data.xproj_nb_iter = gaussian_fit.nb_iter();
+          data.xproj_eps     = gaussian_fit.epsilon();
         
-          for (int i = 0; i < profiles.size_x(); i++)
+          for (int i = 0; i < projections.size_x(); i++)
           {
-            data.profile_x_fitted[i] = gaussian_fit.get_fitted_value(i);
-            data.profile_x_error[i]  = gaussian_fit.get_fitted_error(i);
+            data.xproj_fitted[i] = gaussian_fit.get_fitted_value(i);
+            data.xproj_error[i]  = gaussian_fit.get_fitted_error(i);
           }
-          data.profile_x_fit_converged = true;
+          data.xproj_fit_converged = true;
         }
         else
         {
-          data.profile_x_center  = 0;
-          data.profile_x_mag     = 0;
-          data.profile_x_sigma   = 0;
-          data.profile_x_fwhm    = 0;
-          data.profile_x_bg      = 0;
-          data.profile_x_chi2    = 0;
-          data.profile_x_nb_iter = gaussian_fit.nb_iter();
-          data.profile_x_eps     = gaussian_fit.epsilon();
-          data.profile_x_fitted.fill(0);
-          data.profile_x_error.fill(0);
+          data.xproj_center  = 0;
+          data.xproj_mag     = 0;
+          data.xproj_sigma   = 0;
+          data.xproj_fwhm    = 0;
+          data.xproj_bg      = 0;
+          data.xproj_chi2    = 0;
+          data.xproj_nb_iter = gaussian_fit.nb_iter();
+          data.xproj_eps     = gaussian_fit.epsilon();
+          data.xproj_fitted.fill(0);
+          data.xproj_error.fill(0);
         }
       }
       catch(isl::Exception&)
       {
         isl::ErrorHandler::reset();
-        data.profile_x_center  = 0;
-        data.profile_x_mag     = 0;
-        data.profile_x_sigma   = 0;
-        data.profile_x_fwhm    = 0;
-        data.profile_x_bg      = 0;
-        data.profile_x_chi2    = 0;
-        data.profile_x_nb_iter = 0;
-        data.profile_x_eps     = 0;
-        data.profile_x_fitted.fill(0);
-        data.profile_x_error.fill(0);
+        data.xproj_center  = 0;
+        data.xproj_mag     = 0;
+        data.xproj_sigma   = 0;
+        data.xproj_fwhm    = 0;
+        data.xproj_bg      = 0;
+        data.xproj_chi2    = 0;
+        data.xproj_nb_iter = 0;
+        data.xproj_eps     = 0;
+        data.xproj_fitted.fill(0);
+        data.xproj_error.fill(0);
       }
 
-      data.profile_y.capacity(profiles.size_y());
-      data.profile_y.force_length(profiles.size_y());
-      data.profile_y_fitted.capacity(profiles.size_y());
-      data.profile_y_fitted.force_length(profiles.size_y());
-      data.profile_y_error.capacity(profiles.size_y());
-      data.profile_y_error.force_length(profiles.size_y());
-      data.profile_y = profiles.get_y_profile();
+      data.yproj.capacity(projections.size_y());
+      data.yproj.force_length(projections.size_y());
+      data.yproj_fitted.capacity(projections.size_y());
+      data.yproj_fitted.force_length(projections.size_y());
+      data.yproj_error.capacity(projections.size_y());
+      data.yproj_error.force_length(projections.size_y());
+      data.yproj = projections.get_y_projection();
       try
       {
         isl::GaussianFit1D gaussian_fit;
@@ -508,59 +452,140 @@ namespace ImgBeamAnalyzer_ns
 
         if (fixed_bg == false)
         {
-          gaussian_fit.compute(profiles.get_y_profile(), profiles.size_y());
+          gaussian_fit.compute(projections.get_y_projection(), projections.size_y());
         }
         else
         {
-          gaussian_fit.compute_fixed_bg(profiles.get_y_profile(), profiles.size_y(), bg_value * roi_image_d.width());
+          gaussian_fit.compute_fixed_bg(projections.get_y_projection(), projections.size_y(), bg_value);
         }
         
         if (gaussian_fit.has_converged())
         {
-          data.profile_y_center  = (gaussian_fit.mean() + roi.origin().y()) * py;
-          data.profile_y_mag     = gaussian_fit.magnitude();
-          data.profile_y_sigma   = gaussian_fit.standard_deviation() * py;
-          data.profile_y_fwhm    = data.profile_y_sigma * SIGMA2FWHM_SCALE_FACTOR;
-          data.profile_y_bg      = gaussian_fit.background();
-          data.profile_y_chi2    = gaussian_fit.chi2();
-          data.profile_y_nb_iter = gaussian_fit.nb_iter();
-          data.profile_y_eps     = gaussian_fit.epsilon();
+          data.yproj_center  = (gaussian_fit.mean() + roi.origin().y()) * py;
+          data.yproj_mag     = gaussian_fit.magnitude();
+          data.yproj_sigma   = gaussian_fit.standard_deviation() * py;
+          data.yproj_fwhm    = data.yproj_sigma * SIGMA2FWHM_SCALE_FACTOR;
+          data.yproj_bg      = gaussian_fit.background();
+          data.yproj_chi2    = gaussian_fit.chi2();
+          data.yproj_nb_iter = gaussian_fit.nb_iter();
+          data.yproj_eps     = gaussian_fit.epsilon();
         
-          for (int i = 0; i < profiles.size_y(); i++)
+          for (int i = 0; i < projections.size_y(); i++)
           {
-            data.profile_y_fitted[i] = gaussian_fit.get_fitted_value(i);
-            data.profile_y_error[i]  = gaussian_fit.get_fitted_error(i);
+            data.yproj_fitted[i] = gaussian_fit.get_fitted_value(i);
+            data.yproj_error[i]  = gaussian_fit.get_fitted_error(i);
           }
 
-          data.profile_y_fit_converged = true;
+          data.yproj_fit_converged = true;
         }
         else
         {
-          data.profile_y_center  = 0;
-          data.profile_y_mag     = 0;
-          data.profile_y_sigma   = 0;
-          data.profile_y_fwhm    = 0;
-          data.profile_y_bg      = 0;
-          data.profile_y_chi2    = 0;
-          data.profile_y_nb_iter = gaussian_fit.nb_iter();
-          data.profile_y_eps     = gaussian_fit.epsilon();
-          data.profile_y_fitted.fill(0);
-          data.profile_y_error.fill(0);
+          data.yproj_center  = 0;
+          data.yproj_mag     = 0;
+          data.yproj_sigma   = 0;
+          data.yproj_fwhm    = 0;
+          data.yproj_bg      = 0;
+          data.yproj_chi2    = 0;
+          data.yproj_nb_iter = gaussian_fit.nb_iter();
+          data.yproj_eps     = gaussian_fit.epsilon();
+          data.yproj_fitted.fill(0);
+          data.yproj_error.fill(0);
         }
       }
       catch(isl::Exception&)
       {
         isl::ErrorHandler::reset();
-        data.profile_y_center  = 0;
-        data.profile_y_mag     = 0;
-        data.profile_y_sigma   = 0;
-        data.profile_y_fwhm    = 0;
-        data.profile_y_bg      = 0;
-        data.profile_y_chi2    = 0;
-        data.profile_y_nb_iter = 0;
-        data.profile_y_eps     = 0;
-        data.profile_y_fitted.fill(0);
-        data.profile_y_error.fill(0);
+        data.yproj_center  = 0;
+        data.yproj_mag     = 0;
+        data.yproj_sigma   = 0;
+        data.yproj_fwhm    = 0;
+        data.yproj_bg      = 0;
+        data.yproj_chi2    = 0;
+        data.yproj_nb_iter = 0;
+        data.yproj_eps     = 0;
+        data.yproj_fitted.fill(0);
+        data.yproj_error.fill(0);
+      }
+
+      isl::Point2D<int> p( config.profile_origin_x, config.profile_origin_y );
+      isl::Point2D<int> q( config.profile_end_x, config.profile_end_y );
+
+      if ( p != q )
+      {
+        isl::LineProfile lprofile( roi_image_d,
+                                   isl::Point2D<int>( config.profile_origin_x, config.profile_origin_y ),
+                                   isl::Point2D<int>( config.profile_end_x, config.profile_end_y ),
+                                   config.profile_thickness );
+
+        data.line_profile.capacity(lprofile.size());
+        data.line_profile.force_length(lprofile.size());
+        data.line_profile_fitted.capacity(lprofile.size());
+        data.line_profile_fitted.force_length(lprofile.size());
+        data.line_profile_error.capacity(lprofile.size());
+        data.line_profile_error.force_length(lprofile.size());
+        data.line_profile = lprofile.values();
+        try
+        {
+          isl::GaussianFit1D gaussian_fit;
+          gaussian_fit.nb_iter(config.fit1d_nb_iter);
+          gaussian_fit.epsilon(config.fit1d_max_rel_change);
+
+          if (fixed_bg == false)
+          {
+            gaussian_fit.compute(lprofile.values(), lprofile.size());
+          }
+          else
+          {
+            gaussian_fit.compute_fixed_bg(lprofile.values(), lprofile.size(), bg_value);
+          }
+          
+          if (gaussian_fit.has_converged())
+          {
+            data.line_profile_center  = (gaussian_fit.mean() + roi.origin().y()) * py;
+            data.line_profile_mag     = gaussian_fit.magnitude();
+            data.line_profile_sigma   = gaussian_fit.standard_deviation() * py;
+            data.line_profile_fwhm    = data.line_profile_sigma * SIGMA2FWHM_SCALE_FACTOR;
+            data.line_profile_bg      = gaussian_fit.background();
+            data.line_profile_chi2    = gaussian_fit.chi2();
+            data.line_profile_nb_iter = gaussian_fit.nb_iter();
+            data.line_profile_eps     = gaussian_fit.epsilon();
+          
+            for (int i = 0; i < lprofile.size(); i++)
+            {
+              data.line_profile_fitted[i] = gaussian_fit.get_fitted_value(i);
+              data.line_profile_error[i]  = gaussian_fit.get_fitted_error(i);
+            }
+
+            data.line_profile_fit_converged = true;
+          }
+          else
+          {
+            data.line_profile_center  = 0;
+            data.line_profile_mag     = 0;
+            data.line_profile_sigma   = 0;
+            data.line_profile_fwhm    = 0;
+            data.line_profile_bg      = 0;
+            data.line_profile_chi2    = 0;
+            data.line_profile_nb_iter = gaussian_fit.nb_iter();
+            data.line_profile_eps     = gaussian_fit.epsilon();
+            data.line_profile_fitted.fill(0);
+            data.line_profile_error.fill(0);
+          }
+        }
+        catch(isl::Exception&)
+        {
+          isl::ErrorHandler::reset();
+          data.line_profile_center  = 0;
+          data.line_profile_mag     = 0;
+          data.line_profile_sigma   = 0;
+          data.line_profile_fwhm    = 0;
+          data.line_profile_bg      = 0;
+          data.line_profile_chi2    = 0;
+          data.line_profile_nb_iter = 0;
+          data.line_profile_eps     = 0;
+          data.line_profile_fitted.fill(0);
+          data.line_profile_error.fill(0);
+        }
       }
     }
   }

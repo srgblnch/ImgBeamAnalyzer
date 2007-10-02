@@ -47,7 +47,8 @@ namespace ImgBeamAnalyzer_ns
   const long    kDEFAULT_HISTO_NB_BINS = 0; //- means : maximum nb of bins
   const long    kDEFAULT_HISTO_RANGE_MIN = 0;
   const long    kDEFAULT_HISTO_RANGE_MAX = 0; //- means : 2^pixel_depth
-
+  const long    kDEFAULT_BG_SUBSTRACTION = 0;
+  const long    kDEFAULT_PROFILE_THICKNESS = 1;
 
   BIAConfig::BIAConfig() :
     enable_image_stats(kDEFAULT_ENABLE_IMAGE_STATS),
@@ -79,7 +80,13 @@ namespace ImgBeamAnalyzer_ns
     pixel_depth(kDEFAULT_PIXEL_DEPTH),
     histo_nb_bins(kDEFAULT_HISTO_NB_BINS),
     histo_range_min(kDEFAULT_HISTO_RANGE_MIN),
-    histo_range_max(kDEFAULT_HISTO_RANGE_MAX)
+    histo_range_max(kDEFAULT_HISTO_RANGE_MAX),
+    bg_substraction(kDEFAULT_BG_SUBSTRACTION),
+    profile_origin_x(0),
+    profile_origin_y(0),
+    profile_end_x(0),
+    profile_end_y(0),
+    profile_thickness(kDEFAULT_PROFILE_THICKNESS)
   {}
 
   bool BIAConfig::is_user_roi_empty(void) const

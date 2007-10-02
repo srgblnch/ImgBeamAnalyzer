@@ -83,37 +83,49 @@ public:
   double               skew_x2y;
   double               skew_xy2;
 
-  //- profile
-  yat::Buffer<double>  profile_x;
-  bool                 profile_x_fit_converged;
-  yat::Buffer<double>  profile_x_fitted;
-  yat::Buffer<double>  profile_x_error;
-  double               profile_x_center;
-  double               profile_x_mag;
-  double               profile_x_sigma;
-  double               profile_x_fwhm;
-  double               profile_x_bg;
-  double               profile_x_chi2;
-  long                 profile_x_nb_iter;
-  double               profile_x_eps;
+  //- projections & profile
+  yat::Buffer<double>  xproj;
+  bool                 xproj_fit_converged;
+  yat::Buffer<double>  xproj_fitted;
+  yat::Buffer<double>  xproj_error;
+  double               xproj_center;
+  double               xproj_mag;
+  double               xproj_sigma;
+  double               xproj_fwhm;
+  double               xproj_bg;
+  double               xproj_chi2;
+  long                 xproj_nb_iter;
+  double               xproj_eps;
 
-  yat::Buffer<double>  profile_y;
-  bool                 profile_y_fit_converged;
-  yat::Buffer<double>  profile_y_fitted;
-  yat::Buffer<double>  profile_y_error;
-  double               profile_y_center;
-  double               profile_y_mag;
-  double               profile_y_sigma;
-  double               profile_y_fwhm;
-  double               profile_y_bg;
-  double               profile_y_chi2;
-  long                 profile_y_nb_iter;
-  double               profile_y_eps;
+  yat::Buffer<double>  yproj;
+  bool                 yproj_fit_converged;
+  yat::Buffer<double>  yproj_fitted;
+  yat::Buffer<double>  yproj_error;
+  double               yproj_center;
+  double               yproj_mag;
+  double               yproj_sigma;
+  double               yproj_fwhm;
+  double               yproj_bg;
+  double               yproj_chi2;
+  long                 yproj_nb_iter;
+  double               yproj_eps;
+
+  yat::Buffer<double>  line_profile;
+  bool                 line_profile_fit_converged;
+  yat::Buffer<double>  line_profile_fitted;
+  yat::Buffer<double>  line_profile_error;
+  double               line_profile_center;
+  double               line_profile_mag;
+  double               line_profile_sigma;
+  double               line_profile_fwhm;
+  double               line_profile_bg;
+  double               line_profile_chi2;
+  long                 line_profile_nb_iter;
+  double               line_profile_eps;
 
   //- histogram
   yat::Buffer<float>   histogram;
 
-  
   //- gaussian fit
   bool                 gaussfit_converged;
   double               gaussfit_magnitude;

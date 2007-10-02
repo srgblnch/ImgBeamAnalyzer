@@ -1,4 +1,4 @@
-static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzer.cpp,v 1.18 2007-07-19 13:38:51 julien_malik Exp $";
+static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzer.cpp,v 1.19 2007-10-02 12:51:43 julien_malik Exp $";
 //+=============================================================================
 //
 // file :         ImgBeamAnalyzer.cpp
@@ -13,7 +13,7 @@ static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/Im
 //
 // $Author: julien_malik $
 //
-// $Revision: 1.18 $
+// $Revision: 1.19 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -120,7 +120,7 @@ template <> Tango::DevDouble  ImgBeamAnalyzer::DummyValue<Tango::DevDouble> ::du
 		else                                                                                        \
 		{                                                                                           \
 			attr.set_value(this->available_data_->data_member.base(),                                 \
-                     this->available_data_->data_member.length());                              \
+                     static_cast<long>(this->available_data_->data_member.length()));           \
       if (this->available_data_->alarm == true)                                                 \
         attr.set_quality(Tango::ATTR_ALARM);                                                    \
       else                                                                                      \
@@ -139,8 +139,8 @@ template <> Tango::DevDouble  ImgBeamAnalyzer::DummyValue<Tango::DevDouble> ::du
 		else                                                                                        \
 		{                                                                                           \
 			attr.set_value(this->available_data_->data_member.base(),                                 \
-                     this->available_data_->data_member.width(),                                \
-                     this->available_data_->data_member.height());                              \
+                     static_cast<long>(this->available_data_->data_member.width()),             \
+                     static_cast<long>(this->available_data_->data_member.height()));           \
       if (this->available_data_->alarm == true)                                                 \
         attr.set_quality(Tango::ATTR_ALARM);                                                    \
       else                                                                                      \
@@ -160,8 +160,8 @@ template <> Tango::DevDouble  ImgBeamAnalyzer::DummyValue<Tango::DevDouble> ::du
 		else                                                                                        \
 		{                                                                                           \
 			attr.set_value(this->available_data_->data_member.base(),                                 \
-                     this->available_data_->data_member.width(),                                \
-                     this->available_data_->data_member.height());                              \
+                     static_cast<long>(this->available_data_->data_member.width()),             \
+                     static_cast<long>(this->available_data_->data_member.height()));           \
       if (this->available_data_->alarm == true)                                                 \
         attr.set_quality(Tango::ATTR_ALARM);                                                    \
       else                                                                                      \
@@ -890,6 +890,582 @@ void ImgBeamAnalyzer::read_attr_hardware(vector<long> &attr_list)
 }
 //+----------------------------------------------------------------------------
 //
+// method : 		ImgBeamAnalyzer::read_LineProfileOriginX
+// 
+// description : 	Extract real attribute values for LineProfileOriginX acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_LineProfileOriginX(Tango::Attribute &attr)
+{
+  READ_INPUT_ATTR(profile_origin_x);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::write_LineProfileOriginX
+// 
+// description : 	Write LineProfileOriginX attribute values to hardware.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::write_LineProfileOriginX(Tango::WAttribute &attr)
+{
+  WRITE_INPUT_ATTR( profile_origin_x, Tango::DevLong );
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_LineProfileOriginY
+// 
+// description : 	Extract real attribute values for LineProfileOriginY acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_LineProfileOriginY(Tango::Attribute &attr)
+{
+  READ_INPUT_ATTR(profile_origin_y);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::write_LineProfileOriginY
+// 
+// description : 	Write LineProfileOriginY attribute values to hardware.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::write_LineProfileOriginY(Tango::WAttribute &attr)
+{
+  WRITE_INPUT_ATTR( profile_origin_y, Tango::DevLong );
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_LineProfileEndX
+// 
+// description : 	Extract real attribute values for LineProfileEndX acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_LineProfileEndX(Tango::Attribute &attr)
+{
+  READ_INPUT_ATTR(profile_end_x);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::write_LineProfileEndX
+// 
+// description : 	Write LineProfileEndX attribute values to hardware.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::write_LineProfileEndX(Tango::WAttribute &attr)
+{
+  WRITE_INPUT_ATTR( profile_end_x, Tango::DevLong );
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_LineProfileEndY
+// 
+// description : 	Extract real attribute values for LineProfileEndY acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_LineProfileEndY(Tango::Attribute &attr)
+{
+  READ_INPUT_ATTR(profile_end_y);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::write_LineProfileEndY
+// 
+// description : 	Write LineProfileEndY attribute values to hardware.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::write_LineProfileEndY(Tango::WAttribute &attr)
+{
+  WRITE_INPUT_ATTR( profile_end_y, Tango::DevLong );
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_LineProfileThickness
+// 
+// description : 	Extract real attribute values for LineProfileThickness acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_LineProfileThickness(Tango::Attribute &attr)
+{
+  READ_INPUT_ATTR(profile_thickness);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::write_LineProfileThickness
+// 
+// description : 	Write LineProfileThickness attribute values to hardware.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::write_LineProfileThickness(Tango::WAttribute &attr)
+{
+  WRITE_INPUT_ATTR( profile_thickness, Tango::DevLong );
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_LineProfileFitNbIter
+// 
+// description : 	Extract real attribute values for LineProfileFitNbIter acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_LineProfileFitNbIter(Tango::Attribute &attr)
+{
+  READ_OUTPUT_SCALAR_ATTR(line_profile_nb_iter, enable_profile, Tango::DevLong);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_LineProfileFitRelChange
+// 
+// description : 	Extract real attribute values for LineProfileFitRelChange acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_LineProfileFitRelChange(Tango::Attribute &attr)
+{
+  READ_OUTPUT_SCALAR_ATTR(line_profile_eps, enable_profile, Tango::DevLong);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_LineProfileFitBG
+// 
+// description : 	Extract real attribute values for LineProfileFitBG acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_LineProfileFitBG(Tango::Attribute &attr)
+{
+  READ_OUTPUT_SCALAR_ATTR(line_profile_bg, enable_profile, Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_LineProfileFitConverged
+// 
+// description : 	Extract real attribute values for LineProfileFitConverged acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_LineProfileFitConverged(Tango::Attribute &attr)
+{
+  READ_OUTPUT_SCALAR_ATTR(line_profile_fit_converged, enable_profile, Tango::DevBoolean);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_LineProfileFitCenter
+// 
+// description : 	Extract real attribute values for LineProfileFitCenter acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_LineProfileFitCenter(Tango::Attribute &attr)
+{
+  READ_OUTPUT_SCALAR_ATTR(line_profile_center, enable_profile, Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_LineProfileFitMag
+// 
+// description : 	Extract real attribute values for LineProfileFitMag acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_LineProfileFitMag(Tango::Attribute &attr)
+{
+  READ_OUTPUT_SCALAR_ATTR(line_profile_mag, enable_profile, Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_LineProfileFitSigma
+// 
+// description : 	Extract real attribute values for LineProfileFitSigma acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_LineProfileFitSigma(Tango::Attribute &attr)
+{
+  READ_OUTPUT_SCALAR_ATTR(line_profile_sigma, enable_profile, Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_LineProfileFitFWHM
+// 
+// description : 	Extract real attribute values for LineProfileFitFWHM acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_LineProfileFitFWHM(Tango::Attribute &attr)
+{
+  READ_OUTPUT_SCALAR_ATTR(line_profile_fwhm, enable_profile, Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_LineProfileFitChi2
+// 
+// description : 	Extract real attribute values for LineProfileFitChi2 acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_LineProfileFitChi2(Tango::Attribute &attr)
+{
+  READ_OUTPUT_SCALAR_ATTR(line_profile_chi2, enable_profile, Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_LineProfile
+// 
+// description : 	Extract real attribute values for LineProfile acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_LineProfile(Tango::Attribute &attr)
+{
+  READ_OUTPUT_SPECTRUM_ATTR(line_profile, enable_profile, Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_LineProfileFitted
+// 
+// description : 	Extract real attribute values for LineProfileFitted acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_LineProfileFitted(Tango::Attribute &attr)
+{
+  READ_OUTPUT_SPECTRUM_ATTR(line_profile_fitted, enable_profile, Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_LineProfileError
+// 
+// description : 	Extract real attribute values for LineProfileError acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_LineProfileError(Tango::Attribute &attr)
+{
+  READ_OUTPUT_SPECTRUM_ATTR(line_profile_error, enable_profile, Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_XProj
+// 
+// description : 	Extract real attribute values for XProj acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_XProj(Tango::Attribute &attr)
+{
+  READ_OUTPUT_SPECTRUM_ATTR(xproj, enable_profile, Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_XProjFitted
+// 
+// description : 	Extract real attribute values for XProjFitted acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_XProjFitted(Tango::Attribute &attr)
+{
+  READ_OUTPUT_SPECTRUM_ATTR(xproj_fitted, enable_profile, Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_XProjError
+// 
+// description : 	Extract real attribute values for XProjError acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_XProjError(Tango::Attribute &attr)
+{
+  READ_OUTPUT_SPECTRUM_ATTR(xproj_error, enable_profile, Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_YProj
+// 
+// description : 	Extract real attribute values for YProj acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_YProj(Tango::Attribute &attr)
+{
+  READ_OUTPUT_SPECTRUM_ATTR(yproj, enable_profile, Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_YProjFitted
+// 
+// description : 	Extract real attribute values for YProjFitted acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_YProjFitted(Tango::Attribute &attr)
+{
+  READ_OUTPUT_SPECTRUM_ATTR(yproj_fitted, enable_profile, Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_YProjError
+// 
+// description : 	Extract real attribute values for YProjError acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_YProjError(Tango::Attribute &attr)
+{
+  READ_OUTPUT_SPECTRUM_ATTR(yproj_error, enable_profile, Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_BgSubstraction
+// 
+// description : 	Extract real attribute values for BgSubstraction acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_BgSubstraction(Tango::Attribute &attr)
+{
+  READ_INPUT_ATTR(bg_substraction);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::write_BgSubstraction
+// 
+// description : 	Write BgSubstraction attribute values to hardware.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::write_BgSubstraction(Tango::WAttribute &attr)
+{
+  WRITE_INPUT_ATTR(bg_substraction, Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_XProjFitConverged
+// 
+// description : 	Extract real attribute values for XProjFitConverged acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_XProjFitConverged(Tango::Attribute &attr)
+{
+  READ_OUTPUT_SCALAR_ATTR(xproj_fit_converged, enable_profile, Tango::DevBoolean);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_XProjFitCenter
+// 
+// description : 	Extract real attribute values for XProjFitCenter acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_XProjFitCenter(Tango::Attribute &attr)
+{
+  READ_OUTPUT_SCALAR_ATTR(xproj_center, enable_profile, Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_XProjFitMag
+// 
+// description : 	Extract real attribute values for XProjFitMag acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_XProjFitMag(Tango::Attribute &attr)
+{
+  READ_OUTPUT_SCALAR_ATTR(xproj_mag, enable_profile, Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_XProjFitSigma
+// 
+// description : 	Extract real attribute values for XProjFitSigma acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_XProjFitSigma(Tango::Attribute &attr)
+{
+  READ_OUTPUT_SCALAR_ATTR(xproj_sigma, enable_profile, Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_XProjFitFWHM
+// 
+// description : 	Extract real attribute values for XProjFitFWHM acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_XProjFitFWHM(Tango::Attribute &attr)
+{
+  READ_OUTPUT_SCALAR_ATTR(xproj_fwhm, enable_profile, Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_XProjFitBG
+// 
+// description : 	Extract real attribute values for XProjFitBG acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_XProjFitBG(Tango::Attribute &attr)
+{
+  READ_OUTPUT_SCALAR_ATTR(xproj_bg, enable_profile, Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_XProjFitChi2
+// 
+// description : 	Extract real attribute values for XProjFitChi2 acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_XProjFitChi2(Tango::Attribute &attr)
+{
+  READ_OUTPUT_SCALAR_ATTR(xproj_chi2, enable_profile, Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_YProjFitConverged
+// 
+// description : 	Extract real attribute values for YProjFitConverged acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_YProjFitConverged(Tango::Attribute &attr)
+{
+  READ_OUTPUT_SCALAR_ATTR(yproj_fit_converged, enable_profile, Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_YProjFitCenter
+// 
+// description : 	Extract real attribute values for YProjFitCenter acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_YProjFitCenter(Tango::Attribute &attr)
+{
+  READ_OUTPUT_SCALAR_ATTR(yproj_center, enable_profile, Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_YProjFitMag
+// 
+// description : 	Extract real attribute values for YProjFitMag acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_YProjFitMag(Tango::Attribute &attr)
+{
+  READ_OUTPUT_SCALAR_ATTR(yproj_mag, enable_profile, Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_YProjFitSigma
+// 
+// description : 	Extract real attribute values for YProjFitSigma acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_YProjFitSigma(Tango::Attribute &attr)
+{
+  READ_OUTPUT_SCALAR_ATTR(yproj_sigma, enable_profile, Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_YProjFitFWHM
+// 
+// description : 	Extract real attribute values for YProjFitFWHM acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_YProjFitFWHM(Tango::Attribute &attr)
+{
+  READ_OUTPUT_SCALAR_ATTR(yproj_fwhm, enable_profile, Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_YProjFitBG
+// 
+// description : 	Extract real attribute values for YProjFitBG acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_YProjFitBG(Tango::Attribute &attr)
+{
+  READ_OUTPUT_SCALAR_ATTR(yproj_bg, enable_profile, Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_YProjFitChi2
+// 
+// description : 	Extract real attribute values for YProjFitChi2 acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_YProjFitChi2(Tango::Attribute &attr)
+{
+  READ_OUTPUT_SCALAR_ATTR(yproj_chi2, enable_profile, Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_XProjFitNbIter
+// 
+// description : 	Extract real attribute values for XProjFitNbIter acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_XProjFitNbIter(Tango::Attribute &attr)
+{
+  READ_OUTPUT_SCALAR_ATTR(xproj_nb_iter, enable_profile, Tango::DevLong);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_XProjFitRelChange
+// 
+// description : 	Extract real attribute values for XProjFitRelChange acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_XProjFitRelChange(Tango::Attribute &attr)
+{
+  READ_OUTPUT_SCALAR_ATTR(xproj_eps, enable_profile, Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_YProjFitNbIter
+// 
+// description : 	Extract real attribute values for YProjFitNbIter acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_YProjFitNbIter(Tango::Attribute &attr)
+{
+  READ_OUTPUT_SCALAR_ATTR(yproj_nb_iter, enable_profile, Tango::DevLong);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_YProjFitRelChange
+// 
+// description : 	Extract real attribute values for YProjFitRelChange acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_YProjFitRelChange(Tango::Attribute &attr)
+{
+  READ_OUTPUT_SCALAR_ATTR(yproj_eps, enable_profile, Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
 // method : 		ImgBeamAnalyzer::read_AutoROIThreshold
 // 
 // description : 	Extract real attribute values for AutoROIThreshold acquisition result.
@@ -1095,54 +1671,6 @@ void ImgBeamAnalyzer::read_Histogram(Tango::Attribute &attr)
 
 //+----------------------------------------------------------------------------
 //
-// method : 		ImgBeamAnalyzer::read_XProfileNbIter
-// 
-// description : 	Extract real attribute values for XProfileNbIter acquisition result.
-//
-//-----------------------------------------------------------------------------
-void ImgBeamAnalyzer::read_XProfileNbIter(Tango::Attribute &attr)
-{
-  READ_OUTPUT_SCALAR_ATTR(profile_x_nb_iter, enable_profile, Tango::DevLong);
-}
-
-//+----------------------------------------------------------------------------
-//
-// method : 		ImgBeamAnalyzer::read_XProfileFitRelChange
-// 
-// description : 	Extract real attribute values for XProfileFitRelChange acquisition result.
-//
-//-----------------------------------------------------------------------------
-void ImgBeamAnalyzer::read_XProfileFitRelChange(Tango::Attribute &attr)
-{
-  READ_OUTPUT_SCALAR_ATTR(profile_x_eps, enable_profile, Tango::DevDouble);
-}
-
-//+----------------------------------------------------------------------------
-//
-// method : 		ImgBeamAnalyzer::read_YProfileNbIter
-// 
-// description : 	Extract real attribute values for YProfileNbIter acquisition result.
-//
-//-----------------------------------------------------------------------------
-void ImgBeamAnalyzer::read_YProfileNbIter(Tango::Attribute &attr)
-{
-  READ_OUTPUT_SCALAR_ATTR(profile_y_nb_iter, enable_profile, Tango::DevLong);
-}
-
-//+----------------------------------------------------------------------------
-//
-// method : 		ImgBeamAnalyzer::read_YProfileFitRelChange
-// 
-// description : 	Extract real attribute values for YProfileFitRelChange acquisition result.
-//
-//-----------------------------------------------------------------------------
-void ImgBeamAnalyzer::read_YProfileFitRelChange(Tango::Attribute &attr)
-{
-  READ_OUTPUT_SCALAR_ATTR(profile_y_eps, enable_profile, Tango::DevDouble);
-}
-
-//+----------------------------------------------------------------------------
-//
 // method : 		ImgBeamAnalyzer::read_GaussianFitNbIter
 // 
 // description : 	Extract real attribute values for GaussianFitNbIter acquisition result.
@@ -1175,30 +1703,6 @@ void ImgBeamAnalyzer::read_GaussianFitRelChange(Tango::Attribute &attr)
 void ImgBeamAnalyzer::read_AutoROIFound(Tango::Attribute &attr)
 {
   READ_OUTPUT_SCALAR_ATTR(auto_roi_found, enable_auto_roi, Tango::DevBoolean);
-}
-
-//+----------------------------------------------------------------------------
-//
-// method : 		ImgBeamAnalyzer::read_XProfileFitConverged
-// 
-// description : 	Extract real attribute values for XProfileFitConverged acquisition result.
-//
-//-----------------------------------------------------------------------------
-void ImgBeamAnalyzer::read_XProfileFitConverged(Tango::Attribute &attr)
-{
-  READ_OUTPUT_SCALAR_ATTR(profile_x_fit_converged, enable_profile, Tango::DevBoolean);
-}
-
-//+----------------------------------------------------------------------------
-//
-// method : 		ImgBeamAnalyzer::read_YProfileFitConverged
-// 
-// description : 	Extract real attribute values for YProfileFitConverged acquisition result.
-//
-//-----------------------------------------------------------------------------
-void ImgBeamAnalyzer::read_YProfileFitConverged(Tango::Attribute &attr)
-{
-  READ_OUTPUT_SCALAR_ATTR(profile_y_fit_converged, enable_profile, Tango::DevBoolean);
 }
 
 //+----------------------------------------------------------------------------
@@ -1379,78 +1883,6 @@ void ImgBeamAnalyzer::read_HorizontalFlip(Tango::Attribute &attr)
 void ImgBeamAnalyzer::write_HorizontalFlip(Tango::WAttribute &attr)
 {
   WRITE_INPUT_ATTR(horizontal_flip, Tango::DevBoolean);
-}
-
-//+----------------------------------------------------------------------------
-//
-// method : 		ImgBeamAnalyzer::read_XProfileFitted
-// 
-// description : 	Extract real attribute values for XProfileFitted acquisition result.
-//
-//-----------------------------------------------------------------------------
-void ImgBeamAnalyzer::read_XProfileFitted(Tango::Attribute &attr)
-{
-  READ_OUTPUT_SPECTRUM_ATTR(profile_x_fitted, enable_profile, Tango::DevDouble);
-}
-
-//+----------------------------------------------------------------------------
-//
-// method : 		ImgBeamAnalyzer::read_XProfileError
-// 
-// description : 	Extract real attribute values for XProfileError acquisition result.
-//
-//-----------------------------------------------------------------------------
-void ImgBeamAnalyzer::read_XProfileError(Tango::Attribute &attr)
-{
-  READ_OUTPUT_SPECTRUM_ATTR(profile_x_error, enable_profile, Tango::DevDouble);
-}
-
-//+----------------------------------------------------------------------------
-//
-// method : 		ImgBeamAnalyzer::read_YProfileFitted
-// 
-// description : 	Extract real attribute values for YProfileFitted acquisition result.
-//
-//-----------------------------------------------------------------------------
-void ImgBeamAnalyzer::read_YProfileFitted(Tango::Attribute &attr)
-{
-  READ_OUTPUT_SPECTRUM_ATTR(profile_y_fitted, enable_profile, Tango::DevDouble);
-}
-
-//+----------------------------------------------------------------------------
-//
-// method : 		ImgBeamAnalyzer::read_YProfileError
-// 
-// description : 	Extract real attribute values for YProfileError acquisition result.
-//
-//-----------------------------------------------------------------------------
-void ImgBeamAnalyzer::read_YProfileError(Tango::Attribute &attr)
-{
-  READ_OUTPUT_SPECTRUM_ATTR(profile_y_error, enable_profile, Tango::DevDouble);
-}
-
-//+----------------------------------------------------------------------------
-//
-// method : 		ImgBeamAnalyzer::read_XProfileFWHM
-// 
-// description : 	Extract real attribute values for XProfileFWHM acquisition result.
-//
-//-----------------------------------------------------------------------------
-void ImgBeamAnalyzer::read_XProfileFWHM(Tango::Attribute &attr)
-{
-  READ_OUTPUT_SCALAR_ATTR(profile_x_fwhm, enable_profile, Tango::DevDouble);
-}
-
-//+----------------------------------------------------------------------------
-//
-// method : 		ImgBeamAnalyzer::read_YProfileFWHM
-// 
-// description : 	Extract real attribute values for YProfileFWHM acquisition result.
-//
-//-----------------------------------------------------------------------------
-void ImgBeamAnalyzer::read_YProfileFWHM(Tango::Attribute &attr)
-{
-  READ_OUTPUT_SCALAR_ATTR(profile_y_fwhm, enable_profile, Tango::DevDouble);
 }
 
 //+----------------------------------------------------------------------------
@@ -1815,54 +2247,6 @@ void ImgBeamAnalyzer::read_SkewXY2(Tango::Attribute &attr)
 
 //+----------------------------------------------------------------------------
 //
-// method : 		ImgBeamAnalyzer::read_XProfileCenter
-// 
-// description : 	Extract real attribute values for XProfileCenter acquisition result.
-//
-//-----------------------------------------------------------------------------
-void ImgBeamAnalyzer::read_XProfileCenter(Tango::Attribute &attr)
-{
-  READ_OUTPUT_SCALAR_ATTR(profile_x_center, enable_profile, Tango::DevDouble);
-}
-
-//+----------------------------------------------------------------------------
-//
-// method : 		ImgBeamAnalyzer::read_XProfileMag
-// 
-// description : 	Extract real attribute values for XProfileMag acquisition result.
-//
-//-----------------------------------------------------------------------------
-void ImgBeamAnalyzer::read_XProfileMag(Tango::Attribute &attr)
-{
-  READ_OUTPUT_SCALAR_ATTR(profile_x_mag, enable_profile, Tango::DevDouble);
-}
-
-//+----------------------------------------------------------------------------
-//
-// method : 		ImgBeamAnalyzer::read_YProfileCenter
-// 
-// description : 	Extract real attribute values for YProfileCenter acquisition result.
-//
-//-----------------------------------------------------------------------------
-void ImgBeamAnalyzer::read_YProfileCenter(Tango::Attribute &attr)
-{
-  READ_OUTPUT_SCALAR_ATTR(profile_y_center, enable_profile, Tango::DevDouble);
-}
-
-//+----------------------------------------------------------------------------
-//
-// method : 		ImgBeamAnalyzer::read_YProfileMag
-// 
-// description : 	Extract real attribute values for YProfileMag acquisition result.
-//
-//-----------------------------------------------------------------------------
-void ImgBeamAnalyzer::read_YProfileMag(Tango::Attribute &attr)
-{
-  READ_OUTPUT_SCALAR_ATTR(profile_y_mag, enable_profile, Tango::DevDouble);
-}
-
-//+----------------------------------------------------------------------------
-//
 // method : 		ImgBeamAnalyzer::read_GaussianFitCenterX
 // 
 // description : 	Extract real attribute values for GaussianFitCenterX acquisition result.
@@ -1931,30 +2315,6 @@ void ImgBeamAnalyzer::read_GaussianFitCovarianceXY(Tango::Attribute &attr)
 void ImgBeamAnalyzer::write_InputImage(Tango::WAttribute &attr)
 {
   READ_OUTPUT_IMAGE_ATTR_ALWAYSACTIV( input_image, Tango::DevUShort );
-}
-
-//+----------------------------------------------------------------------------
-//
-// method : 		ImgBeamAnalyzer::read_XProfileBG
-// 
-// description : 	Extract real attribute values for XProfileBG acquisition result.
-//
-//-----------------------------------------------------------------------------
-void ImgBeamAnalyzer::read_XProfileBG(Tango::Attribute &attr)
-{
-  READ_OUTPUT_SCALAR_ATTR(profile_x_bg, enable_profile, Tango::DevDouble);
-}
-
-//+----------------------------------------------------------------------------
-//
-// method : 		ImgBeamAnalyzer::read_YProfileBG
-// 
-// description : 	Extract real attribute values for YProfileBG acquisition result.
-//
-//-----------------------------------------------------------------------------
-void ImgBeamAnalyzer::read_YProfileBG(Tango::Attribute &attr)
-{
-  READ_OUTPUT_SCALAR_ATTR(profile_y_bg, enable_profile, Tango::DevDouble);
 }
 
 //+----------------------------------------------------------------------------
@@ -2087,54 +2447,6 @@ void ImgBeamAnalyzer::read_Fit1DMaxRelChange(Tango::Attribute &attr)
 void ImgBeamAnalyzer::write_Fit1DMaxRelChange(Tango::WAttribute &attr)
 {
   WRITE_INPUT_ATTR(fit1d_max_rel_change, Tango::DevDouble);
-}
-
-//+----------------------------------------------------------------------------
-//
-// method : 		ImgBeamAnalyzer::read_XProfileChi2
-// 
-// description : 	Extract real attribute values for XProfileChi2 acquisition result.
-//
-//-----------------------------------------------------------------------------
-void ImgBeamAnalyzer::read_XProfileChi2(Tango::Attribute &attr)
-{
-  READ_OUTPUT_SCALAR_ATTR(profile_x_chi2, enable_profile, Tango::DevDouble);
-}
-
-//+----------------------------------------------------------------------------
-//
-// method : 		ImgBeamAnalyzer::read_YProfileChi2
-// 
-// description : 	Extract real attribute values for YProfileChi2 acquisition result.
-//
-//-----------------------------------------------------------------------------
-void ImgBeamAnalyzer::read_YProfileChi2(Tango::Attribute &attr)
-{
-  READ_OUTPUT_SCALAR_ATTR(profile_y_chi2, enable_profile, Tango::DevDouble);
-}
-
-//+----------------------------------------------------------------------------
-//
-// method : 		ImgBeamAnalyzer::read_XProfileSigma
-// 
-// description : 	Extract real attribute values for XProfileSigma acquisition result.
-//
-//-----------------------------------------------------------------------------
-void ImgBeamAnalyzer::read_XProfileSigma(Tango::Attribute &attr)
-{
-  READ_OUTPUT_SCALAR_ATTR(profile_x_sigma, enable_profile, Tango::DevDouble);
-}
-
-//+----------------------------------------------------------------------------
-//
-// method : 		ImgBeamAnalyzer::read_YProfileSigma
-// 
-// description : 	Extract real attribute values for YProfileSigma acquisition result.
-//
-//-----------------------------------------------------------------------------
-void ImgBeamAnalyzer::read_YProfileSigma(Tango::Attribute &attr)
-{
-  READ_OUTPUT_SCALAR_ATTR(profile_y_sigma, enable_profile, Tango::DevDouble);
 }
 
 //+----------------------------------------------------------------------------
@@ -2315,30 +2627,6 @@ void ImgBeamAnalyzer::read_InputImage(Tango::Attribute &attr)
 void ImgBeamAnalyzer::read_MeanIntensity(Tango::Attribute &attr)
 {
   READ_OUTPUT_SCALAR_ATTR(mean_intensity, enable_image_stats, Tango::DevDouble);
-}
-
-//+----------------------------------------------------------------------------
-//
-// method : 		ImgBeamAnalyzer::read_XProfile
-// 
-// description : 	Extract real attribute values for XProfile acquisition result.
-//
-//-----------------------------------------------------------------------------
-void ImgBeamAnalyzer::read_XProfile(Tango::Attribute &attr)
-{
-  READ_OUTPUT_SPECTRUM_ATTR(profile_x, enable_profile, Tango::DevDouble);
-}
-
-//+----------------------------------------------------------------------------
-//
-// method : 		ImgBeamAnalyzer::read_YProfile
-// 
-// description : 	Extract real attribute values for YProfile acquisition result.
-//
-//-----------------------------------------------------------------------------
-void ImgBeamAnalyzer::read_YProfile(Tango::Attribute &attr)
-{
-  READ_OUTPUT_SPECTRUM_ATTR(profile_y, enable_profile, Tango::DevDouble);
 }
 
 

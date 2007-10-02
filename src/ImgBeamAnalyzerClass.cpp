@@ -1,4 +1,4 @@
-static const char *RcsId     = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzerClass.cpp,v 1.13 2007-07-19 13:38:51 julien_malik Exp $";
+static const char *RcsId     = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzerClass.cpp,v 1.14 2007-10-02 12:51:43 julien_malik Exp $";
 static const char *TagName   = "$Name: not supported by cvs2svn $";
 static const char *HttpServer= "http://www.esrf.fr/computing/cs/tango/tango_doc/ds_doc/";
 //+=============================================================================
@@ -14,7 +14,7 @@ static const char *HttpServer= "http://www.esrf.fr/computing/cs/tango/tango_doc/
 //
 // $Author: julien_malik $
 //
-// $Revision: 1.13 $
+// $Revision: 1.14 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -521,6 +521,16 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	auto_roithreshold->set_default_properties(auto_roithreshold_prop);
 	att_list.push_back(auto_roithreshold);
 
+	//	Attribute : BgSubstraction
+	BgSubstractionAttrib	*bg_substraction = new BgSubstractionAttrib();
+	Tango::UserDefaultAttrProp	bg_substraction_prop;
+	bg_substraction_prop.set_label("Background Substraction");
+	bg_substraction_prop.set_unit(" ");
+	bg_substraction_prop.set_format("%5.2f");
+	bg_substraction_prop.set_description("the scalar value to substract to each pixel");
+	bg_substraction->set_default_properties(bg_substraction_prop);
+	att_list.push_back(bg_substraction);
+
 	//	Attribute : AlarmZone
 	AlarmZoneAttrib	*alarm_zone = new AlarmZoneAttrib();
 	Tango::UserDefaultAttrProp	alarm_zone_prop;
@@ -538,7 +548,7 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	pixel_size_x_prop.set_label("PixelSizeX");
 	pixel_size_x_prop.set_unit("µm/pix");
 	pixel_size_x_prop.set_format("%5.2f");
-	pixel_size_x_prop.set_description("The correspondence between pixel width and mm");
+	pixel_size_x_prop.set_description("the correspondence between pixel width and mm");
 	pixel_size_x->set_default_properties(pixel_size_x_prop);
 	att_list.push_back(pixel_size_x);
 
@@ -548,7 +558,7 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	pixel_size_y_prop.set_label("PixelSizeY");
 	pixel_size_y_prop.set_unit("µm/pix");
 	pixel_size_y_prop.set_format("%5.2f");
-	pixel_size_y_prop.set_description("The correspondence between pixel height and mm");
+	pixel_size_y_prop.set_description("the correspondence between pixel height and mm");
 	pixel_size_y->set_default_properties(pixel_size_y_prop);
 	att_list.push_back(pixel_size_y);
 
@@ -569,6 +579,61 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	profile_fit_fixed_bg_prop.set_description("if true, the background noise is estimated from the border of the whole image and this background value stays fixed during the fit");
 	profile_fit_fixed_bg->set_default_properties(profile_fit_fixed_bg_prop);
 	att_list.push_back(profile_fit_fixed_bg);
+
+	//	Attribute : LineProfileOriginX
+	LineProfileOriginXAttrib	*line_profile_origin_x = new LineProfileOriginXAttrib();
+	Tango::UserDefaultAttrProp	line_profile_origin_x_prop;
+	line_profile_origin_x_prop.set_label("LineProfile Origin X");
+	line_profile_origin_x_prop.set_unit("pix");
+	line_profile_origin_x_prop.set_format("%4d");
+	line_profile_origin_x_prop.set_min_value("0");
+	line_profile_origin_x_prop.set_description("the X coordinate of the origin point of the line profile");
+	line_profile_origin_x->set_default_properties(line_profile_origin_x_prop);
+	att_list.push_back(line_profile_origin_x);
+
+	//	Attribute : LineProfileOriginY
+	LineProfileOriginYAttrib	*line_profile_origin_y = new LineProfileOriginYAttrib();
+	Tango::UserDefaultAttrProp	line_profile_origin_y_prop;
+	line_profile_origin_y_prop.set_label("LineProfile Origin Y");
+	line_profile_origin_y_prop.set_unit("pix");
+	line_profile_origin_y_prop.set_format("%4d");
+	line_profile_origin_y_prop.set_min_value("0");
+	line_profile_origin_y_prop.set_description("the Y coordinate of the origin point of the line profile");
+	line_profile_origin_y->set_default_properties(line_profile_origin_y_prop);
+	att_list.push_back(line_profile_origin_y);
+
+	//	Attribute : LineProfileEndX
+	LineProfileEndXAttrib	*line_profile_end_x = new LineProfileEndXAttrib();
+	Tango::UserDefaultAttrProp	line_profile_end_x_prop;
+	line_profile_end_x_prop.set_label("LineProfile End X");
+	line_profile_end_x_prop.set_unit("pix");
+	line_profile_end_x_prop.set_format("%4d");
+	line_profile_end_x_prop.set_min_value("0");
+	line_profile_end_x_prop.set_description("the X coordinate of the endpoint of the line profile");
+	line_profile_end_x->set_default_properties(line_profile_end_x_prop);
+	att_list.push_back(line_profile_end_x);
+
+	//	Attribute : LineProfileEndY
+	LineProfileEndYAttrib	*line_profile_end_y = new LineProfileEndYAttrib();
+	Tango::UserDefaultAttrProp	line_profile_end_y_prop;
+	line_profile_end_y_prop.set_label("LineProfile End Y");
+	line_profile_end_y_prop.set_unit("pix");
+	line_profile_end_y_prop.set_format("%4d");
+	line_profile_end_y_prop.set_min_value("0");
+	line_profile_end_y_prop.set_description("the Y coordinate of the endpoint of the line profile");
+	line_profile_end_y->set_default_properties(line_profile_end_y_prop);
+	att_list.push_back(line_profile_end_y);
+
+	//	Attribute : LineProfileThickness
+	LineProfileThicknessAttrib	*line_profile_thickness = new LineProfileThicknessAttrib();
+	Tango::UserDefaultAttrProp	line_profile_thickness_prop;
+	line_profile_thickness_prop.set_label("LineProfile Thickness");
+	line_profile_thickness_prop.set_unit("pix");
+	line_profile_thickness_prop.set_format("%4d");
+	line_profile_thickness_prop.set_min_value("1");
+	line_profile_thickness_prop.set_description("defines the number of lines used to average a local line profile");
+	line_profile_thickness->set_default_properties(line_profile_thickness_prop);
+	att_list.push_back(line_profile_thickness);
 
 	//	Attribute : UserROIOriginX
 	UserROIOriginXAttrib	*user_roiorigin_x = new UserROIOriginXAttrib();
@@ -662,23 +727,6 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	auto_roiheight->set_default_properties(auto_roiheight_prop);
 	att_list.push_back(auto_roiheight);
 
-	//	Attribute : InputImage
-	InputImageAttrib	*input_image = new InputImageAttrib();
-	Tango::UserDefaultAttrProp	input_image_prop;
-	input_image_prop.set_label("InputImage");
-	input_image_prop.set_description("raw copy of the input image");
-	input_image->set_default_properties(input_image_prop);
-	att_list.push_back(input_image);
-
-	//	Attribute : ROIImage
-	ROIImageAttrib	*roiimage = new ROIImageAttrib();
-	Tango::UserDefaultAttrProp	roiimage_prop;
-	roiimage_prop.set_label("ROI Image");
-	roiimage_prop.set_unit(" ");
-	roiimage_prop.set_description("the effective image on which are done all the calculation");
-	roiimage->set_default_properties(roiimage_prop);
-	att_list.push_back(roiimage);
-
 	//	Attribute : MaxIntensity
 	MaxIntensityAttrib	*max_intensity = new MaxIntensityAttrib();
 	Tango::UserDefaultAttrProp	max_intensity_prop;
@@ -695,7 +743,7 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	mean_intensity_prop.set_label("MeanIntensity");
 	mean_intensity_prop.set_unit(" ");
 	mean_intensity_prop.set_format("%10.2f");
-	mean_intensity_prop.set_description("the mean intensity inside the beam box");
+	mean_intensity_prop.set_description("the mean intensity inside the ROI");
 	mean_intensity->set_default_properties(mean_intensity_prop);
 	att_list.push_back(mean_intensity);
 
@@ -799,209 +847,209 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	skew_xy2->set_default_properties(skew_xy2_prop);
 	att_list.push_back(skew_xy2);
 
-	//	Attribute : XProfile
-	XProfileAttrib	*xprofile = new XProfileAttrib();
-	Tango::UserDefaultAttrProp	xprofile_prop;
-	xprofile_prop.set_label("XProfile");
-	xprofile_prop.set_unit(" ");
-	xprofile_prop.set_format("%10.2f");
-	xprofile_prop.set_description("the cumulative sum along the X axis");
-	xprofile->set_default_properties(xprofile_prop);
-	att_list.push_back(xprofile);
+	//	Attribute : XProjFitConverged
+	XProjFitConvergedAttrib	*xproj_fit_converged = new XProjFitConvergedAttrib();
+	Tango::UserDefaultAttrProp	xproj_fit_converged_prop;
+	xproj_fit_converged_prop.set_label("X Projection Fit Converged");
+	xproj_fit_converged_prop.set_description("true of the projection fitting algorithm has converged");
+	xproj_fit_converged->set_default_properties(xproj_fit_converged_prop);
+	att_list.push_back(xproj_fit_converged);
 
-	//	Attribute : XProfileFitConverged
-	XProfileFitConvergedAttrib	*xprofile_fit_converged = new XProfileFitConvergedAttrib();
-	Tango::UserDefaultAttrProp	xprofile_fit_converged_prop;
-	xprofile_fit_converged_prop.set_label("XProfile Fit Converged");
-	xprofile_fit_converged_prop.set_description("true of the profile fitting algorithm has converged");
-	xprofile_fit_converged->set_default_properties(xprofile_fit_converged_prop);
-	att_list.push_back(xprofile_fit_converged);
+	//	Attribute : XProjFitCenter
+	XProjFitCenterAttrib	*xproj_fit_center = new XProjFitCenterAttrib();
+	Tango::UserDefaultAttrProp	xproj_fit_center_prop;
+	xproj_fit_center_prop.set_label("X Projection Fit Center");
+	xproj_fit_center_prop.set_unit("µm");
+	xproj_fit_center_prop.set_format("%10.2f");
+	xproj_fit_center_prop.set_description("the X position of the center of the fitted gaussian corresponding to the X projection");
+	xproj_fit_center->set_default_properties(xproj_fit_center_prop);
+	att_list.push_back(xproj_fit_center);
 
-	//	Attribute : XProfileFitted
-	XProfileFittedAttrib	*xprofile_fitted = new XProfileFittedAttrib();
-	Tango::UserDefaultAttrProp	xprofile_fitted_prop;
-	xprofile_fitted_prop.set_label("XProfileFitted");
-	xprofile_fitted_prop.set_unit(" ");
-	xprofile_fitted_prop.set_format("%10.2f");
-	xprofile_fitted_prop.set_description("the fitted profile along the X axis");
-	xprofile_fitted->set_default_properties(xprofile_fitted_prop);
-	xprofile_fitted->set_disp_level(Tango::EXPERT);
-	att_list.push_back(xprofile_fitted);
+	//	Attribute : XProjFitMag
+	XProjFitMagAttrib	*xproj_fit_mag = new XProjFitMagAttrib();
+	Tango::UserDefaultAttrProp	xproj_fit_mag_prop;
+	xproj_fit_mag_prop.set_label("X Projection Fit Magnitude");
+	xproj_fit_mag_prop.set_unit(" ");
+	xproj_fit_mag_prop.set_format("%10.2f");
+	xproj_fit_mag_prop.set_description("the magnitude of  fitted gaussian corresponding to the X projection");
+	xproj_fit_mag->set_default_properties(xproj_fit_mag_prop);
+	att_list.push_back(xproj_fit_mag);
 
-	//	Attribute : XProfileError
-	XProfileErrorAttrib	*xprofile_error = new XProfileErrorAttrib();
-	Tango::UserDefaultAttrProp	xprofile_error_prop;
-	xprofile_error_prop.set_label("XProfileError");
-	xprofile_error_prop.set_unit(" ");
-	xprofile_error_prop.set_format("%10.2f");
-	xprofile_error_prop.set_description("the fitted profile error along the X axis");
-	xprofile_error->set_default_properties(xprofile_error_prop);
-	xprofile_error->set_disp_level(Tango::EXPERT);
-	att_list.push_back(xprofile_error);
+	//	Attribute : XProjFitSigma
+	XProjFitSigmaAttrib	*xproj_fit_sigma = new XProjFitSigmaAttrib();
+	Tango::UserDefaultAttrProp	xproj_fit_sigma_prop;
+	xproj_fit_sigma_prop.set_label("X Projection Fit Sigma");
+	xproj_fit_sigma_prop.set_unit("µm");
+	xproj_fit_sigma_prop.set_format("%10.2f");
+	xproj_fit_sigma_prop.set_description("the standard deviation of  fitted gaussian corresponding to the X projection");
+	xproj_fit_sigma->set_default_properties(xproj_fit_sigma_prop);
+	att_list.push_back(xproj_fit_sigma);
 
-	//	Attribute : XProfileCenter
-	XProfileCenterAttrib	*xprofile_center = new XProfileCenterAttrib();
-	Tango::UserDefaultAttrProp	xprofile_center_prop;
-	xprofile_center_prop.set_label("XProfile Center");
-	xprofile_center_prop.set_unit("µm");
-	xprofile_center_prop.set_format("%10.2f");
-	xprofile_center_prop.set_description("the X position of the center of the fitted gaussian corresponding to the X profile");
-	xprofile_center->set_default_properties(xprofile_center_prop);
-	att_list.push_back(xprofile_center);
+	//	Attribute : XProjFitFWHM
+	XProjFitFWHMAttrib	*xproj_fit_fwhm = new XProjFitFWHMAttrib();
+	Tango::UserDefaultAttrProp	xproj_fit_fwhm_prop;
+	xproj_fit_fwhm_prop.set_label("X Projection Fit FWHM");
+	xproj_fit_fwhm_prop.set_unit("µm");
+	xproj_fit_fwhm_prop.set_format("%10.2f");
+	xproj_fit_fwhm_prop.set_description("the full width at half maximum of the fitted gaussian corresponding to the X projection, calculated as approximately 2.35 * XProjFitSigma");
+	xproj_fit_fwhm->set_default_properties(xproj_fit_fwhm_prop);
+	att_list.push_back(xproj_fit_fwhm);
 
-	//	Attribute : XProfileMag
-	XProfileMagAttrib	*xprofile_mag = new XProfileMagAttrib();
-	Tango::UserDefaultAttrProp	xprofile_mag_prop;
-	xprofile_mag_prop.set_label("XProfile Magnitude");
-	xprofile_mag_prop.set_unit(" ");
-	xprofile_mag_prop.set_format("%10.2f");
-	xprofile_mag_prop.set_description("the magnitude of  fitted gaussian corresponding to the X profile");
-	xprofile_mag->set_default_properties(xprofile_mag_prop);
-	att_list.push_back(xprofile_mag);
+	//	Attribute : XProjFitBG
+	XProjFitBGAttrib	*xproj_fit_bg = new XProjFitBGAttrib();
+	Tango::UserDefaultAttrProp	xproj_fit_bg_prop;
+	xproj_fit_bg_prop.set_label("X Projection Fit Background");
+	xproj_fit_bg_prop.set_unit(" ");
+	xproj_fit_bg_prop.set_format("%10.2f");
+	xproj_fit_bg_prop.set_description("the background of  fitted gaussian corresponding to the X projection");
+	xproj_fit_bg->set_default_properties(xproj_fit_bg_prop);
+	att_list.push_back(xproj_fit_bg);
 
-	//	Attribute : XProfileSigma
-	XProfileSigmaAttrib	*xprofile_sigma = new XProfileSigmaAttrib();
-	Tango::UserDefaultAttrProp	xprofile_sigma_prop;
-	xprofile_sigma_prop.set_label("XProfile Sigma");
-	xprofile_sigma_prop.set_unit("µm");
-	xprofile_sigma_prop.set_format("%10.2f");
-	xprofile_sigma_prop.set_description("the standard deviation of  fitted gaussian corresponding to the X profile");
-	xprofile_sigma->set_default_properties(xprofile_sigma_prop);
-	att_list.push_back(xprofile_sigma);
+	//	Attribute : XProjFitChi2
+	XProjFitChi2Attrib	*xproj_fit_chi2 = new XProjFitChi2Attrib();
+	Tango::UserDefaultAttrProp	xproj_fit_chi2_prop;
+	xproj_fit_chi2_prop.set_label("X Projection Fit Chi2");
+	xproj_fit_chi2_prop.set_unit(" ");
+	xproj_fit_chi2_prop.set_format("%10.2f");
+	xproj_fit_chi2_prop.set_description("the chi-2 of  fitted gaussian corresponding to the X projection");
+	xproj_fit_chi2->set_default_properties(xproj_fit_chi2_prop);
+	att_list.push_back(xproj_fit_chi2);
 
-	//	Attribute : XProfileFWHM
-	XProfileFWHMAttrib	*xprofile_fwhm = new XProfileFWHMAttrib();
-	Tango::UserDefaultAttrProp	xprofile_fwhm_prop;
-	xprofile_fwhm_prop.set_label("XProfile FWHM");
-	xprofile_fwhm_prop.set_unit("µm");
-	xprofile_fwhm_prop.set_format("%10.2f");
-	xprofile_fwhm_prop.set_description("the full width at half maximum of the fitted gaussian corresponding to the X profile, calculated approximately as 2.35 * XProfileSigma");
-	xprofile_fwhm->set_default_properties(xprofile_fwhm_prop);
-	att_list.push_back(xprofile_fwhm);
+	//	Attribute : YProjFitConverged
+	YProjFitConvergedAttrib	*yproj_fit_converged = new YProjFitConvergedAttrib();
+	Tango::UserDefaultAttrProp	yproj_fit_converged_prop;
+	yproj_fit_converged_prop.set_label("Y Projection Fit Converged");
+	yproj_fit_converged_prop.set_description("true of the projection fitting algorithm has converged");
+	yproj_fit_converged->set_default_properties(yproj_fit_converged_prop);
+	att_list.push_back(yproj_fit_converged);
 
-	//	Attribute : XProfileBG
-	XProfileBGAttrib	*xprofile_bg = new XProfileBGAttrib();
-	Tango::UserDefaultAttrProp	xprofile_bg_prop;
-	xprofile_bg_prop.set_label("XProfile Background");
-	xprofile_bg_prop.set_unit(" ");
-	xprofile_bg_prop.set_format("%10.2f");
-	xprofile_bg_prop.set_description("the background of  fitted gaussian corresponding to the X profile");
-	xprofile_bg->set_default_properties(xprofile_bg_prop);
-	att_list.push_back(xprofile_bg);
+	//	Attribute : YProjFitCenter
+	YProjFitCenterAttrib	*yproj_fit_center = new YProjFitCenterAttrib();
+	Tango::UserDefaultAttrProp	yproj_fit_center_prop;
+	yproj_fit_center_prop.set_label("Y Projection Fit Center");
+	yproj_fit_center_prop.set_unit("µm");
+	yproj_fit_center_prop.set_format("%10.2f");
+	yproj_fit_center_prop.set_description("the Y position of the center of the fitted gaussian corresponding to the Y projection");
+	yproj_fit_center->set_default_properties(yproj_fit_center_prop);
+	att_list.push_back(yproj_fit_center);
 
-	//	Attribute : XProfileChi2
-	XProfileChi2Attrib	*xprofile_chi2 = new XProfileChi2Attrib();
-	Tango::UserDefaultAttrProp	xprofile_chi2_prop;
-	xprofile_chi2_prop.set_label("XProfile Chi2");
-	xprofile_chi2_prop.set_unit(" ");
-	xprofile_chi2_prop.set_format("%10.2f");
-	xprofile_chi2_prop.set_description("the chi-2 of  fitted gaussian corresponding to the X profile");
-	xprofile_chi2->set_default_properties(xprofile_chi2_prop);
-	att_list.push_back(xprofile_chi2);
+	//	Attribute : YProjFitMag
+	YProjFitMagAttrib	*yproj_fit_mag = new YProjFitMagAttrib();
+	Tango::UserDefaultAttrProp	yproj_fit_mag_prop;
+	yproj_fit_mag_prop.set_label("Y Projection Fit Magnitude");
+	yproj_fit_mag_prop.set_unit(" ");
+	yproj_fit_mag_prop.set_format("%10.2f");
+	yproj_fit_mag_prop.set_description("the magnitude of  fitted gaussian corresponding to the Y projection");
+	yproj_fit_mag->set_default_properties(yproj_fit_mag_prop);
+	att_list.push_back(yproj_fit_mag);
 
-	//	Attribute : YProfile
-	YProfileAttrib	*yprofile = new YProfileAttrib();
-	Tango::UserDefaultAttrProp	yprofile_prop;
-	yprofile_prop.set_label("YProfile");
-	yprofile_prop.set_unit(" ");
-	yprofile_prop.set_format("%10.2f");
-	yprofile_prop.set_description("the cumulative sum along the Y axis");
-	yprofile->set_default_properties(yprofile_prop);
-	att_list.push_back(yprofile);
+	//	Attribute : YProjFitSigma
+	YProjFitSigmaAttrib	*yproj_fit_sigma = new YProjFitSigmaAttrib();
+	Tango::UserDefaultAttrProp	yproj_fit_sigma_prop;
+	yproj_fit_sigma_prop.set_label("Y Projection Fit Sigma");
+	yproj_fit_sigma_prop.set_unit("µm");
+	yproj_fit_sigma_prop.set_format("%10.2f");
+	yproj_fit_sigma_prop.set_description("the standard deviation of  fitted gaussian corresponding to the Y projection");
+	yproj_fit_sigma->set_default_properties(yproj_fit_sigma_prop);
+	att_list.push_back(yproj_fit_sigma);
 
-	//	Attribute : YProfileFitConverged
-	YProfileFitConvergedAttrib	*yprofile_fit_converged = new YProfileFitConvergedAttrib();
-	Tango::UserDefaultAttrProp	yprofile_fit_converged_prop;
-	yprofile_fit_converged_prop.set_label("YProfile Fit Converged");
-	yprofile_fit_converged_prop.set_description("true of the profile fitting algorithm has converged");
-	yprofile_fit_converged->set_default_properties(yprofile_fit_converged_prop);
-	att_list.push_back(yprofile_fit_converged);
+	//	Attribute : YProjFitFWHM
+	YProjFitFWHMAttrib	*yproj_fit_fwhm = new YProjFitFWHMAttrib();
+	Tango::UserDefaultAttrProp	yproj_fit_fwhm_prop;
+	yproj_fit_fwhm_prop.set_label("Y Projection Fit FWHM");
+	yproj_fit_fwhm_prop.set_unit("µm");
+	yproj_fit_fwhm_prop.set_format("%10.2f");
+	yproj_fit_fwhm_prop.set_description("the full width at half maximum of the fitted gaussian corresponding to the Y projection, calculated approximately as 2.35 * YProjFitSigma");
+	yproj_fit_fwhm->set_default_properties(yproj_fit_fwhm_prop);
+	att_list.push_back(yproj_fit_fwhm);
 
-	//	Attribute : YProfileFitted
-	YProfileFittedAttrib	*yprofile_fitted = new YProfileFittedAttrib();
-	Tango::UserDefaultAttrProp	yprofile_fitted_prop;
-	yprofile_fitted_prop.set_label("YProfileFitted");
-	yprofile_fitted_prop.set_unit(" ");
-	yprofile_fitted_prop.set_format("%10.2f");
-	yprofile_fitted_prop.set_description("the fitted profile along the Y axis");
-	yprofile_fitted->set_default_properties(yprofile_fitted_prop);
-	yprofile_fitted->set_disp_level(Tango::EXPERT);
-	att_list.push_back(yprofile_fitted);
+	//	Attribute : YProjFitBG
+	YProjFitBGAttrib	*yproj_fit_bg = new YProjFitBGAttrib();
+	Tango::UserDefaultAttrProp	yproj_fit_bg_prop;
+	yproj_fit_bg_prop.set_label("Y Projection Fit Background");
+	yproj_fit_bg_prop.set_unit(" ");
+	yproj_fit_bg_prop.set_format("%10.2f");
+	yproj_fit_bg_prop.set_description("the background of  fitted gaussian corresponding to the Y projection");
+	yproj_fit_bg->set_default_properties(yproj_fit_bg_prop);
+	att_list.push_back(yproj_fit_bg);
 
-	//	Attribute : YProfileError
-	YProfileErrorAttrib	*yprofile_error = new YProfileErrorAttrib();
-	Tango::UserDefaultAttrProp	yprofile_error_prop;
-	yprofile_error_prop.set_label("YProfileError");
-	yprofile_error_prop.set_unit(" ");
-	yprofile_error_prop.set_format("%10.2f");
-	yprofile_error_prop.set_description("the fitted profile error along the Y axis");
-	yprofile_error->set_default_properties(yprofile_error_prop);
-	yprofile_error->set_disp_level(Tango::EXPERT);
-	att_list.push_back(yprofile_error);
+	//	Attribute : YProjFitChi2
+	YProjFitChi2Attrib	*yproj_fit_chi2 = new YProjFitChi2Attrib();
+	Tango::UserDefaultAttrProp	yproj_fit_chi2_prop;
+	yproj_fit_chi2_prop.set_label("Y Projection Fit Chi2");
+	yproj_fit_chi2_prop.set_unit(" ");
+	yproj_fit_chi2_prop.set_format("%10.2f");
+	yproj_fit_chi2_prop.set_description("the chi-2 of  fitted gaussian corresponding to the Y projection");
+	yproj_fit_chi2->set_default_properties(yproj_fit_chi2_prop);
+	att_list.push_back(yproj_fit_chi2);
 
-	//	Attribute : YProfileCenter
-	YProfileCenterAttrib	*yprofile_center = new YProfileCenterAttrib();
-	Tango::UserDefaultAttrProp	yprofile_center_prop;
-	yprofile_center_prop.set_label("YProfile Center");
-	yprofile_center_prop.set_unit("µm");
-	yprofile_center_prop.set_format("%10.2f");
-	yprofile_center_prop.set_description("the Y position of the center of the fitted gaussian corresponding to the Y profile");
-	yprofile_center->set_default_properties(yprofile_center_prop);
-	att_list.push_back(yprofile_center);
+	//	Attribute : LineProfileFitConverged
+	LineProfileFitConvergedAttrib	*line_profile_fit_converged = new LineProfileFitConvergedAttrib();
+	Tango::UserDefaultAttrProp	line_profile_fit_converged_prop;
+	line_profile_fit_converged_prop.set_label("LineProfile Fit Converged");
+	line_profile_fit_converged_prop.set_description("true of the profile fitting algorithm has converged");
+	line_profile_fit_converged->set_default_properties(line_profile_fit_converged_prop);
+	att_list.push_back(line_profile_fit_converged);
 
-	//	Attribute : YProfileMag
-	YProfileMagAttrib	*yprofile_mag = new YProfileMagAttrib();
-	Tango::UserDefaultAttrProp	yprofile_mag_prop;
-	yprofile_mag_prop.set_label("YProfile Magnitude");
-	yprofile_mag_prop.set_unit(" ");
-	yprofile_mag_prop.set_format("%10.2f");
-	yprofile_mag_prop.set_description("the magnitude of  fitted gaussian corresponding to the Y profile");
-	yprofile_mag->set_default_properties(yprofile_mag_prop);
-	att_list.push_back(yprofile_mag);
+	//	Attribute : LineProfileFitCenter
+	LineProfileFitCenterAttrib	*line_profile_fit_center = new LineProfileFitCenterAttrib();
+	Tango::UserDefaultAttrProp	line_profile_fit_center_prop;
+	line_profile_fit_center_prop.set_label("LineProfile Fit Center");
+	line_profile_fit_center_prop.set_unit("µm");
+	line_profile_fit_center_prop.set_format("%10.2f");
+	line_profile_fit_center_prop.set_description("the Y position of the center of the fitted gaussian corresponding to the line profile");
+	line_profile_fit_center->set_default_properties(line_profile_fit_center_prop);
+	att_list.push_back(line_profile_fit_center);
 
-	//	Attribute : YProfileSigma
-	YProfileSigmaAttrib	*yprofile_sigma = new YProfileSigmaAttrib();
-	Tango::UserDefaultAttrProp	yprofile_sigma_prop;
-	yprofile_sigma_prop.set_label("YProfile Sigma");
-	yprofile_sigma_prop.set_unit("µm");
-	yprofile_sigma_prop.set_format("%10.2f");
-	yprofile_sigma_prop.set_description("the standard deviation of  fitted gaussian corresponding to the Y profile");
-	yprofile_sigma->set_default_properties(yprofile_sigma_prop);
-	att_list.push_back(yprofile_sigma);
+	//	Attribute : LineProfileFitMag
+	LineProfileFitMagAttrib	*line_profile_fit_mag = new LineProfileFitMagAttrib();
+	Tango::UserDefaultAttrProp	line_profile_fit_mag_prop;
+	line_profile_fit_mag_prop.set_label("LineProfile Fit Magnitude");
+	line_profile_fit_mag_prop.set_unit(" ");
+	line_profile_fit_mag_prop.set_format("%10.2f");
+	line_profile_fit_mag_prop.set_description("the magnitude of  fitted gaussian corresponding to the line profile");
+	line_profile_fit_mag->set_default_properties(line_profile_fit_mag_prop);
+	att_list.push_back(line_profile_fit_mag);
 
-	//	Attribute : YProfileFWHM
-	YProfileFWHMAttrib	*yprofile_fwhm = new YProfileFWHMAttrib();
-	Tango::UserDefaultAttrProp	yprofile_fwhm_prop;
-	yprofile_fwhm_prop.set_label("YProfile FWHM");
-	yprofile_fwhm_prop.set_unit("µm");
-	yprofile_fwhm_prop.set_format("%10.2f");
-	yprofile_fwhm_prop.set_description("the full width at half maximum of the fitted gaussian corresponding to the Y profile, calculated approximately as 2.35 * YProfileSigma");
-	yprofile_fwhm->set_default_properties(yprofile_fwhm_prop);
-	att_list.push_back(yprofile_fwhm);
+	//	Attribute : LineProfileFitSigma
+	LineProfileFitSigmaAttrib	*line_profile_fit_sigma = new LineProfileFitSigmaAttrib();
+	Tango::UserDefaultAttrProp	line_profile_fit_sigma_prop;
+	line_profile_fit_sigma_prop.set_label("LineProfile Fit Sigma");
+	line_profile_fit_sigma_prop.set_unit("µm");
+	line_profile_fit_sigma_prop.set_format("%10.2f");
+	line_profile_fit_sigma_prop.set_description("the standard deviation of  fitted gaussian corresponding to the line profile");
+	line_profile_fit_sigma->set_default_properties(line_profile_fit_sigma_prop);
+	att_list.push_back(line_profile_fit_sigma);
 
-	//	Attribute : YProfileBG
-	YProfileBGAttrib	*yprofile_bg = new YProfileBGAttrib();
-	Tango::UserDefaultAttrProp	yprofile_bg_prop;
-	yprofile_bg_prop.set_label("YProfile Background");
-	yprofile_bg_prop.set_unit(" ");
-	yprofile_bg_prop.set_format("%10.2f");
-	yprofile_bg_prop.set_description("the background of  fitted gaussian corresponding to the Y profile");
-	yprofile_bg->set_default_properties(yprofile_bg_prop);
-	att_list.push_back(yprofile_bg);
+	//	Attribute : LineProfileFitFWHM
+	LineProfileFitFWHMAttrib	*line_profile_fit_fwhm = new LineProfileFitFWHMAttrib();
+	Tango::UserDefaultAttrProp	line_profile_fit_fwhm_prop;
+	line_profile_fit_fwhm_prop.set_label("LineProfile Fit FWHM");
+	line_profile_fit_fwhm_prop.set_unit("µm");
+	line_profile_fit_fwhm_prop.set_format("%10.2f");
+	line_profile_fit_fwhm_prop.set_description("the full width at half maximum of the fitted gaussian corresponding to the line profile, calculated approximately as 2.35 * LineProfileFitSigma");
+	line_profile_fit_fwhm->set_default_properties(line_profile_fit_fwhm_prop);
+	att_list.push_back(line_profile_fit_fwhm);
 
-	//	Attribute : YProfileChi2
-	YProfileChi2Attrib	*yprofile_chi2 = new YProfileChi2Attrib();
-	Tango::UserDefaultAttrProp	yprofile_chi2_prop;
-	yprofile_chi2_prop.set_label("YProfile Chi2");
-	yprofile_chi2_prop.set_unit(" ");
-	yprofile_chi2_prop.set_format("%10.2f");
-	yprofile_chi2_prop.set_description("the chi-2 of  fitted gaussian corresponding to the Y profile");
-	yprofile_chi2->set_default_properties(yprofile_chi2_prop);
-	att_list.push_back(yprofile_chi2);
+	//	Attribute : LineProfileFitBG
+	LineProfileFitBGAttrib	*line_profile_fit_bg = new LineProfileFitBGAttrib();
+	Tango::UserDefaultAttrProp	line_profile_fit_bg_prop;
+	line_profile_fit_bg_prop.set_label("LineProfile Fit Background");
+	line_profile_fit_bg_prop.set_unit(" ");
+	line_profile_fit_bg_prop.set_format("%10.2f");
+	line_profile_fit_bg_prop.set_description("the background of  fitted gaussian corresponding to the line profile");
+	line_profile_fit_bg->set_default_properties(line_profile_fit_bg_prop);
+	att_list.push_back(line_profile_fit_bg);
 
-	//	Attribute : Histogram
-	HistogramAttrib	*histogram = new HistogramAttrib();
-	att_list.push_back(histogram);
+	//	Attribute : LineProfileFitChi2
+	LineProfileFitChi2Attrib	*line_profile_fit_chi2 = new LineProfileFitChi2Attrib();
+	Tango::UserDefaultAttrProp	line_profile_fit_chi2_prop;
+	line_profile_fit_chi2_prop.set_label("LineProfile Fit Chi2");
+	line_profile_fit_chi2_prop.set_unit(" ");
+	line_profile_fit_chi2_prop.set_format("%10.2f");
+	line_profile_fit_chi2_prop.set_description("the chi-2 of  fitted gaussian corresponding to the line profile");
+	line_profile_fit_chi2->set_default_properties(line_profile_fit_chi2_prop);
+	att_list.push_back(line_profile_fit_chi2);
 
 	//	Attribute : GaussianFitConverged
 	GaussianFitConvergedAttrib	*gaussian_fit_converged = new GaussianFitConvergedAttrib();
@@ -1121,17 +1169,6 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	gaussian_fit_chi2->set_default_properties(gaussian_fit_chi2_prop);
 	att_list.push_back(gaussian_fit_chi2);
 
-	//	Attribute : GaussianFitParameterCovariance
-	GaussianFitParameterCovarianceAttrib	*gaussian_fit_parameter_covariance = new GaussianFitParameterCovarianceAttrib();
-	Tango::UserDefaultAttrProp	gaussian_fit_parameter_covariance_prop;
-	gaussian_fit_parameter_covariance_prop.set_label("GaussianFitParameterCovariance");
-	gaussian_fit_parameter_covariance_prop.set_unit(" ");
-	gaussian_fit_parameter_covariance_prop.set_format("%10.2f");
-	gaussian_fit_parameter_covariance_prop.set_description("the covariance matrix of the best fit parameters (7x7). the 7 parameters are ordered as [A, x_c, y_c, s_xx, s_xy, s_yy, b]");
-	gaussian_fit_parameter_covariance->set_default_properties(gaussian_fit_parameter_covariance_prop);
-	gaussian_fit_parameter_covariance->set_disp_level(Tango::EXPERT);
-	att_list.push_back(gaussian_fit_parameter_covariance);
-
 	//	Attribute : Fit1DNbIterMax
 	Fit1DNbIterMaxAttrib	*fit1_dnb_iter_max = new Fit1DNbIterMaxAttrib();
 	Tango::UserDefaultAttrProp	fit1_dnb_iter_max_prop;
@@ -1176,49 +1213,71 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	fit2_dmax_rel_change->set_disp_level(Tango::EXPERT);
 	att_list.push_back(fit2_dmax_rel_change);
 
-	//	Attribute : XProfileNbIter
-	XProfileNbIterAttrib	*xprofile_nb_iter = new XProfileNbIterAttrib();
-	Tango::UserDefaultAttrProp	xprofile_nb_iter_prop;
-	xprofile_nb_iter_prop.set_label("XProfile Nb Iter");
-	xprofile_nb_iter_prop.set_unit(" ");
-	xprofile_nb_iter_prop.set_format("%10d");
-	xprofile_nb_iter_prop.set_description("the number of iterations needed to converge to the fitted profile");
-	xprofile_nb_iter->set_default_properties(xprofile_nb_iter_prop);
-	xprofile_nb_iter->set_disp_level(Tango::EXPERT);
-	att_list.push_back(xprofile_nb_iter);
+	//	Attribute : XProjFitNbIter
+	XProjFitNbIterAttrib	*xproj_fit_nb_iter = new XProjFitNbIterAttrib();
+	Tango::UserDefaultAttrProp	xproj_fit_nb_iter_prop;
+	xproj_fit_nb_iter_prop.set_label("XProfile Nb Iter");
+	xproj_fit_nb_iter_prop.set_unit(" ");
+	xproj_fit_nb_iter_prop.set_format("%10d");
+	xproj_fit_nb_iter_prop.set_description("the number of iterations needed to converge to the fitted profile");
+	xproj_fit_nb_iter->set_default_properties(xproj_fit_nb_iter_prop);
+	xproj_fit_nb_iter->set_disp_level(Tango::EXPERT);
+	att_list.push_back(xproj_fit_nb_iter);
 
-	//	Attribute : XProfileFitRelChange
-	XProfileFitRelChangeAttrib	*xprofile_fit_rel_change = new XProfileFitRelChangeAttrib();
-	Tango::UserDefaultAttrProp	xprofile_fit_rel_change_prop;
-	xprofile_fit_rel_change_prop.set_label("XProfile Fit Rel. Change");
-	xprofile_fit_rel_change_prop.set_unit(" ");
-	xprofile_fit_rel_change_prop.set_format("%10.6f");
-	xprofile_fit_rel_change_prop.set_description("the relative change in the fit parameters between the two last iterations");
-	xprofile_fit_rel_change->set_default_properties(xprofile_fit_rel_change_prop);
-	xprofile_fit_rel_change->set_disp_level(Tango::EXPERT);
-	att_list.push_back(xprofile_fit_rel_change);
+	//	Attribute : XProjFitRelChange
+	XProjFitRelChangeAttrib	*xproj_fit_rel_change = new XProjFitRelChangeAttrib();
+	Tango::UserDefaultAttrProp	xproj_fit_rel_change_prop;
+	xproj_fit_rel_change_prop.set_label("XProfile Fit Rel. Change");
+	xproj_fit_rel_change_prop.set_unit(" ");
+	xproj_fit_rel_change_prop.set_format("%10.6f");
+	xproj_fit_rel_change_prop.set_description("the relative change in the fit parameters between the two last iterations");
+	xproj_fit_rel_change->set_default_properties(xproj_fit_rel_change_prop);
+	xproj_fit_rel_change->set_disp_level(Tango::EXPERT);
+	att_list.push_back(xproj_fit_rel_change);
 
-	//	Attribute : YProfileNbIter
-	YProfileNbIterAttrib	*yprofile_nb_iter = new YProfileNbIterAttrib();
-	Tango::UserDefaultAttrProp	yprofile_nb_iter_prop;
-	yprofile_nb_iter_prop.set_label("YProfile Nb Iter");
-	yprofile_nb_iter_prop.set_unit(" ");
-	yprofile_nb_iter_prop.set_format("%10d");
-	yprofile_nb_iter_prop.set_description("the number of iterations needed to converge to the fitted profile");
-	yprofile_nb_iter->set_default_properties(yprofile_nb_iter_prop);
-	yprofile_nb_iter->set_disp_level(Tango::EXPERT);
-	att_list.push_back(yprofile_nb_iter);
+	//	Attribute : YProjFitNbIter
+	YProjFitNbIterAttrib	*yproj_fit_nb_iter = new YProjFitNbIterAttrib();
+	Tango::UserDefaultAttrProp	yproj_fit_nb_iter_prop;
+	yproj_fit_nb_iter_prop.set_label("YProfile Nb Iter");
+	yproj_fit_nb_iter_prop.set_unit(" ");
+	yproj_fit_nb_iter_prop.set_format("%10d");
+	yproj_fit_nb_iter_prop.set_description("the number of iterations needed to converge to the fitted profile");
+	yproj_fit_nb_iter->set_default_properties(yproj_fit_nb_iter_prop);
+	yproj_fit_nb_iter->set_disp_level(Tango::EXPERT);
+	att_list.push_back(yproj_fit_nb_iter);
 
-	//	Attribute : YProfileFitRelChange
-	YProfileFitRelChangeAttrib	*yprofile_fit_rel_change = new YProfileFitRelChangeAttrib();
-	Tango::UserDefaultAttrProp	yprofile_fit_rel_change_prop;
-	yprofile_fit_rel_change_prop.set_label("YProfile Fit Rel. Change");
-	yprofile_fit_rel_change_prop.set_unit(" ");
-	yprofile_fit_rel_change_prop.set_format("%10.6f");
-	yprofile_fit_rel_change_prop.set_description("the relative change in the fit parameters between the two last iterations");
-	yprofile_fit_rel_change->set_default_properties(yprofile_fit_rel_change_prop);
-	yprofile_fit_rel_change->set_disp_level(Tango::EXPERT);
-	att_list.push_back(yprofile_fit_rel_change);
+	//	Attribute : YProjFitRelChange
+	YProjFitRelChangeAttrib	*yproj_fit_rel_change = new YProjFitRelChangeAttrib();
+	Tango::UserDefaultAttrProp	yproj_fit_rel_change_prop;
+	yproj_fit_rel_change_prop.set_label("YProfile Fit Rel. Change");
+	yproj_fit_rel_change_prop.set_unit(" ");
+	yproj_fit_rel_change_prop.set_format("%10.6f");
+	yproj_fit_rel_change_prop.set_description("the relative change in the fit parameters between the two last iterations");
+	yproj_fit_rel_change->set_default_properties(yproj_fit_rel_change_prop);
+	yproj_fit_rel_change->set_disp_level(Tango::EXPERT);
+	att_list.push_back(yproj_fit_rel_change);
+
+	//	Attribute : LineProfileFitNbIter
+	LineProfileFitNbIterAttrib	*line_profile_fit_nb_iter = new LineProfileFitNbIterAttrib();
+	Tango::UserDefaultAttrProp	line_profile_fit_nb_iter_prop;
+	line_profile_fit_nb_iter_prop.set_label("LineProfile Nb Iter");
+	line_profile_fit_nb_iter_prop.set_unit(" ");
+	line_profile_fit_nb_iter_prop.set_format("%10d");
+	line_profile_fit_nb_iter_prop.set_description("the number of iterations needed to converge to the fitted profile");
+	line_profile_fit_nb_iter->set_default_properties(line_profile_fit_nb_iter_prop);
+	line_profile_fit_nb_iter->set_disp_level(Tango::EXPERT);
+	att_list.push_back(line_profile_fit_nb_iter);
+
+	//	Attribute : LineProfileFitRelChange
+	LineProfileFitRelChangeAttrib	*line_profile_fit_rel_change = new LineProfileFitRelChangeAttrib();
+	Tango::UserDefaultAttrProp	line_profile_fit_rel_change_prop;
+	line_profile_fit_rel_change_prop.set_label("LineProfile Fit Rel. Change");
+	line_profile_fit_rel_change_prop.set_unit(" ");
+	line_profile_fit_rel_change_prop.set_format("%10.6f");
+	line_profile_fit_rel_change_prop.set_description("the relative change in the fit parameters between the two last iterations");
+	line_profile_fit_rel_change->set_default_properties(line_profile_fit_rel_change_prop);
+	line_profile_fit_rel_change->set_disp_level(Tango::EXPERT);
+	att_list.push_back(line_profile_fit_rel_change);
 
 	//	Attribute : GaussianFitNbIter
 	GaussianFitNbIterAttrib	*gaussian_fit_nb_iter = new GaussianFitNbIterAttrib();
@@ -1241,6 +1300,134 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	gaussian_fit_rel_change->set_default_properties(gaussian_fit_rel_change_prop);
 	gaussian_fit_rel_change->set_disp_level(Tango::EXPERT);
 	att_list.push_back(gaussian_fit_rel_change);
+
+	//	Attribute : XProj
+	XProjAttrib	*xproj = new XProjAttrib();
+	Tango::UserDefaultAttrProp	xproj_prop;
+	xproj_prop.set_label("XProfile");
+	xproj_prop.set_unit(" ");
+	xproj_prop.set_format("%10.4f");
+	xproj_prop.set_description("the mean value along the X axis");
+	xproj->set_default_properties(xproj_prop);
+	att_list.push_back(xproj);
+
+	//	Attribute : XProjFitted
+	XProjFittedAttrib	*xproj_fitted = new XProjFittedAttrib();
+	Tango::UserDefaultAttrProp	xproj_fitted_prop;
+	xproj_fitted_prop.set_label("XProfileFitted");
+	xproj_fitted_prop.set_unit(" ");
+	xproj_fitted_prop.set_format("%10.2f");
+	xproj_fitted_prop.set_description("the gaussian fit result of XProj");
+	xproj_fitted->set_default_properties(xproj_fitted_prop);
+	xproj_fitted->set_disp_level(Tango::EXPERT);
+	att_list.push_back(xproj_fitted);
+
+	//	Attribute : XProjError
+	XProjErrorAttrib	*xproj_error = new XProjErrorAttrib();
+	Tango::UserDefaultAttrProp	xproj_error_prop;
+	xproj_error_prop.set_label("XProfileError");
+	xproj_error_prop.set_unit(" ");
+	xproj_error_prop.set_format("%10.2f");
+	xproj_error_prop.set_description("the fitted profile error along the X axis");
+	xproj_error->set_default_properties(xproj_error_prop);
+	xproj_error->set_disp_level(Tango::EXPERT);
+	att_list.push_back(xproj_error);
+
+	//	Attribute : YProj
+	YProjAttrib	*yproj = new YProjAttrib();
+	Tango::UserDefaultAttrProp	yproj_prop;
+	yproj_prop.set_label("YProfile");
+	yproj_prop.set_unit(" ");
+	yproj_prop.set_format("%10.4f");
+	yproj_prop.set_description("the mean value along the Y axis");
+	yproj->set_default_properties(yproj_prop);
+	att_list.push_back(yproj);
+
+	//	Attribute : YProjFitted
+	YProjFittedAttrib	*yproj_fitted = new YProjFittedAttrib();
+	Tango::UserDefaultAttrProp	yproj_fitted_prop;
+	yproj_fitted_prop.set_label("YProfileFitted");
+	yproj_fitted_prop.set_unit(" ");
+	yproj_fitted_prop.set_format("%10.2f");
+	yproj_fitted_prop.set_description("the gaussian fit result of XProj");
+	yproj_fitted->set_default_properties(yproj_fitted_prop);
+	yproj_fitted->set_disp_level(Tango::EXPERT);
+	att_list.push_back(yproj_fitted);
+
+	//	Attribute : YProjError
+	YProjErrorAttrib	*yproj_error = new YProjErrorAttrib();
+	Tango::UserDefaultAttrProp	yproj_error_prop;
+	yproj_error_prop.set_label("YProfileError");
+	yproj_error_prop.set_unit(" ");
+	yproj_error_prop.set_format("%10.2f");
+	yproj_error_prop.set_description("the fitted profile error along the Y axis");
+	yproj_error->set_default_properties(yproj_error_prop);
+	yproj_error->set_disp_level(Tango::EXPERT);
+	att_list.push_back(yproj_error);
+
+	//	Attribute : LineProfile
+	LineProfileAttrib	*line_profile = new LineProfileAttrib();
+	Tango::UserDefaultAttrProp	line_profile_prop;
+	line_profile_prop.set_label("Line Profile");
+	line_profile_prop.set_unit(" ");
+	line_profile_prop.set_format("%10.2f");
+	line_profile_prop.set_description("the line profile values");
+	line_profile->set_default_properties(line_profile_prop);
+	att_list.push_back(line_profile);
+
+	//	Attribute : LineProfileFitted
+	LineProfileFittedAttrib	*line_profile_fitted = new LineProfileFittedAttrib();
+	Tango::UserDefaultAttrProp	line_profile_fitted_prop;
+	line_profile_fitted_prop.set_label("LineProfileFitted");
+	line_profile_fitted_prop.set_unit(" ");
+	line_profile_fitted_prop.set_format("%10.2f");
+	line_profile_fitted_prop.set_description("the fitted line profile");
+	line_profile_fitted->set_default_properties(line_profile_fitted_prop);
+	line_profile_fitted->set_disp_level(Tango::EXPERT);
+	att_list.push_back(line_profile_fitted);
+
+	//	Attribute : LineProfileError
+	LineProfileErrorAttrib	*line_profile_error = new LineProfileErrorAttrib();
+	Tango::UserDefaultAttrProp	line_profile_error_prop;
+	line_profile_error_prop.set_label("LineProfileError");
+	line_profile_error_prop.set_unit(" ");
+	line_profile_error_prop.set_format("%10.2f");
+	line_profile_error_prop.set_description("the fitted line profile error");
+	line_profile_error->set_default_properties(line_profile_error_prop);
+	line_profile_error->set_disp_level(Tango::EXPERT);
+	att_list.push_back(line_profile_error);
+
+	//	Attribute : Histogram
+	HistogramAttrib	*histogram = new HistogramAttrib();
+	att_list.push_back(histogram);
+
+	//	Attribute : InputImage
+	InputImageAttrib	*input_image = new InputImageAttrib();
+	Tango::UserDefaultAttrProp	input_image_prop;
+	input_image_prop.set_label("InputImage");
+	input_image_prop.set_description("raw copy of the input image");
+	input_image->set_default_properties(input_image_prop);
+	att_list.push_back(input_image);
+
+	//	Attribute : ROIImage
+	ROIImageAttrib	*roiimage = new ROIImageAttrib();
+	Tango::UserDefaultAttrProp	roiimage_prop;
+	roiimage_prop.set_label("ROI Image");
+	roiimage_prop.set_unit(" ");
+	roiimage_prop.set_description("the effective image on which are done all the calculation");
+	roiimage->set_default_properties(roiimage_prop);
+	att_list.push_back(roiimage);
+
+	//	Attribute : GaussianFitParameterCovariance
+	GaussianFitParameterCovarianceAttrib	*gaussian_fit_parameter_covariance = new GaussianFitParameterCovarianceAttrib();
+	Tango::UserDefaultAttrProp	gaussian_fit_parameter_covariance_prop;
+	gaussian_fit_parameter_covariance_prop.set_label("GaussianFitParameterCovariance");
+	gaussian_fit_parameter_covariance_prop.set_unit(" ");
+	gaussian_fit_parameter_covariance_prop.set_format("%10.2f");
+	gaussian_fit_parameter_covariance_prop.set_description("the covariance matrix of the best fit parameters (7x7). the 7 parameters are ordered as [A, xc, yc, s_xx, s_xy, s_yy, b]");
+	gaussian_fit_parameter_covariance->set_default_properties(gaussian_fit_parameter_covariance_prop);
+	gaussian_fit_parameter_covariance->set_disp_level(Tango::EXPERT);
+	att_list.push_back(gaussian_fit_parameter_covariance);
 
 	//	End of Automatic code generation
 	//-------------------------------------------------------------

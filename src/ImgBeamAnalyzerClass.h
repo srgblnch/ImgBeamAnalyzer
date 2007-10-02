@@ -12,7 +12,7 @@
 //
 // $Author: julien_malik $
 //
-// $Revision: 1.10 $
+// $Revision: 1.11 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -39,6 +39,164 @@ namespace ImgBeamAnalyzer_ns
 //=====================================
 //	Define classes for attributes
 //=====================================
+class GaussianFitParameterCovarianceAttrib: public Tango::ImageAttr
+{
+public:
+	GaussianFitParameterCovarianceAttrib():ImageAttr("GaussianFitParameterCovariance", Tango::DEV_DOUBLE, Tango::READ, 7, 7) {};
+	~GaussianFitParameterCovarianceAttrib() {};
+	
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_GaussianFitParameterCovariance(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_GaussianFitParameterCovariance_allowed(ty);}
+};
+
+class ROIImageAttrib: public Tango::ImageAttr
+{
+public:
+	ROIImageAttrib():ImageAttr("ROIImage", Tango::DEV_USHORT, Tango::READ, 131072, 131072) {};
+	~ROIImageAttrib() {};
+	
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_ROIImage(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_ROIImage_allowed(ty);}
+};
+
+class InputImageAttrib: public Tango::ImageAttr
+{
+public:
+	InputImageAttrib():ImageAttr("InputImage", Tango::DEV_USHORT, Tango::READ_WRITE, 131072, 131072) {};
+	~InputImageAttrib() {};
+	
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_InputImage(att);}
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+	{(static_cast<ImgBeamAnalyzer *>(dev))->write_InputImage(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_InputImage_allowed(ty);}
+};
+
+class HistogramAttrib: public Tango::SpectrumAttr
+{
+public:
+	HistogramAttrib():SpectrumAttr("Histogram", Tango::DEV_FLOAT, Tango::READ, 131072) {};
+	~HistogramAttrib() {};
+	
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_Histogram(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_Histogram_allowed(ty);}
+};
+
+class LineProfileErrorAttrib: public Tango::SpectrumAttr
+{
+public:
+	LineProfileErrorAttrib():SpectrumAttr("LineProfileError", Tango::DEV_DOUBLE, Tango::READ, 131072) {};
+	~LineProfileErrorAttrib() {};
+	
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_LineProfileError(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_LineProfileError_allowed(ty);}
+};
+
+class LineProfileFittedAttrib: public Tango::SpectrumAttr
+{
+public:
+	LineProfileFittedAttrib():SpectrumAttr("LineProfileFitted", Tango::DEV_DOUBLE, Tango::READ, 131072) {};
+	~LineProfileFittedAttrib() {};
+	
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_LineProfileFitted(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_LineProfileFitted_allowed(ty);}
+};
+
+class LineProfileAttrib: public Tango::SpectrumAttr
+{
+public:
+	LineProfileAttrib():SpectrumAttr("LineProfile", Tango::DEV_DOUBLE, Tango::READ, 131072) {};
+	~LineProfileAttrib() {};
+	
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_LineProfile(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_LineProfile_allowed(ty);}
+};
+
+class YProjErrorAttrib: public Tango::SpectrumAttr
+{
+public:
+	YProjErrorAttrib():SpectrumAttr("YProjError", Tango::DEV_DOUBLE, Tango::READ, 131072) {};
+	~YProjErrorAttrib() {};
+	
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_YProjError(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_YProjError_allowed(ty);}
+};
+
+class YProjFittedAttrib: public Tango::SpectrumAttr
+{
+public:
+	YProjFittedAttrib():SpectrumAttr("YProjFitted", Tango::DEV_DOUBLE, Tango::READ, 131072) {};
+	~YProjFittedAttrib() {};
+	
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_YProjFitted(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_YProjFitted_allowed(ty);}
+};
+
+class YProjAttrib: public Tango::SpectrumAttr
+{
+public:
+	YProjAttrib():SpectrumAttr("YProj", Tango::DEV_DOUBLE, Tango::READ, 131072) {};
+	~YProjAttrib() {};
+	
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_YProj(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_YProj_allowed(ty);}
+};
+
+class XProjErrorAttrib: public Tango::SpectrumAttr
+{
+public:
+	XProjErrorAttrib():SpectrumAttr("XProjError", Tango::DEV_DOUBLE, Tango::READ, 131072) {};
+	~XProjErrorAttrib() {};
+	
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_XProjError(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_XProjError_allowed(ty);}
+};
+
+class XProjFittedAttrib: public Tango::SpectrumAttr
+{
+public:
+	XProjFittedAttrib():SpectrumAttr("XProjFitted", Tango::DEV_DOUBLE, Tango::READ, 131072) {};
+	~XProjFittedAttrib() {};
+	
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_XProjFitted(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_XProjFitted_allowed(ty);}
+};
+
+class XProjAttrib: public Tango::SpectrumAttr
+{
+public:
+	XProjAttrib():SpectrumAttr("XProj", Tango::DEV_DOUBLE, Tango::READ, 131072) {};
+	~XProjAttrib() {};
+	
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_XProj(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_XProj_allowed(ty);}
+};
+
 class GaussianFitRelChangeAttrib: public Tango::Attr
 {
 public:
@@ -63,52 +221,76 @@ public:
 	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_GaussianFitNbIter_allowed(ty);}
 };
 
-class YProfileFitRelChangeAttrib: public Tango::Attr
+class LineProfileFitRelChangeAttrib: public Tango::Attr
 {
 public:
-	YProfileFitRelChangeAttrib():Attr("YProfileFitRelChange", Tango::DEV_DOUBLE, Tango::READ) {};
-	~YProfileFitRelChangeAttrib() {};
+	LineProfileFitRelChangeAttrib():Attr("LineProfileFitRelChange", Tango::DEV_DOUBLE, Tango::READ) {};
+	~LineProfileFitRelChangeAttrib() {};
 	
 	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
-	{(static_cast<ImgBeamAnalyzer *>(dev))->read_YProfileFitRelChange(att);}
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_LineProfileFitRelChange(att);}
 	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
-	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_YProfileFitRelChange_allowed(ty);}
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_LineProfileFitRelChange_allowed(ty);}
 };
 
-class YProfileNbIterAttrib: public Tango::Attr
+class LineProfileFitNbIterAttrib: public Tango::Attr
 {
 public:
-	YProfileNbIterAttrib():Attr("YProfileNbIter", Tango::DEV_LONG, Tango::READ) {};
-	~YProfileNbIterAttrib() {};
+	LineProfileFitNbIterAttrib():Attr("LineProfileFitNbIter", Tango::DEV_LONG, Tango::READ) {};
+	~LineProfileFitNbIterAttrib() {};
 	
 	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
-	{(static_cast<ImgBeamAnalyzer *>(dev))->read_YProfileNbIter(att);}
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_LineProfileFitNbIter(att);}
 	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
-	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_YProfileNbIter_allowed(ty);}
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_LineProfileFitNbIter_allowed(ty);}
 };
 
-class XProfileFitRelChangeAttrib: public Tango::Attr
+class YProjFitRelChangeAttrib: public Tango::Attr
 {
 public:
-	XProfileFitRelChangeAttrib():Attr("XProfileFitRelChange", Tango::DEV_DOUBLE, Tango::READ) {};
-	~XProfileFitRelChangeAttrib() {};
+	YProjFitRelChangeAttrib():Attr("YProjFitRelChange", Tango::DEV_DOUBLE, Tango::READ) {};
+	~YProjFitRelChangeAttrib() {};
 	
 	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
-	{(static_cast<ImgBeamAnalyzer *>(dev))->read_XProfileFitRelChange(att);}
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_YProjFitRelChange(att);}
 	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
-	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_XProfileFitRelChange_allowed(ty);}
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_YProjFitRelChange_allowed(ty);}
 };
 
-class XProfileNbIterAttrib: public Tango::Attr
+class YProjFitNbIterAttrib: public Tango::Attr
 {
 public:
-	XProfileNbIterAttrib():Attr("XProfileNbIter", Tango::DEV_LONG, Tango::READ) {};
-	~XProfileNbIterAttrib() {};
+	YProjFitNbIterAttrib():Attr("YProjFitNbIter", Tango::DEV_LONG, Tango::READ) {};
+	~YProjFitNbIterAttrib() {};
 	
 	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
-	{(static_cast<ImgBeamAnalyzer *>(dev))->read_XProfileNbIter(att);}
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_YProjFitNbIter(att);}
 	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
-	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_XProfileNbIter_allowed(ty);}
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_YProjFitNbIter_allowed(ty);}
+};
+
+class XProjFitRelChangeAttrib: public Tango::Attr
+{
+public:
+	XProjFitRelChangeAttrib():Attr("XProjFitRelChange", Tango::DEV_DOUBLE, Tango::READ) {};
+	~XProjFitRelChangeAttrib() {};
+	
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_XProjFitRelChange(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_XProjFitRelChange_allowed(ty);}
+};
+
+class XProjFitNbIterAttrib: public Tango::Attr
+{
+public:
+	XProjFitNbIterAttrib():Attr("XProjFitNbIter", Tango::DEV_LONG, Tango::READ) {};
+	~XProjFitNbIterAttrib() {};
+	
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_XProjFitNbIter(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_XProjFitNbIter_allowed(ty);}
 };
 
 class Fit2DMaxRelChangeAttrib: public Tango::Attr
@@ -165,18 +347,6 @@ public:
 	{(static_cast<ImgBeamAnalyzer *>(dev))->write_Fit1DNbIterMax(att);}
 	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
 	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_Fit1DNbIterMax_allowed(ty);}
-};
-
-class GaussianFitParameterCovarianceAttrib: public Tango::ImageAttr
-{
-public:
-	GaussianFitParameterCovarianceAttrib():ImageAttr("GaussianFitParameterCovariance", Tango::DEV_DOUBLE, Tango::READ, 7, 7) {};
-	~GaussianFitParameterCovarianceAttrib() {};
-	
-	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
-	{(static_cast<ImgBeamAnalyzer *>(dev))->read_GaussianFitParameterCovariance(att);}
-	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
-	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_GaussianFitParameterCovariance_allowed(ty);}
 };
 
 class GaussianFitChi2Attrib: public Tango::Attr
@@ -323,256 +493,256 @@ public:
 	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_GaussianFitConverged_allowed(ty);}
 };
 
-class HistogramAttrib: public Tango::SpectrumAttr
+class LineProfileFitChi2Attrib: public Tango::Attr
 {
 public:
-	HistogramAttrib():SpectrumAttr("Histogram", Tango::DEV_FLOAT, Tango::READ, 131072) {};
-	~HistogramAttrib() {};
+	LineProfileFitChi2Attrib():Attr("LineProfileFitChi2", Tango::DEV_DOUBLE, Tango::READ) {};
+	~LineProfileFitChi2Attrib() {};
 	
 	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
-	{(static_cast<ImgBeamAnalyzer *>(dev))->read_Histogram(att);}
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_LineProfileFitChi2(att);}
 	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
-	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_Histogram_allowed(ty);}
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_LineProfileFitChi2_allowed(ty);}
 };
 
-class YProfileChi2Attrib: public Tango::Attr
+class LineProfileFitBGAttrib: public Tango::Attr
 {
 public:
-	YProfileChi2Attrib():Attr("YProfileChi2", Tango::DEV_DOUBLE, Tango::READ) {};
-	~YProfileChi2Attrib() {};
+	LineProfileFitBGAttrib():Attr("LineProfileFitBG", Tango::DEV_DOUBLE, Tango::READ) {};
+	~LineProfileFitBGAttrib() {};
 	
 	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
-	{(static_cast<ImgBeamAnalyzer *>(dev))->read_YProfileChi2(att);}
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_LineProfileFitBG(att);}
 	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
-	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_YProfileChi2_allowed(ty);}
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_LineProfileFitBG_allowed(ty);}
 };
 
-class YProfileBGAttrib: public Tango::Attr
+class LineProfileFitFWHMAttrib: public Tango::Attr
 {
 public:
-	YProfileBGAttrib():Attr("YProfileBG", Tango::DEV_DOUBLE, Tango::READ) {};
-	~YProfileBGAttrib() {};
+	LineProfileFitFWHMAttrib():Attr("LineProfileFitFWHM", Tango::DEV_DOUBLE, Tango::READ) {};
+	~LineProfileFitFWHMAttrib() {};
 	
 	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
-	{(static_cast<ImgBeamAnalyzer *>(dev))->read_YProfileBG(att);}
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_LineProfileFitFWHM(att);}
 	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
-	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_YProfileBG_allowed(ty);}
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_LineProfileFitFWHM_allowed(ty);}
 };
 
-class YProfileFWHMAttrib: public Tango::Attr
+class LineProfileFitSigmaAttrib: public Tango::Attr
 {
 public:
-	YProfileFWHMAttrib():Attr("YProfileFWHM", Tango::DEV_DOUBLE, Tango::READ) {};
-	~YProfileFWHMAttrib() {};
+	LineProfileFitSigmaAttrib():Attr("LineProfileFitSigma", Tango::DEV_DOUBLE, Tango::READ) {};
+	~LineProfileFitSigmaAttrib() {};
 	
 	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
-	{(static_cast<ImgBeamAnalyzer *>(dev))->read_YProfileFWHM(att);}
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_LineProfileFitSigma(att);}
 	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
-	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_YProfileFWHM_allowed(ty);}
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_LineProfileFitSigma_allowed(ty);}
 };
 
-class YProfileSigmaAttrib: public Tango::Attr
+class LineProfileFitMagAttrib: public Tango::Attr
 {
 public:
-	YProfileSigmaAttrib():Attr("YProfileSigma", Tango::DEV_DOUBLE, Tango::READ) {};
-	~YProfileSigmaAttrib() {};
+	LineProfileFitMagAttrib():Attr("LineProfileFitMag", Tango::DEV_DOUBLE, Tango::READ) {};
+	~LineProfileFitMagAttrib() {};
 	
 	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
-	{(static_cast<ImgBeamAnalyzer *>(dev))->read_YProfileSigma(att);}
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_LineProfileFitMag(att);}
 	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
-	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_YProfileSigma_allowed(ty);}
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_LineProfileFitMag_allowed(ty);}
 };
 
-class YProfileMagAttrib: public Tango::Attr
+class LineProfileFitCenterAttrib: public Tango::Attr
 {
 public:
-	YProfileMagAttrib():Attr("YProfileMag", Tango::DEV_DOUBLE, Tango::READ) {};
-	~YProfileMagAttrib() {};
+	LineProfileFitCenterAttrib():Attr("LineProfileFitCenter", Tango::DEV_DOUBLE, Tango::READ) {};
+	~LineProfileFitCenterAttrib() {};
 	
 	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
-	{(static_cast<ImgBeamAnalyzer *>(dev))->read_YProfileMag(att);}
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_LineProfileFitCenter(att);}
 	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
-	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_YProfileMag_allowed(ty);}
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_LineProfileFitCenter_allowed(ty);}
 };
 
-class YProfileCenterAttrib: public Tango::Attr
+class LineProfileFitConvergedAttrib: public Tango::Attr
 {
 public:
-	YProfileCenterAttrib():Attr("YProfileCenter", Tango::DEV_DOUBLE, Tango::READ) {};
-	~YProfileCenterAttrib() {};
+	LineProfileFitConvergedAttrib():Attr("LineProfileFitConverged", Tango::DEV_BOOLEAN, Tango::READ) {};
+	~LineProfileFitConvergedAttrib() {};
 	
 	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
-	{(static_cast<ImgBeamAnalyzer *>(dev))->read_YProfileCenter(att);}
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_LineProfileFitConverged(att);}
 	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
-	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_YProfileCenter_allowed(ty);}
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_LineProfileFitConverged_allowed(ty);}
 };
 
-class YProfileErrorAttrib: public Tango::SpectrumAttr
+class YProjFitChi2Attrib: public Tango::Attr
 {
 public:
-	YProfileErrorAttrib():SpectrumAttr("YProfileError", Tango::DEV_DOUBLE, Tango::READ, 131072) {};
-	~YProfileErrorAttrib() {};
+	YProjFitChi2Attrib():Attr("YProjFitChi2", Tango::DEV_DOUBLE, Tango::READ) {};
+	~YProjFitChi2Attrib() {};
 	
 	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
-	{(static_cast<ImgBeamAnalyzer *>(dev))->read_YProfileError(att);}
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_YProjFitChi2(att);}
 	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
-	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_YProfileError_allowed(ty);}
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_YProjFitChi2_allowed(ty);}
 };
 
-class YProfileFittedAttrib: public Tango::SpectrumAttr
+class YProjFitBGAttrib: public Tango::Attr
 {
 public:
-	YProfileFittedAttrib():SpectrumAttr("YProfileFitted", Tango::DEV_DOUBLE, Tango::READ, 131072) {};
-	~YProfileFittedAttrib() {};
+	YProjFitBGAttrib():Attr("YProjFitBG", Tango::DEV_DOUBLE, Tango::READ) {};
+	~YProjFitBGAttrib() {};
 	
 	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
-	{(static_cast<ImgBeamAnalyzer *>(dev))->read_YProfileFitted(att);}
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_YProjFitBG(att);}
 	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
-	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_YProfileFitted_allowed(ty);}
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_YProjFitBG_allowed(ty);}
 };
 
-class YProfileFitConvergedAttrib: public Tango::Attr
+class YProjFitFWHMAttrib: public Tango::Attr
 {
 public:
-	YProfileFitConvergedAttrib():Attr("YProfileFitConverged", Tango::DEV_BOOLEAN, Tango::READ) {};
-	~YProfileFitConvergedAttrib() {};
+	YProjFitFWHMAttrib():Attr("YProjFitFWHM", Tango::DEV_DOUBLE, Tango::READ) {};
+	~YProjFitFWHMAttrib() {};
 	
 	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
-	{(static_cast<ImgBeamAnalyzer *>(dev))->read_YProfileFitConverged(att);}
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_YProjFitFWHM(att);}
 	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
-	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_YProfileFitConverged_allowed(ty);}
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_YProjFitFWHM_allowed(ty);}
 };
 
-class YProfileAttrib: public Tango::SpectrumAttr
+class YProjFitSigmaAttrib: public Tango::Attr
 {
 public:
-	YProfileAttrib():SpectrumAttr("YProfile", Tango::DEV_DOUBLE, Tango::READ, 131072) {};
-	~YProfileAttrib() {};
+	YProjFitSigmaAttrib():Attr("YProjFitSigma", Tango::DEV_DOUBLE, Tango::READ) {};
+	~YProjFitSigmaAttrib() {};
 	
 	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
-	{(static_cast<ImgBeamAnalyzer *>(dev))->read_YProfile(att);}
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_YProjFitSigma(att);}
 	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
-	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_YProfile_allowed(ty);}
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_YProjFitSigma_allowed(ty);}
 };
 
-class XProfileChi2Attrib: public Tango::Attr
+class YProjFitMagAttrib: public Tango::Attr
 {
 public:
-	XProfileChi2Attrib():Attr("XProfileChi2", Tango::DEV_DOUBLE, Tango::READ) {};
-	~XProfileChi2Attrib() {};
+	YProjFitMagAttrib():Attr("YProjFitMag", Tango::DEV_DOUBLE, Tango::READ) {};
+	~YProjFitMagAttrib() {};
 	
 	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
-	{(static_cast<ImgBeamAnalyzer *>(dev))->read_XProfileChi2(att);}
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_YProjFitMag(att);}
 	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
-	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_XProfileChi2_allowed(ty);}
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_YProjFitMag_allowed(ty);}
 };
 
-class XProfileBGAttrib: public Tango::Attr
+class YProjFitCenterAttrib: public Tango::Attr
 {
 public:
-	XProfileBGAttrib():Attr("XProfileBG", Tango::DEV_DOUBLE, Tango::READ) {};
-	~XProfileBGAttrib() {};
+	YProjFitCenterAttrib():Attr("YProjFitCenter", Tango::DEV_DOUBLE, Tango::READ) {};
+	~YProjFitCenterAttrib() {};
 	
 	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
-	{(static_cast<ImgBeamAnalyzer *>(dev))->read_XProfileBG(att);}
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_YProjFitCenter(att);}
 	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
-	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_XProfileBG_allowed(ty);}
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_YProjFitCenter_allowed(ty);}
 };
 
-class XProfileFWHMAttrib: public Tango::Attr
+class YProjFitConvergedAttrib: public Tango::Attr
 {
 public:
-	XProfileFWHMAttrib():Attr("XProfileFWHM", Tango::DEV_DOUBLE, Tango::READ) {};
-	~XProfileFWHMAttrib() {};
+	YProjFitConvergedAttrib():Attr("YProjFitConverged", Tango::DEV_BOOLEAN, Tango::READ) {};
+	~YProjFitConvergedAttrib() {};
 	
 	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
-	{(static_cast<ImgBeamAnalyzer *>(dev))->read_XProfileFWHM(att);}
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_YProjFitConverged(att);}
 	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
-	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_XProfileFWHM_allowed(ty);}
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_YProjFitConverged_allowed(ty);}
 };
 
-class XProfileSigmaAttrib: public Tango::Attr
+class XProjFitChi2Attrib: public Tango::Attr
 {
 public:
-	XProfileSigmaAttrib():Attr("XProfileSigma", Tango::DEV_DOUBLE, Tango::READ) {};
-	~XProfileSigmaAttrib() {};
+	XProjFitChi2Attrib():Attr("XProjFitChi2", Tango::DEV_DOUBLE, Tango::READ) {};
+	~XProjFitChi2Attrib() {};
 	
 	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
-	{(static_cast<ImgBeamAnalyzer *>(dev))->read_XProfileSigma(att);}
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_XProjFitChi2(att);}
 	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
-	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_XProfileSigma_allowed(ty);}
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_XProjFitChi2_allowed(ty);}
 };
 
-class XProfileMagAttrib: public Tango::Attr
+class XProjFitBGAttrib: public Tango::Attr
 {
 public:
-	XProfileMagAttrib():Attr("XProfileMag", Tango::DEV_DOUBLE, Tango::READ) {};
-	~XProfileMagAttrib() {};
+	XProjFitBGAttrib():Attr("XProjFitBG", Tango::DEV_DOUBLE, Tango::READ) {};
+	~XProjFitBGAttrib() {};
 	
 	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
-	{(static_cast<ImgBeamAnalyzer *>(dev))->read_XProfileMag(att);}
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_XProjFitBG(att);}
 	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
-	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_XProfileMag_allowed(ty);}
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_XProjFitBG_allowed(ty);}
 };
 
-class XProfileCenterAttrib: public Tango::Attr
+class XProjFitFWHMAttrib: public Tango::Attr
 {
 public:
-	XProfileCenterAttrib():Attr("XProfileCenter", Tango::DEV_DOUBLE, Tango::READ) {};
-	~XProfileCenterAttrib() {};
+	XProjFitFWHMAttrib():Attr("XProjFitFWHM", Tango::DEV_DOUBLE, Tango::READ) {};
+	~XProjFitFWHMAttrib() {};
 	
 	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
-	{(static_cast<ImgBeamAnalyzer *>(dev))->read_XProfileCenter(att);}
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_XProjFitFWHM(att);}
 	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
-	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_XProfileCenter_allowed(ty);}
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_XProjFitFWHM_allowed(ty);}
 };
 
-class XProfileErrorAttrib: public Tango::SpectrumAttr
+class XProjFitSigmaAttrib: public Tango::Attr
 {
 public:
-	XProfileErrorAttrib():SpectrumAttr("XProfileError", Tango::DEV_DOUBLE, Tango::READ, 131072) {};
-	~XProfileErrorAttrib() {};
+	XProjFitSigmaAttrib():Attr("XProjFitSigma", Tango::DEV_DOUBLE, Tango::READ) {};
+	~XProjFitSigmaAttrib() {};
 	
 	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
-	{(static_cast<ImgBeamAnalyzer *>(dev))->read_XProfileError(att);}
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_XProjFitSigma(att);}
 	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
-	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_XProfileError_allowed(ty);}
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_XProjFitSigma_allowed(ty);}
 };
 
-class XProfileFittedAttrib: public Tango::SpectrumAttr
+class XProjFitMagAttrib: public Tango::Attr
 {
 public:
-	XProfileFittedAttrib():SpectrumAttr("XProfileFitted", Tango::DEV_DOUBLE, Tango::READ, 131072) {};
-	~XProfileFittedAttrib() {};
+	XProjFitMagAttrib():Attr("XProjFitMag", Tango::DEV_DOUBLE, Tango::READ) {};
+	~XProjFitMagAttrib() {};
 	
 	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
-	{(static_cast<ImgBeamAnalyzer *>(dev))->read_XProfileFitted(att);}
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_XProjFitMag(att);}
 	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
-	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_XProfileFitted_allowed(ty);}
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_XProjFitMag_allowed(ty);}
 };
 
-class XProfileFitConvergedAttrib: public Tango::Attr
+class XProjFitCenterAttrib: public Tango::Attr
 {
 public:
-	XProfileFitConvergedAttrib():Attr("XProfileFitConverged", Tango::DEV_BOOLEAN, Tango::READ) {};
-	~XProfileFitConvergedAttrib() {};
+	XProjFitCenterAttrib():Attr("XProjFitCenter", Tango::DEV_DOUBLE, Tango::READ) {};
+	~XProjFitCenterAttrib() {};
 	
 	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
-	{(static_cast<ImgBeamAnalyzer *>(dev))->read_XProfileFitConverged(att);}
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_XProjFitCenter(att);}
 	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
-	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_XProfileFitConverged_allowed(ty);}
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_XProjFitCenter_allowed(ty);}
 };
 
-class XProfileAttrib: public Tango::SpectrumAttr
+class XProjFitConvergedAttrib: public Tango::Attr
 {
 public:
-	XProfileAttrib():SpectrumAttr("XProfile", Tango::DEV_DOUBLE, Tango::READ, 131072) {};
-	~XProfileAttrib() {};
+	XProjFitConvergedAttrib():Attr("XProjFitConverged", Tango::DEV_BOOLEAN, Tango::READ) {};
+	~XProjFitConvergedAttrib() {};
 	
 	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
-	{(static_cast<ImgBeamAnalyzer *>(dev))->read_XProfile(att);}
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_XProjFitConverged(att);}
 	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
-	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_XProfile_allowed(ty);}
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_XProjFitConverged_allowed(ty);}
 };
 
 class SkewXY2Attrib: public Tango::Attr
@@ -719,32 +889,6 @@ public:
 	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_MaxIntensity_allowed(ty);}
 };
 
-class ROIImageAttrib: public Tango::ImageAttr
-{
-public:
-	ROIImageAttrib():ImageAttr("ROIImage", Tango::DEV_USHORT, Tango::READ, 131072, 131072) {};
-	~ROIImageAttrib() {};
-	
-	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
-	{(static_cast<ImgBeamAnalyzer *>(dev))->read_ROIImage(att);}
-	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
-	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_ROIImage_allowed(ty);}
-};
-
-class InputImageAttrib: public Tango::ImageAttr
-{
-public:
-	InputImageAttrib():ImageAttr("InputImage", Tango::DEV_USHORT, Tango::READ_WRITE, 131072, 131072) {};
-	~InputImageAttrib() {};
-	
-	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
-	{(static_cast<ImgBeamAnalyzer *>(dev))->read_InputImage(att);}
-	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
-	{(static_cast<ImgBeamAnalyzer *>(dev))->write_InputImage(att);}
-	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
-	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_InputImage_allowed(ty);}
-};
-
 class AutoROIHeightAttrib: public Tango::Attr
 {
 public:
@@ -861,6 +1005,76 @@ public:
 	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_UserROIOriginX_allowed(ty);}
 };
 
+class LineProfileThicknessAttrib: public Tango::Attr
+{
+public:
+	LineProfileThicknessAttrib():Attr("LineProfileThickness", Tango::DEV_LONG, Tango::READ_WRITE) {};
+	~LineProfileThicknessAttrib() {};
+	
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_LineProfileThickness(att);}
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+	{(static_cast<ImgBeamAnalyzer *>(dev))->write_LineProfileThickness(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_LineProfileThickness_allowed(ty);}
+};
+
+class LineProfileEndYAttrib: public Tango::Attr
+{
+public:
+	LineProfileEndYAttrib():Attr("LineProfileEndY", Tango::DEV_LONG, Tango::READ_WRITE) {};
+	~LineProfileEndYAttrib() {};
+	
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_LineProfileEndY(att);}
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+	{(static_cast<ImgBeamAnalyzer *>(dev))->write_LineProfileEndY(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_LineProfileEndY_allowed(ty);}
+};
+
+class LineProfileEndXAttrib: public Tango::Attr
+{
+public:
+	LineProfileEndXAttrib():Attr("LineProfileEndX", Tango::DEV_LONG, Tango::READ_WRITE) {};
+	~LineProfileEndXAttrib() {};
+	
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_LineProfileEndX(att);}
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+	{(static_cast<ImgBeamAnalyzer *>(dev))->write_LineProfileEndX(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_LineProfileEndX_allowed(ty);}
+};
+
+class LineProfileOriginYAttrib: public Tango::Attr
+{
+public:
+	LineProfileOriginYAttrib():Attr("LineProfileOriginY", Tango::DEV_LONG, Tango::READ_WRITE) {};
+	~LineProfileOriginYAttrib() {};
+	
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_LineProfileOriginY(att);}
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+	{(static_cast<ImgBeamAnalyzer *>(dev))->write_LineProfileOriginY(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_LineProfileOriginY_allowed(ty);}
+};
+
+class LineProfileOriginXAttrib: public Tango::Attr
+{
+public:
+	LineProfileOriginXAttrib():Attr("LineProfileOriginX", Tango::DEV_LONG, Tango::READ_WRITE) {};
+	~LineProfileOriginXAttrib() {};
+	
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_LineProfileOriginX(att);}
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+	{(static_cast<ImgBeamAnalyzer *>(dev))->write_LineProfileOriginX(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_LineProfileOriginX_allowed(ty);}
+};
+
 class ProfileFitFixedBgAttrib: public Tango::Attr
 {
 public:
@@ -929,6 +1143,20 @@ public:
 	{(static_cast<ImgBeamAnalyzer *>(dev))->write_AlarmZone(att);}
 	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
 	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_AlarmZone_allowed(ty);}
+};
+
+class BgSubstractionAttrib: public Tango::Attr
+{
+public:
+	BgSubstractionAttrib():Attr("BgSubstraction", Tango::DEV_DOUBLE, Tango::READ_WRITE) {};
+	~BgSubstractionAttrib() {};
+	
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_BgSubstraction(att);}
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+	{(static_cast<ImgBeamAnalyzer *>(dev))->write_BgSubstraction(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_BgSubstraction_allowed(ty);}
 };
 
 class AutoROIThresholdAttrib: public Tango::Attr
