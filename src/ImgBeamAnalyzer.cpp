@@ -1,4 +1,4 @@
-static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzer.cpp,v 1.19 2007-10-02 12:51:43 julien_malik Exp $";
+static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzer.cpp,v 1.20 2007-10-03 14:22:05 julien_malik Exp $";
 //+=============================================================================
 //
 // file :         ImgBeamAnalyzer.cpp
@@ -13,7 +13,7 @@ static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/Im
 //
 // $Author: julien_malik $
 //
-// $Revision: 1.19 $
+// $Revision: 1.20 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -305,6 +305,8 @@ void ImgBeamAnalyzer::init_device()
 
 	// Initialise variables to default values
 	//--------------------------------------------
+  cvUseOptimized( 0 );
+
   this->dev_proxy_allowed_ = false;
   this->dev_proxy_ = 0;
   this->available_data_ = 0;
