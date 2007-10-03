@@ -41,8 +41,9 @@ PACKAGE_NAME = ImgBeamAnalyzer
 # ...etc
 #
 INC_DIR_USER=-I ../../../Libraries/ISL/include \
-    -I $(SOLEIL_ROOT)/sw-support/OpenCV/include \
-    -I ../../../Libraries/ADTB/include    
+             -I $(SOLEIL_ROOT)/sw-support/OpenCV/include \
+             -I $(SOLEIL_ROOT)/sw-support/YAT/include \
+             -I $(SOLEIL_ROOT)/sw-support/YAT4tango/include    
 
 
 
@@ -55,8 +56,9 @@ INC_DIR_USER=-I ../../../Libraries/ISL/include \
 # -L $(SOLEIL_ROOT)/sw-support/hkl/lib for HKL library
 # ...etc
 #
-LIB_DIR_USER=-L ../../../Libraries/ISL/bin \
-		-L ../../../Libraries/ADTB/lib
+LIB_DIR_USER=-L ../../../Libraries/ISL/lib \
+		         -L $(SOLEIL_ROOT)/sw-support/YAT/lib/static/linux \
+		         -L $(SOLEIL_ROOT)/sw-support/YAT4tango/lib/static/linux
 
 
 
@@ -75,7 +77,7 @@ LIB_DIR_USER=-L ../../../Libraries/ISL/bin \
 # -lASL for ASL
 # -lHKL for HKL
 #
-LFLAGS_USR=	-lISL -lADTB
+LFLAGS_USR=	-lISL -lYAT -lYAT4Tango
 
 
 

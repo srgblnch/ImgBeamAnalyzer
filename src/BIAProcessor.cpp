@@ -86,7 +86,7 @@ namespace ImgBeamAnalyzer_ns
     isl::Image* roi_image_d = 0;
 
     try
-    {    
+    {
       input_image = new isl::Image(image);
 
       this->preprocess( *input_image, config, data );
@@ -102,7 +102,7 @@ namespace ImgBeamAnalyzer_ns
       this->clip(*input_image, config, roi_image, roi, data);
       
       //- convert to roi_image to double
-      isl::Image* roi_image_d = new isl::Image(roi_image->width(), roi_image->height(), isl::ISL_STORAGE_DOUBLE);
+      roi_image_d = new isl::Image(roi_image->width(), roi_image->height(), isl::ISL_STORAGE_DOUBLE);
       std::auto_ptr<isl::Image> roi_image_d_guard(roi_image_d);
       roi_image->convert(*roi_image_d);
 
