@@ -131,15 +131,19 @@ Revision:  - Author:
 <Td><Center><Font Size=-1>DEV_LONG</Font></Center></Td><Td><Center><Font Size=-1>READ_WRITE</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
 
 <Font Size=-1>
+<Tr><Td><b>BgSubstraction</b>: <Font Size=-1>the scalar value to substract to each pixel</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ_WRITE</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Font Size=-1>
 <Tr><Td><b>AlarmZone</b>: <Font Size=-1>if EnableAutoROI is set to true and if the distance between a beam box corner and the border of the image falls below this threshold, attributes quality are set to ALARM</Font></Td>
 <Td><Center><Font Size=-1>DEV_LONG</Font></Center></Td><Td><Center><Font Size=-1>READ_WRITE</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
 
 <Font Size=-1>
-<Tr><Td><b>PixelSizeX</b>: <Font Size=-1>The correspondence between pixel width and mm</Font></Td>
+<Tr><Td><b>PixelSizeX</b>: <Font Size=-1>the correspondence between pixel width and mm</Font></Td>
 <Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ_WRITE</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
 
 <Font Size=-1>
-<Tr><Td><b>PixelSizeY</b>: <Font Size=-1>The correspondence between pixel height and mm</Font></Td>
+<Tr><Td><b>PixelSizeY</b>: <Font Size=-1>the correspondence between pixel height and mm</Font></Td>
 <Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ_WRITE</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
 
 <Font Size=-1>
@@ -149,6 +153,26 @@ Revision:  - Author:
 <Font Size=-1>
 <Tr><Td><b>ProfileFitFixedBg</b>: <Font Size=-1>if true, the background noise is estimated from the border of the whole image and this background value stays fixed during the fit</Font></Td>
 <Td><Center><Font Size=-1>DEV_BOOLEAN</Font></Center></Td><Td><Center><Font Size=-1>READ_WRITE</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>LineProfileOriginX</b>: <Font Size=-1>the X coordinate of the origin point of the line profile</Font></Td>
+<Td><Center><Font Size=-1>DEV_LONG</Font></Center></Td><Td><Center><Font Size=-1>READ_WRITE</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>LineProfileOriginY</b>: <Font Size=-1>the Y coordinate of the origin point of the line profile</Font></Td>
+<Td><Center><Font Size=-1>DEV_LONG</Font></Center></Td><Td><Center><Font Size=-1>READ_WRITE</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>LineProfileEndX</b>: <Font Size=-1>the X coordinate of the endpoint of the line profile</Font></Td>
+<Td><Center><Font Size=-1>DEV_LONG</Font></Center></Td><Td><Center><Font Size=-1>READ_WRITE</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>LineProfileEndY</b>: <Font Size=-1>the Y coordinate of the endpoint of the line profile</Font></Td>
+<Td><Center><Font Size=-1>DEV_LONG</Font></Center></Td><Td><Center><Font Size=-1>READ_WRITE</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>LineProfileThickness</b>: <Font Size=-1>defines the number of lines used to average a local line profile</Font></Td>
+<Td><Center><Font Size=-1>DEV_LONG</Font></Center></Td><Td><Center><Font Size=-1>READ_WRITE</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
 
 <Font Size=-1>
 <Tr><Td><b>UserROIOriginX</b>: <Font Size=-1>the X coordinate of the origin of the ROI (up-left corner) in pixels</Font></Td>
@@ -191,7 +215,7 @@ Revision:  - Author:
 <Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
 
 <Font Size=-1>
-<Tr><Td><b>MeanIntensity</b>: <Font Size=-1>the mean intensity inside the beam box</Font></Td>
+<Tr><Td><b>MeanIntensity</b>: <Font Size=-1>the mean intensity inside the ROI</Font></Td>
 <Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
 
 <Font Size=-1>
@@ -235,59 +259,87 @@ Revision:  - Author:
 <Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
 
 <Font Size=-1>
-<Tr><Td><b>XProfileFitConverged</b>: <Font Size=-1>true of the profile fitting algorithm has converged</Font></Td>
+<Tr><Td><b>XProjFitConverged</b>: <Font Size=-1>true of the projection fitting algorithm has converged</Font></Td>
 <Td><Center><Font Size=-1>DEV_BOOLEAN</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
 
 <Font Size=-1>
-<Tr><Td><b>XProfileCenter</b>: <Font Size=-1>the X position of the center of the fitted gaussian corresponding to the X profile</Font></Td>
+<Tr><Td><b>XProjFitCenter</b>: <Font Size=-1>the X position of the center of the fitted gaussian corresponding to the X projection</Font></Td>
 <Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
 
 <Font Size=-1>
-<Tr><Td><b>XProfileMag</b>: <Font Size=-1>the magnitude of  fitted gaussian corresponding to the X profile</Font></Td>
+<Tr><Td><b>XProjFitMag</b>: <Font Size=-1>the magnitude of  fitted gaussian corresponding to the X projection</Font></Td>
 <Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
 
 <Font Size=-1>
-<Tr><Td><b>XProfileSigma</b>: <Font Size=-1>the standard deviation of  fitted gaussian corresponding to the X profile</Font></Td>
+<Tr><Td><b>XProjFitSigma</b>: <Font Size=-1>the standard deviation of  fitted gaussian corresponding to the X projection</Font></Td>
 <Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
 
 <Font Size=-1>
-<Tr><Td><b>XProfileFWHM</b>: <Font Size=-1>the full width at half maximum of the fitted gaussian corresponding to the X profile, calculated approximately as 2.35 * XProfileSigma</Font></Td>
+<Tr><Td><b>XProjFitFWHM</b>: <Font Size=-1>the full width at half maximum of the fitted gaussian corresponding to the X projection, calculated as approximately 2.35 * XProjFitSigma</Font></Td>
 <Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
 
 <Font Size=-1>
-<Tr><Td><b>XProfileBG</b>: <Font Size=-1>the background of  fitted gaussian corresponding to the X profile</Font></Td>
+<Tr><Td><b>XProjFitBG</b>: <Font Size=-1>the background of  fitted gaussian corresponding to the X projection</Font></Td>
 <Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
 
 <Font Size=-1>
-<Tr><Td><b>XProfileChi2</b>: <Font Size=-1>the chi-2 of  fitted gaussian corresponding to the X profile</Font></Td>
+<Tr><Td><b>XProjFitChi2</b>: <Font Size=-1>the chi-2 of  fitted gaussian corresponding to the X projection</Font></Td>
 <Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
 
 <Font Size=-1>
-<Tr><Td><b>YProfileFitConverged</b>: <Font Size=-1>true of the profile fitting algorithm has converged</Font></Td>
+<Tr><Td><b>YProjFitConverged</b>: <Font Size=-1>true of the projection fitting algorithm has converged</Font></Td>
 <Td><Center><Font Size=-1>DEV_BOOLEAN</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
 
 <Font Size=-1>
-<Tr><Td><b>YProfileCenter</b>: <Font Size=-1>the Y position of the center of the fitted gaussian corresponding to the Y profile</Font></Td>
+<Tr><Td><b>YProjFitCenter</b>: <Font Size=-1>the Y position of the center of the fitted gaussian corresponding to the Y projection</Font></Td>
 <Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
 
 <Font Size=-1>
-<Tr><Td><b>YProfileMag</b>: <Font Size=-1>the magnitude of  fitted gaussian corresponding to the Y profile</Font></Td>
+<Tr><Td><b>YProjFitMag</b>: <Font Size=-1>the magnitude of  fitted gaussian corresponding to the Y projection</Font></Td>
 <Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
 
 <Font Size=-1>
-<Tr><Td><b>YProfileSigma</b>: <Font Size=-1>the standard deviation of  fitted gaussian corresponding to the Y profile</Font></Td>
+<Tr><Td><b>YProjFitSigma</b>: <Font Size=-1>the standard deviation of  fitted gaussian corresponding to the Y projection</Font></Td>
 <Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
 
 <Font Size=-1>
-<Tr><Td><b>YProfileFWHM</b>: <Font Size=-1>the full width at half maximum of the fitted gaussian corresponding to the Y profile, calculated approximately as 2.35 * YProfileSigma</Font></Td>
+<Tr><Td><b>YProjFitFWHM</b>: <Font Size=-1>the full width at half maximum of the fitted gaussian corresponding to the Y projection, calculated approximately as 2.35 * YProjFitSigma</Font></Td>
 <Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
 
 <Font Size=-1>
-<Tr><Td><b>YProfileBG</b>: <Font Size=-1>the background of  fitted gaussian corresponding to the Y profile</Font></Td>
+<Tr><Td><b>YProjFitBG</b>: <Font Size=-1>the background of  fitted gaussian corresponding to the Y projection</Font></Td>
 <Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
 
 <Font Size=-1>
-<Tr><Td><b>YProfileChi2</b>: <Font Size=-1>the chi-2 of  fitted gaussian corresponding to the Y profile</Font></Td>
+<Tr><Td><b>YProjFitChi2</b>: <Font Size=-1>the chi-2 of  fitted gaussian corresponding to the Y projection</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>LineProfileFitConverged</b>: <Font Size=-1>true of the profile fitting algorithm has converged</Font></Td>
+<Td><Center><Font Size=-1>DEV_BOOLEAN</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>LineProfileFitCenter</b>: <Font Size=-1>the Y position of the center of the fitted gaussian corresponding to the line profile</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>LineProfileFitMag</b>: <Font Size=-1>the magnitude of  fitted gaussian corresponding to the line profile</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>LineProfileFitSigma</b>: <Font Size=-1>the standard deviation of  fitted gaussian corresponding to the line profile</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>LineProfileFitFWHM</b>: <Font Size=-1>the full width at half maximum of the fitted gaussian corresponding to the line profile, calculated approximately as 2.35 * LineProfileFitSigma</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>LineProfileFitBG</b>: <Font Size=-1>the background of  fitted gaussian corresponding to the line profile</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>LineProfileFitChi2</b>: <Font Size=-1>the chi-2 of  fitted gaussian corresponding to the line profile</Font></Td>
 <Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
 
 <Font Size=-1>
@@ -355,19 +407,27 @@ Revision:  - Author:
 <Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ_WRITE</Font></Center></Td><Td><Center><Font Size=-1>Yes</Font></Center></Td></Tr>
 
 <Font Size=-1>
-<Tr><Td><b>XProfileNbIter</b>: <Font Size=-1>the number of iterations needed to converge to the fitted profile</Font></Td>
+<Tr><Td><b>XProjFitNbIter</b>: <Font Size=-1>the number of iterations needed to converge to the fitted profile</Font></Td>
 <Td><Center><Font Size=-1>DEV_LONG</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>Yes</Font></Center></Td></Tr>
 
 <Font Size=-1>
-<Tr><Td><b>XProfileFitRelChange</b>: <Font Size=-1>the relative change in the fit parameters between the two last iterations</Font></Td>
+<Tr><Td><b>XProjFitRelChange</b>: <Font Size=-1>the relative change in the fit parameters between the two last iterations</Font></Td>
 <Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>Yes</Font></Center></Td></Tr>
 
 <Font Size=-1>
-<Tr><Td><b>YProfileNbIter</b>: <Font Size=-1>the number of iterations needed to converge to the fitted profile</Font></Td>
+<Tr><Td><b>YProjFitNbIter</b>: <Font Size=-1>the number of iterations needed to converge to the fitted profile</Font></Td>
 <Td><Center><Font Size=-1>DEV_LONG</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>Yes</Font></Center></Td></Tr>
 
 <Font Size=-1>
-<Tr><Td><b>YProfileFitRelChange</b>: <Font Size=-1>the relative change in the fit parameters between the two last iterations</Font></Td>
+<Tr><Td><b>YProjFitRelChange</b>: <Font Size=-1>the relative change in the fit parameters between the two last iterations</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>Yes</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>LineProfileFitNbIter</b>: <Font Size=-1>the number of iterations needed to converge to the fitted profile</Font></Td>
+<Td><Center><Font Size=-1>DEV_LONG</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>Yes</Font></Center></Td></Tr>
+
+<Font Size=-1>
+<Tr><Td><b>LineProfileFitRelChange</b>: <Font Size=-1>the relative change in the fit parameters between the two last iterations</Font></Td>
 <Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>Yes</Font></Center></Td></Tr>
 
 <Font Size=-1>
@@ -389,22 +449,31 @@ Revision:  - Author:
 <Td><Center><b>Data Type</b></td></Center>
 <Td><Center><b>X Data Length</b></td></Center>
 <Td><Center><b>Expert</b></td></Center>
-<Tr><Td><b>XProfile</b>: <Font Size=-1>the cumulative sum along the X axis</Font></Td>
+<Tr><Td><b>XProj</b>: <Font Size=-1>the mean value along the X axis</Font></Td>
 <Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>131072</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
 
-<Tr><Td><b>XProfileFitted</b>: <Font Size=-1>the fitted profile along the X axis</Font></Td>
+<Tr><Td><b>XProjFitted</b>: <Font Size=-1>the gaussian fit result of XProj</Font></Td>
 <Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>131072</Font></Center></Td><Td><Center><Font Size=-1>Yes</Font></Center></Td></Tr>
 
-<Tr><Td><b>XProfileError</b>: <Font Size=-1>the fitted profile error along the X axis</Font></Td>
+<Tr><Td><b>XProjError</b>: <Font Size=-1>the fitted profile error along the X axis</Font></Td>
 <Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>131072</Font></Center></Td><Td><Center><Font Size=-1>Yes</Font></Center></Td></Tr>
 
-<Tr><Td><b>YProfile</b>: <Font Size=-1>the cumulative sum along the Y axis</Font></Td>
+<Tr><Td><b>YProj</b>: <Font Size=-1>the mean value along the Y axis</Font></Td>
 <Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>131072</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
 
-<Tr><Td><b>YProfileFitted</b>: <Font Size=-1>the fitted profile along the Y axis</Font></Td>
+<Tr><Td><b>YProjFitted</b>: <Font Size=-1>the gaussian fit result of XProj</Font></Td>
 <Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>131072</Font></Center></Td><Td><Center><Font Size=-1>Yes</Font></Center></Td></Tr>
 
-<Tr><Td><b>YProfileError</b>: <Font Size=-1>the fitted profile error along the Y axis</Font></Td>
+<Tr><Td><b>YProjError</b>: <Font Size=-1>the fitted profile error along the Y axis</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>131072</Font></Center></Td><Td><Center><Font Size=-1>Yes</Font></Center></Td></Tr>
+
+<Tr><Td><b>LineProfile</b>: <Font Size=-1>the line profile values</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>131072</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Tr><Td><b>LineProfileFitted</b>: <Font Size=-1>the fitted line profile</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>131072</Font></Center></Td><Td><Center><Font Size=-1>Yes</Font></Center></Td></Tr>
+
+<Tr><Td><b>LineProfileError</b>: <Font Size=-1>the fitted line profile error</Font></Td>
 <Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>131072</Font></Center></Td><Td><Center><Font Size=-1>Yes</Font></Center></Td></Tr>
 
 <Tr><Td><b>Histogram</b></Td>
@@ -428,7 +497,7 @@ Revision:  - Author:
 <Tr><Td><b>ROIImage</b>: <Font Size=-1>the effective image on which are done all the calculation</Font></Td>
 <Td><Center><Font Size=-1>DEV_USHORT</Font></Center></Td><Td><Center><Font Size=-1>131072</Font></Center></Td><Td><Center><Font Size=-1>131072</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
 
-<Tr><Td><b>GaussianFitParameterCovariance</b>: <Font Size=-1>the covariance matrix of the best fit parameters (7x7). the 7 parameters are ordered as [A, x_c, y_c, s_xx, s_xy, s_yy, b]</Font></Td>
+<Tr><Td><b>GaussianFitParameterCovariance</b>: <Font Size=-1>the covariance matrix of the best fit parameters (7x7). the 7 parameters are ordered as [A, xc, yc, s_xx, s_xy, s_yy, b]</Font></Td>
 <Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>7</Font></Center></Td><Td><Center><Font Size=-1>7</Font></Center></Td><Td><Center><Font Size=-1>Yes</Font></Center></Td></Tr>
 
 </Table>
