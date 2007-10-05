@@ -541,9 +541,9 @@ namespace ImgBeamAnalyzer_ns
           
           if (gaussian_fit.has_converged())
           {
-            data.line_profile_center  = (gaussian_fit.mean() + roi.origin().y()) * py;
+            data.line_profile_center  = (gaussian_fit.mean() + roi.origin().y());
             data.line_profile_mag     = gaussian_fit.magnitude();
-            data.line_profile_sigma   = gaussian_fit.standard_deviation() * py;
+            data.line_profile_sigma   = gaussian_fit.standard_deviation();
             data.line_profile_fwhm    = data.line_profile_sigma * SIGMA2FWHM_SCALE_FACTOR;
             data.line_profile_bg      = gaussian_fit.background();
             data.line_profile_chi2    = gaussian_fit.chi2();

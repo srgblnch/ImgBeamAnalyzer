@@ -42,8 +42,8 @@ PACKAGE_NAME = ImgBeamAnalyzer
 #
 INC_DIR_USER=-I ../../../Libraries/ISL/include \
              -I $(SOLEIL_ROOT)/sw-support/OpenCV/include \
-             -I $(SOLEIL_ROOT)/sw-support/YAT/include \
-             -I $(SOLEIL_ROOT)/sw-support/YAT4tango/include    
+             -I ../../../Libraries/YAT/include \
+             -I ../../../Libraries/YAT4tango/include    
 
 
 
@@ -57,8 +57,8 @@ INC_DIR_USER=-I ../../../Libraries/ISL/include \
 # ...etc
 #
 LIB_DIR_USER=-L ../../../Libraries/ISL/lib \
-		         -L $(SOLEIL_ROOT)/sw-support/YAT/lib/static/linux \
-		         -L $(SOLEIL_ROOT)/sw-support/YAT4tango/lib/static/linux
+		         -L ../../../Libraries/YAT/lib/static/linux \
+		         -L ../../../Libraries/YAT4tango/lib/static/linux
 
 
 
