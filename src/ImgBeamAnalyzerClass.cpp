@@ -1,4 +1,4 @@
-static const char *RcsId     = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzerClass.cpp,v 1.14 2007-10-02 12:51:43 julien_malik Exp $";
+static const char *RcsId     = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzerClass.cpp,v 1.15 2007-10-08 09:09:56 julien_malik Exp $";
 static const char *TagName   = "$Name: not supported by cvs2svn $";
 static const char *HttpServer= "http://www.esrf.fr/computing/cs/tango/tango_doc/ds_doc/";
 //+=============================================================================
@@ -14,7 +14,7 @@ static const char *HttpServer= "http://www.esrf.fr/computing/cs/tango/tango_doc/
 //
 // $Author: julien_malik $
 //
-// $Revision: 1.14 $
+// $Revision: 1.15 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -995,7 +995,7 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	LineProfileFitCenterAttrib	*line_profile_fit_center = new LineProfileFitCenterAttrib();
 	Tango::UserDefaultAttrProp	line_profile_fit_center_prop;
 	line_profile_fit_center_prop.set_label("LineProfile Fit Center");
-	line_profile_fit_center_prop.set_unit("µm");
+	line_profile_fit_center_prop.set_unit("pix");
 	line_profile_fit_center_prop.set_format("%10.2f");
 	line_profile_fit_center_prop.set_description("the Y position of the center of the fitted gaussian corresponding to the line profile");
 	line_profile_fit_center->set_default_properties(line_profile_fit_center_prop);
@@ -1015,7 +1015,7 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	LineProfileFitSigmaAttrib	*line_profile_fit_sigma = new LineProfileFitSigmaAttrib();
 	Tango::UserDefaultAttrProp	line_profile_fit_sigma_prop;
 	line_profile_fit_sigma_prop.set_label("LineProfile Fit Sigma");
-	line_profile_fit_sigma_prop.set_unit("µm");
+	line_profile_fit_sigma_prop.set_unit("pix");
 	line_profile_fit_sigma_prop.set_format("%10.2f");
 	line_profile_fit_sigma_prop.set_description("the standard deviation of  fitted gaussian corresponding to the line profile");
 	line_profile_fit_sigma->set_default_properties(line_profile_fit_sigma_prop);
@@ -1025,7 +1025,7 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	LineProfileFitFWHMAttrib	*line_profile_fit_fwhm = new LineProfileFitFWHMAttrib();
 	Tango::UserDefaultAttrProp	line_profile_fit_fwhm_prop;
 	line_profile_fit_fwhm_prop.set_label("LineProfile Fit FWHM");
-	line_profile_fit_fwhm_prop.set_unit("µm");
+	line_profile_fit_fwhm_prop.set_unit("pix");
 	line_profile_fit_fwhm_prop.set_format("%10.2f");
 	line_profile_fit_fwhm_prop.set_description("the full width at half maximum of the fitted gaussian corresponding to the line profile, calculated approximately as 2.35 * LineProfileFitSigma");
 	line_profile_fit_fwhm->set_default_properties(line_profile_fit_fwhm_prop);
