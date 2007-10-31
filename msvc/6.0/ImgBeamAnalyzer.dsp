@@ -50,7 +50,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
-# ADD LINK32 $(SOLEIL_ROOT)\tango\lib\mix\log4tango.lib $(SOLEIL_ROOT)\tango\lib\mix\tango.lib $(SOLEIL_ROOT)\omniorb\lib\x86_win32\omniORB405_rt.lib $(SOLEIL_ROOT)\omniorb\lib\x86_win32\omnithread30_rt.lib $(SOLEIL_ROOT)\omniorb\lib\x86_win32\COS405_rt.lib $(SOLEIL_ROOT)\omniorb\lib\x86_win32\omniDynamic405_rt.lib kernel32.lib user32.lib gdi32.lib advapi32.lib ws2_32.lib comctl32.lib /nologo /subsystem:console /debug /machine:I386 /out:"Release/ds_ImgBeamAnalyzer.exe"
+# ADD LINK32 $(SOLEIL_ROOT)\tango\lib\mix\log4tango.lib $(SOLEIL_ROOT)\tango\lib\mix\tango.lib $(SOLEIL_ROOT)\omniorb\lib\x86_win32\omniORB405_rt.lib $(SOLEIL_ROOT)\omniorb\lib\x86_win32\omnithread30_rt.lib $(SOLEIL_ROOT)\omniorb\lib\x86_win32\COS405_rt.lib $(SOLEIL_ROOT)\omniorb\lib\x86_win32\omniDynamic405_rt.lib $(SOLEIL_ROOT)\sw-support\OpenCV\lib\shared\msvc-6.0\cxcore.lib $(SOLEIL_ROOT)\sw-support\OpenCV\lib\shared\msvc-6.0\cv.lib $(SOLEIL_ROOT)\sw-support\OpenCV\lib\shared\msvc-6.0\highgui.lib kernel32.lib user32.lib gdi32.lib advapi32.lib ws2_32.lib comctl32.lib /nologo /subsystem:console /debug /machine:I386 /out:"Release/ds_ImgBeamAnalyzer.exe"
 # SUBTRACT LINK32 /pdb:none
 
 !ELSEIF  "$(CFG)" == "ImgBeamAnalyzer - Win32 Debug"
@@ -75,7 +75,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 $(SOLEIL_ROOT)\tango\lib\mix\log4tango.lib $(SOLEIL_ROOT)\tango\lib\mix\tango.lib $(SOLEIL_ROOT)\omniorb\lib\x86_win32\omniORB405_rt.lib $(SOLEIL_ROOT)\omniorb\lib\x86_win32\omnithread30_rt.lib $(SOLEIL_ROOT)\omniorb\lib\x86_win32\COS405_rt.lib $(SOLEIL_ROOT)\omniorb\lib\x86_win32\omniDynamic405_rt.lib kernel32.lib user32.lib gdi32.lib advapi32.lib ws2_32.lib comctl32.lib /nologo /pdb:none /debug /machine:I386 /nodefaultlib:"libc.lib" /out:"Release/ds_ImgBeamAnalyzer.exe" /fixed:no
+# ADD LINK32 $(SOLEIL_ROOT)\tango\lib\mix\log4tango.lib $(SOLEIL_ROOT)\tango\lib\mix\tango.lib $(SOLEIL_ROOT)\omniorb\lib\x86_win32\omniORB405_rt.lib $(SOLEIL_ROOT)\omniorb\lib\x86_win32\omnithread30_rt.lib $(SOLEIL_ROOT)\omniorb\lib\x86_win32\COS405_rt.lib $(SOLEIL_ROOT)\omniorb\lib\x86_win32\omniDynamic405_rt.lib $(SOLEIL_ROOT)\sw-support\OpenCV\lib\shared\msvc-6.0\cxcored.lib $(SOLEIL_ROOT)\sw-support\OpenCV\lib\shared\msvc-6.0\cvd.lib $(SOLEIL_ROOT)\sw-support\OpenCV\lib\shared\msvc-6.0\highguid.lib kernel32.lib user32.lib gdi32.lib advapi32.lib ws2_32.lib comctl32.lib /nologo /pdb:none /debug /machine:I386 /nodefaultlib:"libc.lib" /out:"Debug/ds_ImgBeamAnalyzer.exe" /fixed:no
 
 !ENDIF 
 

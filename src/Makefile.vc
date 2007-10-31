@@ -6,7 +6,10 @@ INCUSER =	/I$(SOLEIL_ROOT)/sw-support/OpenCV/include \
 			/I$(SOLEIL_ROOT)/sw-support/YAT/include \
 			/I$(SOLEIL_ROOT)/sw-support/YAT4Tango/include
 
-LIBUSER= $(SOLEIL_ROOT)/sw-support/ISL/lib/static/msvc-6.0/libISL.lib \
+LIBUSER= $(SOLEIL_ROOT)/sw-support/ISL/lib/shared/msvc-6.0/libISL.lib \
+		 $(SOLEIL_ROOT)/sw-support/OpenCV/lib/shared/msvc-6.0/cxcore.lib \
+		 $(SOLEIL_ROOT)/sw-support/OpenCV/lib/shared/msvc-6.0/cv.lib \
+		 $(SOLEIL_ROOT)/sw-support/OpenCV/lib/shared/msvc-6.0/highgui.lib \
 		 $(SOLEIL_ROOT)/sw-support/YAT/lib/static/msvc-6.0/libYAT.lib \
 		 $(SOLEIL_ROOT)/sw-support/YAT4Tango/lib/static/msvc-6.0/libYAT4Tango.lib
 

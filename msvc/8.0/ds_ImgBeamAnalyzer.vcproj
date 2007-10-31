@@ -61,9 +61,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="omniORB410_rtd.lib omniDynamic410_rtd.lib COS410_rtd.lib omnithread33_rtd.lib tangod.lib log4tangod.lib comctl32.lib ws2_32.lib user32.lib gdi32.lib advapi32.lib"
+				AdditionalDependencies="omniORB410_rtd.lib omniDynamic410_rtd.lib COS410_rtd.lib omnithread33_rtd.lib tangod.lib cxcored.lib cvd.lib highguid.lib log4tangod.lib comctl32.lib ws2_32.lib user32.lib gdi32.lib advapi32.lib"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="&quot;$(SOLEIL_ROOT)\msvc8\omniorb\lib&quot;;&quot;$(SOLEIL_ROOT)\msvc8\tango\lib\shared&quot;"
+				AdditionalLibraryDirectories="&quot;$(SOLEIL_ROOT)\msvc8\omniorb\lib&quot;;&quot;$(SOLEIL_ROOT)\msvc8\tango\lib\shared&quot;;&quot;$(SOLEIL_ROOT)\sw-support\OpenCV\lib\shared\msvc-8.0&quot;"
 				IgnoreAllDefaultLibraries="false"
 				IgnoreDefaultLibraryNames="MSVCRT"
 				GenerateDebugInformation="true"
@@ -140,9 +140,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="omniORB410_rt.lib omniDynamic410_rt.lib COS410_rt.lib omnithread33_rt.lib tango.lib log4tango.lib comctl32.lib ws2_32.lib user32.lib gdi32.lib advapi32.lib"
+				AdditionalDependencies="omniORB410_rt.lib omniDynamic410_rt.lib COS410_rt.lib omnithread33_rt.lib tango.lib cxcore.lib cv.lib highgui.lib log4tango.lib comctl32.lib ws2_32.lib user32.lib gdi32.lib advapi32.lib"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;$(SOLEIL_ROOT)\msvc8\omniorb\lib&quot;;&quot;$(SOLEIL_ROOT)\msvc8\tango\lib\shared&quot;"
+				AdditionalLibraryDirectories="&quot;$(SOLEIL_ROOT)\msvc8\omniorb\lib&quot;;&quot;$(SOLEIL_ROOT)\msvc8\tango\lib\shared&quot;;&quot;$(SOLEIL_ROOT)\sw-support\OpenCV\lib\shared\msvc-8.0&quot;"
 				GenerateDebugInformation="true"
 				SubSystem="1"
 				OptimizeReferences="2"

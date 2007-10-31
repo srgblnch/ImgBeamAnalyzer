@@ -3,7 +3,7 @@ Microsoft Developer Studio Workspace File, Format Version 6.00
 
 ###############################################################################
 
-Project: "ISL"=..\..\..\Libraries\ISL\msvc\ISL.dsp - Package Owner=<4>
+Project: "ISL_Shared"=..\..\..\..\Libraries\ISL\msvc\6.0\ISL_Shared.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -24,19 +24,19 @@ Package=<5>
 Package=<4>
 {{{
     Begin Project Dependency
-    Project_Dep_Name ISL
-    End Project Dependency
-    Begin Project Dependency
     Project_Dep_Name YAT_Static
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name YAT4tango_Static
     End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name ISL_Shared
+    End Project Dependency
 }}}
 
 ###############################################################################
 
-Project: "YAT4tango_Static"=..\..\..\Libraries\YAT4tango\msvc\6.0\YAT4tango_Static.dsp - Package Owner=<4>
+Project: "YAT4tango_Static"=..\..\..\..\Libraries\YAT4tango\msvc\6.0\YAT4tango_Static.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -51,7 +51,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "YAT_Static"=..\..\..\Libraries\YAT\msvc\6.0\YAT_Static.dsp - Package Owner=<4>
+Project: "YAT_Static"=..\..\..\..\Libraries\YAT\msvc\6.0\YAT_Static.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
