@@ -1,4 +1,4 @@
-static const char *RcsId     = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzerClass.cpp,v 1.15 2007-10-08 09:09:56 julien_malik Exp $";
+static const char *RcsId     = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzerClass.cpp,v 1.16 2007-12-21 14:40:45 julien_malik Exp $";
 static const char *TagName   = "$Name: not supported by cvs2svn $";
 static const char *HttpServer= "http://www.esrf.fr/computing/cs/tango/tango_doc/ds_doc/";
 //+=============================================================================
@@ -14,7 +14,7 @@ static const char *HttpServer= "http://www.esrf.fr/computing/cs/tango/tango_doc/
 //
 // $Author: julien_malik $
 //
-// $Revision: 1.15 $
+// $Revision: 1.16 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -586,7 +586,6 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	line_profile_origin_x_prop.set_label("LineProfile Origin X");
 	line_profile_origin_x_prop.set_unit("pix");
 	line_profile_origin_x_prop.set_format("%4d");
-	line_profile_origin_x_prop.set_min_value("0");
 	line_profile_origin_x_prop.set_description("the X coordinate of the origin point of the line profile");
 	line_profile_origin_x->set_default_properties(line_profile_origin_x_prop);
 	att_list.push_back(line_profile_origin_x);
@@ -597,7 +596,6 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	line_profile_origin_y_prop.set_label("LineProfile Origin Y");
 	line_profile_origin_y_prop.set_unit("pix");
 	line_profile_origin_y_prop.set_format("%4d");
-	line_profile_origin_y_prop.set_min_value("0");
 	line_profile_origin_y_prop.set_description("the Y coordinate of the origin point of the line profile");
 	line_profile_origin_y->set_default_properties(line_profile_origin_y_prop);
 	att_list.push_back(line_profile_origin_y);
@@ -608,7 +606,6 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	line_profile_end_x_prop.set_label("LineProfile End X");
 	line_profile_end_x_prop.set_unit("pix");
 	line_profile_end_x_prop.set_format("%4d");
-	line_profile_end_x_prop.set_min_value("0");
 	line_profile_end_x_prop.set_description("the X coordinate of the endpoint of the line profile");
 	line_profile_end_x->set_default_properties(line_profile_end_x_prop);
 	att_list.push_back(line_profile_end_x);
@@ -619,7 +616,6 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	line_profile_end_y_prop.set_label("LineProfile End Y");
 	line_profile_end_y_prop.set_unit("pix");
 	line_profile_end_y_prop.set_format("%4d");
-	line_profile_end_y_prop.set_min_value("0");
 	line_profile_end_y_prop.set_description("the Y coordinate of the endpoint of the line profile");
 	line_profile_end_y->set_default_properties(line_profile_end_y_prop);
 	att_list.push_back(line_profile_end_y);
@@ -1417,6 +1413,16 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	roiimage_prop.set_description("the effective image on which are done all the calculation");
 	roiimage->set_default_properties(roiimage_prop);
 	att_list.push_back(roiimage);
+
+	//	Attribute : LineProfileHelperImg
+	LineProfileHelperImgAttrib	*line_profile_helper_img = new LineProfileHelperImgAttrib();
+	Tango::UserDefaultAttrProp	line_profile_helper_img_prop;
+	line_profile_helper_img_prop.set_label("Line Profile Helper Image");
+	line_profile_helper_img_prop.set_unit(" ");
+	line_profile_helper_img_prop.set_description("the intermediate image used in the calculation of the Line Profile. this corresponds to the input rectangle defined by origin, end and thickness, affine transformed to fit in a rectangular image. The colums of this image are averaged to give the LineProfile attribute");
+	line_profile_helper_img->set_default_properties(line_profile_helper_img_prop);
+	line_profile_helper_img->set_disp_level(Tango::EXPERT);
+	att_list.push_back(line_profile_helper_img);
 
 	//	Attribute : GaussianFitParameterCovariance
 	GaussianFitParameterCovarianceAttrib	*gaussian_fit_parameter_covariance = new GaussianFitParameterCovarianceAttrib();

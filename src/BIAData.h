@@ -122,6 +122,7 @@ public:
   double               line_profile_chi2;
   long                 line_profile_nb_iter;
   double               line_profile_eps;
+  yat::ImageBuffer<float> line_profile_helper_img;
 
   //- histogram
   yat::Buffer<float>   histogram;

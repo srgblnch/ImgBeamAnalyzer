@@ -12,7 +12,7 @@
 //
 // $Author: julien_malik $
 //
-// $Revision: 1.11 $
+// $Revision: 1.12 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -49,6 +49,18 @@ public:
 	{(static_cast<ImgBeamAnalyzer *>(dev))->read_GaussianFitParameterCovariance(att);}
 	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
 	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_GaussianFitParameterCovariance_allowed(ty);}
+};
+
+class LineProfileHelperImgAttrib: public Tango::ImageAttr
+{
+public:
+	LineProfileHelperImgAttrib():ImageAttr("LineProfileHelperImg", Tango::DEV_FLOAT, Tango::READ, 131072, 131072) {};
+	~LineProfileHelperImgAttrib() {};
+	
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_LineProfileHelperImg(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_LineProfileHelperImg_allowed(ty);}
 };
 
 class ROIImageAttrib: public Tango::ImageAttr

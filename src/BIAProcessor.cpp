@@ -49,9 +49,14 @@ namespace ImgBeamAnalyzer_ns
     const isl::ErrorList& isl_errors = ex.errors;
     for (size_t i = 0; i < isl_errors.size(); i++)
     {
-      this->push_error( isl_errors[i].reason,
-                        isl_errors[i].description,
-                        isl_errors[i].origin);
+      if (isl_errors[i].description != "")
+        this->push_error( isl_errors[i].reason,
+                          isl_errors[i].description,
+                          isl_errors[i].origin);
+      else
+        this->push_error( isl_errors[i].reason,
+                          isl_errors[i].reason,
+                          isl_errors[i].origin);
     }
   }
 
@@ -83,6 +88,7 @@ namespace ImgBeamAnalyzer_ns
 	  //------------------------------------------
     isl::Image* input_image = 0; //- the preprocessed image
     isl::Image* roi_image = 0;
+    isl::Image* roi_image_f = 0;
     isl::Image* roi_image_d = 0;
 
     try
@@ -106,6 +112,11 @@ namespace ImgBeamAnalyzer_ns
       std::auto_ptr<isl::Image> roi_image_d_guard(roi_image_d);
       roi_image->convert(*roi_image_d);
 
+      //- convert to roi_image to float
+      roi_image_f = new isl::Image(roi_image->width(), roi_image->height(), isl::ISL_STORAGE_FLOAT);
+      std::auto_ptr<isl::Image> roi_image_f_guard(roi_image_f);
+      roi_image->convert(*roi_image_f);
+
       this->gamma_correction(*roi_image_d, config, data);
 
       this->background_substraction(*roi_image_d, config, data);
@@ -119,7 +130,7 @@ namespace ImgBeamAnalyzer_ns
 
       this->moments(*roi_image_d, roi, config, data);
 
-      this->profiles(*roi_image_d, roi, config, data, config.profilefit_fixedbg, estim_bg);
+      this->profiles(*roi_image_d, *roi_image_f, roi, config, data, config.profilefit_fixedbg, estim_bg);
 
       this->gaussian_fit_2d(*roi_image_d, roi, config, data);
 
@@ -358,7 +369,7 @@ namespace ImgBeamAnalyzer_ns
 
   
   void
-  BIAProcessor::profiles(isl::Image& roi_image_d, isl::Rectangle& roi, const BIAConfig& config, BIAData& data, bool fixed_bg, double bg_value)
+  BIAProcessor::profiles(isl::Image& roi_image_d, isl::Image& roi_image_f, isl::Rectangle& roi, const BIAConfig& config, BIAData& data, bool fixed_bg, double bg_value)
     throw (isl::Exception)
   {
     if (config.enable_profile)
@@ -512,11 +523,15 @@ namespace ImgBeamAnalyzer_ns
 
       if ( p != q )
       {
-        isl::LineProfile lprofile( roi_image_d,
-                                   isl::Point2D<int>( config.profile_origin_x, config.profile_origin_y ),
-                                   isl::Point2D<int>( config.profile_end_x, config.profile_end_y ),
-                                   config.profile_thickness );
-
+        isl::LineProfile lprofile;
+        isl::Image* helper_img = lprofile.compute( roi_image_f,
+                                                   isl::Point2D<int>( config.profile_origin_x, config.profile_origin_y ),
+                                                   isl::Point2D<int>( config.profile_end_x, config.profile_end_y ),
+                                                   config.profile_thickness );
+        std::auto_ptr<isl::Image> helper_img_guard(helper_img);
+        data.line_profile_helper_img.set_dimensions( helper_img->width(), helper_img->height() );
+        helper_img->serialize( data.line_profile_helper_img.base() );
+        
         data.line_profile.capacity(lprofile.size());
         data.line_profile.force_length(lprofile.size());
         data.line_profile_fitted.capacity(lprofile.size());

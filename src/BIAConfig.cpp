@@ -124,7 +124,7 @@ namespace ImgBeamAnalyzer_ns
     CHECK( this->user_roi_width        < 0   , "UserROIWidth must be positive" );
     CHECK( this->user_roi_height       < 0   , "UserROIHeight must be positive" );
     CHECK( this->gamma_correction      <=  0 , "GammaCorrection must be stricly positive" );
-    CHECK( this->pixel_depth           <=  0 , "PixelDepth must be stricly positive" );
+    CHECK( this->pixel_depth            <=  0 , "PixelDepth must be stricly positive" );
     CHECK( this->histo_nb_bins         < 0   , "HistogramNbBins must be positive" );
     CHECK( this->histo_range_min       < 0   , "HistogramRangeMin must be positive" );
     CHECK( this->histo_range_max       < 0   , "HistogramRangeMax must be positive" );

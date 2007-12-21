@@ -8,7 +8,7 @@
 //
 // $Author: julien_malik $
 //
-// $Revision: 1.16 $
+// $Revision: 1.17 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -30,7 +30,7 @@
 
 /**
  * @author	$Author: julien_malik $
- * @version	$Revision: 1.16 $
+ * @version	$Revision: 1.17 $
  */
 
  //	Add your own constants definitions here.
@@ -239,6 +239,7 @@ public :
 		Tango::DevUShort	*attr_InputImage_read;
 		Tango::DevUShort	attr_InputImage_write;
 		Tango::DevUShort	*attr_ROIImage_read;
+		Tango::DevFloat	*attr_LineProfileHelperImg_read;
 		Tango::DevDouble	*attr_GaussianFitParameterCovariance_read;
 //@}
 
@@ -992,6 +993,10 @@ public :
  */
 	virtual void read_ROIImage(Tango::Attribute &attr);
 /**
+ *	Extract real attribute values for LineProfileHelperImg acquisition result.
+ */
+	virtual void read_LineProfileHelperImg(Tango::Attribute &attr);
+/**
  *	Extract real attribute values for GaussianFitParameterCovariance acquisition result.
  */
 	virtual void read_GaussianFitParameterCovariance(Tango::Attribute &attr);
@@ -1423,6 +1428,10 @@ public :
  *	Read/Write allowed for ROIImage attribute.
  */
 	virtual bool is_ROIImage_allowed(Tango::AttReqType type);
+/**
+ *	Read/Write allowed for LineProfileHelperImg attribute.
+ */
+	virtual bool is_LineProfileHelperImg_allowed(Tango::AttReqType type);
 /**
  *	Read/Write allowed for GaussianFitParameterCovariance attribute.
  */

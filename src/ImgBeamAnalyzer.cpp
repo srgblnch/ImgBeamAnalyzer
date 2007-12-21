@@ -1,4 +1,4 @@
-static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzer.cpp,v 1.20 2007-10-03 14:22:05 julien_malik Exp $";
+static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzer.cpp,v 1.21 2007-12-21 14:40:45 julien_malik Exp $";
 //+=============================================================================
 //
 // file :         ImgBeamAnalyzer.cpp
@@ -13,7 +13,7 @@ static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/Im
 //
 // $Author: julien_malik $
 //
-// $Revision: 1.20 $
+// $Revision: 1.21 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -890,6 +890,18 @@ void ImgBeamAnalyzer::read_attr_hardware(vector<long> &attr_list)
   this->update_state();
 
 }
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_LineProfileHelperImg
+// 
+// description : 	Extract real attribute values for LineProfileHelperImg acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_LineProfileHelperImg(Tango::Attribute &attr)
+{
+  READ_OUTPUT_IMAGE_ATTR(line_profile_helper_img, enable_profile, Tango::DevFloat);
+}
+
 //+----------------------------------------------------------------------------
 //
 // method : 		ImgBeamAnalyzer::read_LineProfileOriginX

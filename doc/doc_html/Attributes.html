@@ -497,6 +497,9 @@ Revision:  - Author:
 <Tr><Td><b>ROIImage</b>: <Font Size=-1>the effective image on which are done all the calculation</Font></Td>
 <Td><Center><Font Size=-1>DEV_USHORT</Font></Center></Td><Td><Center><Font Size=-1>131072</Font></Center></Td><Td><Center><Font Size=-1>131072</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
 
+<Tr><Td><b>LineProfileHelperImg</b>: <Font Size=-1>the intermediate image used in the calculation of the Line Profile. this corresponds to the input rectangle defined by origin, end and thickness, affine transformed to fit in a rectangular image. The colums of this image are averaged to give the LineProfile attribute</Font></Td>
+<Td><Center><Font Size=-1>DEV_FLOAT</Font></Center></Td><Td><Center><Font Size=-1>131072</Font></Center></Td><Td><Center><Font Size=-1>131072</Font></Center></Td><Td><Center><Font Size=-1>Yes</Font></Center></Td></Tr>
+
 <Tr><Td><b>GaussianFitParameterCovariance</b>: <Font Size=-1>the covariance matrix of the best fit parameters (7x7). the 7 parameters are ordered as [A, xc, yc, s_xx, s_xy, s_yy, b]</Font></Td>
 <Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>7</Font></Center></Td><Td><Center><Font Size=-1>7</Font></Center></Td><Td><Center><Font Size=-1>Yes</Font></Center></Td></Tr>
 
