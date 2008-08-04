@@ -1,19 +1,28 @@
 #
 device_server= ImgBeamAnalyzer
 
-INCUSER =	/I$(SOLEIL_ROOT)/sw-support/OpenCV/include \
+INCUSER =	/I$(SOLEIL_ROOT)/sw-support/YAT/include \
+			/I$(SOLEIL_ROOT)/sw-support/YAT4Tango/include \
 			/I$(SOLEIL_ROOT)/sw-support/ISL/include \
-			/I$(SOLEIL_ROOT)/sw-support/YAT/include \
-			/I$(SOLEIL_ROOT)/sw-support/YAT4Tango/include
+			/I$(SOLEIL_ROOT)/sw-support/OpenCV/include
+			
+#LIBUSER= $(SOLEIL_ROOT)/sw-support/ISL/lib/shared/msvc-8.0/libISL.lib \
+#		 $(SOLEIL_ROOT)/sw-support/OpenCV/lib/shared/msvc-8.0/cxcore.lib \
+#		 $(SOLEIL_ROOT)/sw-support/OpenCV/lib/shared/msvc-8.0/cv.lib \
+#		 $(SOLEIL_ROOT)/sw-support/OpenCV/lib/shared/msvc-8.0/highgui.lib \
+#		 $(SOLEIL_ROOT)/sw-support/YAT/lib/shared/msvc-8.0/libYAT.lib \
+#		 $(SOLEIL_ROOT)/sw-support/YAT4Tango/lib/shared/msvc-8.0/libYAT4Tango.lib
 
-LIBUSER= $(SOLEIL_ROOT)/sw-support/ISL/lib/shared/msvc-6.0/libISL.lib \
-		 $(SOLEIL_ROOT)/sw-support/OpenCV/lib/shared/msvc-6.0/cxcore.lib \
-		 $(SOLEIL_ROOT)/sw-support/OpenCV/lib/shared/msvc-6.0/cv.lib \
-		 $(SOLEIL_ROOT)/sw-support/OpenCV/lib/shared/msvc-6.0/highgui.lib \
-		 $(SOLEIL_ROOT)/sw-support/YAT/lib/static/msvc-6.0/libYAT.lib \
-		 $(SOLEIL_ROOT)/sw-support/YAT4Tango/lib/static/msvc-6.0/libYAT4Tango.lib
+LIBUSER= $(SOLEIL_ROOT)/sw-support/ISL/lib/static/msvc-8.0/libISL.lib \
+		 $(SOLEIL_ROOT)/sw-support/OpenCV/lib/shared/msvc-8.0/cxcore.lib \
+		 $(SOLEIL_ROOT)/sw-support/OpenCV/lib/shared/msvc-8.0/cv.lib \
+		 $(SOLEIL_ROOT)/sw-support/OpenCV/lib/shared/msvc-8.0/highgui.lib \
+		 $(SOLEIL_ROOT)/sw-support/YAT/lib/static/msvc-8.0/libYAT.lib \
+		 $(SOLEIL_ROOT)/sw-support/YAT4Tango/lib/static/msvc-8.0/libYAT4Tango.lib
 
 CPPDIRUSER=
+
+#CXXFLAGS_USR=/DYAT_DLL /DYAT4TANGO_DLL /DISL_DLL
 
 make_dir=$(SOLEIL_ROOT)\env
 
