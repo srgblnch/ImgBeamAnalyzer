@@ -1,4 +1,4 @@
-static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzerStateMachine.cpp,v 1.12 2007-12-21 14:40:45 julien_malik Exp $";
+static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzerStateMachine.cpp,v 1.13 2009-03-03 17:15:16 julien_malik Exp $";
 //+=============================================================================
 //
 // file :         ImgBeamAnalyzerStateMachine.cpp
@@ -10,7 +10,7 @@ static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/Im
 //
 // $Author: julien_malik $
 //
-// $Revision: 1.12 $
+// $Revision: 1.13 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -1659,6 +1659,34 @@ bool ImgBeamAnalyzer::is_SaveCurrentSettings_allowed(const CORBA::Any &any)
 //
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_GetVersionNumber_allowed(const CORBA::Any &any)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_SetContinuousMode_allowed
+// 
+// description : 	Execution allowed for SetContinuousMode command.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_SetContinuousMode_allowed(const CORBA::Any &any)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_SetOneShotMode_allowed
+// 
+// description : 	Execution allowed for SetOneShotMode command.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_SetOneShotMode_allowed(const CORBA::Any &any)
 {
 		//	End of Generated Code
 

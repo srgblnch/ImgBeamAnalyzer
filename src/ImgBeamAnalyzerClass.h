@@ -12,7 +12,7 @@
 //
 // $Author: julien_malik $
 //
-// $Revision: 1.12 $
+// $Revision: 1.13 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -1424,6 +1424,54 @@ public:
 //=========================================
 //	Define classes for commands
 //=========================================
+class SetOneShotModeCmd : public Tango::Command
+{
+public:
+	SetOneShotModeCmd(const char   *name,
+	               Tango::CmdArgType in,
+				   Tango::CmdArgType out,
+				   const char        *in_desc,
+				   const char        *out_desc,
+				   Tango::DispLevel  level)
+	:Command(name,in,out,in_desc,out_desc, level)	{};
+
+	SetOneShotModeCmd(const char   *name,
+	               Tango::CmdArgType in,
+				   Tango::CmdArgType out)
+	:Command(name,in,out)	{};
+	~SetOneShotModeCmd() {};
+	
+	virtual CORBA::Any *execute (Tango::DeviceImpl *dev, const CORBA::Any &any);
+	virtual bool is_allowed (Tango::DeviceImpl *dev, const CORBA::Any &any)
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_SetOneShotMode_allowed(any);}
+};
+
+
+
+class SetContinuousModeClass : public Tango::Command
+{
+public:
+	SetContinuousModeClass(const char   *name,
+	               Tango::CmdArgType in,
+				   Tango::CmdArgType out,
+				   const char        *in_desc,
+				   const char        *out_desc,
+				   Tango::DispLevel  level)
+	:Command(name,in,out,in_desc,out_desc, level)	{};
+
+	SetContinuousModeClass(const char   *name,
+	               Tango::CmdArgType in,
+				   Tango::CmdArgType out)
+	:Command(name,in,out)	{};
+	~SetContinuousModeClass() {};
+	
+	virtual CORBA::Any *execute (Tango::DeviceImpl *dev, const CORBA::Any &any);
+	virtual bool is_allowed (Tango::DeviceImpl *dev, const CORBA::Any &any)
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_SetContinuousMode_allowed(any);}
+};
+
+
+
 class GetVersionNumberClass : public Tango::Command
 {
 public:

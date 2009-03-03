@@ -8,7 +8,7 @@
 //
 // $Author: julien_malik $
 //
-// $Revision: 1.17 $
+// $Revision: 1.18 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -30,7 +30,7 @@
 
 /**
  * @author	$Author: julien_malik $
- * @version	$Revision: 1.17 $
+ * @version	$Revision: 1.18 $
  */
 
  //	Add your own constants definitions here.
@@ -1457,6 +1457,14 @@ public :
  */
 	virtual bool is_GetVersionNumber_allowed(const CORBA::Any &any);
 /**
+ *	Execution allowed for SetContinuousMode command.
+ */
+	virtual bool is_SetContinuousMode_allowed(const CORBA::Any &any);
+/**
+ *	Execution allowed for SetOneShotMode command.
+ */
+	virtual bool is_SetOneShotMode_allowed(const CORBA::Any &any);
+/**
  * [CONTINUOUS mode only] When the device is in STANDBY, this command starts the computation
  *	@exception DevFailed
  */
@@ -1482,6 +1490,16 @@ public :
  *	@exception DevFailed
  */
 	Tango::DevString	get_version_number();
+/**
+ * Set the behavior to 'CONTINUOUS' : the device reads new images continuously and asynchronously
+ *	@exception DevFailed
+ */
+	void	set_continuous_mode();
+/**
+ * Set the behavior to 'ONESHOT' : the device reads a new image when Process is called
+ *	@exception DevFailed
+ */
+	void	set_one_shot_mode();
 
 /**
  *	Read the device properties from database
