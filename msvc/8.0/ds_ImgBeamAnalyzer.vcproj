@@ -40,7 +40,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\src;&quot;$(SOLEIL_ROOT)\msvc8\omniorb\include&quot;;&quot;$(SOLEIL_ROOT)\msvc8\tango\include&quot;;&quot;$(SOLEIL_ROOT)\msvc8\log4tango\include&quot;;D:\dev\Libraries\YAT\include;D:\dev\Libraries\YAT4tango\include;D:\dev\Libraries\ISL\include;&quot;$(SOLEIL_ROOT)\sw-support\OpenCV\include&quot;"
+				AdditionalIncludeDirectories="..\..\src;&quot;$(SOLEIL_ROOT)\sw-support\omniorb\include&quot;;&quot;$(SOLEIL_ROOT)\sw-support\tango\include&quot;;D:\dev\Libraries\YAT\include;D:\dev\Libraries\YAT4tango\include;D:\dev\Libraries\ISL\include;&quot;$(SOLEIL_ROOT)\sw-support\OpenCV\include&quot;"
 				PreprocessorDefinitions="_DEBUG;WIN32;_CONSOLE;WIN32_LEAN_AND_MEAN;STRICT;VC_EXTRALEAN;LOG4TANGO_HAS_DLL;TANGO_HAS_DLL;HAS_TANGO_5"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -61,7 +61,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="omniORB410_rtd.lib omniDynamic410_rtd.lib COS410_rtd.lib omnithread33_rtd.lib tangod.lib cxcored.lib cvd.lib highguid.lib log4tangod.lib comctl32.lib ws2_32.lib user32.lib gdi32.lib advapi32.lib"
+				AdditionalDependencies="omniORB412_rtd.lib omniDynamic412_rtd.lib COS412_rtd.lib omnithread33_rtd.lib tangod.lib cxcored.lib cvd.lib highguid.lib log4tangod.lib comctl32.lib ws2_32.lib user32.lib gdi32.lib advapi32.lib"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="&quot;$(SOLEIL_ROOT)\msvc8\omniorb\lib&quot;;&quot;$(SOLEIL_ROOT)\msvc8\tango\lib\shared&quot;;&quot;$(SOLEIL_ROOT)\sw-support\OpenCV\lib\shared\msvc-8.0&quot;"
 				IgnoreAllDefaultLibraries="false"
@@ -121,7 +121,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="..\..\src;&quot;$(SOLEIL_ROOT)\vc8\omniorb\include&quot;;&quot;$(SOLEIL_ROOT)\vc8\tango\include&quot;;D:\dev\Libraries\YAT\include;D:\dev\Libraries\YAT4tango\include;D:\dev\Libraries\ISL\include;&quot;$(SOLEIL_ROOT)\sw-support\OpenCV\include&quot;"
+				AdditionalIncludeDirectories="..\..\src;&quot;$(SOLEIL_ROOT)\sw-support\omniorb\include&quot;;&quot;$(SOLEIL_ROOT)\sw-support\tango\include&quot;;D:\dev\Libraries\YAT\include;D:\dev\Libraries\YAT4tango\include;D:\dev\Libraries\ISL\include;&quot;$(SOLEIL_ROOT)\sw-support\OpenCV\include&quot;"
 				PreprocessorDefinitions="NDEBUG;WIN32;_CONSOLE;WIN32_LEAN_AND_MEAN;STRICT;VC_EXTRALEAN;LOG4TANGO_HAS_DLL;TANGO_HAS_DLL;ISL_DLL"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
@@ -140,9 +140,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="omniORB410_rt.lib omniDynamic410_rt.lib COS410_rt.lib omnithread33_rt.lib tango.lib cxcore.lib cv.lib highgui.lib log4tango.lib comctl32.lib ws2_32.lib user32.lib gdi32.lib advapi32.lib"
+				AdditionalDependencies="omniORB412_rt.lib omniDynamic412_rt.lib COS412_rt.lib omnithread33_rt.lib tango.lib cxcore.lib cv.lib highgui.lib log4tango.lib comctl32.lib ws2_32.lib user32.lib gdi32.lib advapi32.lib"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;$(SOLEIL_ROOT)\msvc8\omniorb\lib&quot;;&quot;$(SOLEIL_ROOT)\msvc8\tango\lib\shared&quot;;&quot;$(SOLEIL_ROOT)\sw-support\OpenCV\lib\shared\msvc-8.0&quot;"
+				AdditionalLibraryDirectories="&quot;$(SOLEIL_ROOT)\sw-support\omniorb\lib&quot;;&quot;$(SOLEIL_ROOT)\sw-support\tango\lib\shared&quot;;&quot;$(SOLEIL_ROOT)\sw-support\OpenCV\lib\shared\msvc-8.0&quot;"
 				GenerateDebugInformation="true"
 				SubSystem="1"
 				OptimizeReferences="2"
