@@ -18,6 +18,7 @@
 // DEPENDENCIES
 // ============================================================================
 #include "BIAProcessor.h"
+#include "ImageAndInfo.h"
 #include <yat/Callback.h>
 #include <yat/threading/Task.h>
 
@@ -26,12 +27,13 @@ namespace ImgBeamAnalyzer_ns
 
 const int MODE_ONESHOT = 0;
 const int MODE_CONTINUOUS = 1;
+const int MODE_EVENT = 2;
 
 #define kMSG_PROCESS           (yat::FIRST_USER_MSG + 1)
 #define kMSG_START             (yat::FIRST_USER_MSG + 2)
 #define kMSG_STOP              (yat::FIRST_USER_MSG + 3)
 
-YAT_DEFINE_CALLBACK( GetImgCB, isl::Image*& );
+YAT_DEFINE_CALLBACK( GetImgCB, ImageAndInfo & );
 
 //---------------------------------------------------------------------------
 //- ImgBeamAnalyzerInit
@@ -79,9 +81,9 @@ public:
     throw (yat::Exception);
 
   //- process
-  //- gets ownership of 'image' pointer
+  //- gets ownership of 'imginf.image' pointer
   //- the pointer is deleted in case an exception occurs
-  void process( isl::Image* image, bool wait, size_t wait_timeout = 0 )
+  void process( ImageAndInfo &imginf, bool wait, size_t wait_timeout = 0 )
     throw (yat::Exception);
 
   void get_config( BIAConfig& );

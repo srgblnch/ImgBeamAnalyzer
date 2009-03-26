@@ -12,7 +12,7 @@
 //
 // $Author: julien_malik $
 //
-// $Revision: 1.13 $
+// $Revision: 1.14 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -207,6 +207,30 @@ public:
 	{(static_cast<ImgBeamAnalyzer *>(dev))->read_XProj(att);}
 	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
 	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_XProj_allowed(ty);}
+};
+
+class RmsYAttrib: public Tango::Attr
+{
+public:
+	RmsYAttrib():Attr("RmsY", Tango::DEV_DOUBLE, Tango::READ) {};
+	~RmsYAttrib() {};
+	
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_RmsY(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_RmsY_allowed(ty);}
+};
+
+class RmsXAttrib: public Tango::Attr
+{
+public:
+	RmsXAttrib():Attr("RmsX", Tango::DEV_DOUBLE, Tango::READ) {};
+	~RmsXAttrib() {};
+	
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_RmsX(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_RmsX_allowed(ty);}
 };
 
 class GaussianFitRelChangeAttrib: public Tango::Attr
@@ -853,6 +877,18 @@ public:
 	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_VarianceX_allowed(ty);}
 };
 
+class CentroidSaturatedAttrib: public Tango::Attr
+{
+public:
+	CentroidSaturatedAttrib():Attr("CentroidSaturated", Tango::DEV_BOOLEAN, Tango::READ) {};
+	~CentroidSaturatedAttrib() {};
+	
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_CentroidSaturated(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_CentroidSaturated_allowed(ty);}
+};
+
 class CentroidYAttrib: public Tango::Attr
 {
 public:
@@ -1424,54 +1460,6 @@ public:
 //=========================================
 //	Define classes for commands
 //=========================================
-class SetOneShotModeCmd : public Tango::Command
-{
-public:
-	SetOneShotModeCmd(const char   *name,
-	               Tango::CmdArgType in,
-				   Tango::CmdArgType out,
-				   const char        *in_desc,
-				   const char        *out_desc,
-				   Tango::DispLevel  level)
-	:Command(name,in,out,in_desc,out_desc, level)	{};
-
-	SetOneShotModeCmd(const char   *name,
-	               Tango::CmdArgType in,
-				   Tango::CmdArgType out)
-	:Command(name,in,out)	{};
-	~SetOneShotModeCmd() {};
-	
-	virtual CORBA::Any *execute (Tango::DeviceImpl *dev, const CORBA::Any &any);
-	virtual bool is_allowed (Tango::DeviceImpl *dev, const CORBA::Any &any)
-	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_SetOneShotMode_allowed(any);}
-};
-
-
-
-class SetContinuousModeClass : public Tango::Command
-{
-public:
-	SetContinuousModeClass(const char   *name,
-	               Tango::CmdArgType in,
-				   Tango::CmdArgType out,
-				   const char        *in_desc,
-				   const char        *out_desc,
-				   Tango::DispLevel  level)
-	:Command(name,in,out,in_desc,out_desc, level)	{};
-
-	SetContinuousModeClass(const char   *name,
-	               Tango::CmdArgType in,
-				   Tango::CmdArgType out)
-	:Command(name,in,out)	{};
-	~SetContinuousModeClass() {};
-	
-	virtual CORBA::Any *execute (Tango::DeviceImpl *dev, const CORBA::Any &any);
-	virtual bool is_allowed (Tango::DeviceImpl *dev, const CORBA::Any &any)
-	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_SetContinuousMode_allowed(any);}
-};
-
-
-
 class GetVersionNumberClass : public Tango::Command
 {
 public:
@@ -1596,7 +1584,11 @@ public:
 // The ImgBeamAnalyzerClass singleton definition
 //
 
-class ImgBeamAnalyzerClass : public Tango::DeviceClass
+class
+#ifdef WIN32
+	__declspec(dllexport)
+#endif
+	ImgBeamAnalyzerClass : public Tango::DeviceClass
 {
 public:
 //	properties member data
@@ -1625,6 +1617,8 @@ protected:
 	void attribute_factory(vector<Tango::Attr *> &);
 	void write_class_property();
 	void set_default_property();
+	string get_cvstag();
+	string get_cvsroot();
 
 private:
 	void device_factory(const Tango::DevVarStringArray *);

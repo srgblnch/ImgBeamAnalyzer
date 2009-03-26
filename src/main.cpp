@@ -1,4 +1,4 @@
-static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/main.cpp,v 1.2 2007-04-27 16:21:01 julien_malik Exp $";
+static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/main.cpp,v 1.3 2009-03-26 09:57:21 julien_malik Exp $";
 //+=============================================================================
 //
 // file :        main.cpp
@@ -12,7 +12,7 @@ static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/Im
 //
 // $Author: julien_malik $
 //
-// $Revision: 1.2 $ $
+// $Revision: 1.3 $ $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -28,6 +28,7 @@ static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/Im
 //         (c) - Software Engineering Group - ESRF
 //=============================================================================
 
+#ifndef IBA_DLL_EXPORT
 
 #ifdef WIN32
 #  pragma warning (disable: 4786)
@@ -80,3 +81,5 @@ int main(int argc,char *argv[])
 	tg->server_cleanup();
 	return(0);
 }
+
+#endif // ifndef IBA_DLL_EXPORT

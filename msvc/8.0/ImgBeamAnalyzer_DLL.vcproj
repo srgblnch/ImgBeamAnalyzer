@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8,00"
-	Name="ds_ImgBeamAnalyzer"
-	ProjectGUID="{77B80930-E2DD-4D99-B5C0-BBA8D65C88F6}"
-	RootNamespace="ds_ImgBeamAnalyzer"
+	Name="ImgBeamAnalyzer_DLL"
+	ProjectGUID="{EA6E513D-1153-4FA3-90BA-0C5CD0BB8FAB}"
+	RootNamespace="ImgBeamAnalyzer_DLL"
 	Keyword="Win32Proj"
 	>
 	<Platforms>
@@ -18,8 +18,8 @@
 		<Configuration
 			Name="Debug|Win32"
 			OutputDirectory="..\..\bin\msvc-8.0\debug"
-			IntermediateDirectory="obj\ds_ImgBeamAnalyzer\debug"
-			ConfigurationType="1"
+			IntermediateDirectory="obj\ImgBeamAnalyzer_DLL\debug"
+			ConfigurationType="2"
 			CharacterSet="0"
 			>
 			<Tool
@@ -41,7 +41,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="../../src;&quot;$(SOLEIL_ROOT)\sw-support\Omniorb\include&quot;;&quot;$(SOLEIL_ROOT)\sw-support\Tango\include&quot;;&quot;$(SOLEIL_ROOT)\sw-support\YAT\include&quot;;&quot;$(SOLEIL_ROOT)\sw-support\YAT4tango\include&quot;;&quot;$(SOLEIL_ROOT)\sw-support\ISL\include&quot;;&quot;$(SOLEIL_ROOT)\sw-support\OpenCV\include&quot;"
-				PreprocessorDefinitions="_DEBUG;WIN32;_CONSOLE;WIN32_LEAN_AND_MEAN;LOG4TANGO_HAS_DLL;TANGO_HAS_DLL;IBA_DLL_IMPORT"
+				PreprocessorDefinitions="_DEBUG;WIN32;_CONSOLE;WIN32_LEAN_AND_MEAN;LOG4TANGO_HAS_DLL;TANGO_HAS_DLL;IBA_DLL_EXPORT;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -99,8 +99,8 @@
 		<Configuration
 			Name="Release|Win32"
 			OutputDirectory="..\..\bin\msvc-8.0\release"
-			IntermediateDirectory="obj\ds_ImgBeamAnalyzer\release"
-			ConfigurationType="1"
+			IntermediateDirectory="obj\ImgBeamAnalyzer_DLL\release"
+			ConfigurationType="2"
 			CharacterSet="0"
 			WholeProgramOptimization="1"
 			>
@@ -122,7 +122,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="../../src;&quot;$(SOLEIL_ROOT)\sw-support\Omniorb\include&quot;;&quot;$(SOLEIL_ROOT)\sw-support\Tango\include&quot;;&quot;$(SOLEIL_ROOT)\sw-support\YAT\include&quot;;&quot;$(SOLEIL_ROOT)\sw-support\YAT4tango\include&quot;;&quot;$(SOLEIL_ROOT)\sw-support\ISL\include&quot;;&quot;$(SOLEIL_ROOT)\sw-support\OpenCV\include&quot;"
-				PreprocessorDefinitions="NDEBUG;WIN32;_CONSOLE;WIN32_LEAN_AND_MEAN;LOG4TANGO_HAS_DLL;TANGO_HAS_DLL;IBA_DLL_IMPORT"
+				PreprocessorDefinitions="NDEBUG;WIN32;_CONSOLE;WIN32_LEAN_AND_MEAN;LOG4TANGO_HAS_DLL;TANGO_HAS_DLL;IBA_DLL_EXPORT;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
@@ -183,7 +183,91 @@
 			Name="src"
 			>
 			<File
-				RelativePath="..\..\src\main.cpp"
+				RelativePath="..\..\src\BIAConfig.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\BIAConfig.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\BIAData.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\BIAData.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\BIAData.i"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\BIAProcessor.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\BIAProcessor.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\ClassFactory.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\IBASource.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\IBASource.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\IBASourceTango.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\IBASourceTango.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\ImageAndInfo.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\ImgBeamAnalyzer.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\ImgBeamAnalyzer.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\ImgBeamAnalyzerClass.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\ImgBeamAnalyzerClass.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\ImgBeamAnalyzerStateMachine.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\ImgBeamAnalyzerTask.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\ImgBeamAnalyzerTask.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\ImgBeamAnalyzerTask.i"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\ImgBeamAnalyzerVersion.h"
 				>
 			</File>
 		</Filter>

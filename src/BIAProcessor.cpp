@@ -28,6 +28,8 @@
 #include <isl/statistics/LineProfile.h>
 
 #include <sys/timeb.h>
+
+#include <math.h>
 // ============================================================================
 // Time relative Macros:
 // ============================================================================
@@ -35,6 +37,46 @@
 #define	GET_TIME(T) ftime(&T)
 #define	ELAPSED_TIME_MS(start_time, end_time) \
   static_cast<long>( 1000 * (end_time.time - start_time.time) + (end_time.millitm - start_time.millitm) )
+
+
+// #define _IBA_TIMING_TESTS_
+// #define _IBA_USE_FLOAT64_
+
+#ifdef _IBA_TIMING_TESTS_
+  #include <yat/Timer.h>
+  #define CHRONO_BEGIN(name) \
+      _TIMESTAMP __lalausecpo_ ## name ## _a, __lalausecpo_ ## name ## _b; \
+      _GET_TIME(__lalausecpo_ ## name ## _a)
+
+  #define CHRONO_END(name) \
+    if(true) { \
+      _GET_TIME(__lalausecpo_ ## name ## _b); \
+      const double milis = _ELAPSED_MSEC(__lalausecpo_ ## name ## _a, __lalausecpo_ ## name ## _b); \
+      std::cout << "PROFILE " << #name << ": " << milis << "ms" << std::endl; \
+    } else (void)0
+
+  struct _ProfileFunction {
+    const char*const func_name;
+    _TIMESTAMP begin_ts;
+    _ProfileFunction(const char* funcName) : func_name(funcName) {
+      _GET_TIME(begin_ts);
+    }
+    ~_ProfileFunction() {
+      _TIMESTAMP end_ts;
+      _GET_TIME(end_ts);
+      const double milis = _ELAPSED_MSEC(begin_ts, end_ts);
+      std::cout << "PROFILE " << func_name << "(): " << milis << "ms" << std::endl;
+    }
+  };
+  #define CHRONO_PROFILE() _ProfileFunction __erprofileeer__(__FUNCTION__)
+  #define CHRONO_PROFILE_PART(DESC) _ProfileFunction __erprofileeer__ ## DESC(#DESC)
+
+#else
+  #define CHRONO_BEGIN(name)
+  #define CHRONO_END(name)
+  #define CHRONO_PROFILE()
+  #define CHRONO_PROFILE_PART(DESC)
+#endif // _IBA_TIMING_TESTS_
 
 
 namespace ImgBeamAnalyzer_ns
@@ -69,7 +111,7 @@ namespace ImgBeamAnalyzer_ns
   }
 
   void
-  BIAProcessor::process (const isl::Image& image, const BIAConfig& config, BIAData& data)
+  BIAProcessor::process (const isl::Image& image, const BIAConfig& config, BIAData& data) const
   throw (yat::Exception)
   {
     YAT_TRACE("BIAProcessor::process");
@@ -89,7 +131,6 @@ namespace ImgBeamAnalyzer_ns
     isl::Image* input_image = 0; //- the preprocessed image
     isl::Image* roi_image = 0;
     isl::Image* roi_image_f = 0;
-    isl::Image* roi_image_d = 0;
 
     try
     {
@@ -100,44 +141,66 @@ namespace ImgBeamAnalyzer_ns
       double estim_bg = 0;
       if (config.profilefit_fixedbg == true)
       {
+        CHRONO_PROFILE_PART(ESTIMATE_BACKGROUND);
         estim_bg = input_image->estimate_background( 5 );
       }
 
       isl::Rectangle roi;
 
       this->clip(*input_image, config, roi_image, roi, data);
+
+      //- Convert roi_image to floating point value
+  CHRONO_BEGIN(CREATE_IMG);
+#ifdef _IBA_USE_FLOAT64_
+      isl::Image roi_image_d(roi_image->width(), roi_image->height(), isl::ISL_STORAGE_DOUBLE);
+#else
+      isl::Image roi_image_d(roi_image->width(), roi_image->height(), isl::ISL_STORAGE_FLOAT);
+#endif
+  CHRONO_END(CREATE_IMG);
       
-      //- convert to roi_image to double
-      roi_image_d = new isl::Image(roi_image->width(), roi_image->height(), isl::ISL_STORAGE_DOUBLE);
-      std::auto_ptr<isl::Image> roi_image_d_guard(roi_image_d);
-      roi_image->convert(*roi_image_d);
+  CHRONO_BEGIN(CONVERT_IMG);
+      roi_image->convert(roi_image_d);
+  CHRONO_END(CONVERT_IMG);
 
       //- convert to roi_image to float
-      roi_image_f = new isl::Image(roi_image->width(), roi_image->height(), isl::ISL_STORAGE_FLOAT);
+      if (config.enable_profile) {
+        roi_image_f = new isl::Image(roi_image->width(), roi_image->height(), isl::ISL_STORAGE_FLOAT);
+        try {
+          roi_image->convert(*roi_image_f);
+        } catch (...) {
+          delete roi_image_f;
+          throw;
+        }
+      }
       std::auto_ptr<isl::Image> roi_image_f_guard(roi_image_f);
-      roi_image->convert(*roi_image_f);
 
-      this->gamma_correction(*roi_image_d, config, data);
+      this->gamma_correction(roi_image_d, config, data);
 
-      this->background_substraction(*roi_image_d, config, data);
+      this->background_substraction(roi_image_d, config, data);
 
-      roi_image_d->convert(*roi_image);
+  CHRONO_BEGIN(ROI_IMG_COPY);
+      roi_image_d.convert(*roi_image);
 
       data.roi_image.set_dimensions( roi.width(), roi.height() );
       roi_image->serialize(data.roi_image.base());
+  CHRONO_END(ROI_IMG_COPY);
 
-      this->histogram(*roi_image_d, config, data);
+      this->histogram(roi_image_d, config, data);;
 
-      this->moments(*roi_image_d, roi, config, data);
+      this->moments(roi_image_d, roi, config, data);
 
-      this->profiles(*roi_image_d, *roi_image_f, roi, config, data, config.profilefit_fixedbg, estim_bg);
+      this->profiles(roi_image_d, *roi_image_f, roi, config, data, config.profilefit_fixedbg, estim_bg);
 
-      this->gaussian_fit_2d(*roi_image_d, roi, config, data);
+      this->gaussian_fit_2d(roi_image_d, roi, config, data);
 
       data.update_alarm();
 
       GET_TIME(end_time);
       data.estim_comput_time = ELAPSED_TIME_MS(start_time, end_time);
+
+#ifdef _IBA_TIMING_TESTS_
+      std::cout << "TOTAL_TIME: " << data.estim_comput_time << "ms!!\n" << std::endl;
+#endif
 
       SAFE_DELETE_PTR(input_image);
       SAFE_DELETE_PTR(roi_image);
@@ -164,9 +227,10 @@ namespace ImgBeamAnalyzer_ns
   }
 
   void
-  BIAProcessor::preprocess ( isl::Image& image, const BIAConfig& config, BIAData& data )
+  BIAProcessor::preprocess ( isl::Image& image, const BIAConfig& config, BIAData& data ) const
     throw (isl::Exception)
   {
+      CHRONO_PROFILE();
       int operation;
       bool flip = config.horizontal_flip;
       long rotation = config.rotation % 360;
@@ -199,9 +263,10 @@ namespace ImgBeamAnalyzer_ns
 
   
   void
-  BIAProcessor::clip(const isl::Image& image, const BIAConfig& config, isl::Image*& roi_image, isl::Rectangle& roi, BIAData& data)
+  BIAProcessor::clip(const isl::Image& image, const BIAConfig& config, isl::Image*& roi_image, isl::Rectangle& roi, BIAData& data) const
     throw (isl::Exception)
   {
+    CHRONO_PROFILE();
     roi_image = 0;
 
     isl::Image* user_roi_image = 0;
@@ -284,8 +349,15 @@ namespace ImgBeamAnalyzer_ns
     {
       try
       {
+
+#ifdef _IBA_USE_FLOAT64_
+        isl::Image user_roi_img_working(  user_roi_image->width(),
+                                          user_roi_image->height(),
+                                          isl::ISL_STORAGE_FLOAT );
+        user_roi_image.convert(user_roi_img_working);
+#else
         isl::Image user_roi_img_working(*user_roi_image);
-        user_roi_img_working.convert(isl::ISL_STORAGE_FLOAT);
+#endif
         user_roi_img_working.threshold(config.auto_roi_threshold, 255);
         user_roi_img_working.convert(isl::ISL_STORAGE_UCHAR);
         auto_roi = isl::BeamBox(user_roi_img_working, config.auto_roi_mag_factor_x, config.auto_roi_mag_factor_y);
@@ -295,7 +367,8 @@ namespace ImgBeamAnalyzer_ns
       {
         std::cerr << ex << std::endl;
         isl::ErrorHandler::reset();
-        // failed to determine the ROI automatically : take the whole image (already clipped by user roi)
+        // failed to determine the ROI automatically : take the whole image
+        // (already clipped by user roi)
         auto_roi = user_roi;
         //- use the user_roi_image already allocated
         auto_roi_image = user_roi_image_ptr.release();
@@ -319,47 +392,66 @@ namespace ImgBeamAnalyzer_ns
   }
   
   void
-  BIAProcessor::gamma_correction(isl::Image& roi_image_d, const BIAConfig& config, BIAData&)
+  BIAProcessor::gamma_correction(isl::Image& roi_image_d, const BIAConfig& config, BIAData&) const
     throw (isl::Exception)
   {
+    CHRONO_PROFILE();
     if (::fabs(config.gamma_correction - 1) > DBL_EPSILON)
     {
       //- apply the gamma correction
-      double max_pixel_value = ::pow(2.0, static_cast<double>(config.pixel_depth));
+      const double max_pixel_value = static_cast<double>((1 << config.pixel_depth) - 1);
       roi_image_d.gamma_correction(config.gamma_correction, max_pixel_value);
     }
   }
   
   void
-  BIAProcessor::background_substraction(isl::Image& roi_image_d, const BIAConfig& config, BIAData&)
+  BIAProcessor::background_substraction(isl::Image& roi_image_d, const BIAConfig& config, BIAData&) const
     throw (isl::Exception)
   {
+    CHRONO_PROFILE();
     roi_image_d -= config.bg_substraction;
+
+    // Image::threshold() does not work on 64F
+#ifdef _IBA_USE_FLOAT64_
+    // Copy to a float image
+    isl::Image roi_image(roi_image_d.width(), roi_image_d.height(), isl::ISL_STORAGE_FLOAT);
+    roi_image_d.convert(roi_image);
+    // Threshold it
+    roi_image.threshold(0.0, 0.0, isl::ISL_THRESH_TOZERO);
+    // Copy back to the double image
+    roi_image.convert(roi_image_d);
+#else
+    roi_image_d.threshold(0.0, 0.0, isl::ISL_THRESH_TOZERO);
+#endif
+    
   }
 
   void
-  BIAProcessor::histogram(isl::Image& roi_image, const BIAConfig& config, BIAData& data)
+  BIAProcessor::histogram(const isl::Image& roi_image, const BIAConfig& config, BIAData& data) const
     throw (isl::Exception)
   {
+    CHRONO_PROFILE();
     if (config.enable_histogram)
     {
-      float low_thresh = float(config.histo_range_min);
+      const float low_thresh = float(config.histo_range_min);
 
-      float high_thresh = config.histo_range_max > 0
-                          ? float(config.histo_range_max)
-                          : float((1 << config.pixel_depth) - 1);
+      const float high_thresh = config.histo_range_max > 0
+                              ? float(config.histo_range_max)
+                              : float((1 << config.pixel_depth) - 1);
 
-      int nb_bins = config.histo_nb_bins > 0
-                      ? config.histo_nb_bins
-                      : int(high_thresh - low_thresh);
+      const int nb_bins = config.histo_nb_bins > 0
+                        ? config.histo_nb_bins
+                        : int(high_thresh - low_thresh);
 
-      isl::Image* roi_image_f = new isl::Image(roi_image.width(), roi_image.height(), isl::ISL_STORAGE_FLOAT);
-      std::auto_ptr<isl::Image> guard( roi_image_f );
-
+      // cvCalcHist only supports 8U and 32F, not 64F
+#ifdef _IBA_USE_FLOAT64_
       //- copy integer ROI image to floating point representation
-      roi_image.convert(*roi_image_f);
-
-      isl::Histogram hist(*roi_image_f, nb_bins, low_thresh, high_thresh);
+      isl::Image roi_image_f(roi_image.width(), roi_image.height(), isl::ISL_STORAGE_FLOAT);
+      roi_image.convert(roi_image_f);
+      const isl::Histogram hist(roi_image_f, nb_bins, low_thresh, high_thresh);
+#else
+      const isl::Histogram hist(roi_image, nb_bins, low_thresh, high_thresh);
+#endif
 
       data.histogram.capacity(nb_bins);
       data.histogram.force_length(nb_bins);
@@ -369,9 +461,10 @@ namespace ImgBeamAnalyzer_ns
 
   
   void
-  BIAProcessor::profiles(isl::Image& roi_image_d, isl::Image& roi_image_f, isl::Rectangle& roi, const BIAConfig& config, BIAData& data, bool fixed_bg, double bg_value)
+  BIAProcessor::profiles(const isl::Image& roi_image_d, const isl::Image& roi_image_f, const isl::Rectangle& roi, const BIAConfig& config, BIAData& data, bool fixed_bg, double bg_value) const
     throw (isl::Exception)
   {
+    CHRONO_PROFILE();
     if (config.enable_profile)
     {
       double px = config.pixel_size_x / config.optical_mag;
@@ -401,8 +494,8 @@ namespace ImgBeamAnalyzer_ns
           gaussian_fit.compute_fixed_bg(projections.get_x_projection(), projections.size_x(), bg_value);
         }
         
-        if (gaussian_fit.has_converged())
-        {
+        /*if (gaussian_fit.has_converged())
+        {*/
           data.xproj_center  = (gaussian_fit.mean() + roi.origin().x()) * px;
           data.xproj_mag     = gaussian_fit.magnitude();
           data.xproj_sigma   = gaussian_fit.standard_deviation() * px;
@@ -417,8 +510,8 @@ namespace ImgBeamAnalyzer_ns
             data.xproj_fitted[i] = gaussian_fit.get_fitted_value(i);
             data.xproj_error[i]  = gaussian_fit.get_fitted_error(i);
           }
-          data.xproj_fit_converged = true;
-        }
+          data.xproj_fit_converged = gaussian_fit.has_converged();//true;
+        /*}
         else
         {
           data.xproj_center  = 0;
@@ -431,7 +524,7 @@ namespace ImgBeamAnalyzer_ns
           data.xproj_eps     = gaussian_fit.epsilon();
           data.xproj_fitted.fill(0);
           data.xproj_error.fill(0);
-        }
+        }*/
       }
       catch(isl::Exception&)
       {
@@ -470,8 +563,8 @@ namespace ImgBeamAnalyzer_ns
           gaussian_fit.compute_fixed_bg(projections.get_y_projection(), projections.size_y(), bg_value);
         }
         
-        if (gaussian_fit.has_converged())
-        {
+        /*if (gaussian_fit.has_converged())
+        {*/
           data.yproj_center  = (gaussian_fit.mean() + roi.origin().y()) * py;
           data.yproj_mag     = gaussian_fit.magnitude();
           data.yproj_sigma   = gaussian_fit.standard_deviation() * py;
@@ -487,8 +580,8 @@ namespace ImgBeamAnalyzer_ns
             data.yproj_error[i]  = gaussian_fit.get_fitted_error(i);
           }
 
-          data.yproj_fit_converged = true;
-        }
+          data.yproj_fit_converged = gaussian_fit.has_converged();//true;
+        /*}
         else
         {
           data.yproj_center  = 0;
@@ -501,7 +594,7 @@ namespace ImgBeamAnalyzer_ns
           data.yproj_eps     = gaussian_fit.epsilon();
           data.yproj_fitted.fill(0);
           data.yproj_error.fill(0);
-        }
+        }*/
       }
       catch(isl::Exception&)
       {
@@ -606,9 +699,10 @@ namespace ImgBeamAnalyzer_ns
   }
     
   void
-  BIAProcessor::moments(isl::Image& roi_image, isl::Rectangle& roi, const BIAConfig& config, BIAData& data)
+  BIAProcessor::moments(const isl::Image& roi_image, const isl::Rectangle& roi, const BIAConfig& config, BIAData& data) const
     throw (isl::Exception)
   {
+    CHRONO_PROFILE();
     if (config.enable_image_stats)
     {
       isl::Moments2D img_moments(roi_image);
@@ -621,8 +715,10 @@ namespace ImgBeamAnalyzer_ns
         data.centroid_x = 0;
         data.centroid_y = 0;
         data.variance_x = 0;
+        data.rms_x = 0;
         data.covariance_xy = 0;
         data.variance_y = 0;
+        data.rms_y = 0;
         data.correlation_xy = 0;
         data.skew_x = 0;
         data.skew_x2y = 0;
@@ -641,8 +737,10 @@ namespace ImgBeamAnalyzer_ns
         data.centroid_y     = (img_moments.m01() / m00 + roi.origin().y()) * py;
     
         data.variance_x     = img_moments.mu20() / m00 * px * px;
+        data.rms_x          = sqrt(data.variance_x);
         data.covariance_xy  = img_moments.mu11() / m00 * px * py;
         data.variance_y     = img_moments.mu02() / m00 * py * py;
+        data.rms_y          = sqrt(data.variance_y);
         data.correlation_xy = data.covariance_xy / ::sqrt(data.variance_x * data.variance_y);
     
         data.skew_x         = img_moments.mu30() / m00 * px * px * px;
@@ -651,30 +749,209 @@ namespace ImgBeamAnalyzer_ns
         data.skew_y         = img_moments.mu03() / m00 * py * py * py;
     
         //- max calculation
-        double max = 0;
+        unsigned short max = 0;
         unsigned short* cur_pix = data.roi_image.base();
-        for (size_t i = 0; i < data.roi_image.length(); i++)
+        for (size_t i = 0; i < data.roi_image.length(); ++i, ++cur_pix)
         {
-          max = *cur_pix > max ? *cur_pix : max;
-          cur_pix++;
+          if (*cur_pix > max)
+            max = *cur_pix;
         }
         data.max_intensity = max;
+
+        /// @todo I need centroid, that's why I put it here. Not sure if
+        /// it should be elsewhere instead, and/or have it's own enable...
+        this->saturation(roi_image, config, data);
       }
     }
   }
-  
+
   void
-  BIAProcessor::gaussian_fit_2d(isl::Image& roi_image_d, isl::Rectangle& roi, const BIAConfig& config, BIAData& data)
+  BIAProcessor::saturation(const isl::Image& roi_image, const BIAConfig& config, BIAData& data) const
+      throw (isl::Exception)
+  {
+    //typedef unsigned long index;
+    typedef int index;
+    const index centroid_x = data.centroid_x;
+    const index centroid_y = data.centroid_y;
+    
+    const double centroid_value = roi_image.value(centroid_x, centroid_y);
+    
+    /**
+      @todo We should use the max possible pixel value here. But this may be
+            too complex. Now we are assuming we already substracted background
+            to the image. We do, but it is no very maintanable, some
+            modifications in the source may change it! And also there may be
+            other things affecting the max possible value. The current
+            implementation of gamma correction is not one of these, but
+            we may add some other transformation. So, you should be really
+            careful with this code.
+            \code
+              const double max_pixel_value = 
+                          static_cast<double>((1 << config.pixel_depth) - 1)
+                          - config.bg_substraction;
+            \endcode
+    
+            Alternatively, there's another safer solution. Instead of using
+            the max possible value on the image, use the max value of the
+            image. If the centroid is not the maximum, we are for sure
+            not saturated. This fails, there will be false positives. But the
+            client requested something simpler, just check the pixels around
+            the centroid to be equal, so they may be happy with this...
+            \code
+              const double max_pixel_value = data.max_intensity;
+            \endcode
+    */
+
+    const double max_pixel_value = static_cast<double>((1 << config.pixel_depth) - 1) - config.bg_substraction;
+    //- const double max_pixel_value = data.max_intensity;
+    
+    if (centroid_value < max_pixel_value - DBL_EPSILON) {
+      data.centroid_saturated = false;
+      return;
+    }
+    
+    const index sat_matrix_width = 5;
+    const index sat_matrix_height = 5;
+    
+    const index half_width = sat_matrix_width / 2;
+    const index half_height = sat_matrix_height / 2;
+    
+    const index x_begin = (centroid_x > half_width) ? (centroid_x - half_width) : 0;
+    const index y_begin = (centroid_y > half_height) ? (centroid_y - half_height) : 0;
+    
+    const index pre_x_end = centroid_x + half_width + (sat_matrix_width % 2);
+    const index pre_y_end = centroid_y + half_height + (sat_matrix_height % 2);
+    
+    const index x_end = (pre_x_end > roi_image.width()) ? roi_image.width() : pre_x_end;
+    const index y_end = (pre_y_end > roi_image.height()) ? roi_image.height() : pre_y_end;
+    
+    // Check all the pixels around the centroid
+    for (index y = y_begin; y < y_end; ++y) {
+      for (index x = x_begin; x < x_end; ++x) {
+        const double value = roi_image.value(x, y);
+        if (::abs(max_pixel_value - value) > DBL_EPSILON ) {
+          data.centroid_saturated = false;
+          return;
+        }
+      }
+    }
+    // All the pixels around the centroid have the same value => saturated
+    data.centroid_saturated = true;
+  }
+
+  void
+  BIAProcessor::gaussian_fit_2d(const isl::Image& roi_image_d, const isl::Rectangle& roi, const BIAConfig& config, BIAData& data) const
     throw (isl::Exception)
   {
+    CHRONO_PROFILE();
     if (config.enable_image_stats && config.enable_2d_gaussian_fit)
     {
-      if (config.enable_2d_gaussian_fit)
+      if (data.mean_intensity == 0)
       {
-        if (data.mean_intensity == 0)
-        {
-          //- the image is completely null
+        //- the image is completely null
 
+        data.gaussfit_magnitude = 0;
+        data.gaussfit_centroid_x = 0;
+        data.gaussfit_centroid_y = 0;
+        data.gaussfit_variance_x = 0;
+        data.gaussfit_variance_y = 0;
+        data.gaussfit_covariance_xy = 0;
+        data.gaussfit_correlation_xy = 0;
+        data.gaussfit_major_axis_fwhm = 0;
+        data.gaussfit_minor_axis_fwhm = 0;
+        data.gaussfit_tilt = 0;
+        data.gaussfit_bg = 0;
+        data.gaussfit_chi2 = 0;
+        data.gaussfit_nb_iter = 0;
+        data.gaussfit_eps = 0;
+        data.gaussfit_parameters_covariance.set_dimensions(7, 7);
+        data.gaussfit_parameters_covariance.fill(0);
+      }
+      else
+      {
+        try
+        {
+          isl::GaussianFit2D gauss_fit2d;
+          gauss_fit2d.nb_iter(config.fit2d_nb_iter);
+          gauss_fit2d.epsilon(config.fit2d_max_rel_change);
+
+          gauss_fit2d.compute(roi_image_d);
+
+          if (gauss_fit2d.has_converged())
+          {
+            double px = config.pixel_size_x / config.optical_mag;
+            double py = config.pixel_size_y / config.optical_mag;
+
+            data.gaussfit_magnitude = gauss_fit2d.magnitude();
+            data.gaussfit_centroid_x = ( gauss_fit2d.mean().x() + roi.origin().x() ) * px;
+            data.gaussfit_centroid_y = ( gauss_fit2d.mean().y() + roi.origin().y() ) * py;
+
+            gauss_fit2d.covariance(data.gaussfit_variance_x,
+                                    data.gaussfit_covariance_xy,
+                                    data.gaussfit_variance_y);
+            data.gaussfit_correlation_xy = data.gaussfit_covariance_xy  
+                                            / ::sqrt(data.gaussfit_variance_x * data.gaussfit_variance_y);
+  
+            data.gaussfit_variance_x    *= px * px;
+            data.gaussfit_variance_y    *= py * py;
+            data.gaussfit_covariance_xy *= px * py;
+
+            data.gaussfit_bg = gauss_fit2d.background();
+
+            data.gaussfit_parameters_covariance.set_dimensions(7, 7);
+
+            /// @todo I really dislike it. A copy to a void* and without lenght!
+            /// @todo And it's not the only place with similar things in this file!
+            gauss_fit2d.parameters_cov(data.gaussfit_parameters_covariance.base());
+
+            data.gaussfit_chi2 = gauss_fit2d.chi2();
+
+            //- Principal Axis of the gaussian
+            isl::PrincipalAxis princ_ax(data.gaussfit_centroid_x,
+                                        data.gaussfit_centroid_y,
+                                        data.gaussfit_variance_x,
+                                        data.gaussfit_covariance_xy,
+                                        data.gaussfit_variance_y);
+            double x,y;
+            princ_ax.get_first (x,y, data.gaussfit_major_axis_fwhm);
+            data.gaussfit_major_axis_fwhm *= SIGMA2FWHM_SCALE_FACTOR * px;
+  
+            princ_ax.get_second(x,y, data.gaussfit_minor_axis_fwhm);
+            data.gaussfit_minor_axis_fwhm *= SIGMA2FWHM_SCALE_FACTOR * py;
+  
+            data.gaussfit_tilt = princ_ax.get_angle () * 180 / isl::PI;
+
+            data.gaussfit_nb_iter = gauss_fit2d.nb_iter();
+            data.gaussfit_eps = gauss_fit2d.epsilon();
+
+            data.gaussfit_converged = true;
+          }
+          else
+          {
+            data.gaussfit_magnitude = 0;
+            data.gaussfit_centroid_x = 0;
+            data.gaussfit_centroid_y = 0;
+            data.gaussfit_variance_x = 0;
+            data.gaussfit_variance_y = 0;
+            data.gaussfit_covariance_xy = 0;
+            data.gaussfit_correlation_xy = 0;
+            data.gaussfit_major_axis_fwhm = 0;
+            data.gaussfit_minor_axis_fwhm = 0;
+            data.gaussfit_tilt = 0;
+            data.gaussfit_bg = 0;
+            data.gaussfit_chi2 = 0;
+            data.gaussfit_nb_iter = gauss_fit2d.nb_iter();
+            data.gaussfit_eps = gauss_fit2d.epsilon();
+            data.gaussfit_parameters_covariance.set_dimensions(7, 7);
+            data.gaussfit_parameters_covariance.fill(0);
+          }
+
+        }
+        catch(isl::Exception &ex)
+        {
+          std::cout << ex << std::endl;
+          isl::ErrorHandler::reset();
+          //- Unable to do the fit
           data.gaussfit_magnitude = 0;
           data.gaussfit_centroid_x = 0;
           data.gaussfit_centroid_y = 0;
@@ -691,106 +968,6 @@ namespace ImgBeamAnalyzer_ns
           data.gaussfit_eps = 0;
           data.gaussfit_parameters_covariance.set_dimensions(7, 7);
           data.gaussfit_parameters_covariance.fill(0);
-        }
-        else
-        {
-          try
-          {
-            isl::GaussianFit2D gauss_fit2d;
-            gauss_fit2d.nb_iter(config.fit2d_nb_iter);
-            gauss_fit2d.epsilon(config.fit2d_max_rel_change);
-
-            gauss_fit2d.compute(roi_image_d);
-
-            if (gauss_fit2d.has_converged())
-            {
-              double px = config.pixel_size_x / config.optical_mag;
-              double py = config.pixel_size_y / config.optical_mag;
-
-              data.gaussfit_magnitude = gauss_fit2d.magnitude();
-              data.gaussfit_centroid_x = ( gauss_fit2d.mean().x() + roi.origin().x() ) * px;
-              data.gaussfit_centroid_y = ( gauss_fit2d.mean().y() + roi.origin().y() ) * py;
-
-              gauss_fit2d.covariance(data.gaussfit_variance_x,
-                                     data.gaussfit_covariance_xy,
-                                     data.gaussfit_variance_y);
-              data.gaussfit_correlation_xy = data.gaussfit_covariance_xy  
-                                             / ::sqrt(data.gaussfit_variance_x * data.gaussfit_variance_y);
-    
-              data.gaussfit_variance_x    *= px * px;
-              data.gaussfit_variance_y    *= py * py;
-              data.gaussfit_covariance_xy *= px * py;
-
-              data.gaussfit_bg = gauss_fit2d.background();
-
-              data.gaussfit_parameters_covariance.set_dimensions(7, 7);
-              gauss_fit2d.parameters_cov(data.gaussfit_parameters_covariance.base());
-
-              data.gaussfit_chi2 = gauss_fit2d.chi2();
-
-              //- Principal Axis of the gaussian
-              isl::PrincipalAxis princ_ax(data.gaussfit_centroid_x,
-                                          data.gaussfit_centroid_y,
-                                          data.gaussfit_variance_x,
-                                          data.gaussfit_covariance_xy,
-                                          data.gaussfit_variance_y);
-              double x,y;
-              princ_ax.get_first (x,y, data.gaussfit_major_axis_fwhm);
-              data.gaussfit_major_axis_fwhm *= SIGMA2FWHM_SCALE_FACTOR * px;
-    
-              princ_ax.get_second(x,y, data.gaussfit_minor_axis_fwhm);
-              data.gaussfit_minor_axis_fwhm *= SIGMA2FWHM_SCALE_FACTOR * py;
-    
-              data.gaussfit_tilt = princ_ax.get_angle () * 180 / isl::PI;
-
-              data.gaussfit_nb_iter = gauss_fit2d.nb_iter();
-              data.gaussfit_eps = gauss_fit2d.epsilon();
-
-              data.gaussfit_converged = true;
-            }
-            else
-            {
-              data.gaussfit_magnitude = 0;
-              data.gaussfit_centroid_x = 0;
-              data.gaussfit_centroid_y = 0;
-              data.gaussfit_variance_x = 0;
-              data.gaussfit_variance_y = 0;
-              data.gaussfit_covariance_xy = 0;
-              data.gaussfit_correlation_xy = 0;
-              data.gaussfit_major_axis_fwhm = 0;
-              data.gaussfit_minor_axis_fwhm = 0;
-              data.gaussfit_tilt = 0;
-              data.gaussfit_bg = 0;
-              data.gaussfit_chi2 = 0;
-              data.gaussfit_nb_iter = gauss_fit2d.nb_iter();
-              data.gaussfit_eps = gauss_fit2d.epsilon();
-              data.gaussfit_parameters_covariance.set_dimensions(7, 7);
-              data.gaussfit_parameters_covariance.fill(0);
-            }
-
-          }
-          catch(isl::Exception &ex)
-          {
-            std::cout << ex << std::endl;
-            isl::ErrorHandler::reset();
-            //- Unable to do the fit
-            data.gaussfit_magnitude = 0;
-            data.gaussfit_centroid_x = 0;
-            data.gaussfit_centroid_y = 0;
-            data.gaussfit_variance_x = 0;
-            data.gaussfit_variance_y = 0;
-            data.gaussfit_covariance_xy = 0;
-            data.gaussfit_correlation_xy = 0;
-            data.gaussfit_major_axis_fwhm = 0;
-            data.gaussfit_minor_axis_fwhm = 0;
-            data.gaussfit_tilt = 0;
-            data.gaussfit_bg = 0;
-            data.gaussfit_chi2 = 0;
-            data.gaussfit_nb_iter = 0;
-            data.gaussfit_eps = 0;
-            data.gaussfit_parameters_covariance.set_dimensions(7, 7);
-            data.gaussfit_parameters_covariance.fill(0);
-          }
         }
       }
     }

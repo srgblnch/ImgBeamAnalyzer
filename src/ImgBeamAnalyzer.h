@@ -8,7 +8,7 @@
 //
 // $Author: julien_malik $
 //
-// $Revision: 1.18 $
+// $Revision: 1.19 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -30,13 +30,14 @@
 
 /**
  * @author	$Author: julien_malik $
- * @version	$Revision: 1.18 $
+ * @version	$Revision: 1.19 $
  */
 
  //	Add your own constants definitions here.
  //-----------------------------------------------
 #include "ImgBeamAnalyzerTask.h"
 #include "BIAConfig.h"
+#include "IBASource.h"
 
 #ifdef WIN32
 #  pragma warning( push )
@@ -44,9 +45,6 @@
 #endif
 //- this will #include <tango.h>
 #include <yat4tango/CommonHeader.h>
-
-
-
 
 namespace ImgBeamAnalyzer_ns
 {
@@ -81,7 +79,7 @@ const size_t kTIMEOUT_MESSAGE_MS = 2500;
  */
 
 
-class ImgBeamAnalyzer: public Tango::Device_3Impl
+class IBA_DLLDIR ImgBeamAnalyzer: public Tango::Device_3Impl
 {
 public :
 	//	Add your own data members here
@@ -169,6 +167,7 @@ public :
 		Tango::DevDouble	*attr_MeanIntensity_read;
 		Tango::DevDouble	*attr_CentroidX_read;
 		Tango::DevDouble	*attr_CentroidY_read;
+		Tango::DevBoolean	*attr_CentroidSaturated_read;
 		Tango::DevDouble	*attr_VarianceX_read;
 		Tango::DevDouble	*attr_VarianceY_read;
 		Tango::DevDouble	*attr_CovarianceXY_read;
@@ -226,6 +225,8 @@ public :
 		Tango::DevDouble	*attr_LineProfileFitRelChange_read;
 		Tango::DevLong	*attr_GaussianFitNbIter_read;
 		Tango::DevDouble	*attr_GaussianFitRelChange_read;
+		Tango::DevDouble	*attr_RmsX_read;
+		Tango::DevDouble	*attr_RmsY_read;
 		Tango::DevDouble	*attr_XProj_read;
 		Tango::DevDouble	*attr_XProjFitted_read;
 		Tango::DevDouble	*attr_XProjError_read;
@@ -323,6 +324,10 @@ public :
  *	the name of the image attribute to take in ImageDevice
  */
 	string	imageAttributeName;
+/**
+ *	the name of the imageCounter attribute to take in ImageDevice
+ */
+	string	imageCounterAttrName;
 /**
  *	the device from which the image is taken
  */
@@ -713,6 +718,10 @@ public :
  */
 	virtual void read_CentroidY(Tango::Attribute &attr);
 /**
+ *	Extract real attribute values for CentroidSaturated acquisition result.
+ */
+	virtual void read_CentroidSaturated(Tango::Attribute &attr);
+/**
  *	Extract real attribute values for VarianceX acquisition result.
  */
 	virtual void read_VarianceX(Tango::Attribute &attr);
@@ -940,6 +949,14 @@ public :
  *	Extract real attribute values for GaussianFitRelChange acquisition result.
  */
 	virtual void read_GaussianFitRelChange(Tango::Attribute &attr);
+/**
+ *	Extract real attribute values for RmsX acquisition result.
+ */
+	virtual void read_RmsX(Tango::Attribute &attr);
+/**
+ *	Extract real attribute values for RmsY acquisition result.
+ */
+	virtual void read_RmsY(Tango::Attribute &attr);
 /**
  *	Extract real attribute values for XProj acquisition result.
  */
@@ -1169,6 +1186,10 @@ public :
  */
 	virtual bool is_CentroidY_allowed(Tango::AttReqType type);
 /**
+ *	Read/Write allowed for CentroidSaturated attribute.
+ */
+	virtual bool is_CentroidSaturated_allowed(Tango::AttReqType type);
+/**
  *	Read/Write allowed for VarianceX attribute.
  */
 	virtual bool is_VarianceX_allowed(Tango::AttReqType type);
@@ -1381,6 +1402,14 @@ public :
  */
 	virtual bool is_GaussianFitRelChange_allowed(Tango::AttReqType type);
 /**
+ *	Read/Write allowed for RmsX attribute.
+ */
+	virtual bool is_RmsX_allowed(Tango::AttReqType type);
+/**
+ *	Read/Write allowed for RmsY attribute.
+ */
+	virtual bool is_RmsY_allowed(Tango::AttReqType type);
+/**
  *	Read/Write allowed for XProj attribute.
  */
 	virtual bool is_XProj_allowed(Tango::AttReqType type);
@@ -1457,14 +1486,6 @@ public :
  */
 	virtual bool is_GetVersionNumber_allowed(const CORBA::Any &any);
 /**
- *	Execution allowed for SetContinuousMode command.
- */
-	virtual bool is_SetContinuousMode_allowed(const CORBA::Any &any);
-/**
- *	Execution allowed for SetOneShotMode command.
- */
-	virtual bool is_SetOneShotMode_allowed(const CORBA::Any &any);
-/**
  * [CONTINUOUS mode only] When the device is in STANDBY, this command starts the computation
  *	@exception DevFailed
  */
@@ -1490,16 +1511,6 @@ public :
  *	@exception DevFailed
  */
 	Tango::DevString	get_version_number();
-/**
- * Set the behavior to 'CONTINUOUS' : the device reads new images continuously and asynchronously
- *	@exception DevFailed
- */
-	void	set_continuous_mode();
-/**
- * Set the behavior to 'ONESHOT' : the device reads a new image when Process is called
- *	@exception DevFailed
- */
-	void	set_one_shot_mode();
 
 /**
  *	Read the device properties from database
@@ -1515,21 +1526,6 @@ public :
 protected :	
 	//	Add your own data members here
 	//-----------------------------------------
-  class TangoYATException : public yat::Exception
-  {
-  public:
-    TangoYATException( Tango::DevFailed& );
-  };
-    
-  
-  bool                dev_proxy_allowed_;
-  Tango::DeviceProxy* dev_proxy_;
-  
-  //- read the image from the device proxy
-  //- and construct a isl::Image containing its data
-  void get_remote_image(isl::Image*& image)
-    throw (yat::Exception);
-
 
   BIAConfig current_config_;
   BIAData*  available_data_;
@@ -1548,6 +1544,11 @@ protected :
 
   void update_state();
 
+public:
+
+  void just_process(ImageAndInfo & imginf) throw (yat::Exception);
+
+  IBASource* image_source_;
 };
 
 #ifdef WIN32

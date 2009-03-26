@@ -40,7 +40,9 @@ LISTEOBJ = \
    $(OBJDIR)\BIAConfig.OBJ \
    $(OBJDIR)\BIAData.OBJ \
    $(OBJDIR)\BIAProcessor.OBJ \
-   $(OBJDIR)\ImgBeamAnalyzerTask.OBJ
+   $(OBJDIR)\ImgBeamAnalyzerTask.OBJ \
+   $(OBJDIR)\IBASource.OBJ \
+   $(OBJDIR)\IBASourceTango.OBJ
 
 !include $(make_dir)\common_target.opt
 

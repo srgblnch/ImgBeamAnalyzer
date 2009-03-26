@@ -1,4 +1,4 @@
-static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ClassFactory.cpp,v 1.1 2006-10-16 16:19:16 stephle Exp $";
+static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ClassFactory.cpp,v 1.2 2009-03-26 09:57:21 julien_malik Exp $";
 //+=============================================================================
 //
 // file :        ClassFactory.cpp
@@ -10,9 +10,9 @@ static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/Im
 //
 // project :     TANGO Device Server
 //
-// $Author: stephle $
+// $Author: julien_malik $
 //
-// $Revision: 1.1 $
+// $Revision: 1.2 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -28,8 +28,10 @@ static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/Im
 //         (c) - Software Engineering Group - ESRF
 //=============================================================================
 
+#ifndef IBA_DLL_EXPORT
 
 #include <ImgBeamAnalyzerClass.h>
+#include <IBASourceTango.h>
 
 /**
  *	Create ImgBeamAnalyzerClass singleton and store it in DServer object.
@@ -37,7 +39,7 @@ static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/Im
 
 void Tango::DServer::class_factory()
 {
-
 	add_class(ImgBeamAnalyzer_ns::ImgBeamAnalyzerClass::init("ImgBeamAnalyzer"));
-
 }
+
+#endif // ifndef IBA_DLL_EXPORT

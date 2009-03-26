@@ -25,7 +25,6 @@
 #include "BIAConfig.h"
 
 
-
 namespace ImgBeamAnalyzer_ns
 {
 
@@ -42,32 +41,35 @@ namespace ImgBeamAnalyzer_ns
     BIAProcessor ();
     virtual ~BIAProcessor ();
 
-    void process(const isl::Image& image, const BIAConfig& config, BIAData& data)
+    void process(const isl::Image& image, const BIAConfig& config, BIAData& data) const
       throw (yat::Exception);
 
   private:
-    void preprocess(isl::Image& image, const BIAConfig& config, BIAData& data)
+    void preprocess(isl::Image& image, const BIAConfig& config, BIAData& data) const
       throw (isl::Exception);
 
-    void clip(const isl::Image& image, const BIAConfig& config, isl::Image*& roi_image, isl::Rectangle& roi, BIAData& data)
+    void clip(const isl::Image& image, const BIAConfig& config, isl::Image*& roi_image, isl::Rectangle& roi, BIAData& data) const
       throw (isl::Exception);
 
-    void gamma_correction(isl::Image& roi_image_d, const BIAConfig& config, BIAData& data)
+    void gamma_correction(isl::Image& roi_image_d, const BIAConfig& config, BIAData& data) const
       throw (isl::Exception);
 
-    void background_substraction(isl::Image& roi_image_d, const BIAConfig& config, BIAData& data)
+    void background_substraction(isl::Image& roi_image_d, const BIAConfig& config, BIAData& data) const
       throw (isl::Exception);
 
-    void histogram(isl::Image& roi_image, const BIAConfig& config, BIAData& data)
+    void histogram(const isl::Image& roi_image, const BIAConfig& config, BIAData& data) const
       throw (isl::Exception);
 
-    void moments(isl::Image& roi_image, isl::Rectangle& roi, const BIAConfig& config, BIAData& data)
+    void moments(const isl::Image& roi_image, const isl::Rectangle& roi, const BIAConfig& config, BIAData& data) const
       throw (isl::Exception);
     
-    void profiles(isl::Image& roi_image_d, isl::Image& roi_image_f, isl::Rectangle& roi, const BIAConfig& config, BIAData& data, bool fixed_bg, double bg_value)
+    void profiles(const isl::Image& roi_image_d, const isl::Image& roi_image_f, const isl::Rectangle& roi, const BIAConfig& config, BIAData& data, bool fixed_bg, double bg_value) const
       throw (isl::Exception);
 
-    void gaussian_fit_2d(isl::Image& roi_image_d, isl::Rectangle& roi, const BIAConfig& config, BIAData& data)
+    void saturation(const isl::Image& roi_image, const BIAConfig& config, BIAData& data) const
+      throw (isl::Exception);
+
+    void gaussian_fit_2d(const isl::Image& roi_image_d, const isl::Rectangle& roi, const BIAConfig& config, BIAData& data) const
       throw (isl::Exception);
   };
 

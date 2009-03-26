@@ -47,6 +47,7 @@ ImgBeamAnalyzerTask::~ImgBeamAnalyzerTask()
 void ImgBeamAnalyzerTask::handle_message (yat::Message& _msg)
   throw (yat::Exception)
 {
+  ImageAndInfo imginf;
   switch (_msg.type())
 	{
 	  //- TASK_INIT ----------------------
@@ -115,7 +116,7 @@ void ImgBeamAnalyzerTask::handle_message (yat::Message& _msg)
 		//- THREAD_EXIT ----------------------
 		case yat::TASK_EXIT:
 		  {
-//  			DEBUG_STREAM << "ImgBeamAnalyzerTask::handle_message::thread is quitting" << std::endl;
+        YAT_LOG("thread is quitting");
         SAFE_RELEASE( this->data_ );
         this->initialized_ = false;
       }
@@ -123,29 +124,27 @@ void ImgBeamAnalyzerTask::handle_message (yat::Message& _msg)
 		//- THREAD_PERIODIC -----------------
 		case yat::TASK_PERIODIC:
 		  {
-//  		  DEBUG_STREAM << "ImgBeamAnalyzerTask::handle_message::task wokenup on timeout" << std::endl;
-        
+        YAT_LOG("Task wokenup on timeout");
         if (this->initialized_ == false)
         {
           //- should never happen, but just in case, the device will do nothing
-//          DEBUG_STREAM << "Not properly initialized : exiting..." << std::endl;
+          YAT_LOG("Not propery initialized: exiting...");
           return;
         }
 
         if (this->mode_ == MODE_ONESHOT)
         {
           //- should never happen, but just in case, the device will do nothing
-//          DEBUG_STREAM << "Timeout messages are disabled in ONE SHOT mode" << std::endl;
+          YAT_LOG("Timeout messages are disabled in ONE SHOT mode");
           return;
         }
 
         try
         {
           //- get a new image and send a kMSG_PROCESS message with it.
-          isl::Image* image = 0;
           try
           {
-            this->get_img_callback_( image );
+            this->get_img_callback_( imginf );
           }
           catch(yat::Exception& ex)
           {
@@ -165,7 +164,7 @@ void ImgBeamAnalyzerTask::handle_message (yat::Message& _msg)
           {
             //- post a process message (without waiting)
             //- it transfers ownership of 'image' pointer
-            this->process(image, false);
+            this->process(imginf, false);
           }
           catch( yat::Exception &ex )
           {
@@ -214,12 +213,19 @@ void ImgBeamAnalyzerTask::handle_message (yat::Message& _msg)
         }
 
         isl::Image* image = 0;
+        size_t bit_depth = 0;
         BIAData* data = 0;
         try
         {
           try
           {
-            _msg.detach_data(image);
+            ImageAndInfo* imginf=0;
+            _msg.detach_data(imginf);
+
+            image = imginf->image;
+            bit_depth = imginf->bit_depth;
+
+            delete imginf;
           }
           catch(yat::Exception& ex)
           {
@@ -257,7 +263,12 @@ void ImgBeamAnalyzerTask::handle_message (yat::Message& _msg)
               yat::MutexLock guard(this->config_mutex_);
               config = this->config_;
             }
-
+            
+            // If we got information about the bit_depth of the original
+            // image, ignore the current set bit depth and just use it!
+            if (bit_depth)
+              config.pixel_depth = bit_depth;
+            
             data->config = config;
             
             this->proc_.process(*image, config, *data);
@@ -429,9 +440,11 @@ void ImgBeamAnalyzerTask::stop( size_t timeout )
 
 
 
-void ImgBeamAnalyzerTask::process( isl::Image* image, bool wait, size_t wait_timeout )
+void ImgBeamAnalyzerTask::process( ImageAndInfo &imginf, bool wait, size_t wait_timeout )
   throw (yat::Exception)
 {
+  isl::Image* image = imginf.image;
+  
   yat::Message* msg = 0;
   try
   {
@@ -455,7 +468,10 @@ void ImgBeamAnalyzerTask::process( isl::Image* image, bool wait, size_t wait_tim
 
   try
   {
-    msg->attach_data(image);
+    // Here msg takes ownership of the image. So, from
+    // now on we won't bother to SAFE_DELETE_PTR(image)
+    // in this function.
+    msg->attach_data(imginf);
   }
   catch(yat::Exception& ex)
   {
@@ -478,6 +494,8 @@ void ImgBeamAnalyzerTask::process( isl::Image* image, bool wait, size_t wait_tim
   //- post the message
   try
   {
+    // Here we lose ownership of msg, even if the call fails,
+	// so we won't be releasing it anymore
     if (wait)
       this->wait_msg_handled(msg, wait_timeout);
     else
@@ -485,8 +503,6 @@ void ImgBeamAnalyzerTask::process( isl::Image* image, bool wait, size_t wait_tim
   }
   catch(yat::Exception& ex)
   {
-    SAFE_DELETE_PTR( image );
-    SAFE_RELEASE( msg );
 	  RETHROW_YAT_ERROR(ex,
                       "SOFTWARE_FAILURE",
                       "Error while posting a PROCESS message",
@@ -494,8 +510,6 @@ void ImgBeamAnalyzerTask::process( isl::Image* image, bool wait, size_t wait_tim
   }
   catch(...)
   {
-    SAFE_DELETE_PTR( image );
-    SAFE_RELEASE( msg );
 	  THROW_YAT_ERROR("UNKNOWN_ERROR",
                     "Unknown error while posting a PROCESS message",
                     "ImgBeamAnalyzer::process");

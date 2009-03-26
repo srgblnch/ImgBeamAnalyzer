@@ -1,4 +1,4 @@
-static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzer.cpp,v 1.22 2009-03-03 17:15:16 julien_malik Exp $";
+static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzer.cpp,v 1.23 2009-03-26 09:57:21 julien_malik Exp $";
 //+=============================================================================
 //
 // file :         ImgBeamAnalyzer.cpp
@@ -13,7 +13,7 @@ static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/Im
 //
 // $Author: julien_malik $
 //
-// $Revision: 1.22 $
+// $Revision: 1.23 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -45,8 +45,6 @@ static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/Im
 //  Process              |  process()
 //  SaveCurrentSettings  |  save_current_settings()
 //  GetVersionNumber     |  get_version_number()
-//  SetContinuousMode    |  set_continuous_mode()
-//  SetOneShotMode       |  set_one_shot_mode()
 //
 //===================================================================
 
@@ -59,7 +57,6 @@ static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/Im
 
 #define kDEFAULT_CONTINUOUS_TIMEOUT 1000
 #define kCOMMAND_TIMEOUT 2000
-
 
 namespace ImgBeamAnalyzer_ns
 {
@@ -292,6 +289,9 @@ void ImgBeamAnalyzer::delete_device()
     this->available_data_->release ();
     this->available_data_ = 0;
   }
+
+  delete this->image_source_;
+  this->image_source_ = 0;
 }
 
 //+----------------------------------------------------------------------------
@@ -309,8 +309,7 @@ void ImgBeamAnalyzer::init_device()
 	//--------------------------------------------
   cvUseOptimized( 0 );
 
-  this->dev_proxy_allowed_ = false;
-  this->dev_proxy_ = 0;
+  this->image_source_ = 0;
   this->available_data_ = 0;
   this->task_ = 0;
   this->critical_property_missing_ = false;
@@ -350,10 +349,12 @@ void ImgBeamAnalyzer::init_device()
     this->device_mode_ = MODE_ONESHOT;
   else if (mode == "continuous")
     this->device_mode_ = MODE_CONTINUOUS;
+  else if (mode == "event")
+    this->device_mode_ = MODE_EVENT;
   else
   {
-    ERROR_STREAM << "Initialization error [Mode property must be ONESHOT or CONTINUOUS]" << std::endl;
-    this->set_status ("Initialization error [Mode property must be ONESHOT or CONTINUOUS]");
+    ERROR_STREAM << "Initialization error [Mode property must be ONESHOT or CONTINUOUS or EVENT]" << std::endl;
+    this->set_status ("Initialization error [Mode property must be ONESHOT or CONTINUOUS or EVENT]");
     this->set_state (Tango::FAULT);
     this->delete_device();
     return;
@@ -362,7 +363,7 @@ void ImgBeamAnalyzer::init_device()
 
   bool dev_proxy_allowed = true;
 
-  if (this->device_mode_ == MODE_CONTINUOUS)
+  if (this->device_mode_ == MODE_CONTINUOUS || this->device_mode_ == MODE_EVENT)
   {
     if ( this->imageDevice == "unspecified")
     {
@@ -382,8 +383,8 @@ void ImgBeamAnalyzer::init_device()
     }
     dev_proxy_allowed = true;
     
-    //- in CONTINUOUS mode, 'Process' command is disabled
-    this->process_command_allowed_ = false;
+	//- in CONTINUOUS mode, 'Process' command is disabled
+	this->process_command_allowed_ = false;
   }
   else
   {
@@ -408,7 +409,26 @@ void ImgBeamAnalyzer::init_device()
   {
     try
     {
-      this->dev_proxy_ = new Tango::DeviceProxy(this->imageDevice);
+      string attr2subscribe = "";
+      if ( this->imageCounterAttrName == "unspecified")
+      {
+        attr2subscribe = this->imageAttributeName;
+      }
+      else
+      {
+        attr2subscribe = this->imageCounterAttrName;
+      }
+
+      this->image_source_ = IBASourceFactory::create(this->imageDevice);
+      this->image_source_->set_image_attribute_name(this->imageAttributeName);
+
+      if (this->device_mode_ == MODE_EVENT)
+      {
+        this->image_source_->register_observer(this);
+        this->image_source_->set_callback_attribute(attr2subscribe);
+
+        this->process_command_allowed_ = true;
+      }
     }
     catch( Tango::DevFailed& df )
     {
@@ -439,15 +459,16 @@ void ImgBeamAnalyzer::init_device()
 
     ImgBeamAnalyzerInit init_config;
 
+    assert(this->image_source_);
     //- this function will be called to get the image from the remote device
-    init_config.get_img = GetImgCB::instanciate(*this, &ImgBeamAnalyzer::get_remote_image);
+    init_config.get_img = GetImgCB::instanciate(*this->image_source_, &IBASource::get_image);
     //- is the previous function authorized (a proxy has been configured ?)
     init_config.get_img_allowed = dev_proxy_allowed;
     //- the initial processing parameters, from the device properties
     init_config.processing_config = this->current_config_;
     //- if in CONTINUOUS mode, auto start the processing ?
     init_config.auto_start = this->autoStart;
-    //- the mode ( CONTINUOUS or ONE_SHOT )
+    //- the mode ( CONTINUOUS or ONE_SHOT or EVENT)
     init_config.mode = this->device_mode_;
 
     yat::Message* init_msg = yat::Message::allocate(yat::TASK_INIT, INIT_MSG_PRIORITY, true);
@@ -502,6 +523,7 @@ void ImgBeamAnalyzer::get_device_property()
 	//------------------------------------------------------------------
   this->imageDevice = "unspecified";
   this->imageAttributeName = "unspecified";
+  this->imageCounterAttrName = "unspecified";
   this->autoStart = false;
   this->mode = "unspecified";
   this->autoROIMethod = "unspecified";
@@ -552,6 +574,7 @@ void ImgBeamAnalyzer::get_device_property()
 	dev_prop.push_back(Tango::DbDatum("HistogramRangeMin"));
 	dev_prop.push_back(Tango::DbDatum("HorizontalFlip"));
 	dev_prop.push_back(Tango::DbDatum("ImageAttributeName"));
+	dev_prop.push_back(Tango::DbDatum("ImageCounterAttrName"));
 	dev_prop.push_back(Tango::DbDatum("ImageDevice"));
 	dev_prop.push_back(Tango::DbDatum("Mode"));
 	dev_prop.push_back(Tango::DbDatum("OpticalMagnification"));
@@ -767,6 +790,17 @@ void ImgBeamAnalyzer::get_device_property()
 	//	And try to extract ImageAttributeName value from database
 	if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  imageAttributeName;
 
+	//	Try to initialize ImageCounterAttrName from class property
+	cl_prop = ds_class->get_class_property(dev_prop[++i].name);
+	if (cl_prop.is_empty()==false)	cl_prop  >>  imageCounterAttrName;
+	else {
+		//	Try to initialize ImageCounterAttrName from default device value
+		def_prop = ds_class->get_default_device_property(dev_prop[i].name);
+		if (def_prop.is_empty()==false)	def_prop  >>  imageCounterAttrName;
+	}
+	//	And try to extract ImageCounterAttrName value from database
+	if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  imageCounterAttrName;
+
 	//	Try to initialize ImageDevice from class property
 	cl_prop = ds_class->get_class_property(dev_prop[++i].name);
 	if (cl_prop.is_empty()==false)	cl_prop  >>  imageDevice;
@@ -911,7 +945,7 @@ void ImgBeamAnalyzer::always_executed_hook()
 // description : 	Hardware acquisition for attributes.
 //
 //-----------------------------------------------------------------------------
-void ImgBeamAnalyzer::read_attr_hardware(vector<long> &attr_list)
+void ImgBeamAnalyzer::read_attr_hardware(vector<long> &/*attr_list*/)
 {
 	//	Add your own code here
 	
@@ -942,6 +976,30 @@ void ImgBeamAnalyzer::read_attr_hardware(vector<long> &attr_list)
   this->update_state();
 
 }
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_RmsX
+// 
+// description : 	Extract real attribute values for RmsX acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_RmsX(Tango::Attribute &attr)
+{
+	READ_OUTPUT_SCALAR_ATTR(rms_x, enable_image_stats, Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_RmsY
+// 
+// description : 	Extract real attribute values for RmsY acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_RmsY(Tango::Attribute &attr)
+{
+	READ_OUTPUT_SCALAR_ATTR(rms_y, enable_image_stats, Tango::DevDouble);
+}
+
 //+----------------------------------------------------------------------------
 //
 // method : 		ImgBeamAnalyzer::read_LineProfileHelperImg
@@ -2217,6 +2275,18 @@ void ImgBeamAnalyzer::read_CentroidY(Tango::Attribute &attr)
 
 //+----------------------------------------------------------------------------
 //
+// method : 		ImgBeamAnalyzer::read_CentroidSaturated
+// 
+// description : 	Extract real attribute values for CentroidSaturated acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_CentroidSaturated(Tango::Attribute &attr)
+{
+  READ_OUTPUT_SCALAR_ATTR(centroid_saturated, enable_image_stats, Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
 // method : 		ImgBeamAnalyzer::read_VarianceX
 // 
 // description : 	Extract real attribute values for VarianceX acquisition result.
@@ -2708,10 +2778,10 @@ void ImgBeamAnalyzer::read_MeanIntensity(Tango::Attribute &attr)
 //+------------------------------------------------------------------
 void ImgBeamAnalyzer::start()
 {
-  if (this->device_mode_ == MODE_ONESHOT)
+  if (this->device_mode_ == MODE_ONESHOT || this->device_mode_ == MODE_EVENT)
   {
     THROW_DEVFAILED("OPERATION_NOT_ALLOWED",
-                    "In ONESHOT mode, the 'Start' command is disabled",
+                    "In ONESHOT and EVENT modes, the 'Start' command is disabled",
                     "ImgBeamAnalyzer::start()");
   }
 
@@ -2750,10 +2820,10 @@ void ImgBeamAnalyzer::start()
 //+------------------------------------------------------------------
 void ImgBeamAnalyzer::stop()
 {
-  if (this->device_mode_ == MODE_ONESHOT)
+  if (this->device_mode_ == MODE_ONESHOT || this->device_mode_ == MODE_EVENT)
   {
     THROW_DEVFAILED("OPERATION_NOT_ALLOWED",
-                    "In ONESHOT mode, the 'Stop' command is disabled",
+                    "In ONESHOT and EVENT modes, the 'Stop' command is disabled",
                     "ImgBeamAnalyzer::stop()");
   }
 
@@ -2800,46 +2870,68 @@ void ImgBeamAnalyzer::process()
   }
 
   //- retrieve the image from the remote device
-  isl::Image* image = 0;
+  ImageAndInfo imginf;
   try
   {
-    this->get_remote_image(image);
+    if (!this->image_source_) {
+      THROW_DEVFAILED("UNDEFINED__IMAGE_SOURCE",
+                      "A valid image source is not set up. Tell developers they have a mistake, you should have neverr reached here.",
+                      "ImgBeamAnalyzer::process");
+    }
+    this->image_source_->get_image(imginf);
   }
   catch (yat::Exception& ex)
   {
     yat4tango::YATDevFailed df(ex);
-	  RETHROW_DEVFAILED(df,
+    RETHROW_DEVFAILED(df,
                       "SOFTWARE_FAILURE",
                       "Unable to get image from remote device",
                       "ImgBeamAnalyzer::process");
   }
   catch(...)
   {
-	  THROW_DEVFAILED("UNKNOWN_ERROR",
+    THROW_DEVFAILED("UNKNOWN_ERROR",
                     "Unable to get image from remote device",
                     "ImgBeamAnalyzer::process");
   }
 
   try
   {
-    this->task_->process( image, true, kCOMMAND_TIMEOUT );
+    this->task_->process( imginf, true, kCOMMAND_TIMEOUT );
   }
   catch (yat::Exception& ex)
   {
     yat4tango::YATDevFailed df(ex);
-	  RETHROW_DEVFAILED(df,
+    RETHROW_DEVFAILED(df,
                       "SOFTWARE_FAILURE",
                       "Processing has failed",
                       "ImgBeamAnalyzer::process");
   }
   catch(...)
   {
-	  THROW_DEVFAILED("UNKNOWN_ERROR",
+    THROW_DEVFAILED("UNKNOWN_ERROR",
                     "Processing has failed",
                     "ImgBeamAnalyzer::process");
   }
+}
 
+void ImgBeamAnalyzer::just_process(ImageAndInfo & imginf) throw (yat::Exception)
+{
+  if (this->device_mode_ != MODE_EVENT)
+    return;
 
+  assert(imginf.image);
+
+  try
+  {
+    this->task_->process( imginf, false, kCOMMAND_TIMEOUT );
+  }
+  catch(...)
+  {
+    THROW_YAT_ERROR("UNKNOWN_ERROR",
+                    "Processing has failed",
+                    "ImgBeamAnalyzer::just_process");
+  }
 }
 
 //+------------------------------------------------------------------
@@ -2935,296 +3027,6 @@ Tango::DevString ImgBeamAnalyzer::get_version_number()
 }
 
 
-void ImgBeamAnalyzer::get_remote_image(isl::Image*& image)
-  throw (yat::Exception)
-{
-  image = 0;
-
-  //-	Read the attribute
-	//------------------------------------------
-  Tango::DeviceAttribute dev_attr;
-  int dim_x = 0;
-  int dim_y = 0;
-  
-  try
-  {
-    dev_attr = this->dev_proxy_->read_attribute(this->imageAttributeName);
-    dim_x = dev_attr.get_dim_x();
-    dim_y = dev_attr.get_dim_y();
-
-		//- just make a call to get_type() to test if the dev_attr is empty 
-    //- if the attr is empty, a Tango::DevFailed will be thrown
-    dev_attr.get_type();
-
-  }
-	catch (Tango::DevFailed &df)
-  {
-    TangoYATException ex(df);
-    RETHROW_YAT_ERROR(ex,
-                      "SOFTWARE_FAILURE",
-                      "Error while getting remote image",
-                      "ImgBeamAnalyzerTask::get_remote_image");
-  }
-  catch(...)
-  {
-    THROW_YAT_ERROR("UNKNOWN_ERROR",
-                    "Error while getting remote image",
-                    "ImgBeamAnalyzerTask::get_remote_image");
-  }
-
-
-  try
-  {
-    image = new isl::Image(dim_x, dim_y, isl::ISL_STORAGE_USHORT);
-    if (image == 0)
-      throw std::bad_alloc();
-  }
-  catch(std::bad_alloc &)
-  {
-    THROW_YAT_ERROR("OUT_OF_MEMORY",
-                    "Allocation of isl::Image failed [std::bad_alloc]",
-                    "ImgBeamAnalyzerTask::get_remote_image");
-  }
-  catch(isl::Exception & ex)
-  {
-    ISL2YATException yat_exc(ex);
-    isl::ErrorHandler::reset();
-    RETHROW_YAT_ERROR(yat_exc,
-                      "SOFTWARE_FAILURE",
-                      "Allocation of isl::Image failed [isl::Exception]",
-                      "ImgBeamAnalyzerTask::get_remote_image");
-  }
-  catch(...)
-  {
-    THROW_YAT_ERROR("UNKNOWN_ERROR",
-                    "Allocation of isl::Image failed [Unknown exception caught]",
-                    "ImgBeamAnalyzerTask::get_remote_image");
-  }
-
-  switch(dev_attr.get_type())
-  {
-  case Tango::DEV_UCHAR:
-    {
-      Tango::DevVarUCharArray* serialized_image = 0;
-      
-      try
-      {
-        if ((dev_attr >> serialized_image) == false)
-        {
-          SAFE_DELETE_PTR(image);
-          THROW_YAT_ERROR("OUT_OF_MEMORY",
-                          "Extraction of data from Tango::Attribute failed",
-                          "ImgBeamAnalyzerTask::get_remote_image");
-        }
-      }
-      catch(std::bad_alloc &)
-      {
-        SAFE_DELETE_PTR(image);
-        THROW_YAT_ERROR("OUT_OF_MEMORY",
-                        "Extraction of data from Tango::Attribute failed [std::bad_alloc]",
-                        "ImgBeamAnalyzerTask::get_remote_image");
-      }
-      catch(Tango::DevFailed & df)
-      {
-        SAFE_DELETE_PTR(image);
-        TangoYATException ex(df);
-        RETHROW_YAT_ERROR(ex,
-                          "SOFTWARE_FAILURE",
-                          "Extraction of data from Tango::Attribute failed [Tango::DevFailed]",
-                          "ImgBeamAnalyzerTask::get_remote_image");
-      }
-      catch(...)
-      {
-        SAFE_DELETE_PTR(image);
-        THROW_YAT_ERROR("UNKNOWN_ERROR",
-                        "Extraction of data from Tango::Attribute failed [unknown exception]",
-                        "ImgBeamAnalyzerTask::get_remote_image");
-      }
-
-      isl::Image* uchar_image = 0;
-      try
-      {
-        uchar_image = new isl::Image(dim_x, dim_y, isl::ISL_STORAGE_UCHAR);
-        if (uchar_image == 0)
-          throw std::bad_alloc();
-      }
-      catch(std::bad_alloc &)
-      {
-        THROW_YAT_ERROR("OUT_OF_MEMORY",
-                        "Allocation of isl::Image failed [std::bad_alloc]",
-                        "ImgBeamAnalyzerTask::get_remote_image");
-      }
-      catch(isl::Exception & ex)
-      {
-        ISL2YATException yat_exc(ex);
-        isl::ErrorHandler::reset();
-        RETHROW_YAT_ERROR(yat_exc,
-                          "OUT_OF_MEMORY",
-                          "Allocation of isl::Image failed [isl::Exception]",
-                          "ImgBeamAnalyzerTask::get_remote_image");
-      }
-      catch(...)
-      {
-        THROW_YAT_ERROR("UNKNOWN_ERROR",
-                        "Allocation of isl::Image failed [Tango::DevFailed]",
-                        "ImgBeamAnalyzerTask::get_remote_image");
-      }
-      
-      try
-      {
-        uchar_image->unserialize( serialized_image->get_buffer() );
-        uchar_image->convert( *image );
-      }
-      catch(isl::Exception & ex)
-      {
-        ISL2YATException yat_exc(ex);
-        isl::ErrorHandler::reset();
-        RETHROW_YAT_ERROR(yat_exc,
-                          "SOFTWARE_FAILURE",
-                          "Unable to convert the UChar image to a UShort image",
-                          "ImgBeamAnalyzerTask::get_remote_image");
-      }
-      catch(...)
-      {
-        THROW_YAT_ERROR("UNKNOWN_ERROR",
-                        "Unable to convert the UChar image to a UShort image",
-                        "ImgBeamAnalyzerTask::get_remote_image");
-      }
-      SAFE_DELETE_PTR(serialized_image);
-      SAFE_DELETE_PTR(uchar_image);
-    }
-    break;
-  case Tango::DEV_SHORT:
-    {
-      Tango::DevVarShortArray* serialized_image = 0;
-      
-      try
-      {
-        if ((dev_attr >> serialized_image) == false)
-        {
-          SAFE_DELETE_PTR(image);
-          THROW_YAT_ERROR("OUT_OF_MEMORY",
-                          "Extraction of data from Tango::Attribute failed",
-                          "ImgBeamAnalyzerTask::get_remote_image");
-        }
-      }
-      catch(std::bad_alloc &)
-      {
-        SAFE_DELETE_PTR(image);
-        THROW_YAT_ERROR("OUT_OF_MEMORY",
-                        "Extraction of data from Tango::Attribute failed [std::bad_alloc]",
-                        "ImgBeamAnalyzerTask::get_remote_image");
-      }
-      catch(Tango::DevFailed & df)
-      {
-        SAFE_DELETE_PTR(image);
-        TangoYATException ex(df);
-        RETHROW_YAT_ERROR(ex,
-                          "SOFTWARE_FAILURE",
-                          "Extraction of data from Tango::Attribute failed [Tango::DevFailed]",
-                          "ImgBeamAnalyzerTask::get_remote_image");
-      }
-      catch(...)
-      {
-        SAFE_DELETE_PTR(image);
-        THROW_YAT_ERROR("UNKNOWN_ERROR",
-                        "Extraction of data from Tango::Attribute failed [unknown exception]",
-                        "ImgBeamAnalyzerTask::get_remote_image");
-      }
-
-      try
-      {
-        image->unserialize(serialized_image->get_buffer());
-      }
-      catch(isl::Exception & ex)
-      {
-        ISL2YATException yat_exc(ex);
-        isl::ErrorHandler::reset();
-        RETHROW_YAT_ERROR(yat_exc,
-                          "SOFTWARE_FAILURE",
-                          "Unable to unserialize image",
-                          "ImgBeamAnalyzerTask::get_remote_image");
-      }
-      catch(...)
-      {
-        THROW_YAT_ERROR("UNKNOWN_ERROR",
-                        "Unable to unserialize image",
-                        "ImgBeamAnalyzerTask::get_remote_image");
-      }
-      SAFE_DELETE_PTR(serialized_image);
-     }
-    break;
-  case Tango::DEV_USHORT:
-    {
-      Tango::DevVarUShortArray* serialized_image = 0;
-      
-      try
-      {
-        if ((dev_attr >> serialized_image) == false)
-        {
-          SAFE_DELETE_PTR(image);
-          THROW_YAT_ERROR("OUT_OF_MEMORY",
-                          "Extraction of data from Tango::Attribute failed",
-                          "ImgBeamAnalyzerTask::get_remote_image");
-        }
-      }
-      catch(std::bad_alloc &)
-      {
-        SAFE_DELETE_PTR(image);
-        THROW_YAT_ERROR("OUT_OF_MEMORY",
-                        "Extraction of data from Tango::Attribute failed [std::bad_alloc]",
-                        "ImgBeamAnalyzerTask::get_remote_image");
-      }
-      catch(Tango::DevFailed & df)
-      {
-        SAFE_DELETE_PTR(image);
-        TangoYATException ex(df);
-        RETHROW_YAT_ERROR(ex,
-                          "SOFTWARE_FAILURE",
-                          "Extraction of data from Tango::Attribute failed [Tango::DevFailed]",
-                          "ImgBeamAnalyzerTask::get_remote_image");
-      }
-      catch(...)
-      {
-        SAFE_DELETE_PTR(image);
-        THROW_YAT_ERROR("UNKNOWN_ERROR",
-                        "Extraction of data from Tango::Attribute failed [unknown exception]",
-                        "ImgBeamAnalyzerTask::get_remote_image");
-      }
-
-      try
-      {
-        image->unserialize(serialized_image->get_buffer());
-      }
-      catch(isl::Exception & ex)
-      {
-        ISL2YATException yat_exc(ex);
-        isl::ErrorHandler::reset();
-        RETHROW_YAT_ERROR(yat_exc,
-                          "SOFTWARE_FAILURE",
-                          "Unable to unserialize image",
-                          "ImgBeamAnalyzerTask::get_remote_image");
-      }
-      catch(...)
-      {
-        THROW_YAT_ERROR("UNKNOWN_ERROR",
-                        "Unable to unserialize image",
-                        "ImgBeamAnalyzerTask::get_remote_image");
-      }
-      SAFE_DELETE_PTR(serialized_image);
-    }
-    break;
-  default:
-    {
-      SAFE_DELETE_PTR(image);
-      THROW_YAT_ERROR("SOFTWARE_FAILURE",
-                      "The remote attribute must be of type DEV_UCHAR, DEV_SHORT or DEV_USHORT",
-                      "ImgBeamAnalyzerTask::get_remote_image");
-     }
-    break;
-  }
-}
-
 void ImgBeamAnalyzer::update_state()
 {
   if (this->properly_initialized_ == false)
@@ -3253,79 +3055,5 @@ void ImgBeamAnalyzer::update_state()
   }
 };
 
-
-ImgBeamAnalyzer::TangoYATException::TangoYATException( Tango::DevFailed& df )
-{
-  const Tango::DevErrorList& tango_err_list = df.errors;
-  for (size_t i = 0; i < tango_err_list.length(); i++) 
-  {
-    Tango::ErrSeverity df_sev = df.errors[i].severity;
-    yat::ErrorSeverity yat_sev = (df_sev == Tango::WARN ? yat::WARN
-                                  : (df_sev == Tango::ERR ? yat::ERR
-                                     : (df_sev == Tango::PANIC ? yat::PANIC
-                                        : yat::ERR)));
-    
-    this->push_error( df.errors[i].reason,
-                      df.errors[i].desc,
-                      df.errors[i].origin,
-                      -1,
-                      yat_sev);
-  }
-}
-
-
-//+------------------------------------------------------------------
-/**
- *	method:	ImgBeamAnalyzer::set_continuous_mode
- *
- *	description:	method to execute "SetContinuousMode"
- *	Set the behavior to 'CONTINUOUS' : the device reads new images continuously and asynchronously
- *
- *
- */
-//+------------------------------------------------------------------
-void ImgBeamAnalyzer::set_continuous_mode()
-{
-	DEBUG_STREAM << "ImgBeamAnalyzer::set_continuous_mode(): entering... !" << endl;
-
-	//	Add your own code to control device here
-  
-  Tango::DbData dev_prop;
-  Tango::DbDatum mode_prop( "Mode" );
-  mode_prop << "CONTINUOUS";
-  dev_prop.push_back( mode_prop );
-  this->get_db_device()->put_property(dev_prop);
-  
-  this->delete_device();
-  this->init_device();
-  
-}
-
-//+------------------------------------------------------------------
-/**
- *	method:	ImgBeamAnalyzer::set_one_shot_mode
- *
- *	description:	method to execute "SetOneShotMode"
- *	Set the behavior to 'ONESHOT' : the device reads a new image when Process is called
- *
- *
- */
-//+------------------------------------------------------------------
-void ImgBeamAnalyzer::set_one_shot_mode()
-{
-	DEBUG_STREAM << "ImgBeamAnalyzer::set_one_shot_mode(): entering... !" << endl;
-
-	//	Add your own code to control device here
-  
-  Tango::DbData dev_prop;
-  Tango::DbDatum mode_prop( "Mode" );
-  mode_prop << "ONESHOT";
-  dev_prop.push_back( mode_prop );
-  this->get_db_device()->put_property(dev_prop);
-
-  this->delete_device();
-  this->init_device();
-  
-}
 
 }	//	namespace

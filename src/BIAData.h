@@ -19,7 +19,7 @@
 // ============================================================================
 #include "BIAConfig.h"
 #include <yat/threading/SharedObject.h>
-#include <yat/DataBuffer.h>
+#include <yat/memory/DataBuffer.h>
 
 namespace ImgBeamAnalyzer_ns
 {
@@ -76,12 +76,15 @@ public:
   double               centroid_y;
   double               variance_x;
   double               variance_y;
+  double               rms_x;
+  double               rms_y;
   double               covariance_xy;
   double               correlation_xy;
   double               skew_x;
   double               skew_y;
   double               skew_x2y;
   double               skew_xy2;
+  bool                 centroid_saturated;
 
   //- projections & profile
   yat::Buffer<double>  xproj;
