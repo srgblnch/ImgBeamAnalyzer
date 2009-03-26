@@ -12,7 +12,7 @@
 //
 // $Author: julien_malik $
 //
-// $Revision: 1.14 $
+// $Revision: 1.15 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -1584,11 +1584,13 @@ public:
 // The ImgBeamAnalyzerClass singleton definition
 //
 
-class
+/*class
 #ifdef WIN32
 	__declspec(dllexport)
 #endif
 	ImgBeamAnalyzerClass : public Tango::DeviceClass
+  */
+class IBA_DLLDIR	ImgBeamAnalyzerClass : public Tango::DeviceClass
 {
 public:
 //	properties member data
