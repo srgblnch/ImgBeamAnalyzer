@@ -85,9 +85,9 @@ INC_DIR_USER=-I $(ISL_ROOT)/include \
 # -L $(SOLEIL_ROOT)/sw-support/hkl/lib for HKL library
 # ...etc
 #
-LIB_DIR_USER=-L $(SOLEIL_ROOT)/sw-support/ISL/lib \
-             -L $(SOLEIL_ROOT)/sw-support/YAT/lib/static/linux \
-             -L $(SOLEIL_ROOT)/sw-support/YAT4tango/lib/static/linux
+LIB_DIR_USER=-L $(ISL_ROOT)/lib \
+             -L $(YAT_ROOT)/lib/static \
+             -L $(YAT4TANGO_ROOT)/lib/static
 
 #=============================================================================
 # LFLAGS_USR is the list of user link flags
