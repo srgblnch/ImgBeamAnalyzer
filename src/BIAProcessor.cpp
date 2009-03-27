@@ -771,8 +771,8 @@ namespace ImgBeamAnalyzer_ns
   {
     //typedef unsigned long index;
     typedef int index;
-    const index centroid_x = data.centroid_x;
-    const index centroid_y = data.centroid_y;
+    const index centroid_x = static_cast<index>(data.centroid_x);
+    const index centroid_y = static_cast<index>(data.centroid_y);
     
     const double centroid_value = roi_image.value(centroid_x, centroid_y);
     
@@ -829,7 +829,7 @@ namespace ImgBeamAnalyzer_ns
     for (index y = y_begin; y < y_end; ++y) {
       for (index x = x_begin; x < x_end; ++x) {
         const double value = roi_image.value(x, y);
-        if (::abs(max_pixel_value - value) > DBL_EPSILON ) {
+        if (::fabs(max_pixel_value - value) > DBL_EPSILON ) {
           data.centroid_saturated = false;
           return;
         }
