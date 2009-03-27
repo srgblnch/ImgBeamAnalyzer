@@ -6,9 +6,11 @@ ifndef OUTPUT_DIR
 endif
 
 all:
-	make -f Makefile.linux.lib all RELEASE_TYPE=$(RELEASE_TYPE) OUTPUT_DIR=$(OUTPUT_DIR)
+	make -f Makefile.linux.lib all RELEASE_TYPE=$(RELEASE_TYPE) OUTPUT_DIR=../lib
+	cp ../lib/libImgBeamAnalyzer.so $(OUTPUT_DIR)
 	make -f Makefile.linux.device all RELEASE_TYPE=$(RELEASE_TYPE) OUTPUT_DIR=$(OUTPUT_DIR)
   
 clean:
-	make -f Makefile.linux.lib clean RELEASE_TYPE=$(RELEASE_TYPE) OUTPUT_DIR=$(OUTPUT_DIR)
+	make -f Makefile.linux.lib clean RELEASE_TYPE=$(RELEASE_TYPE) OUTPUT_DIR=../lib
+	rm $(OUTPUT_DIR)/libImgBeamAnalyzer.so
 	make -f Makefile.linux.device clean RELEASE_TYPE=$(RELEASE_TYPE) OUTPUT_DIR=$(OUTPUT_DIR)

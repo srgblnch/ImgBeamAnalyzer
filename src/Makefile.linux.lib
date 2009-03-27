@@ -71,7 +71,6 @@ PACKAGE_NAME = ImgBeamAnalyzer
 # ...etc
 #
 INC_DIR_USER=-I $(ISL_ROOT)/include \
-             -I $(OPENCV_ROOT)/include \
              -I $(OPENCV_ROOT)/include/opencv \
              -I $(YAT_ROOT)/include \
              -I $(YAT4TANGO_ROOT)/include 
@@ -85,9 +84,10 @@ INC_DIR_USER=-I $(ISL_ROOT)/include \
 # -L $(SOLEIL_ROOT)/sw-support/hkl/lib for HKL library
 # ...etc
 #
-LIB_DIR_USER=-L $(ISL_ROOT)/lib \
-             -L $(YAT_ROOT)/lib/static \
-             -L $(YAT4TANGO_ROOT)/lib/static
+LIB_DIR_USER=-L $(ISL_ROOT)/lib/shared \
+             -L $(YAT_ROOT)/lib/shared/linux \
+             -L $(YAT4TANGO_ROOT)/lib/shared/linux \
+             -L $(OPENCV_ROOT)/lib
 
 #=============================================================================
 # LFLAGS_USR is the list of user link flags
@@ -105,7 +105,7 @@ LIB_DIR_USER=-L $(ISL_ROOT)/lib \
 # -lHKL for HKL
 #
 
-LFLAGS_USR=-lISL -lYAT -lYAT4Tango
+LFLAGS_USR=-lISL -lYAT -lYAT4Tango -lhighgui -lcv -lcxcore
 
 #=============================================================================
 # CXXFLAGS_USR lists the compilation flags specific for your library/device/exe
