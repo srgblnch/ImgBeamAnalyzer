@@ -66,7 +66,7 @@ namespace ImgBeamAnalyzer_ns
     void profiles(const isl::Image& roi_image_d, const isl::Image& roi_image_f, const isl::Rectangle& roi, const BIAConfig& config, BIAData& data, bool fixed_bg, double bg_value) const
       throw (isl::Exception);
 
-    void saturation(const isl::Image& roi_image, const BIAConfig& config, BIAData& data) const
+    void saturation(const isl::Image& roi_image, const BIAConfig& config, BIAData& data, const double centroid_x_, const double centroid_y_) const
       throw (isl::Exception);
 
     void gaussian_fit_2d(const isl::Image& roi_image_d, const isl::Rectangle& roi, const BIAConfig& config, BIAData& data) const

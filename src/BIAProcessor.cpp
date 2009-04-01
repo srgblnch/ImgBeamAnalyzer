@@ -732,6 +732,9 @@ namespace ImgBeamAnalyzer_ns
         double py = config.pixel_size_y / config.optical_mag;
 
         data.mean_intensity = m00 / (roi.width() * roi.height());
+
+        const double centroid_pixel_roi_image_x = img_moments.m10() / m00;
+        const double centroid_pixel_roi_image_y = img_moments.m01() / m00;
     
         data.centroid_x     = (img_moments.m10() / m00 + roi.origin().x()) * px;
         data.centroid_y     = (img_moments.m01() / m00 + roi.origin().y()) * py;
@@ -757,22 +760,21 @@ namespace ImgBeamAnalyzer_ns
             max = *cur_pix;
         }
         data.max_intensity = max;
-
-        /// @todo I need centroid, that's why I put it here. Not sure if
-        /// it should be elsewhere instead, and/or have it's own enable...
-        this->saturation(roi_image, config, data);
+        
+        this->saturation(roi_image, config, data, centroid_pixel_roi_image_x, centroid_pixel_roi_image_y);
       }
     }
   }
 
   void
-  BIAProcessor::saturation(const isl::Image& roi_image, const BIAConfig& config, BIAData& data) const
+  BIAProcessor::saturation(const isl::Image& roi_image, const BIAConfig& config, BIAData& data, const double centroid_x_, const double centroid_y_) const
       throw (isl::Exception)
   {
     //typedef unsigned long index;
     typedef int index;
-    const index centroid_x = static_cast<index>(data.centroid_x);
-    const index centroid_y = static_cast<index>(data.centroid_y);
+
+    const index centroid_x = static_cast<index>(centroid_x_);
+    const index centroid_y = static_cast<index>(centroid_y_);
     
     const double centroid_value = roi_image.value(centroid_x, centroid_y);
     
@@ -837,6 +839,8 @@ namespace ImgBeamAnalyzer_ns
     }
     // All the pixels around the centroid have the same value => saturated
     data.centroid_saturated = true;
+
+    assert(cvGetErrStatus() == 0);
   }
 
   void
