@@ -349,15 +349,12 @@ namespace ImgBeamAnalyzer_ns
     {
       try
       {
-
-#ifdef _IBA_USE_FLOAT64_
+        // threshold() does not work for 'short' images.
         isl::Image user_roi_img_working(  user_roi_image->width(),
                                           user_roi_image->height(),
                                           isl::ISL_STORAGE_FLOAT );
-        user_roi_image.convert(user_roi_img_working);
-#else
-        isl::Image user_roi_img_working(*user_roi_image);
-#endif
+        user_roi_image->convert(user_roi_img_working);
+
         user_roi_img_working.threshold(config.auto_roi_threshold, 255);
         user_roi_img_working.convert(isl::ISL_STORAGE_UCHAR);
         auto_roi = isl::BeamBox(user_roi_img_working, config.auto_roi_mag_factor_x, config.auto_roi_mag_factor_y);
