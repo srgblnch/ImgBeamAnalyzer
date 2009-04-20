@@ -8,7 +8,6 @@
 #pragma warning( disable: 4311 ) // 'variable' : pointer truncation from 'type' to 'type' 
 #pragma warning( disable: 4312 ) // 'operation' : conversion from 'type1' to 'type2' of greater size 
 #include <tango.h>
-#include "D:\dev\soleil-root\tango-soleil-win32\sw-support\Tango\include\event.h"
 #pragma warning( pop )
 #else
 #include <tango.h>
