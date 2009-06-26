@@ -41,7 +41,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="../../src;&quot;$(SOLEIL_ROOT)\sw-support\Omniorb\include&quot;;&quot;$(SOLEIL_ROOT)\sw-support\Tango\include&quot;;&quot;$(SOLEIL_ROOT)\sw-support\YAT\include&quot;;&quot;$(SOLEIL_ROOT)\sw-support\YAT4tango\include&quot;;&quot;$(SOLEIL_ROOT)\sw-support\ISL\include&quot;;&quot;$(SOLEIL_ROOT)\sw-support\OpenCV\include&quot;"
-				PreprocessorDefinitions="_DEBUG;WIN32;_CONSOLE;WIN32_LEAN_AND_MEAN;LOG4TANGO_HAS_DLL;TANGO_HAS_DLL;IBA_DLL_EXPORT;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS"
+				PreprocessorDefinitions="_DEBUG;WIN32;_CONSOLE;WIN32_LEAN_AND_MEAN;LOG4TANGO_HAS_DLL;TANGO_HAS_DLL;IBA_DLL_EXPORT;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;YAT_DLL"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -61,9 +61,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="omniORB412_rtd.lib omniDynamic412_rtd.lib omnithread33_rtd.lib tangod.lib cxcored.lib cvd.lib highguid.lib log4tangod.lib comctl32.lib ws2_32.lib user32.lib gdi32.lib advapi32.lib libYATd.lib libYAT4Tangod.lib libISLd.lib"
+				AdditionalDependencies="omniORB412_rtd.lib omniDynamic412_rtd.lib omnithread33_rtd.lib tangod.lib cxcore.lib cv.lib highgui.lib log4tangod.lib comctl32.lib ws2_32.lib user32.lib gdi32.lib advapi32.lib libYATd.lib libYAT4Tangod.lib libISLd.lib"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="&quot;$(SOLEIL_ROOT)\sw-support\Omniorb\lib&quot;;&quot;$(SOLEIL_ROOT)\sw-support\Tango\lib\shared&quot;;&quot;$(SOLEIL_ROOT)\sw-support\YAT\lib\static\msvc-8.0&quot;;&quot;$(SOLEIL_ROOT)\sw-support\YAT4Tango\lib\static\msvc-8.0&quot;;&quot;$(SOLEIL_ROOT)\sw-support\ISL\lib\static\msvc-8.0&quot;;&quot;$(SOLEIL_ROOT)\sw-support\OpenCV\lib\shared\msvc-8.0&quot;"
+				AdditionalLibraryDirectories="&quot;$(SOLEIL_ROOT)\sw-support\Omniorb\lib&quot;;&quot;$(SOLEIL_ROOT)\sw-support\Tango\lib\shared&quot;;&quot;$(SOLEIL_ROOT)\sw-support\YAT\lib\shared\msvc-8.0&quot;;&quot;$(SOLEIL_ROOT)\sw-support\YAT4Tango\lib\shared\msvc-8.0&quot;;&quot;$(SOLEIL_ROOT)\sw-support\ISL\lib\static\msvc-8.0&quot;;&quot;$(SOLEIL_ROOT)\sw-support\OpenCV\lib\shared\msvc-8.0&quot;"
 				IgnoreAllDefaultLibraries="false"
 				IgnoreDefaultLibraryNames=""
 				GenerateDebugInformation="true"
