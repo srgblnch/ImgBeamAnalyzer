@@ -29,6 +29,8 @@
 
 #include <sys/timeb.h>
 
+#include <memory>
+
 #include <math.h>
 // ============================================================================
 // Time relative Macros:

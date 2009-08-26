@@ -17,6 +17,8 @@
 #include "ImgBeamAnalyzerTask.h"
 #include <yat4tango/ExceptionHelper.h>
 
+#include <memory>
+
 #if !defined (YAT_INLINE_IMPL)
 # include "ImgBeamAnalyzerTask.i"
 #endif // YAT_INLINE_IMPL
