@@ -25,30 +25,30 @@ namespace ImgBeamAnalyzer_ns
   const bool    kDEFAULT_ENABLE_AUTO_ROI = true;
   const bool    kDEFAULT_ENABLE_2D_GAUSSIAN_FIT = false;
   const double  kDEFAULT_AUTOROI_MAGFACTOR = 1.0f;
-  const long    kDEFAULT_AUTOROI_THRESHOLD = 200;
-  const long    kDEFAULT_COMPUT_PERIOD = 1000;
-  const long    kDEFAULT_ALARM_ZONE = 10;
-  const long    kDEFAULT_FIT2D_NB_ITER = 30;
+  const int32_t kDEFAULT_AUTOROI_THRESHOLD = 200;
+  const int32_t kDEFAULT_COMPUT_PERIOD = 1000;
+  const int32_t kDEFAULT_ALARM_ZONE = 10;
+  const int32_t kDEFAULT_FIT2D_NB_ITER = 30;
   const double  kDEFAULT_FIT2D_MAX_REL_CHANGE = 1.0E-6;
-  const long    kDEFAULT_FIT1D_NB_ITER = 30;
+  const int32_t kDEFAULT_FIT1D_NB_ITER = 30;
   const double  kDEFAULT_FIT1D_MAX_REL_CHANGE = 1.0E-6;
   const double  kDEFAULT_PIXELSIZE_X = 1.0f;
   const double  kDEFAULT_PIXELSIZE_Y = 1.0f;
   const double  kDEFAULT_OPTICAL_MAGNIFICATION = 1.0f;
   const bool    kDEFAULT_PROFILEFIT_FIXEDBG = false;
-  const long    kDEFAULT_USER_ROI_ORIGIN_X = 0;
-  const long    kDEFAULT_USER_ROI_ORIGIN_Y = 0;
-  const long    kDEFAULT_USER_ROI_WIDTH = 0; //- means 'whole image'
-  const long    kDEFAULT_USER_ROI_HEIGHT = 0; //- means 'whole image'
-  const long    kDEFAULT_ROTATION = 0;
+  const int32_t kDEFAULT_USER_ROI_ORIGIN_X = 0;
+  const int32_t kDEFAULT_USER_ROI_ORIGIN_Y = 0;
+  const int32_t kDEFAULT_USER_ROI_WIDTH = 0; //- means 'whole image'
+  const int32_t kDEFAULT_USER_ROI_HEIGHT = 0; //- means 'whole image'
+  const int32_t kDEFAULT_ROTATION = 0;
   const bool    kDEFAULT_HORIZONTAL_FLIP = false;
   const double  kDEFAULT_GAMMA_CORRECTION = 1.0f;
-  const long    kDEFAULT_PIXEL_DEPTH = 10;
-  const long    kDEFAULT_HISTO_NB_BINS = 0; //- means : maximum nb of bins
-  const long    kDEFAULT_HISTO_RANGE_MIN = 0;
-  const long    kDEFAULT_HISTO_RANGE_MAX = 0; //- means : 2^pixel_depth
-  const long    kDEFAULT_BG_SUBSTRACTION = 0;
-  const long    kDEFAULT_PROFILE_THICKNESS = 1;
+  const int32_t kDEFAULT_PIXEL_DEPTH = 10;
+  const int32_t kDEFAULT_HISTO_NB_BINS = 0; //- means : maximum nb of bins
+  const int32_t kDEFAULT_HISTO_RANGE_MIN = 0;
+  const int32_t kDEFAULT_HISTO_RANGE_MAX = 0; //- means : 2^pixel_depth
+  const int32_t kDEFAULT_BG_SUBSTRACTION = 0;
+  const int32_t kDEFAULT_PROFILE_THICKNESS = 1;
 
   BIAConfig::BIAConfig() :
     enable_image_stats(kDEFAULT_ENABLE_IMAGE_STATS),
@@ -107,7 +107,7 @@ namespace ImgBeamAnalyzer_ns
     }
 
     CHECK( this->enable_2d_gaussian_fit == true && this->enable_image_stats == false , "EnableImageStats must be true when Enable2DGaussianFit is true" );
-    CHECK( this->auto_roi_threshold >= (1 << pixel_depth) , "AutoROIMagFactorX must be stricly positive" );
+    CHECK( this->auto_roi_threshold >= (1 << pixel_depth) , "AutoROIThreshold cannot be bigger than the maximum representable with selected pixel depth(BitsPerPixel)" );
     CHECK( this->auto_roi_mag_factor_x <=  0 , "AutoROIMagFactorX must be stricly positive" );
     CHECK( this->auto_roi_mag_factor_y <=  0 , "AutoROIMagFactorY must be stricly positive" );
     CHECK( this->comput_period         <=  0 , "ComputationPeriod must be stricly positive" );
