@@ -127,9 +127,47 @@ void IBASourceTango::get_image(ImageAndInfo & imginf) throw (yat::Exception)
     (*attributes)[0].get_type();
     
     if (read_bit_depth) {
-      long bd;
-      (*attributes)[1] >> bd;
-      imginf.bit_depth = bd;
+      Tango::DeviceAttribute & depth_attr = (*attributes)[1];
+      switch( depth_attr.get_type() ) {
+         case Tango::DEV_LONG: {
+            Tango::DevLong bd;
+            depth_attr >> bd;
+            imginf.bit_depth = bd;
+            break;
+         }
+         case Tango::DEV_SHORT: {
+            Tango::DevShort bd;
+            depth_attr >> bd;
+            imginf.bit_depth = bd;
+            break;
+         }
+         case Tango::DEV_LONG64: {
+            Tango::DevLong64 bd;
+            depth_attr >> bd;
+            imginf.bit_depth = bd;
+            break;
+         }
+         case Tango::DEV_ULONG: {
+            Tango::DevULong bd;
+            depth_attr >> bd;
+            imginf.bit_depth = bd;
+            break;
+         }
+         case Tango::DEV_USHORT: {
+            Tango::DevUShort bd;
+            depth_attr >> bd;
+            imginf.bit_depth = bd;
+            break;
+         }
+         case Tango::DEV_ULONG64: {
+            Tango::DevULong64 bd;
+            depth_attr >> bd;
+            imginf.bit_depth = bd;
+            break;
+         }
+         default:
+           imginf.bit_depth = 0;
+      }
     } else {
       imginf.bit_depth = 0;
     }
