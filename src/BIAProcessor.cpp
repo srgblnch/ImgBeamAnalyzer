@@ -38,7 +38,7 @@
 #define TIMEVAL struct timeb
 #define	GET_TIME(T) ftime(&T)
 #define	ELAPSED_TIME_MS(start_time, end_time) \
-  static_cast<long>( 1000 * (end_time.time - start_time.time) + (end_time.millitm - start_time.millitm) )
+  static_cast<int32_t>( 1000 * (end_time.time - start_time.time) + (end_time.millitm - start_time.millitm) )
 
 
 // #define _IBA_TIMING_TESTS_
@@ -235,7 +235,7 @@ namespace ImgBeamAnalyzer_ns
       CHRONO_PROFILE();
       int operation;
       bool flip = config.horizontal_flip;
-      long rotation = config.rotation % 360;
+      int32_t rotation = config.rotation % 360;
       rotation = rotation < 0 ? rotation + 360 : rotation;
 
       switch (rotation)

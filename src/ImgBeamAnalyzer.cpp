@@ -1,4 +1,4 @@
-static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzer.cpp,v 1.23 2009-03-26 09:57:21 julien_malik Exp $";
+static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzer.cpp,v 1.24 2009-09-17 13:05:39 ollupac Exp $";
 //+=============================================================================
 //
 // file :         ImgBeamAnalyzer.cpp
@@ -11,9 +11,9 @@ static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/Im
 //
 // project :      TANGO Device Server
 //
-// $Author: julien_malik $
+// $Author: ollupac $
 //
-// $Revision: 1.23 $
+// $Revision: 1.24 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -64,7 +64,7 @@ namespace ImgBeamAnalyzer_ns
 template <> Tango::DevBoolean ImgBeamAnalyzer::DummyValue<Tango::DevBoolean>::dummy = std::numeric_limits<bool>::quiet_NaN();
 template <> Tango::DevUChar   ImgBeamAnalyzer::DummyValue<Tango::DevUChar>  ::dummy = std::numeric_limits<unsigned char>::quiet_NaN();
 template <> Tango::DevUShort  ImgBeamAnalyzer::DummyValue<Tango::DevUShort> ::dummy = std::numeric_limits<unsigned short>::quiet_NaN();
-template <> Tango::DevLong    ImgBeamAnalyzer::DummyValue<Tango::DevLong>   ::dummy = std::numeric_limits<long>::quiet_NaN();
+template <> Tango::DevLong    ImgBeamAnalyzer::DummyValue<Tango::DevLong>   ::dummy = std::numeric_limits<int32_t>::quiet_NaN();
 template <> Tango::DevFloat   ImgBeamAnalyzer::DummyValue<Tango::DevFloat>  ::dummy = std::numeric_limits<float>::quiet_NaN();
 template <> Tango::DevDouble  ImgBeamAnalyzer::DummyValue<Tango::DevDouble> ::dummy = std::numeric_limits<double>::quiet_NaN();
 
@@ -119,7 +119,7 @@ template <> Tango::DevDouble  ImgBeamAnalyzer::DummyValue<Tango::DevDouble> ::du
 		else                                                                                        \
 		{                                                                                           \
 			attr.set_value(this->available_data_->data_member.base(),                                 \
-                     static_cast<long>(this->available_data_->data_member.length()));           \
+                     static_cast<int32_t>(this->available_data_->data_member.length()));           \
       if (this->available_data_->alarm == true)                                                 \
         attr.set_quality(Tango::ATTR_ALARM);                                                    \
       else                                                                                      \
@@ -138,8 +138,8 @@ template <> Tango::DevDouble  ImgBeamAnalyzer::DummyValue<Tango::DevDouble> ::du
 		else                                                                                        \
 		{                                                                                           \
 			attr.set_value(this->available_data_->data_member.base(),                                 \
-                     static_cast<long>(this->available_data_->data_member.width()),             \
-                     static_cast<long>(this->available_data_->data_member.height()));           \
+                     static_cast<int32_t>(this->available_data_->data_member.width()),             \
+                     static_cast<int32_t>(this->available_data_->data_member.height()));           \
       if (this->available_data_->alarm == true)                                                 \
         attr.set_quality(Tango::ATTR_ALARM);                                                    \
       else                                                                                      \
@@ -159,8 +159,8 @@ template <> Tango::DevDouble  ImgBeamAnalyzer::DummyValue<Tango::DevDouble> ::du
 		else                                                                                        \
 		{                                                                                           \
 			attr.set_value(this->available_data_->data_member.base(),                                 \
-                     static_cast<long>(this->available_data_->data_member.width()),             \
-                     static_cast<long>(this->available_data_->data_member.height()));           \
+                     static_cast<int32_t>(this->available_data_->data_member.width()),             \
+                     static_cast<int32_t>(this->available_data_->data_member.height()));           \
       if (this->available_data_->alarm == true)                                                 \
         attr.set_quality(Tango::ATTR_ALARM);                                                    \
       else                                                                                      \
@@ -263,13 +263,12 @@ ImgBeamAnalyzer::ImgBeamAnalyzer(Tango::DeviceClass *cl,const char *s,const char
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::delete_device()
 {
-	//	Delete device's allocated object
-  if (this->task_)
-	{
+   // Delete device's allocated object
+  if (this->task_) {
     try
     {
-		  //- ask the task to quit
-	    this->task_->exit();
+      //- ask the task to quit
+      this->task_->exit();
     }
     catch(Tango::DevFailed &ex)
     {
@@ -281,7 +280,7 @@ void ImgBeamAnalyzer::delete_device()
       ERROR_STREAM << "Unknown exception caught when exiting task" << std::endl;
       //- ignore error
     }
-	  this->task_ = 0;
+    this->task_ = 0;
   }
   
   if (this->available_data_)
@@ -382,9 +381,11 @@ void ImgBeamAnalyzer::init_device()
       return;
     }
     dev_proxy_allowed = true;
-    
-	//- in CONTINUOUS mode, 'Process' command is disabled
-	this->process_command_allowed_ = false;
+    if (this->device_mode_ == MODE_CONTINUOUS)
+    { 
+       //- in CONTINUOUS mode, 'Process' command is disabled
+       this->process_command_allowed_ = false;
+    }
   }
   else
   {
@@ -409,26 +410,8 @@ void ImgBeamAnalyzer::init_device()
   {
     try
     {
-      string attr2subscribe = "";
-      if ( this->imageCounterAttrName == "unspecified")
-      {
-        attr2subscribe = this->imageAttributeName;
-      }
-      else
-      {
-        attr2subscribe = this->imageCounterAttrName;
-      }
-
       this->image_source_ = IBASourceFactory::create(this->imageDevice);
       this->image_source_->set_image_attribute_name(this->imageAttributeName);
-
-      if (this->device_mode_ == MODE_EVENT)
-      {
-        this->image_source_->register_observer(this);
-        this->image_source_->set_callback_attribute(attr2subscribe);
-
-        this->process_command_allowed_ = true;
-      }
     }
     catch( Tango::DevFailed& df )
     {
@@ -450,7 +433,7 @@ void ImgBeamAnalyzer::init_device()
 
 
   // Init ImgBeamAnalyzerTask
-	//--------------------------------------------  
+  //--------------------------------------------  
   try
   {
     this->task_ = new ImgBeamAnalyzerTask ();
@@ -501,6 +484,31 @@ void ImgBeamAnalyzer::init_device()
     this->set_state (Tango::FAULT);
     this->delete_device();
     return;
+  }
+
+  if (dev_proxy_allowed) {
+
+      string attr2subscribe = "";
+      if ( this->imageCounterAttrName == "unspecified")
+      {
+        attr2subscribe = this->imageAttributeName;
+        INFO_STREAM << "Subscription via Image: " << this->imageDevice << "/" << this->imageAttributeName << std::endl;
+      }
+      else
+      {
+        attr2subscribe = this->imageCounterAttrName;
+        INFO_STREAM << "Subscription via Counter: " << this->imageDevice << "/" << this->imageCounterAttrName << std::endl;
+      }
+
+      if (this->device_mode_ == MODE_EVENT)
+      {
+        this->image_source_->register_observer(this);
+        this->image_source_->set_callback_attribute(attr2subscribe);
+
+        this->process_command_allowed_ = true;
+        INFO_STREAM << "Well subscribed to the ImageCounter: " << this->imageDevice << "/" << this->imageCounterAttrName \
+                    << ", for the image: " << this->imageDevice << "/" << this->imageAttributeName << std::endl;
+      }
   }
   
   this->properly_initialized_ = true;

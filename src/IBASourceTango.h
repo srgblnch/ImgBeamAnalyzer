@@ -38,7 +38,7 @@ public:
     void get_image(ImageAndInfo & imginf) throw (yat::Exception);
 
   virtual /*from IBASource*/
-    void set_observed_attribute(const std::string & attrName);
+    void set_callback_attribute(const std::string & attrName);
 };
 
 class IBA_DLLDIR IBASourceFactoryTango : public IBASourceFactory

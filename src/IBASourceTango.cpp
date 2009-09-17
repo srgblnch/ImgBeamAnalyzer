@@ -63,9 +63,9 @@ IBASourceTango::~IBASourceTango()
 
 void IBASourceTango::push_event(Tango::EventData *ed)
 {
-	if(!ed->attr_value) {
-		return;
-	}
+  if(!ed->attr_value) {
+    return;
+  }
   
   ImageAndInfo imginf;
   this->get_image(imginf);
@@ -441,7 +441,7 @@ void IBASourceTango::get_image(ImageAndInfo & imginf) throw (yat::Exception)
 }
 
 /*virtual from IBASource*/
-void IBASourceTango::set_observed_attribute(const std::string & attrName)
+void IBASourceTango::set_callback_attribute(const std::string & attrName)
 {
   // Unsubscribe the events if it's subscribed
   if (this->eventId_ != 0)
@@ -450,9 +450,9 @@ void IBASourceTango::set_observed_attribute(const std::string & attrName)
 
   // New subscription
   std::vector<std::string> filters;
-  this->eventId_ = this->dev_proxy_->subscribe_event(attrName,
-													  Tango::CHANGE_EVENT,
-													  this,
-													  filters // unused
-													  );
+  this->eventId_ = this->dev_proxy_->subscribe_event( attrName,
+                                                      Tango::CHANGE_EVENT,
+                                                      this,
+                                                      filters // unused
+                                                      );
 }
