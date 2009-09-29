@@ -1,4 +1,4 @@
-static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzer.cpp,v 1.24 2009-09-17 13:05:39 ollupac Exp $";
+static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzer.cpp,v 1.25 2009-09-29 13:34:22 vince_soleil Exp $";
 //+=============================================================================
 //
 // file :         ImgBeamAnalyzer.cpp
@@ -11,9 +11,9 @@ static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/Im
 //
 // project :      TANGO Device Server
 //
-// $Author: ollupac $
+// $Author: vince_soleil $
 //
-// $Revision: 1.24 $
+// $Revision: 1.25 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -171,18 +171,18 @@ template <> Tango::DevDouble  ImgBeamAnalyzer::DummyValue<Tango::DevDouble> ::du
 #define READ_INPUT_ATTR( config_member_name )                                                   \
   {	                                                                                            \
     if (this->available_data_ == 0 || this->get_state() == Tango::FAULT)                        \
-			attr.set_value(&this->current_config_.config_member_name);                                \
+			attr.set_value(static_cast<Tango::DevLong*>&this->current_config_.config_member_name);                                \
 		else                                                                                        \
-			attr.set_value(&this->available_data_->config.config_member_name);                        \
+			attr.set_value(static_cast<Tango::DevLong*>&this->available_data_->config.config_member_name);                        \
   }
 
 #define READ_INPUT_ATTR_WITH_ALARM( config_member_name , alarm_boolean)                         \
   {	                                                                                            \
     if (this->available_data_ == 0 || this->get_state() == Tango::FAULT)                        \
-			attr.set_value(&this->current_config_.config_member_name);                                \
+			attr.set_value(static_cast<Tango::DevLong*>&this->current_config_.config_member_name);                                \
 		else                                                                                        \
     {                                                                                           \
-			attr.set_value(&this->available_data_->config.config_member_name);                        \
+			attr.set_value(static_cast<Tango::DevLong*>&this->available_data_->config.config_member_name);                        \
       if (this->available_data_->alarm_boolean == true)                                         \
         attr.set_quality(Tango::ATTR_ALARM);                                                    \
       else                                                                                      \
