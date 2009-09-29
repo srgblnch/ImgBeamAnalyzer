@@ -1,4 +1,4 @@
-static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzer.cpp,v 1.30 2009-09-29 17:31:16 vince_soleil Exp $";
+static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzer.cpp,v 1.31 2009-09-29 17:36:31 vince_soleil Exp $";
 //+=============================================================================
 //
 // file :         ImgBeamAnalyzer.cpp
@@ -13,7 +13,7 @@ static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/Im
 //
 // $Author: vince_soleil $
 //
-// $Revision: 1.30 $
+// $Revision: 1.31 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -81,6 +81,24 @@ template <> Tango::DevDouble  ImgBeamAnalyzer::DummyValue<Tango::DevDouble> ::du
 		else                                                                                        \
 		{                                                                                           \
 			attr.set_value(&this->available_data_->data_member);                                      \
+      if (this->available_data_->alarm == true)                                                 \
+        attr.set_quality(Tango::ATTR_ALARM);                                                    \
+      else                                                                                      \
+        attr.set_quality(Tango::ATTR_VALID);                                                    \
+		}                                                                                           \
+  }
+
+#define READ_OUTPUT_DEVLONG_SCALAR_ATTR_ALWAYSACTIV( data_member, TangoType )                           \
+  {	                                                                                            \
+		if (this->available_data_ == 0                                                              \
+         || &this->available_data_->data_member == 0)                                           \
+		{                                                                                           \
+			attr.set_value(reinterpret_cast<Tango::DevLong*>(&DummyValue<TangoType>::dummy));                                            \
+			attr.set_quality(Tango::ATTR_ALARM);                                                      \
+		}                                                                                           \
+		else                                                                                        \
+		{                                                                                           \
+			attr.set_value(reinterpret_cast<Tango::DevLong*>(&this->available_data_->data_member));                                      \
       if (this->available_data_->alarm == true)                                                 \
         attr.set_quality(Tango::ATTR_ALARM);                                                    \
       else                                                                                      \
