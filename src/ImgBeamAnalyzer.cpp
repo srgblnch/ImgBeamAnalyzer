@@ -1,4 +1,4 @@
-static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzer.cpp,v 1.31 2009-09-29 17:36:31 vince_soleil Exp $";
+static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzer.cpp,v 1.32 2009-09-29 17:38:19 vince_soleil Exp $";
 //+=============================================================================
 //
 // file :         ImgBeamAnalyzer.cpp
@@ -13,7 +13,7 @@ static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/Im
 //
 // $Author: vince_soleil $
 //
-// $Revision: 1.31 $
+// $Revision: 1.32 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -2735,7 +2735,7 @@ void ImgBeamAnalyzer::write_ComputationPeriod(Tango::WAttribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_EstimComputTime(Tango::Attribute &attr)
 {
-  READ_OUTPUT_SCALAR_ATTR_ALWAYSACTIV(estim_comput_time, Tango::DevLong);
+  READ_OUTPUT_DEVLONG_SCALAR_ATTR_ALWAYSACTIV(estim_comput_time, Tango::DevLong);
 }
 
 //+----------------------------------------------------------------------------
