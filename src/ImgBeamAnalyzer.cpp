@@ -1,4 +1,4 @@
-static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzer.cpp,v 1.29 2009-09-29 17:09:12 vince_soleil Exp $";
+static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzer.cpp,v 1.30 2009-09-29 17:31:16 vince_soleil Exp $";
 //+=============================================================================
 //
 // file :         ImgBeamAnalyzer.cpp
@@ -13,7 +13,7 @@ static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/Im
 //
 // $Author: vince_soleil $
 //
-// $Revision: 1.29 $
+// $Revision: 1.30 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -100,6 +100,25 @@ template <> Tango::DevDouble  ImgBeamAnalyzer::DummyValue<Tango::DevDouble> ::du
 		else                                                                                        \
 		{                                                                                           \
 			attr.set_value(&this->available_data_->data_member);                                      \
+      if (this->available_data_->alarm == true)                                                 \
+        attr.set_quality(Tango::ATTR_ALARM);                                                    \
+      else                                                                                      \
+        attr.set_quality(Tango::ATTR_VALID);                                                    \
+		}                                                                                           \
+  }
+
+#define READ_OUTPUT_DEVLONG_SCALAR_ATTR( data_member, activated, TangoType )                            \
+  {	                                                                                            \
+		if (this->available_data_ == 0                                                              \
+         || this->available_data_->config.activated == false                                    \
+         || &this->available_data_->data_member == 0)                                           \
+		{                                                                                           \
+			attr.set_value(reinterpret_cast<Tango::DevLong*>(&DummyValue<TangoType>::dummy));                                            \
+			attr.set_quality(Tango::ATTR_ALARM);                                                      \
+		}                                                                                           \
+		else                                                                                        \
+		{                                                                                           \
+			attr.set_value(reinterpret_cast<Tango::DevLong*>(&this->available_data_->data_member));                                      \
       if (this->available_data_->alarm == true)                                                 \
         attr.set_quality(Tango::ATTR_ALARM);                                                    \
       else                                                                                      \
@@ -1149,7 +1168,7 @@ void ImgBeamAnalyzer::write_LineProfileThickness(Tango::WAttribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_LineProfileFitNbIter(Tango::Attribute &attr)
 {
-  READ_OUTPUT_SCALAR_ATTR(line_profile_nb_iter, enable_profile, Tango::DevLong);
+  READ_OUTPUT_DEVLONG_SCALAR_ATTR(line_profile_nb_iter, enable_profile, Tango::DevLong);
 }
 
 //+----------------------------------------------------------------------------
@@ -1161,7 +1180,7 @@ void ImgBeamAnalyzer::read_LineProfileFitNbIter(Tango::Attribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_LineProfileFitRelChange(Tango::Attribute &attr)
 {
-  READ_OUTPUT_SCALAR_ATTR(line_profile_eps, enable_profile, Tango::DevLong);
+  READ_OUTPUT_DEVLONG_SCALAR_ATTR(line_profile_eps, enable_profile, Tango::DevLong);
 }
 
 //+----------------------------------------------------------------------------
@@ -1557,7 +1576,7 @@ void ImgBeamAnalyzer::read_YProjFitChi2(Tango::Attribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_XProjFitNbIter(Tango::Attribute &attr)
 {
-  READ_OUTPUT_SCALAR_ATTR(xproj_nb_iter, enable_profile, Tango::DevLong);
+  READ_OUTPUT_DEVLONG_SCALAR_ATTR(xproj_nb_iter, enable_profile, Tango::DevLong);
 }
 
 //+----------------------------------------------------------------------------
@@ -1581,7 +1600,7 @@ void ImgBeamAnalyzer::read_XProjFitRelChange(Tango::Attribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_YProjFitNbIter(Tango::Attribute &attr)
 {
-  READ_OUTPUT_SCALAR_ATTR(yproj_nb_iter, enable_profile, Tango::DevLong);
+  READ_OUTPUT_DEVLONG_SCALAR_ATTR(yproj_nb_iter, enable_profile, Tango::DevLong);
 }
 
 //+----------------------------------------------------------------------------
@@ -1810,7 +1829,7 @@ void ImgBeamAnalyzer::read_Histogram(Tango::Attribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_GaussianFitNbIter(Tango::Attribute &attr)
 {
-  READ_OUTPUT_SCALAR_ATTR(gaussfit_nb_iter, enable_2d_gaussian_fit, Tango::DevLong);
+  READ_OUTPUT_DEVLONG_SCALAR_ATTR(gaussfit_nb_iter, enable_2d_gaussian_fit, Tango::DevLong);
 }
 
 //+----------------------------------------------------------------------------
@@ -2170,7 +2189,7 @@ void ImgBeamAnalyzer::read_UserROIHeight(Tango::Attribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_AutoROIOriginX(Tango::Attribute &attr)
 {
-  READ_OUTPUT_SCALAR_ATTR(auto_roi_origin_x, enable_auto_roi, Tango::DevLong);
+  READ_OUTPUT_DEVLONG_SCALAR_ATTR(auto_roi_origin_x, enable_auto_roi, Tango::DevLong);
 }
 
 //+----------------------------------------------------------------------------
@@ -2182,7 +2201,7 @@ void ImgBeamAnalyzer::read_AutoROIOriginX(Tango::Attribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_AutoROIOriginY(Tango::Attribute &attr)
 {
-  READ_OUTPUT_SCALAR_ATTR(auto_roi_origin_y, enable_auto_roi, Tango::DevLong);
+  READ_OUTPUT_DEVLONG_SCALAR_ATTR(auto_roi_origin_y, enable_auto_roi, Tango::DevLong);
 }
 
 //+----------------------------------------------------------------------------
@@ -2194,7 +2213,7 @@ void ImgBeamAnalyzer::read_AutoROIOriginY(Tango::Attribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_AutoROIWidth(Tango::Attribute &attr)
 {
-  READ_OUTPUT_SCALAR_ATTR(auto_roi_width, enable_auto_roi, Tango::DevLong);
+  READ_OUTPUT_DEVLONG_SCALAR_ATTR(auto_roi_width, enable_auto_roi, Tango::DevLong);
 }
 
 //+----------------------------------------------------------------------------
@@ -2206,7 +2225,7 @@ void ImgBeamAnalyzer::read_AutoROIWidth(Tango::Attribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_AutoROIHeight(Tango::Attribute &attr)
 {
-  READ_OUTPUT_SCALAR_ATTR(auto_roi_height, enable_auto_roi, Tango::DevLong);
+  READ_OUTPUT_DEVLONG_SCALAR_ATTR(auto_roi_height, enable_auto_roi, Tango::DevLong);
 }
 
 //+----------------------------------------------------------------------------
