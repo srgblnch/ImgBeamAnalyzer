@@ -1,4 +1,4 @@
-static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzer.cpp,v 1.33 2009-11-27 15:50:31 anoureddine Exp $";
+static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzer.cpp,v 1.34 2009-11-27 16:06:10 anoureddine Exp $";
 //+=============================================================================
 //
 // file :         ImgBeamAnalyzer.cpp
@@ -13,7 +13,7 @@ static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/Im
 //
 // $Author: anoureddine $
 //
-// $Revision: 1.33 $
+// $Revision: 1.34 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -1002,7 +1002,7 @@ void ImgBeamAnalyzer::read_attr_hardware(vector<long> &attr_list)
 // description : 	Hardware acquisition for attributes.
 //
 //-----------------------------------------------------------------------------
-void ImgBeamAnalyzer::read_attr_hardware(vector<long> &/*attr_list*/)
+void ImgBeamAnalyzer::read_attr_hardware(vector<long> &attr_list)
 {
 	DEBUG_STREAM << "ImgBeamAnalyzer::read_attr_hardware(vector<long> &attr_list) entering... "<< endl;
 	//	Add your own code here
