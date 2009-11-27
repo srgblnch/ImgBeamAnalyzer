@@ -1,4 +1,4 @@
-static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzer.cpp,v 1.32 2009-09-29 17:38:19 vince_soleil Exp $";
+static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzer.cpp,v 1.33 2009-11-27 15:50:31 anoureddine Exp $";
 //+=============================================================================
 //
 // file :         ImgBeamAnalyzer.cpp
@@ -11,9 +11,9 @@ static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/Im
 //
 // project :      TANGO Device Server
 //
-// $Author: vince_soleil $
+// $Author: anoureddine $
 //
-// $Revision: 1.32 $
+// $Revision: 1.33 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -982,6 +982,18 @@ void ImgBeamAnalyzer::always_executed_hook()
 {
   this->update_state();
 }
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_attr_hardware
+// 
+// description : 	Hardware acquisition for attributes.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_attr_hardware(vector<long> &attr_list)
+{
+	DEBUG_STREAM << "ImgBeamAnalyzer::read_attr_hardware(vector<long> &attr_list) entering... "<< endl;
+	//	Add your own code here
+}
 
 //+----------------------------------------------------------------------------
 //
@@ -992,35 +1004,36 @@ void ImgBeamAnalyzer::always_executed_hook()
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_attr_hardware(vector<long> &/*attr_list*/)
 {
+	DEBUG_STREAM << "ImgBeamAnalyzer::read_attr_hardware(vector<long> &attr_list) entering... "<< endl;
 	//	Add your own code here
-	
-  try
-  {
-    //---- READ DATA ---------------------------------------------------------------------
-    //- release any existing data
-    if (this->available_data_)
-    {
-      this->available_data_->release ();
-      this->available_data_ = 0;
-    }
+	try
+	  {
+	    //---- READ DATA ---------------------------------------------------------------------
+	    //- release any existing data
+	    if (this->available_data_)
+	    {
+	      this->available_data_->release ();
+	      this->available_data_ = 0;
+	    }
 
-    //- read data
-    //- if not available, return value will be 0
-    //- we DON'T put the device in a FAULT state if data is not available
-    //- but we update the status...
-    this->task_->get_data (this->available_data_);
-  }
-  catch(...)
-  {
-    THROW_DEVFAILED("UNKNOWN_ERROR",
-                    "An unknown error occured",
-                    "ImgBeamAnalyzer::read_attr_hardware()");
-  }
+	    //- read data
+	    //- if not available, return value will be 0
+	    //- we DON'T put the device in a FAULT state if data is not available
+	    //- but we update the status...
+	    this->task_->get_data (this->available_data_);
+	  }
+	  catch(...)
+	  {
+	    THROW_DEVFAILED("UNKNOWN_ERROR",
+	                    "An unknown error occured",
+	                    "ImgBeamAnalyzer::read_attr_hardware()");
+	  }
 
-  //- the state/status may be updated by the call to this->task_->get_data()
-  this->update_state();
-
+	  //- the state/status may be updated by the call to this->task_->get_data()
+	  this->update_state();	
 }
+
+
 //+----------------------------------------------------------------------------
 //
 // method : 		ImgBeamAnalyzer::read_RmsX
@@ -3099,6 +3112,8 @@ void ImgBeamAnalyzer::update_state()
     this->set_status(status);
   }
 };
+
+
 
 
 }	//	namespace

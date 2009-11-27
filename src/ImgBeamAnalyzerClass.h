@@ -10,9 +10,9 @@
 //			
 // project :      TANGO Device Server
 //
-// $Author: julien_malik $
+// $Author: anoureddine $
 //
-// $Revision: 1.15 $
+// $Revision: 1.16 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -1584,13 +1584,7 @@ public:
 // The ImgBeamAnalyzerClass singleton definition
 //
 
-/*class
-#ifdef WIN32
-	__declspec(dllexport)
-#endif
-	ImgBeamAnalyzerClass : public Tango::DeviceClass
-  */
-class IBA_DLLDIR	ImgBeamAnalyzerClass : public Tango::DeviceClass
+class ImgBeamAnalyzerClass : public Tango::DeviceClass
 {
 public:
 //	properties member data
@@ -1619,8 +1613,6 @@ protected:
 	void attribute_factory(vector<Tango::Attr *> &);
 	void write_class_property();
 	void set_default_property();
-	string get_cvstag();
-	string get_cvsroot();
 
 private:
 	void device_factory(const Tango::DevVarStringArray *);
