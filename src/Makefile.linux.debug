@@ -1,0 +1,4 @@
+
+RELEASE_TYPE = DEBUG
+
+include Makefile.linux.base

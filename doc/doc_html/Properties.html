@@ -1,0 +1,332 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+<Title> Tango Device Server User's Guide </Title>
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#FFFFFF" LINK="#0000FF" VLINK="#7F00FF" ALINK="#FF0000">
+
+<P><!-------TITLE------></P>
+
+<TABLE BORDER="0" WIDTH="100%">
+    <TR>
+        <TD ALIGN="left">
+			<A HREF="http://www.esrf.fr/" TARGET=new>
+			<IMG SRC="http://controle/icons/esrf_logo.gif" BORDER=0></A>
+		</Td>
+        <TD ALIGN="center">
+			<A HREF="http://www.elettra.trieste.it/" TARGET=new>
+			<IMG SRC="http://controle/icons/elettra_logo.gif" BORDER=0></A>
+
+		</Td>
+        <TD ALIGN="center">
+			<A HREF="http://www.synchrotron-soleil.fr/" TARGET=new>
+			<IMG SRC="http://controle/icons/soleil_logo.gif" BORDER=0></A>
+		</Td>
+        <TD ALIGN="right">
+			<A HREF="http://www.cells.es/" TARGET=new>
+			<IMG SRC="http://controle/icons/alba_logo.gif" BORDER=0></A>
+		</Td>
+    	 <Td>
+			<H2><FONT COLOR="#7F00FF">
+			<Center><A HREF="http://www.esrf.fr/Infrastructure/Computing/tango/" TARGET="_top">
+					 TANGO </a> <Br> Device Server
+			</Center></FONT>
+    	</Td>
+    </TR>
+</TABLE>
+
+<HR WIDTH="100%"></H5>
+<Br>
+<center>
+<h1>
+Image Analyzer		<Br>
+Properties Description 		<Br> <Br>
+ImgBeamAnalyzer Class	<Br>
+</h1>
+<b>
+Revision:  - Author: 
+</b>
+</center>
+
+
+<Br> <Br> <Br> 
+<Center>
+<Br> <Br> <Br> 
+<Table Border=2 Cellpadding=3 CELLSPACING=0 WIDTH="100%">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<Td COLSPAN=3> <Font Size=+2><Center><b>Device Properties</b></td></Font></Center>
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<Td><Center><b>Property name</b></td></Center>
+<Td><Center><b>Property type</b></td></Center>
+<Td><Center><b>Description</b></td></Center>
+<Tr><Td><b><a href=#Dev_DefaultValues>AutoROIMagFactorX </a></b></Td>
+<Td><Font Size=-1>Tango::DEV_DOUBLE</Font></Td>
+<Td><Font Size=-1>initial value of AutoROIMagFactorX attribute. if not defined, it is set to 1</Font></Td></Tr>
+
+<Tr><Td><b><a href=#Dev_DefaultValues>AutoROIMagFactorY </a></b></Td>
+<Td><Font Size=-1>Tango::DEV_DOUBLE</Font></Td>
+<Td><Font Size=-1>initial value of AutoROIMagFactorY attribute. if not defined, it is set to 1</Font></Td></Tr>
+
+<Tr><Td><b><a href=#Dev_DefaultValues>AutoROIMethod </a></b></Td>
+<Td><Font Size=-1>Tango::DEV_STRING</Font></Td>
+<Td><Font Size=-1>the method used for computing the AutoROI. can be 'PROFILES' or 'THRESHOLD'.
+PROFILES method means the AutoROI is computed from the profiles fitted to gaussian functions.
+THRESHOLD means that the image is first thresholded using the 'AutoROIThreshold' attribute then the largest blob is selected.
+</Font></Td></Tr>
+
+<Tr><Td><b><a href=#Dev_DefaultValues>AutoStart </a></b></Td>
+<Td><Font Size=-1>Tango::DEV_BOOLEAN</Font></Td>
+<Td><Font Size=-1>if set to 'true' and mode is 'CONTINUOUS', the computation starts automatically when the device is launched</Font></Td></Tr>
+
+<Tr><Td><b><a href=#Dev_DefaultValues>BitsPerPixel </a></b></Td>
+<Td><Font Size=-1>Tango::DEV_LONG</Font></Td>
+<Td><Font Size=-1>the initial value of the BitsPerPixel attribute</Font></Td></Tr>
+
+<Tr><Td><b><a href=#Dev_DefaultValues>ComputationPeriod </a></b></Td>
+<Td><Font Size=-1>Tango::DEV_LONG</Font></Td>
+<Td><Font Size=-1>the initial value of the ComputationPeriod attribute</Font></Td></Tr>
+
+<Tr><Td><b><a href=#Dev_DefaultValues>Enable2DGaussianFit </a></b></Td>
+<Td><Font Size=-1>Tango::DEV_BOOLEAN</Font></Td>
+<Td><Font Size=-1>the initial value of the Enable2DGaussianFit attribute</Font></Td></Tr>
+
+<Tr><Td><b><a href=#Dev_DefaultValues>EnableAutoROI </a></b></Td>
+<Td><Font Size=-1>Tango::DEV_BOOLEAN</Font></Td>
+<Td><Font Size=-1>the initial value of the EnableAutoROI attribute</Font></Td></Tr>
+
+<Tr><Td><b><a href=#Dev_DefaultValues>EnableHistogram </a></b></Td>
+<Td><Font Size=-1>Tango::DEV_BOOLEAN</Font></Td>
+<Td><Font Size=-1>the initial value of the EnableHistogram attribute</Font></Td></Tr>
+
+<Tr><Td><b><a href=#Dev_DefaultValues>EnableImageStats </a></b></Td>
+<Td><Font Size=-1>Tango::DEV_BOOLEAN</Font></Td>
+<Td><Font Size=-1>the initial value of the EnableImageStats attribute</Font></Td></Tr>
+
+<Tr><Td><b><a href=#Dev_DefaultValues>EnableProfiles </a></b></Td>
+<Td><Font Size=-1>Tango::DEV_BOOLEAN</Font></Td>
+<Td><Font Size=-1>the initial value of the EnableProfiles attribute</Font></Td></Tr>
+
+<Tr><Td><b><a href=#Dev_DefaultValues>EnableUserROI </a></b></Td>
+<Td><Font Size=-1>Tango::DEV_BOOLEAN</Font></Td>
+<Td><Font Size=-1>the initial value of the EnableUserROI attribute</Font></Td></Tr>
+
+<Tr><Td><b><a href=#Dev_DefaultValues>GammaCorrection </a></b></Td>
+<Td><Font Size=-1>Tango::DEV_DOUBLE</Font></Td>
+<Td><Font Size=-1>the initial value of the GammaCorrection attribute</Font></Td></Tr>
+
+<Tr><Td><b><a href=#Dev_DefaultValues>HistogramNbBins </a></b></Td>
+<Td><Font Size=-1>Tango::DEV_LONG</Font></Td>
+<Td><Font Size=-1>the initial value of the HistogramNbBins attribute</Font></Td></Tr>
+
+<Tr><Td><b><a href=#Dev_DefaultValues>HistogramRangeMax </a></b></Td>
+<Td><Font Size=-1>Tango::DEV_LONG</Font></Td>
+<Td><Font Size=-1>the upper bound of the histogram bins. must be <= 2^BitsPerPixel</Font></Td></Tr>
+
+<Tr><Td><b><a href=#Dev_DefaultValues>HistogramRangeMin </a></b></Td>
+<Td><Font Size=-1>Tango::DEV_LONG</Font></Td>
+<Td><Font Size=-1>the lower bound of the histogram bins. must be >= 0</Font></Td></Tr>
+
+<Tr><Td><b><a href=#Dev_DefaultValues>HorizontalFlip </a></b></Td>
+<Td><Font Size=-1>Tango::DEV_BOOLEAN</Font></Td>
+<Td><Font Size=-1>the initial value of the HorizontalFlip attribute</Font></Td></Tr>
+
+<Tr><Td><b><a href=#Dev_DefaultValues>ImageAttributeName </a></b></Td>
+<Td><Font Size=-1>Tango::DEV_STRING</Font></Td>
+<Td><Font Size=-1>the name of the image attribute to take in ImageDevice</Font></Td></Tr>
+
+<Tr><Td><b><a href=#Dev_DefaultValues>ImageCounterAttrName </a></b></Td>
+<Td><Font Size=-1>Tango::DEV_STRING</Font></Td>
+<Td><Font Size=-1>the name of the imageCounter attribute to take in ImageDevice</Font></Td></Tr>
+
+<Tr><Td><b><a href=#Dev_DefaultValues>ImageDevice </a></b></Td>
+<Td><Font Size=-1>Tango::DEV_STRING</Font></Td>
+<Td><Font Size=-1>the device from which the image is taken</Font></Td></Tr>
+
+<Tr><Td><b><a href=#Dev_DefaultValues>Mode </a></b></Td>
+<Td><Font Size=-1>Tango::DEV_STRING</Font></Td>
+<Td><Font Size=-1>ONESHOT or CONTINUOUS</Font></Td></Tr>
+
+<Tr><Td><b><a href=#Dev_DefaultValues>OpticalMagnification </a></b></Td>
+<Td><Font Size=-1>Tango::DEV_DOUBLE</Font></Td>
+<Td><Font Size=-1>the initial value of the OpticalMagnification attribute</Font></Td></Tr>
+
+<Tr><Td><b><a href=#Dev_DefaultValues>PixelSizeX </a></b></Td>
+<Td><Font Size=-1>Tango::DEV_DOUBLE</Font></Td>
+<Td><Font Size=-1>the initial value of the PixelSizeX attribute</Font></Td></Tr>
+
+<Tr><Td><b><a href=#Dev_DefaultValues>PixelSizeY </a></b></Td>
+<Td><Font Size=-1>Tango::DEV_DOUBLE</Font></Td>
+<Td><Font Size=-1>the initial value of the PixelSizeY attribute</Font></Td></Tr>
+
+<Tr><Td><b><a href=#Dev_DefaultValues>ProfileFitFixedBg </a></b></Td>
+<Td><Font Size=-1>Tango::DEV_BOOLEAN</Font></Td>
+<Td><Font Size=-1>the initial value of the ProfileFitFixedBg attribute</Font></Td></Tr>
+
+<Tr><Td><b><a href=#Dev_DefaultValues>Rotation </a></b></Td>
+<Td><Font Size=-1>Tango::DEV_LONG</Font></Td>
+<Td><Font Size=-1>the initial value of the Rotation attribute</Font></Td></Tr>
+
+<Tr><Td><b><a href=#Dev_DefaultValues>UserROIOriginX </a></b></Td>
+<Td><Font Size=-1>Tango::DEV_LONG</Font></Td>
+<Td><Font Size=-1>The memorized value of userROIOriginX attribute when SaveCurrentSettings command is called.<br></Font></Td></Tr>
+
+<Tr><Td><b><a href=#Dev_DefaultValues>UserROIOriginY </a></b></Td>
+<Td><Font Size=-1>Tango::DEV_LONG</Font></Td>
+<Td><Font Size=-1>The memorized value of userROIOriginY attribute when SaveCurrentSettings command is called.<br></Font></Td></Tr>
+
+<Tr><Td><b><a href=#Dev_DefaultValues>UserROIWidth </a></b></Td>
+<Td><Font Size=-1>Tango::DEV_LONG</Font></Td>
+<Td><Font Size=-1>The memorized value of userROIWidth attribute when SaveCurrentSettings command is called.<br></Font></Td></Tr>
+
+<Tr><Td><b><a href=#Dev_DefaultValues>UserROIHeight </a></b></Td>
+<Td><Font Size=-1>Tango::DEV_LONG</Font></Td>
+<Td><Font Size=-1>The memorized value of userROIHeight attribute when SaveCurrentSettings command is called.<br></Font></Td></Tr>
+
+</Table>
+
+</Center>
+<Br><Br><Br>
+<Br><Br><Br>
+
+<A name=Dev_DefaultValues><!---  ---></a>
+<Font Size=+1>Device Properties Default Values:</Font><Br>
+<Table Border=2 Cellpadding=2 CELLSPACING=2>
+    <tr BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+        <Td><b>Property Name</b></td>
+        <td><b>Default Values</b></td>
+    </Tr>
+    <Tr>
+        <Td>AutoROIMagFactorX</Td>
+        <td>1</td>
+    </Tr>
+    <Tr>
+        <Td>AutoROIMagFactorY</Td>
+        <td>No default value</td>
+    </Tr>
+    <Tr>
+        <Td>AutoROIMethod</Td>
+        <td>PROFILES</td>
+    </Tr>
+    <Tr>
+        <Td>AutoStart</Td>
+        <td>true</td>
+    </Tr>
+    <Tr>
+        <Td>BitsPerPixel</Td>
+        <td>No default value</td>
+    </Tr>
+    <Tr>
+        <Td>ComputationPeriod</Td>
+        <td>1000</td>
+    </Tr>
+    <Tr>
+        <Td>Enable2DGaussianFit</Td>
+        <td>false</td>
+    </Tr>
+    <Tr>
+        <Td>EnableAutoROI</Td>
+        <td>false</td>
+    </Tr>
+    <Tr>
+        <Td>EnableHistogram</Td>
+        <td>No default value</td>
+    </Tr>
+    <Tr>
+        <Td>EnableImageStats</Td>
+        <td>true</td>
+    </Tr>
+    <Tr>
+        <Td>EnableProfiles</Td>
+        <td>true</td>
+    </Tr>
+    <Tr>
+        <Td>EnableUserROI</Td>
+        <td>true</td>
+    </Tr>
+    <Tr>
+        <Td>GammaCorrection</Td>
+        <td>No default value</td>
+    </Tr>
+    <Tr>
+        <Td>HistogramNbBins</Td>
+        <td>No default value</td>
+    </Tr>
+    <Tr>
+        <Td>HistogramRangeMax</Td>
+        <td>No default value</td>
+    </Tr>
+    <Tr>
+        <Td>HistogramRangeMin</Td>
+        <td>No default value</td>
+    </Tr>
+    <Tr>
+        <Td>HorizontalFlip</Td>
+        <td>No default value</td>
+    </Tr>
+    <Tr>
+        <Td>ImageAttributeName</Td>
+        <td>No default value</td>
+    </Tr>
+    <Tr>
+        <Td>ImageCounterAttrName</Td>
+        <td>No default value</td>
+    </Tr>
+    <Tr>
+        <Td>ImageDevice</Td>
+        <td>No default value</td>
+    </Tr>
+    <Tr>
+        <Td>Mode</Td>
+        <td>ONESHOT</td>
+    </Tr>
+    <Tr>
+        <Td>OpticalMagnification</Td>
+        <td>No default value</td>
+    </Tr>
+    <Tr>
+        <Td>PixelSizeX</Td>
+        <td>No default value</td>
+    </Tr>
+    <Tr>
+        <Td>PixelSizeY</Td>
+        <td>No default value</td>
+    </Tr>
+    <Tr>
+        <Td>ProfileFitFixedBg</Td>
+        <td>No default value</td>
+    </Tr>
+    <Tr>
+        <Td>Rotation</Td>
+        <td>No default value</td>
+    </Tr>
+    <Tr>
+        <Td>UserROIOriginX</Td>
+        <td>No default value</td>
+    </Tr>
+    <Tr>
+        <Td>UserROIOriginY</Td>
+        <td>No default value</td>
+    </Tr>
+    <Tr>
+        <Td>UserROIWidth</Td>
+        <td>No default value</td>
+    </Tr>
+    <Tr>
+        <Td>UserROIHeight</Td>
+        <td>No default value</td>
+    </Tr>
+</Table>
+
+<Br><Br><Br>
+<Center><b>
+There is no Class properties.<Br><Br>
+</Center></b>
+<Br> <Br> <Br> 
+
+<Center>
+<Br>
+<HR WIDTH="100%"></H5>
+<H3> ESRF - Software Engineering Group </H3>
+</Center>
+</body>
+</html>
