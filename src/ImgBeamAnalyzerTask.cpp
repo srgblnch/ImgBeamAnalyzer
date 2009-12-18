@@ -287,6 +287,8 @@ void ImgBeamAnalyzerTask::handle_message (yat::Message& _msg)
           }
           catch(yat::Exception& ex)
           {
+            if (this->data_)
+              this->data_->alarm = true;
             RETHROW_YAT_ERROR(ex,
                               "SOFTWARE_FAILURE",
                               "Error when processing an image",
@@ -294,6 +296,8 @@ void ImgBeamAnalyzerTask::handle_message (yat::Message& _msg)
           }
           catch(...)
           {
+            if (this->data_)
+              this->data_->alarm = true;
             THROW_YAT_ERROR("UNKNOWN_ERROR",
                             "Error when processing an image",
                             "ImgBeamAnalyzerTask::handle_message");
