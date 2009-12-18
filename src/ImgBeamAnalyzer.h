@@ -8,7 +8,7 @@
 //
 // $Author: ollupac $
 //
-// $Revision: 1.22 $
+// $Revision: 1.23 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -30,7 +30,7 @@
 
 /**
  * @author	$Author: ollupac $
- * @version	$Revision: 1.22 $
+ * @version	$Revision: 1.23 $
  */
 
  //	Add your own constants definitions here.
@@ -150,6 +150,14 @@ public :
 		Tango::DevLong	attr_LineProfileEndY_write;
 		Tango::DevLong	*attr_LineProfileThickness_read;
 		Tango::DevLong	attr_LineProfileThickness_write;
+		Tango::DevDouble	*attr_ChamberOffsetX_read;
+		Tango::DevDouble	attr_ChamberOffsetX_write;
+		Tango::DevDouble	*attr_ChamberOffsetY_read;
+		Tango::DevDouble	attr_ChamberOffsetY_write;
+		Tango::DevDouble	*attr_ChamberCentroidX_read;
+		Tango::DevDouble	*attr_ChamberCentroidY_read;
+		Tango::DevDouble	*attr_ChamberXProjFitCenter_read;
+		Tango::DevDouble	*attr_ChamberYProjFitCenter_read;
 		Tango::DevLong	*attr_UserROIOriginX_read;
 		Tango::DevLong	attr_UserROIOriginX_write;
 		Tango::DevLong	*attr_UserROIOriginY_read;
@@ -372,6 +380,14 @@ public :
  *	The memorized value of userROIHeight attribute when SaveCurrentSettings command is called.<br>
  */
 	Tango::DevLong	userROIHeight;
+/**
+ *  the initial value of the ChamberOffsetX attribute
+ */
+	Tango::DevDouble  chamberOffsetX;
+/**
+ *  the initial value of the ChamberOffsetY attribute
+ */
+	Tango::DevDouble  chamberOffsetY;
 //@}
 
 /**@name Constructors
@@ -665,6 +681,38 @@ public :
  *	Write LineProfileThickness attribute values to hardware.
  */
 	virtual void write_LineProfileThickness(Tango::WAttribute &attr);
+/**
+ *	Extract real attribute values for ChamberOffsetX acquisition result.
+ */
+	virtual void read_ChamberOffsetX(Tango::Attribute &attr);
+/**
+ *	Write ChamberOffsetX attribute values to hardware.
+ */
+	virtual void write_ChamberOffsetX(Tango::WAttribute &attr);
+/**
+ *	Extract real attribute values for ChamberOffsetY acquisition result.
+ */
+	virtual void read_ChamberOffsetY(Tango::Attribute &attr);
+/**
+ *	Write ChamberOffsetY attribute values to hardware.
+ */
+	virtual void write_ChamberOffsetY(Tango::WAttribute &attr);
+/**
+ *	Extract real attribute values for ChamberCentroidX acquisition result.
+ */
+	virtual void read_ChamberCentroidX(Tango::Attribute &attr);
+/**
+ *	Extract real attribute values for ChamberCentroidY acquisition result.
+ */
+	virtual void read_ChamberCentroidY(Tango::Attribute &attr);
+/**
+ *	Extract real attribute values for ChamberXProjFitCenter acquisition result.
+ */
+	virtual void read_ChamberXProjFitCenter(Tango::Attribute &attr);
+/**
+ *	Extract real attribute values for ChamberYProjFitCenter acquisition result.
+ */
+	virtual void read_ChamberYProjFitCenter(Tango::Attribute &attr);
 /**
  *	Extract real attribute values for UserROIOriginX acquisition result.
  */
@@ -1149,6 +1197,30 @@ public :
  *	Read/Write allowed for LineProfileThickness attribute.
  */
 	virtual bool is_LineProfileThickness_allowed(Tango::AttReqType type);
+/**
+ *	Read/Write allowed for ChamberOffsetX attribute.
+ */
+	virtual bool is_ChamberOffsetX_allowed(Tango::AttReqType type);
+/**
+ *	Read/Write allowed for ChamberOffsetY attribute.
+ */
+	virtual bool is_ChamberOffsetY_allowed(Tango::AttReqType type);
+/**
+ *	Read/Write allowed for ChamberCentroidX attribute.
+ */
+	virtual bool is_ChamberCentroidX_allowed(Tango::AttReqType type);
+/**
+ *	Read/Write allowed for ChamberCentroidY attribute.
+ */
+	virtual bool is_ChamberCentroidY_allowed(Tango::AttReqType type);
+/**
+ *	Read/Write allowed for ChamberXProjFitCenter attribute.
+ */
+	virtual bool is_ChamberXProjFitCenter_allowed(Tango::AttReqType type);
+/**
+ *	Read/Write allowed for ChamberYProjFitCenter attribute.
+ */
+	virtual bool is_ChamberYProjFitCenter_allowed(Tango::AttReqType type);
 /**
  *	Read/Write allowed for UserROIOriginX attribute.
  */

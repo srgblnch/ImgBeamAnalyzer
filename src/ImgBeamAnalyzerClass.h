@@ -10,9 +10,9 @@
 //			
 // project :      TANGO Device Server
 //
-// $Author: anoureddine $
+// $Author: ollupac $
 //
-// $Revision: 1.18 $
+// $Revision: 1.19 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -1065,6 +1065,82 @@ public:
 	{(static_cast<ImgBeamAnalyzer *>(dev))->write_LineProfileThickness(att);}
 	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
 	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_LineProfileThickness_allowed(ty);}
+};
+
+class ChamberOffsetXAttrib: public Tango::Attr
+{
+public:
+	ChamberOffsetXAttrib():Attr("ChamberOffsetX", Tango::DEV_DOUBLE, Tango::READ_WRITE) {};
+	~ChamberOffsetXAttrib() {};
+	
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_ChamberOffsetX(att);}
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+	{(static_cast<ImgBeamAnalyzer *>(dev))->write_ChamberOffsetX(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_ChamberOffsetX_allowed(ty);}
+};
+
+class ChamberOffsetYAttrib: public Tango::Attr
+{
+public:
+	ChamberOffsetYAttrib():Attr("ChamberOffsetY", Tango::DEV_DOUBLE, Tango::READ_WRITE) {};
+	~ChamberOffsetYAttrib() {};
+	
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_ChamberOffsetY(att);}
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+	{(static_cast<ImgBeamAnalyzer *>(dev))->write_ChamberOffsetY(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_ChamberOffsetY_allowed(ty);}
+};
+
+class ChamberCentroidXAttrib: public Tango::Attr
+{
+public:
+	ChamberCentroidXAttrib():Attr("ChamberCentroidX", Tango::DEV_DOUBLE, Tango::READ) {};
+	~ChamberCentroidXAttrib() {};
+	
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_ChamberCentroidX(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_ChamberCentroidX_allowed(ty);}
+};
+
+class ChamberCentroidYAttrib: public Tango::Attr
+{
+public:
+	ChamberCentroidYAttrib():Attr("ChamberCentroidY", Tango::DEV_DOUBLE, Tango::READ) {};
+	~ChamberCentroidYAttrib() {};
+	
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_ChamberCentroidY(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_ChamberCentroidY_allowed(ty);}
+};
+
+class ChamberXProjFitCenterAttrib: public Tango::Attr
+{
+public:
+	ChamberXProjFitCenterAttrib():Attr("ChamberXProjFitCenter", Tango::DEV_DOUBLE, Tango::READ) {};
+	~ChamberXProjFitCenterAttrib() {};
+	
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_ChamberXProjFitCenter(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_ChamberXProjFitCenter_allowed(ty);}
+};
+
+class ChamberYProjFitCenterAttrib: public Tango::Attr
+{
+public:
+	ChamberYProjFitCenterAttrib():Attr("ChamberYProjFitCenter", Tango::DEV_DOUBLE, Tango::READ) {};
+	~ChamberYProjFitCenterAttrib() {};
+	
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_ChamberYProjFitCenter(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_ChamberYProjFitCenter_allowed(ty);}
 };
 
 class LineProfileEndYAttrib: public Tango::Attr

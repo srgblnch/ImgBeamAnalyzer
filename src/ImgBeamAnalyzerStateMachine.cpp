@@ -1,4 +1,4 @@
-static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzerStateMachine.cpp,v 1.16 2009-12-07 13:50:11 anoureddine Exp $";
+static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzerStateMachine.cpp,v 1.17 2009-12-18 13:22:39 ollupac Exp $";
 //+=============================================================================
 //
 // file :         ImgBeamAnalyzerStateMachine.cpp
@@ -8,9 +8,9 @@ static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/Im
 //
 // project :      TANGO Device Server
 //
-// $Author: anoureddine $
+// $Author: ollupac $
 //
-// $Revision: 1.16 $
+// $Revision: 1.17 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -1548,6 +1548,90 @@ bool ImgBeamAnalyzer::is_LineProfileEndY_allowed(Tango::AttReqType type)
 //
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_LineProfileThickness_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_ChamberOffsetX_allowed
+// 
+// description : 	Read/Write allowed for ChamberOffsetX attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_ChamberOffsetX_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_ChamberOffsetY_allowed
+// 
+// description : 	Read/Write allowed for ChamberOffsetY attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_ChamberOffsetY_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_ChamberCentroidX_allowed
+// 
+// description : 	Read/Write allowed for ChamberCentroidX attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_ChamberCentroidX_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_ChamberCentroidY_allowed
+// 
+// description : 	Read/Write allowed for ChamberCentroidY attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_ChamberCentroidY_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_ChamberXProjFitCenter_allowed
+// 
+// description : 	Read/Write allowed for ChamberXProjFitCenter attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_ChamberXProjFitCenter_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_ChamberYProjFitCenter_allowed
+// 
+// description : 	Read/Write allowed for ChamberYProjFitCenter attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_ChamberYProjFitCenter_allowed(Tango::AttReqType type)
 {
 		//	End of Generated Code
 

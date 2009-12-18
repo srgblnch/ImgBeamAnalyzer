@@ -1,4 +1,4 @@
-static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzer.cpp,v 1.38 2009-12-18 13:12:27 ollupac Exp $";
+static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzer.cpp,v 1.39 2009-12-18 13:22:39 ollupac Exp $";
 //+=============================================================================
 //
 // file :         ImgBeamAnalyzer.cpp
@@ -13,7 +13,7 @@ static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/Im
 //
 // $Author: ollupac $
 //
-// $Revision: 1.38 $
+// $Revision: 1.39 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -568,6 +568,9 @@ void ImgBeamAnalyzer::get_device_property()
   this->histogramRangeMin    = default_config.histo_range_min;
   this->histogramRangeMax    = default_config.histo_range_max;
 
+  this->chamberOffsetX      = default_config.chamber_offset_x;
+  this->chamberOffsetY      = default_config.chamber_offset_y;
+
   //	Read device properties from database.(Automatic code generation)
 	//------------------------------------------------------------------
 	Tango::DbData	dev_prop;
@@ -601,6 +604,10 @@ void ImgBeamAnalyzer::get_device_property()
 	dev_prop.push_back(Tango::DbDatum("UserROIOriginY"));
 	dev_prop.push_back(Tango::DbDatum("UserROIWidth"));
 	dev_prop.push_back(Tango::DbDatum("UserROIHeight"));
+
+	dev_prop.push_back(Tango::DbDatum("ChamberOffsetX"));
+	dev_prop.push_back(Tango::DbDatum("ChamberOffsetY"));
+
 
 	//	Call database and extract values
 	//--------------------------------------------
@@ -941,6 +948,28 @@ void ImgBeamAnalyzer::get_device_property()
 	//	And try to extract UserROIHeight value from database
 	if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  userROIHeight;
 
+  //  Try to initialize ChamberOffsetX from class property
+  cl_prop = ds_class->get_class_property(dev_prop[++i].name);
+  if (cl_prop.is_empty()==false)  cl_prop  >>  chamberOffsetX;
+  else {
+    //  Try to initialize ChamberOffsetX from default device value
+    def_prop = ds_class->get_default_device_property(dev_prop[i].name);
+    if (def_prop.is_empty()==false) def_prop  >>  chamberOffsetX;
+  }
+  //  And try to extract ChamberOffsetX value from database
+  if (dev_prop[i].is_empty()==false)  dev_prop[i]  >>  chamberOffsetX;
+
+  //  Try to initialize ChamberOffsetY from class property
+  cl_prop = ds_class->get_class_property(dev_prop[++i].name);
+  if (cl_prop.is_empty()==false)  cl_prop  >>  chamberOffsetY;
+  else {
+    //  Try to initialize ChamberOffsetY from default device value
+    def_prop = ds_class->get_default_device_property(dev_prop[i].name);
+    if (def_prop.is_empty()==false) def_prop  >>  chamberOffsetY;
+  }
+  //  And try to extract ChamberOffsetY value from database
+  if (dev_prop[i].is_empty()==false)  dev_prop[i]  >>  chamberOffsetY;
+
 
 
 	//	End of Automatic code generation
@@ -989,6 +1018,9 @@ void ImgBeamAnalyzer::get_device_property()
   this->current_config_.histo_nb_bins           = histogramNbBins;
   this->current_config_.histo_range_min         = histogramRangeMin;
   this->current_config_.histo_range_max         = histogramRangeMax;
+
+  this->current_config_.chamber_offset_x       = chamberOffsetX;
+  this->current_config_.chamber_offset_y       = chamberOffsetY;
 
   //- leave the other members to their default values
 }
@@ -1197,6 +1229,102 @@ void ImgBeamAnalyzer::read_LineProfileThickness(Tango::Attribute &attr)
 void ImgBeamAnalyzer::write_LineProfileThickness(Tango::WAttribute &attr)
 {
   WRITE_INPUT_ATTR( profile_thickness, Tango::DevLong );
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_ChamberOffsetX
+// 
+// description : 	Extract real attribute values for ChamberOffsetX acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_ChamberOffsetX(Tango::Attribute &attr)
+{
+  READ_INPUT_ATTR(chamber_offset_x, Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::write_ChamberOffsetX
+// 
+// description : 	Write ChamberOffsetX attribute values to hardware.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::write_ChamberOffsetX(Tango::WAttribute &attr)
+{
+  WRITE_INPUT_ATTR( chamber_offset_x, Tango::DevDouble );
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_ChamberOffsetY
+// 
+// description : 	Extract real attribute values for ChamberOffsetY acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_ChamberOffsetY(Tango::Attribute &attr)
+{
+  READ_INPUT_ATTR(chamber_offset_y, Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::write_ChamberOffsetY
+// 
+// description : 	Write ChamberOffsetY attribute values to hardware.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::write_ChamberOffsetY(Tango::WAttribute &attr)
+{
+  WRITE_INPUT_ATTR( chamber_offset_y, Tango::DevDouble );
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_ChamberCentroidX
+// 
+// description : 	Extract real attribute values for ChamberCentroidX acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_ChamberCentroidX(Tango::Attribute &attr)
+{
+  READ_OUTPUT_SCALAR_ATTR(chamber_centroid_x, enable_image_stats, Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_ChamberCentroidY
+// 
+// description : 	Extract real attribute values for ChamberCentroidY acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_ChamberCentroidY(Tango::Attribute &attr)
+{
+  READ_OUTPUT_SCALAR_ATTR(chamber_centroid_y, enable_image_stats, Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_ChamberXProjFitCenter
+// 
+// description : 	Extract real attribute values for ChamberXProjFitCenter acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_ChamberXProjFitCenter(Tango::Attribute &attr)
+{
+  READ_OUTPUT_SCALAR_ATTR(chamber_xproj_center, enable_profile, Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_ChamberYProjFitCenter
+// 
+// description : 	Extract real attribute values for ChamberYProjFitCenter acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_ChamberYProjFitCenter(Tango::Attribute &attr)
+{
+  READ_OUTPUT_SCALAR_ATTR(chamber_yproj_center, enable_profile, Tango::DevDouble);
 }
 
 //+----------------------------------------------------------------------------
@@ -3059,6 +3187,9 @@ void ImgBeamAnalyzer::save_current_settings()
   ADD_DATUM( HistogramRangeMin,   	static_cast<long>(this->current_config_.histo_range_min ));
   ADD_DATUM( HistogramRangeMax,   	static_cast<long>(this->current_config_.histo_range_max ));
   ADD_DATUM( ProfileFitFixedBg,   	this->current_config_.profilefit_fixedbg );
+
+  ADD_DATUM( ChamberOffsetX,     this->current_config_.chamber_offset_x );
+  ADD_DATUM( ChamberOffsetY,     this->current_config_.chamber_offset_y );
 
 # undef ADD_DATUM
 

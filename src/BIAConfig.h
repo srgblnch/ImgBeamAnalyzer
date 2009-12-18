@@ -66,6 +66,8 @@ struct BIAConfig
   int32_t       profile_end_x;
   int32_t       profile_end_y;
   int32_t       profile_thickness;
+  double        chamber_offset_x;
+  double        chamber_offset_y;
 
   bool is_user_roi_empty(void) const;
 

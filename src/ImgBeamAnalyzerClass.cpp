@@ -1,4 +1,4 @@
-static const char *RcsId     = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzerClass.cpp,v 1.21 2009-12-07 13:50:11 anoureddine Exp $";
+static const char *RcsId     = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzerClass.cpp,v 1.22 2009-12-18 13:22:39 ollupac Exp $";
 static const char *TagName   = "$Name: not supported by cvs2svn $";
 static const char *HttpServer= "http://www.esrf.fr/computing/cs/tango/tango_doc/ds_doc/";
 //+=============================================================================
@@ -12,9 +12,9 @@ static const char *HttpServer= "http://www.esrf.fr/computing/cs/tango/tango_doc/
 //
 // project :     TANGO Device Server
 //
-// $Author: anoureddine $
+// $Author: ollupac $
 //
-// $Revision: 1.21 $
+// $Revision: 1.22 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -631,6 +631,66 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	line_profile_thickness_prop.set_description("defines the number of lines used to average a local line profile");
 	line_profile_thickness->set_default_properties(line_profile_thickness_prop);
 	att_list.push_back(line_profile_thickness);
+
+	//	Attribute : ChamberOffsetX
+	ChamberOffsetXAttrib	*chamber_offset_x = new ChamberOffsetXAttrib();
+	Tango::UserDefaultAttrProp	chamber_offset_x_prop;
+	chamber_offset_x_prop.set_label("Chamber Center Offset X");
+	chamber_offset_x_prop.set_unit("µm");
+	chamber_offset_x_prop.set_format("%6.2f");
+	chamber_offset_x_prop.set_description("An offset to be substracted to CentroidX and XProjFitCenter and get Chamber*");
+	chamber_offset_x->set_default_properties(chamber_offset_x_prop);
+	att_list.push_back(chamber_offset_x);
+
+	//	Attribute : ChamberOffsetY
+	ChamberOffsetYAttrib	*chamber_offset_y = new ChamberOffsetYAttrib();
+	Tango::UserDefaultAttrProp	chamber_offset_y_prop;
+	chamber_offset_y_prop.set_label("Chamber Center Offset Y");
+	chamber_offset_y_prop.set_unit("µm");
+	chamber_offset_y_prop.set_format("%6.2f");
+	chamber_offset_y_prop.set_description("An offset to be substracted to CentroidY and YProjFitCenter and get Chamber*");
+	chamber_offset_y->set_default_properties(chamber_offset_y_prop);
+	att_list.push_back(chamber_offset_y);
+
+	//      Attribute : ChamberCentroidX
+	ChamberCentroidXAttrib *chamber_centroid_x = new ChamberCentroidXAttrib();
+	Tango::UserDefaultAttrProp      chamber_centroid_x_prop;
+	chamber_centroid_x_prop.set_label("Ch Centroid X");
+	chamber_centroid_x_prop.set_unit("µm");
+	chamber_centroid_x_prop.set_format("%10.2f");
+	chamber_centroid_x_prop.set_description("the X coordinate of the centroid, relative to Chamber.");
+	chamber_centroid_x->set_default_properties(chamber_centroid_x_prop);
+	att_list.push_back(chamber_centroid_x);
+
+	//      Attribute : ChamberCentroidY
+	ChamberCentroidYAttrib *chamber_centroid_y = new ChamberCentroidYAttrib();
+	Tango::UserDefaultAttrProp      chamber_centroid_y_prop;
+	chamber_centroid_y_prop.set_label("Ch Centroid Y");
+	chamber_centroid_y_prop.set_unit("µm");
+	chamber_centroid_y_prop.set_format("%10.2f");
+	chamber_centroid_y_prop.set_description("the Y coordinate of the centroid, relative to Chamber.");
+	chamber_centroid_y->set_default_properties(chamber_centroid_y_prop);
+	att_list.push_back(chamber_centroid_y);
+
+	//      Attribute : ChamberXProjFitCenter
+	ChamberXProjFitCenterAttrib *chamber_xproj_fit_center = new ChamberXProjFitCenterAttrib();
+	Tango::UserDefaultAttrProp      chamber_xproj_fit_center_prop;
+	chamber_xproj_fit_center_prop.set_label("X Proj Fit Center");
+	chamber_xproj_fit_center_prop.set_unit("µm");
+	chamber_xproj_fit_center_prop.set_format("%10.2f");
+	chamber_xproj_fit_center_prop.set_description("the X position of the center of the fitted gaussian corresponding to the X projection relative to Chamber");
+	chamber_xproj_fit_center->set_default_properties(chamber_xproj_fit_center_prop);
+	att_list.push_back(chamber_xproj_fit_center);
+
+	//      Attribute : ChamberYProjFitCenter
+	ChamberYProjFitCenterAttrib *chamber_yproj_fit_center = new ChamberYProjFitCenterAttrib();
+	Tango::UserDefaultAttrProp      chamber_yproj_fit_center_prop;
+	chamber_yproj_fit_center_prop.set_label("X Proj Fit Center");
+	chamber_yproj_fit_center_prop.set_unit("µm");
+	chamber_yproj_fit_center_prop.set_format("%10.2f");
+	chamber_yproj_fit_center_prop.set_description("the X position of the center of the fitted gaussian corresponding to the X projection relative to Chamber");
+	chamber_yproj_fit_center->set_default_properties(chamber_yproj_fit_center_prop);
+	att_list.push_back(chamber_yproj_fit_center);
 
 	//	Attribute : UserROIOriginX
 	UserROIOriginXAttrib	*user_roiorigin_x = new UserROIOriginXAttrib();
@@ -1924,6 +1984,32 @@ void ImgBeamAnalyzerClass::set_default_property()
 	}
 	else
 		add_wiz_dev_prop(prop_name, prop_desc);
+
+        prop_name = "ChamberOffsetX";
+        prop_desc = "the initial value of the ChamberOffsetX attribute";
+        prop_def  = "";
+        if (prop_def.length()>0)
+        {
+                Tango::DbDatum  data(prop_name);
+                data << vect_data ;
+                dev_def_prop.push_back(data);
+                add_wiz_dev_prop(prop_name, prop_desc,  prop_def);
+        }
+        else
+                add_wiz_dev_prop(prop_name, prop_desc);
+
+        prop_name = "ChamberOffsetY";
+        prop_desc = "the initial value of the ChamberOffsetY attribute";
+        prop_def  = "";
+        if (prop_def.length()>0)
+        {
+                Tango::DbDatum  data(prop_name);
+                data << vect_data ;
+                dev_def_prop.push_back(data);
+                add_wiz_dev_prop(prop_name, prop_desc,  prop_def);
+        }
+        else
+                add_wiz_dev_prop(prop_name, prop_desc);
 
 }
 //+----------------------------------------------------------------------------

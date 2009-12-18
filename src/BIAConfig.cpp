@@ -86,7 +86,9 @@ namespace ImgBeamAnalyzer_ns
     profile_origin_y(0),
     profile_end_x(0),
     profile_end_y(0),
-    profile_thickness(kDEFAULT_PROFILE_THICKNESS)
+    profile_thickness(kDEFAULT_PROFILE_THICKNESS),
+    chamber_offset_x(0.0),
+    chamber_offset_y(0.0)
   {}
 
   bool BIAConfig::is_user_roi_empty(void) const

@@ -148,6 +148,11 @@ public:
   double               gaussfit_eps;
   yat::ImageBuffer<double> gaussfit_parameters_covariance;
 
+  double               chamber_centroid_x;
+  double               chamber_centroid_y;
+  double               chamber_xproj_center;
+  double               chamber_yproj_center;
+
   bool              alarm;
 
 private:

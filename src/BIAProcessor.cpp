@@ -503,6 +503,8 @@ namespace ImgBeamAnalyzer_ns
           data.xproj_chi2    = gaussian_fit.chi2();
           data.xproj_nb_iter = gaussian_fit.nb_iter();
           data.xproj_eps     = gaussian_fit.epsilon();
+
+          data.chamber_xproj_center = data.xproj_center - config.chamber_offset_x;
         
           for (int i = 0; i < projections.size_x(); i++)
           {
@@ -538,6 +540,8 @@ namespace ImgBeamAnalyzer_ns
         data.xproj_eps     = 0;
         data.xproj_fitted.fill(0);
         data.xproj_error.fill(0);
+
+        data.chamber_xproj_center = 0 - config.chamber_offset_x;
       }
 
       data.yproj.capacity(projections.size_y());
@@ -572,6 +576,8 @@ namespace ImgBeamAnalyzer_ns
           data.yproj_chi2    = gaussian_fit.chi2();
           data.yproj_nb_iter = gaussian_fit.nb_iter();
           data.yproj_eps     = gaussian_fit.epsilon();
+
+          data.chamber_yproj_center = config.chamber_offset_y - data.yproj_center;
         
           for (int i = 0; i < projections.size_y(); i++)
           {
@@ -608,6 +614,8 @@ namespace ImgBeamAnalyzer_ns
         data.yproj_eps     = 0;
         data.yproj_fitted.fill(0);
         data.yproj_error.fill(0);
+
+        data.chamber_yproj_center = config.chamber_offset_y - data.yproj_center;
       }
 
       isl::Point2D<int> p( config.profile_origin_x, config.profile_origin_y );
@@ -724,6 +732,8 @@ namespace ImgBeamAnalyzer_ns
         data.skew_xy2 = 0;
         data.skew_y = 0;
         data.max_intensity = 0;
+        data.chamber_centroid_x = 0 - config.chamber_offset_x;
+        data.chamber_centroid_y = config.chamber_offset_y - 0;
       }
       else
       {
@@ -749,7 +759,10 @@ namespace ImgBeamAnalyzer_ns
         data.skew_x2y       = img_moments.mu21() / m00 * px * px * py;
         data.skew_xy2       = img_moments.mu12() / m00 * px * py * py;
         data.skew_y         = img_moments.mu03() / m00 * py * py * py;
-    
+
+        data.chamber_centroid_x = data.centroid_x - config.chamber_offset_x;
+        data.chamber_centroid_y = config.chamber_offset_y - data.centroid_y;
+ 
         //- max calculation
         unsigned short max = 0;
         unsigned short* cur_pix = data.roi_image.base();
