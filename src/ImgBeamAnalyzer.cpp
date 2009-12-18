@@ -1,4 +1,4 @@
-static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzer.cpp,v 1.39 2009-12-18 13:22:39 ollupac Exp $";
+static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzer.cpp,v 1.40 2009-12-18 13:23:53 ollupac Exp $";
 //+=============================================================================
 //
 // file :         ImgBeamAnalyzer.cpp
@@ -13,7 +13,7 @@ static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/Im
 //
 // $Author: ollupac $
 //
-// $Revision: 1.39 $
+// $Revision: 1.40 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -2960,6 +2960,18 @@ void ImgBeamAnalyzer::read_MeanIntensity(Tango::Attribute &attr)
   READ_OUTPUT_SCALAR_ATTR(mean_intensity, enable_image_stats, Tango::DevDouble);
 }
 
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_ImageCounter
+// 
+// description : 	Extract real attribute values for ImageCounter
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_ImageCounter(Tango::Attribute &attr)
+{
+  attr.set_value(&this->image_counter_);
+}
 
 //+------------------------------------------------------------------
 /**

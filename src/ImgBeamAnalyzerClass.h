@@ -12,7 +12,7 @@
 //
 // $Author: ollupac $
 //
-// $Revision: 1.19 $
+// $Revision: 1.20 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -1533,6 +1533,17 @@ public:
 	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_EnableImageStats_allowed(ty);}
 };
 
+class ImageCounterAttrib: public Tango::Attr
+{
+public:
+	ImageCounterAttrib():Attr("ImageCounter", Tango::DEV_ULONG, Tango::READ) {};
+	~ImageCounterAttrib() {}
+
+        virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+        {(static_cast<ImgBeamAnalyzer *>(dev))->read_ImageCounter(att);}
+        virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+        {return (static_cast<ImgBeamAnalyzer *>(dev))->is_ImageCounter_allowed(ty);}
+};
 //=========================================
 //	Define classes for commands
 //=========================================

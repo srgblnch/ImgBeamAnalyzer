@@ -1,4 +1,4 @@
-static const char *RcsId     = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzerClass.cpp,v 1.22 2009-12-18 13:22:39 ollupac Exp $";
+static const char *RcsId     = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzerClass.cpp,v 1.23 2009-12-18 13:23:53 ollupac Exp $";
 static const char *TagName   = "$Name: not supported by cvs2svn $";
 static const char *HttpServer= "http://www.esrf.fr/computing/cs/tango/tango_doc/ds_doc/";
 //+=============================================================================
@@ -14,7 +14,7 @@ static const char *HttpServer= "http://www.esrf.fr/computing/cs/tango/tango_doc/
 //
 // $Author: ollupac $
 //
-// $Revision: 1.22 $
+// $Revision: 1.23 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -1524,6 +1524,12 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	gaussian_fit_parameter_covariance->set_disp_level(Tango::EXPERT);
 	att_list.push_back(gaussian_fit_parameter_covariance);
 
+	ImageCounterAttrib *image_counter = new ImageCounterAttrib();
+	Tango::UserDefaultAttrProp image_counter_prop;
+	image_counter_prop.set_format("%10d");
+	image_counter->set_default_properties(image_counter_prop);
+	image_counter->set_change_event(true, false);
+	att_list.push_back(image_counter);
 	//	End of Automatic code generation
 	//-------------------------------------------------------------
 }

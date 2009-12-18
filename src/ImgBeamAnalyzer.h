@@ -8,7 +8,7 @@
 //
 // $Author: ollupac $
 //
-// $Revision: 1.23 $
+// $Revision: 1.24 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -30,7 +30,7 @@
 
 /**
  * @author	$Author: ollupac $
- * @version	$Revision: 1.23 $
+ * @version	$Revision: 1.24 $
  */
 
  //	Add your own constants definitions here.
@@ -1082,6 +1082,10 @@ public :
  */
 	virtual void read_GaussianFitParameterCovariance(Tango::Attribute &attr);
 /**
+ *	Extract real attribute values for ImageCounter acquisition result.
+ */
+	virtual void read_ImageCounter(Tango::Attribute &attr);
+/**
  *	Read/Write allowed for EnableImageStats attribute.
  */
 	virtual bool is_EnableImageStats_allowed(Tango::AttReqType type);
@@ -1553,6 +1557,10 @@ public :
  *	Read/Write allowed for GaussianFitParameterCovariance attribute.
  */
 	virtual bool is_GaussianFitParameterCovariance_allowed(Tango::AttReqType type);
+/**
+ *	Read/Write allowed for ImageCounter attribute.
+ */
+	virtual bool is_ImageCounter_allowed(Tango::AttReqType type);
 /**
  *	Execution allowed for Start command.
  */

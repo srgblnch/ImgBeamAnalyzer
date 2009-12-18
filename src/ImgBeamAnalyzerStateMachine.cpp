@@ -1,4 +1,4 @@
-static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzerStateMachine.cpp,v 1.17 2009-12-18 13:22:39 ollupac Exp $";
+static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzerStateMachine.cpp,v 1.18 2009-12-18 13:23:53 ollupac Exp $";
 //+=============================================================================
 //
 // file :         ImgBeamAnalyzerStateMachine.cpp
@@ -10,7 +10,7 @@ static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/Im
 //
 // $Author: ollupac $
 //
-// $Revision: 1.17 $
+// $Revision: 1.18 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -1674,6 +1674,20 @@ bool ImgBeamAnalyzer::is_LineProfileFitRelChange_allowed(Tango::AttReqType type)
 //
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_LineProfileHelperImg_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_ImageCounter_allowed
+// 
+// description : 	Read/Write allowed for ImageCounter attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_ImageCounter_allowed(Tango::AttReqType type)
 {
 		//	End of Generated Code
 
