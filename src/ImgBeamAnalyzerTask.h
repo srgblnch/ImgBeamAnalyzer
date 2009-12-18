@@ -34,6 +34,7 @@ const int MODE_EVENT = 2;
 #define kMSG_STOP              (yat::FIRST_USER_MSG + 3)
 
 YAT_DEFINE_CALLBACK( GetImgCB, ImageAndInfo & );
+YAT_DEFINE_CALLBACK( ImgProcessedCB, BIAData* );
 
 //---------------------------------------------------------------------------
 //- ImgBeamAnalyzerInit
@@ -41,6 +42,7 @@ YAT_DEFINE_CALLBACK( GetImgCB, ImageAndInfo & );
 struct ImgBeamAnalyzerInit
 {
   GetImgCB  get_img;
+  ImgProcessedCB img_processed_cb;
   bool      get_img_allowed;
   BIAConfig processing_config;
   bool      auto_start;
@@ -105,6 +107,7 @@ private:
   int                 mode_;
  
   GetImgCB            get_img_callback_;
+  ImgProcessedCB      on_img_processed_callback_;
   bool                get_img_allowed_;
   BIAProcessor        proc_;
 

@@ -284,6 +284,7 @@ void ImgBeamAnalyzerTask::handle_message (yat::Message& _msg)
               last_data->release();
               last_data = 0;
             }
+            this->on_img_processed_callback_(data);
           }
           catch(yat::Exception& ex)
           {
@@ -369,6 +370,7 @@ void ImgBeamAnalyzerTask::init( const ImgBeamAnalyzerInit& init_config )
 {
   this->get_img_callback_ = init_config.get_img;
   this->get_img_allowed_ = init_config.get_img_allowed;
+  this->on_img_processed_callback_ = init_config.img_processed_cb;
   this->mode_ = init_config.mode;
   this->configure(init_config.processing_config);
 

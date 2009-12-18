@@ -1,4 +1,4 @@
-static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzer.cpp,v 1.37 2009-12-07 13:50:11 anoureddine Exp $";
+static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzer.cpp,v 1.38 2009-12-18 13:12:27 ollupac Exp $";
 //+=============================================================================
 //
 // file :         ImgBeamAnalyzer.cpp
@@ -11,9 +11,9 @@ static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/Im
 //
 // project :      TANGO Device Server
 //
-// $Author: anoureddine $
+// $Author: ollupac $
 //
-// $Revision: 1.37 $
+// $Revision: 1.38 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -313,6 +313,7 @@ void ImgBeamAnalyzer::init_device()
   this->task_ = 0;
   this->critical_property_missing_ = false;
   this->properly_initialized_ = false;
+  this->image_counter_ = 0;
 
   try
   {
@@ -445,6 +446,8 @@ void ImgBeamAnalyzer::init_device()
     assert(this->image_source_);
     //- this function will be called to get the image from the remote device
     init_config.get_img = GetImgCB::instanciate(*this->image_source_, &IBASource::get_image);
+    //- this function will be called when an image has been processed
+    init_config.img_processed_cb = ImgProcessedCB::instanciate(*this, &ImgBeamAnalyzer::on_image_processed);
     //- is the previous function authorized (a proxy has been configured ?)
     init_config.get_img_allowed = dev_proxy_allowed;
     //- the initial processing parameters, from the device properties
@@ -2995,6 +2998,16 @@ void ImgBeamAnalyzer::just_process(ImageAndInfo & imginf) throw (yat::Exception)
     THROW_YAT_ERROR("UNKNOWN_ERROR",
                     "Processing has failed",
                     "ImgBeamAnalyzer::just_process");
+  }
+}
+
+void ImgBeamAnalyzer::on_image_processed(BIAData* data)
+{
+  try {
+    this->image_counter_ += 1;
+    this->push_change_event("ImageCounter", &this->image_counter_);
+  } catch(...) {
+    return; // just ignore any problems with this...
   }
 }
 

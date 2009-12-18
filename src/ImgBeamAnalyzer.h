@@ -6,9 +6,9 @@
 //
 // project :	Image Analyzer
 //
-// $Author: anoureddine $
+// $Author: ollupac $
 //
-// $Revision: 1.21 $
+// $Revision: 1.22 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -29,8 +29,8 @@
 //using namespace Tango;
 
 /**
- * @author	$Author: anoureddine $
- * @version	$Revision: 1.21 $
+ * @author	$Author: ollupac $
+ * @version	$Revision: 1.22 $
  */
 
  //	Add your own constants definitions here.
@@ -1552,6 +1552,8 @@ protected :
   int       device_mode_;
   bool      process_command_allowed_;
 
+  Tango::DevULong image_counter_;
+
   template <typename T>
   class DummyValue
   {
@@ -1559,6 +1561,7 @@ protected :
   };
 
   void update_state();
+  void on_image_processed(BIAData* data);
 
 public:
 
