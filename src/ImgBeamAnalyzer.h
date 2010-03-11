@@ -6,9 +6,9 @@
 //
 // project :	Image Analyzer
 //
-// $Author: ollupac $
+// $Author: anoureddine $
 //
-// $Revision: 1.24 $
+// $Revision: 1.25 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -29,12 +29,15 @@
 //using namespace Tango;
 
 /**
- * @author	$Author: ollupac $
- * @version	$Revision: 1.24 $
+ * @author	$Author: anoureddine $
+ * @version	$Revision: 1.25 $
  */
 
  //	Add your own constants definitions here.
  //-----------------------------------------------
+
+//- this will #include <tango.h>
+#include <yat4tango/CommonHeader.h>
 #include "ImgBeamAnalyzerTask.h"
 #include "BIAConfig.h"
 #include "IBASource.h"
@@ -43,8 +46,7 @@
 #  pragma warning( push )
 #  pragma warning( disable: 4250 ) // 'x' inherits 'y' via dominance
 #endif
-//- this will #include <tango.h>
-#include <yat4tango/CommonHeader.h>
+
 
 namespace ImgBeamAnalyzer_ns
 {

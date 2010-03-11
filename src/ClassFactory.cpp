@@ -1,4 +1,4 @@
-static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ClassFactory.cpp,v 1.4 2009-12-07 13:50:11 anoureddine Exp $";
+static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ClassFactory.cpp,v 1.5 2010-03-11 16:02:29 anoureddine Exp $";
 //+=============================================================================
 //
 // file :        ClassFactory.cpp
@@ -12,7 +12,7 @@ static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/Im
 //
 // $Author: anoureddine $
 //
-// $Revision: 1.4 $
+// $Revision: 1.5 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -30,8 +30,9 @@ static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/Im
 
 #ifndef IBA_DLL_EXPORT
 
-#include <ImgBeamAnalyzerClass.h>
 #include <IBASourceTango.h>
+#include <ImgBeamAnalyzerClass.h>
+
 
 /**
  *	Create ImgBeamAnalyzerClass singleton and store it in DServer object.

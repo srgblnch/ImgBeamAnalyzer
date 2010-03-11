@@ -17,10 +17,11 @@
 // ============================================================================
 // DEPENDENCIES
 // ============================================================================
-#include "BIAProcessor.h"
-#include "ImageAndInfo.h"
 #include <yat/Callback.h>
 #include <yat/threading/Task.h>
+#include "BIAProcessor.h"
+#include "ImageAndInfo.h"
+
 
 namespace ImgBeamAnalyzer_ns
 {
