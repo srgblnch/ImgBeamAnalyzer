@@ -50,10 +50,10 @@ void ImgBeamAnalyzerTask::handle_message (yat::Message& _msg)
 {
   ImageAndInfo imginf;
   switch (_msg.type())
-	{
-	  //- TASK_INIT ----------------------
-	  case yat::TASK_INIT:
-	    {
+  {
+    //- TASK_INIT ----------------------
+    case yat::TASK_INIT:
+      {
         this->initialized_ = false;
 
         try
@@ -113,18 +113,18 @@ void ImgBeamAnalyzerTask::handle_message (yat::Message& _msg)
           throw ex;
         }
       }
-		  break;
-		//- THREAD_EXIT ----------------------
-		case yat::TASK_EXIT:
-		  {
+      break;
+    //- THREAD_EXIT ----------------------
+    case yat::TASK_EXIT:
+      {
         YAT_LOG("thread is quitting");
         SAFE_RELEASE( this->data_ );
         this->initialized_ = false;
       }
-			break;
-		//- THREAD_PERIODIC -----------------
-		case yat::TASK_PERIODIC:
-		  {
+      break;
+    //- THREAD_PERIODIC -----------------
+    case yat::TASK_PERIODIC:
+      {
         YAT_LOG("Task wokenup on timeout");
         if (this->initialized_ == false)
         {
@@ -203,10 +203,10 @@ void ImgBeamAnalyzerTask::handle_message (yat::Message& _msg)
         //- ok, every thing went fine
         this->set_state_status(RUNNING, kRUNNING_STATUS_MSG);
       }
-		  break;
-		case kMSG_PROCESS:
-		  {
-//  		  DEBUG_STREAM << "ImgBeamAnalyzerTask::handle_message::handling PROCESS" << std::endl;
+      break;
+    case kMSG_PROCESS:
+      {
+//        DEBUG_STREAM << "ImgBeamAnalyzerTask::handle_message::handling PROCESS" << std::endl;
 
         if (this->mode_ == MODE_ONESHOT)
         {
@@ -348,20 +348,20 @@ void ImgBeamAnalyzerTask::handle_message (yat::Message& _msg)
         {
           this->set_state_status(STANDBY, kSTANDBY_STATUS_MSG);
         }
-  		}
-  		break;
-		case kMSG_STOP:
-		  {
-//  		  DEBUG_STREAM << "ImgBeamAnalyzerTask::handle_message::handling STOP" << std::endl;
+      }
+      break;
+    case kMSG_STOP:
+      {
+//        DEBUG_STREAM << "ImgBeamAnalyzerTask::handle_message::handling STOP" << std::endl;
         this->set_state_status(STANDBY, kSTANDBY_STATUS_MSG);
-  		}
-  		break;
-  	default:
-//  		DEBUG_STREAM << "ImgBeamAnalyzerTask::handle_message::unhandled msg type received"<< std::endl;
-  		break;
-	}
+      }
+      break;
+    default:
+//      DEBUG_STREAM << "ImgBeamAnalyzerTask::handle_message::unhandled msg type received"<< std::endl;
+      break;
+  }
 
-	//DEBUG_STREAM << "ImgBeamAnalyzerTask::handle_message::message_handler:msg " << _msg.to_string() << " successfully handled" << std::endl;
+  //DEBUG_STREAM << "ImgBeamAnalyzerTask::handle_message::message_handler:msg " << _msg.to_string() << " successfully handled" << std::endl;
 }
 
 
@@ -484,7 +484,7 @@ void ImgBeamAnalyzerTask::process( ImageAndInfo &imginf, bool wait, size_t wait_
   {
     SAFE_DELETE_PTR( image );
     SAFE_RELEASE( msg );
-	  RETHROW_YAT_ERROR(ex,
+    RETHROW_YAT_ERROR(ex,
                       "SOFTWARE_FAILURE",
                       "Attaching data to a adtb::Message failed",
                       "ImgBeamAnalyzer::process");
@@ -493,7 +493,7 @@ void ImgBeamAnalyzerTask::process( ImageAndInfo &imginf, bool wait, size_t wait_
   {
     SAFE_DELETE_PTR( image );
     SAFE_RELEASE( msg );
-	  THROW_YAT_ERROR("UNKNOWN_ERROR",
+    THROW_YAT_ERROR("UNKNOWN_ERROR",
                     "Attaching data to a adtb::Message failed",
                     "ImgBeamAnalyzer::process");
   }
@@ -502,7 +502,7 @@ void ImgBeamAnalyzerTask::process( ImageAndInfo &imginf, bool wait, size_t wait_
   try
   {
     // Here we lose ownership of msg, even if the call fails,
-	// so we won't be releasing it anymore
+  // so we won't be releasing it anymore
     if (wait)
       this->wait_msg_handled(msg, wait_timeout);
     else
@@ -510,14 +510,14 @@ void ImgBeamAnalyzerTask::process( ImageAndInfo &imginf, bool wait, size_t wait_
   }
   catch(yat::Exception& ex)
   {
-	  RETHROW_YAT_ERROR(ex,
+    RETHROW_YAT_ERROR(ex,
                       "SOFTWARE_FAILURE",
                       "Error while posting a PROCESS message",
                       "ImgBeamAnalyzer::process");
   }
   catch(...)
   {
-	  THROW_YAT_ERROR("UNKNOWN_ERROR",
+    THROW_YAT_ERROR("UNKNOWN_ERROR",
                     "Unknown error while posting a PROCESS message",
                     "ImgBeamAnalyzer::process");
   }

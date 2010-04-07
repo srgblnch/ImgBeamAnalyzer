@@ -98,7 +98,7 @@ void IBASourceTango::get_image(ImageAndInfo & imginf) throw (yat::Exception)
   isl::Image *& image = imginf.image;
   image = 0;
 
-  //-	Read the attribute
+  //-  Read the attribute
   //------------------------------------------
   std::auto_ptr< std::vector<Tango::DeviceAttribute> > attributes;
   Tango::DeviceAttribute* dev_attr = 0;

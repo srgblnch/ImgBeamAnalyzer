@@ -36,8 +36,8 @@
 // Time relative Macros:
 // ============================================================================
 #define TIMEVAL struct timeb
-#define	GET_TIME(T) ftime(&T)
-#define	ELAPSED_TIME_MS(start_time, end_time) \
+#define  GET_TIME(T) ftime(&T)
+#define  ELAPSED_TIME_MS(start_time, end_time) \
   static_cast<int32_t>( 1000 * (end_time.time - start_time.time) + (end_time.millitm - start_time.millitm) )
 
 
@@ -118,18 +118,18 @@ namespace ImgBeamAnalyzer_ns
   {
     YAT_TRACE("BIAProcessor::process");
 
-	  TIMEVAL	start_time, end_time;
+    TIMEVAL  start_time, end_time;
     GET_TIME(start_time);
 
 
     //- Validate configuration
-	  //------------------------------------------
+    //------------------------------------------
     //- will throw an exception if config is invalid
     config.validate();
 
 
-    //-	Process the image
-	  //------------------------------------------
+    //-  Process the image
+    //------------------------------------------
     isl::Image* input_image = 0; //- the preprocessed image
     isl::Image* roi_image = 0;
     isl::Image* roi_image_f = 0;
