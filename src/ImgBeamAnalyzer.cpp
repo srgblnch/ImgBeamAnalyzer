@@ -1,4 +1,4 @@
-static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzer.cpp,v 1.41 2010-04-07 13:11:44 ollupac Exp $";
+static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzer.cpp,v 1.42 2010-04-07 13:12:32 ollupac Exp $";
 //+=============================================================================
 //
 // file :         ImgBeamAnalyzer.cpp
@@ -13,7 +13,7 @@ static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/Im
 //
 // $Author: ollupac $
 //
-// $Revision: 1.41 $
+// $Revision: 1.42 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -1662,7 +1662,7 @@ void ImgBeamAnalyzer::read_XProjFitChi2(Tango::Attribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_YProjFitConverged(Tango::Attribute &attr)
 {
-  READ_OUTPUT_SCALAR_ATTR(yproj_fit_converged, enable_profile, Tango::DevDouble);
+  READ_OUTPUT_SCALAR_ATTR(yproj_fit_converged, enable_profile, Tango::DevBoolean);
 }
 
 //+----------------------------------------------------------------------------
