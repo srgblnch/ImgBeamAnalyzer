@@ -1,4 +1,4 @@
-static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzer.cpp,v 1.42 2010-04-07 13:12:32 ollupac Exp $";
+static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzer.cpp,v 1.43 2010-04-07 13:13:30 ollupac Exp $";
 //+=============================================================================
 //
 // file :         ImgBeamAnalyzer.cpp
@@ -13,7 +13,7 @@ static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/Im
 //
 // $Author: ollupac $
 //
-// $Revision: 1.42 $
+// $Revision: 1.43 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -2479,7 +2479,7 @@ void ImgBeamAnalyzer::read_CentroidY(Tango::Attribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_CentroidSaturated(Tango::Attribute &attr)
 {
-  READ_OUTPUT_SCALAR_ATTR(centroid_saturated, enable_image_stats, Tango::DevDouble);
+  READ_OUTPUT_SCALAR_ATTR(centroid_saturated, enable_image_stats, Tango::DevBoolean);
 }
 
 //+----------------------------------------------------------------------------
