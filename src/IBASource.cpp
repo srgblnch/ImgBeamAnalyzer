@@ -7,8 +7,9 @@
 
 void IBASource::process(ImageAndInfo &imginf)
 {
-  if (this->observer_registered())
-    this->observer_->just_process(imginf);
+  ObserverType* obs = this->observer_;
+  if (obs)
+    obs->just_process(imginf);
 }
 
 /*static*/ void IBASourceFactory::register_factory(IBASourceFactory* builder)

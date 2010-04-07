@@ -67,12 +67,12 @@ protected:
 
   void process(ImageAndInfo &imginf);
 
+public:
   inline bool observer_registered() const
   {
     return this->observer_ != 0;
   }
 
-public:
   virtual ~IBASource() {};
 
   virtual void get_image(ImageAndInfo& image) throw (yat::Exception) = 0;

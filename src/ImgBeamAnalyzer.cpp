@@ -1,4 +1,4 @@
-static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzer.cpp,v 1.44 2010-04-07 13:14:50 ollupac Exp $";
+static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzer.cpp,v 1.45 2010-04-07 13:16:25 ollupac Exp $";
 //+=============================================================================
 //
 // file :         ImgBeamAnalyzer.cpp
@@ -13,7 +13,7 @@ static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/Im
 //
 // $Author: ollupac $
 //
-// $Revision: 1.44 $
+// $Revision: 1.45 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -507,8 +507,9 @@ void ImgBeamAnalyzer::init_device()
 
       if (this->device_mode_ == MODE_EVENT)
       {
-        this->image_source_->register_observer(this);
         this->image_source_->set_callback_attribute(attr2subscribe);
+        if (this->autoStart)
+            this->image_source_->register_observer(this);
 
         this->process_command_allowed_ = true;
         INFO_STREAM << "Well subscribed to the ImageCounter: " << this->imageDevice << "/" << this->imageCounterAttrName \
@@ -2987,10 +2988,10 @@ void ImgBeamAnalyzer::read_ImageCounter(Tango::Attribute &attr)
 //+------------------------------------------------------------------
 void ImgBeamAnalyzer::start()
 {
-  if (this->device_mode_ == MODE_ONESHOT || this->device_mode_ == MODE_EVENT)
+  if (this->device_mode_ == MODE_ONESHOT)
   {
     THROW_DEVFAILED("OPERATION_NOT_ALLOWED",
-                    "In ONESHOT and EVENT modes, the 'Start' command is disabled",
+                    "In ONESHOT mode, the 'Start' command is disabled",
                     "ImgBeamAnalyzer::start()");
   }
 
@@ -2998,7 +2999,11 @@ void ImgBeamAnalyzer::start()
   {
     try
     {
-      this->task_->start(kCOMMAND_TIMEOUT);
+      if (this->device_mode_ == MODE_EVENT) {
+        if (!this->image_source_->observer_registered())
+            this->image_source_->register_observer(this);
+      } else
+        this->task_->start(kCOMMAND_TIMEOUT);
     }
     catch( yat::Exception& ex )
     {
@@ -3029,10 +3034,10 @@ void ImgBeamAnalyzer::start()
 //+------------------------------------------------------------------
 void ImgBeamAnalyzer::stop()
 {
-  if (this->device_mode_ == MODE_ONESHOT || this->device_mode_ == MODE_EVENT)
+  if (this->device_mode_ == MODE_ONESHOT)
   {
     THROW_DEVFAILED("OPERATION_NOT_ALLOWED",
-                    "In ONESHOT and EVENT modes, the 'Stop' command is disabled",
+                    "In ONESHOT mode, the 'Stop' command is disabled",
                     "ImgBeamAnalyzer::stop()");
   }
 
@@ -3040,7 +3045,10 @@ void ImgBeamAnalyzer::stop()
   {
     try
     {
-      this->task_->stop(kCOMMAND_TIMEOUT);
+      if (this->device_mode_ == MODE_EVENT)
+        this->image_source_->register_observer(0);       
+      else
+        this->task_->stop(kCOMMAND_TIMEOUT);
     }
     catch( yat::Exception& ex )
     {
@@ -3286,6 +3294,12 @@ void ImgBeamAnalyzer::update_state()
     case ImgBeamAnalyzerTask::RUNNING: tango_state = Tango::RUNNING; break;
     case ImgBeamAnalyzerTask::FAULT:   tango_state = Tango::FAULT;   break;
     default:                           tango_state = Tango::UNKNOWN; break;
+    }
+
+    if (    (state == ImgBeamAnalyzerTask::STANDBY)
+         && this->image_source_
+         && this->image_source_->observer_registered()) {
+        tango_state = Tango::RUNNING;
     }
 
     this->set_state (tango_state);

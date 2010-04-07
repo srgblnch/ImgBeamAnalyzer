@@ -63,6 +63,9 @@ IBASourceTango::~IBASourceTango()
 
 void IBASourceTango::push_event(Tango::EventData *ed)
 {
+  if(!this->observer_registered())
+    return;
+
   if(!ed->attr_value) {
     return;
   }
