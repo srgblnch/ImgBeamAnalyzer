@@ -1,4 +1,4 @@
-static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzer.cpp,v 1.40 2009-12-18 13:23:53 ollupac Exp $";
+static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzer.cpp,v 1.41 2010-04-07 13:11:44 ollupac Exp $";
 //+=============================================================================
 //
 // file :         ImgBeamAnalyzer.cpp
@@ -13,7 +13,7 @@ static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/Im
 //
 // $Author: ollupac $
 //
-// $Revision: 1.40 $
+// $Revision: 1.41 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -314,6 +314,8 @@ void ImgBeamAnalyzer::init_device()
   this->critical_property_missing_ = false;
   this->properly_initialized_ = false;
   this->image_counter_ = 0;
+  this->process_command_allowed_ = false;
+  this->process_command_waiting_ = false;
 
   try
   {
@@ -3104,10 +3106,13 @@ void ImgBeamAnalyzer::process()
 
   try
   {
+    this->process_command_waiting_ = true;
     this->task_->process( imginf, true, kCOMMAND_TIMEOUT );
+    this->process_command_waiting_ = false;
   }
   catch (yat::Exception& ex)
   {
+    this->process_command_waiting_ = false;
     yat4tango::YATDevFailed df(ex);
     RETHROW_DEVFAILED(df,
                       "SOFTWARE_FAILURE",
@@ -3116,10 +3121,12 @@ void ImgBeamAnalyzer::process()
   }
   catch(...)
   {
+    this->process_command_waiting_ = false;
     THROW_DEVFAILED("UNKNOWN_ERROR",
                     "Processing has failed",
                     "ImgBeamAnalyzer::process");
   }
+  this->push_change_event("ImageCounter", &this->image_counter_);
 }
 
 void ImgBeamAnalyzer::just_process(ImageAndInfo & imginf) throw (yat::Exception)
@@ -3145,7 +3152,14 @@ void ImgBeamAnalyzer::on_image_processed(BIAData* data)
 {
   try {
     this->image_counter_ += 1;
-    this->push_change_event("ImageCounter", &this->image_counter_);
+    // If someone executes the 'Process' here we will end with:
+    //  - Process command waiting for the worker thread to finish
+    //    while holding the tango mutex.
+    //  - push_change_event executed in the worker, needs the
+    //    tango mutex!
+    //  - DEADLOCK!
+    if (!this->process_command_waiting_)
+        this->push_change_event("ImageCounter", &this->image_counter_);
   } catch(...) {
     return; // just ignore any problems with this...
   }

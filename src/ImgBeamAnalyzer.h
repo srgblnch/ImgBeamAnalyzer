@@ -6,9 +6,9 @@
 //
 // project :	Image Analyzer
 //
-// $Author: anoureddine $
+// $Author: ollupac $
 //
-// $Revision: 1.25 $
+// $Revision: 1.26 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -29,8 +29,8 @@
 //using namespace Tango;
 
 /**
- * @author	$Author: anoureddine $
- * @version	$Revision: 1.25 $
+ * @author	$Author: ollupac $
+ * @version	$Revision: 1.26 $
  */
 
  //	Add your own constants definitions here.
@@ -1633,6 +1633,7 @@ protected :
   
   int       device_mode_;
   bool      process_command_allowed_;
+  bool      process_command_waiting_;
 
   Tango::DevULong image_counter_;
 
