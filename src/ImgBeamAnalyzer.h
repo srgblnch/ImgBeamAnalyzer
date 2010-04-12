@@ -6,9 +6,9 @@
 //
 // project :  Image Analyzer
 //
-// $Author: ollupac $
+// $Author: flanglois $
 //
-// $Revision: 1.27 $
+// $Revision: 1.28 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -29,8 +29,8 @@
 //using namespace Tango;
 
 /**
- * @author  $Author: ollupac $
- * @version  $Revision: 1.27 $
+ * @author  $Author: flanglois $
+ * @version  $Revision: 1.28 $
  */
 
  //  Add your own constants definitions here.
@@ -81,7 +81,7 @@ const size_t kTIMEOUT_MESSAGE_MS = 2500;
  */
 
 
-class IBA_DLLDIR ImgBeamAnalyzer: public Tango::Device_3Impl
+class IBA_DLLDIR ImgBeamAnalyzer: public Tango::Device_4Impl
 {
 public :
   //  Add your own data members here

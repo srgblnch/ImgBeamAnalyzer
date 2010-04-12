@@ -1,4 +1,4 @@
-static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzer.cpp,v 1.45 2010-04-07 13:16:25 ollupac Exp $";
+static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzer.cpp,v 1.46 2010-04-12 08:31:30 flanglois Exp $";
 //+=============================================================================
 //
 // file :         ImgBeamAnalyzer.cpp
@@ -11,9 +11,9 @@ static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/Im
 //
 // project :      TANGO Device Server
 //
-// $Author: ollupac $
+// $Author: flanglois $
 //
-// $Revision: 1.45 $
+// $Revision: 1.46 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -238,19 +238,19 @@ template <> Tango::DevDouble  ImgBeamAnalyzer::DummyValue<Tango::DevDouble> ::du
 //
 //-----------------------------------------------------------------------------
 ImgBeamAnalyzer::ImgBeamAnalyzer(Tango::DeviceClass *cl,string &s)
-:Tango::Device_3Impl(cl,s.c_str())
+:Tango::Device_4Impl(cl,s.c_str())
 {
   init_device();
 }
 
 ImgBeamAnalyzer::ImgBeamAnalyzer(Tango::DeviceClass *cl,const char *s)
-:Tango::Device_3Impl(cl,s)
+:Tango::Device_4Impl(cl,s)
 {
   init_device();
 }
 
 ImgBeamAnalyzer::ImgBeamAnalyzer(Tango::DeviceClass *cl,const char *s,const char *d)
-:Tango::Device_3Impl(cl,s,d)
+:Tango::Device_4Impl(cl,s,d)
 {
   init_device();
 }
