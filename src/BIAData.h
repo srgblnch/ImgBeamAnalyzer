@@ -55,18 +55,18 @@ public:
   bool                 user_roi_alarm;
 
   //- computation time
-  int32_t              estim_comput_time;
+  yat_int32_t              estim_comput_time;
 
   //- beam box
   bool                 auto_roi_found;
-  int32_t              auto_roi_origin_x;
-  int32_t              auto_roi_origin_y;
-  int32_t              auto_roi_width;
-  int32_t              auto_roi_height;
+  yat_int32_t              auto_roi_origin_x;
+  yat_int32_t              auto_roi_origin_y;
+  yat_int32_t              auto_roi_width;
+  yat_int32_t              auto_roi_height;
   yat::ImageBuffer<unsigned short> roi_image;
 
   //- noise
-  int32_t              nb_noise_image;
+  yat_int32_t              nb_noise_image;
   yat::ImageBuffer<unsigned short> mean_noise_image;
 
   //- moments inside ROI
@@ -97,7 +97,7 @@ public:
   double               xproj_fwhm;
   double               xproj_bg;
   double               xproj_chi2;
-  int32_t              xproj_nb_iter;
+  yat_int32_t              xproj_nb_iter;
   double               xproj_eps;
 
   yat::Buffer<double>  yproj;
@@ -110,7 +110,7 @@ public:
   double               yproj_fwhm;
   double               yproj_bg;
   double               yproj_chi2;
-  int32_t              yproj_nb_iter;
+  yat_int32_t              yproj_nb_iter;
   double               yproj_eps;
 
   yat::Buffer<double>  line_profile;
@@ -123,7 +123,7 @@ public:
   double               line_profile_fwhm;
   double               line_profile_bg;
   double               line_profile_chi2;
-  int32_t              line_profile_nb_iter;
+  yat_int32_t              line_profile_nb_iter;
   double               line_profile_eps;
   yat::ImageBuffer<float> line_profile_helper_img;
 
@@ -144,7 +144,7 @@ public:
   double               gaussfit_tilt;
   double               gaussfit_bg;
   double               gaussfit_chi2;
-  int32_t              gaussfit_nb_iter;
+  yat_int32_t              gaussfit_nb_iter;
   double               gaussfit_eps;
   yat::ImageBuffer<double> gaussfit_parameters_covariance;
 

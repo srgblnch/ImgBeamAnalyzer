@@ -1,4 +1,4 @@
-static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzer.cpp,v 1.46 2010-04-12 08:31:30 flanglois Exp $";
+static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzer.cpp,v 1.47 2010-04-23 12:30:45 flanglois Exp $";
 //+=============================================================================
 //
 // file :         ImgBeamAnalyzer.cpp
@@ -13,7 +13,7 @@ static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/Im
 //
 // $Author: flanglois $
 //
-// $Revision: 1.46 $
+// $Revision: 1.47 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -64,7 +64,7 @@ namespace ImgBeamAnalyzer_ns
 template <> Tango::DevBoolean ImgBeamAnalyzer::DummyValue<Tango::DevBoolean>::dummy = std::numeric_limits<bool>::quiet_NaN();
 template <> Tango::DevUChar   ImgBeamAnalyzer::DummyValue<Tango::DevUChar>  ::dummy = std::numeric_limits<unsigned char>::quiet_NaN();
 template <> Tango::DevUShort  ImgBeamAnalyzer::DummyValue<Tango::DevUShort> ::dummy = std::numeric_limits<unsigned short>::quiet_NaN();
-template <> Tango::DevLong    ImgBeamAnalyzer::DummyValue<Tango::DevLong>   ::dummy = std::numeric_limits<int32_t>::quiet_NaN();
+template <> Tango::DevLong    ImgBeamAnalyzer::DummyValue<Tango::DevLong>   ::dummy = std::numeric_limits<yat_int32_t>::quiet_NaN();
 template <> Tango::DevFloat   ImgBeamAnalyzer::DummyValue<Tango::DevFloat>  ::dummy = std::numeric_limits<float>::quiet_NaN();
 template <> Tango::DevDouble  ImgBeamAnalyzer::DummyValue<Tango::DevDouble> ::dummy = std::numeric_limits<double>::quiet_NaN();
 
@@ -119,7 +119,7 @@ template <> Tango::DevDouble  ImgBeamAnalyzer::DummyValue<Tango::DevDouble> ::du
     else                                                                                        \
     {                                                                                           \
       attr.set_value(this->available_data_->data_member.base(),                                 \
-                     static_cast<int32_t>(this->available_data_->data_member.length()));           \
+                     static_cast<yat_int32_t>(this->available_data_->data_member.length()));           \
       if (this->available_data_->alarm == true)                                                 \
         attr.set_quality(Tango::ATTR_ALARM);                                                    \
       else                                                                                      \
@@ -138,8 +138,8 @@ template <> Tango::DevDouble  ImgBeamAnalyzer::DummyValue<Tango::DevDouble> ::du
     else                                                                                        \
     {                                                                                           \
       attr.set_value(this->available_data_->data_member.base(),                                 \
-                     static_cast<int32_t>(this->available_data_->data_member.width()),             \
-                     static_cast<int32_t>(this->available_data_->data_member.height()));           \
+                     static_cast<yat_int32_t>(this->available_data_->data_member.width()),             \
+                     static_cast<yat_int32_t>(this->available_data_->data_member.height()));           \
       if (this->available_data_->alarm == true)                                                 \
         attr.set_quality(Tango::ATTR_ALARM);                                                    \
       else                                                                                      \
@@ -159,8 +159,8 @@ template <> Tango::DevDouble  ImgBeamAnalyzer::DummyValue<Tango::DevDouble> ::du
     else                                                                                        \
     {                                                                                           \
       attr.set_value(this->available_data_->data_member.base(),                                 \
-                     static_cast<int32_t>(this->available_data_->data_member.width()),             \
-                     static_cast<int32_t>(this->available_data_->data_member.height()));           \
+                     static_cast<yat_int32_t>(this->available_data_->data_member.width()),             \
+                     static_cast<yat_int32_t>(this->available_data_->data_member.height()));           \
       if (this->available_data_->alarm == true)                                                 \
         attr.set_quality(Tango::ATTR_ALARM);                                                    \
       else                                                                                      \
