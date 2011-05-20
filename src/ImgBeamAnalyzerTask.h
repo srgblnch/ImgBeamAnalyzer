@@ -17,7 +17,7 @@
 // ============================================================================
 // DEPENDENCIES
 // ============================================================================
-#include <yat/Callback.h>
+#include <yat/utils/Callback.h>
 #include <yat/threading/Task.h>
 #include "BIAProcessor.h"
 #include "ImageAndInfo.h"

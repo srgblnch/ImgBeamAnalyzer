@@ -133,39 +133,39 @@ void IBASourceTango::get_image(ImageAndInfo & imginf) throw (yat::Exception)
       Tango::DeviceAttribute & depth_attr = (*attributes)[1];
       switch( depth_attr.get_type() ) {
          case Tango::DEV_LONG: {
-            Tango::DevLong bd;
+            Tango::DevLong bd = 0;
             depth_attr >> bd;
-            imginf.bit_depth = bd;
+            imginf.bit_depth = static_cast<size_t>(bd);
             break;
          }
          case Tango::DEV_SHORT: {
-            Tango::DevShort bd;
+            Tango::DevShort bd = 0;
             depth_attr >> bd;
-            imginf.bit_depth = bd;
+            imginf.bit_depth = static_cast<size_t>(bd);
             break;
          }
          case Tango::DEV_LONG64: {
-            Tango::DevLong64 bd;
+            Tango::DevLong64 bd = 0;
             depth_attr >> bd;
-            imginf.bit_depth = bd;
+            imginf.bit_depth = static_cast<size_t>(bd);
             break;
          }
          case Tango::DEV_ULONG: {
-            Tango::DevULong bd;
+            Tango::DevULong bd = 0;
             depth_attr >> bd;
-            imginf.bit_depth = bd;
+            imginf.bit_depth = static_cast<size_t>(bd);
             break;
          }
          case Tango::DEV_USHORT: {
-            Tango::DevUShort bd;
+            Tango::DevUShort bd = 0;
             depth_attr >> bd;
-            imginf.bit_depth = bd;
+            imginf.bit_depth = static_cast<size_t>(bd);
             break;
          }
          case Tango::DEV_ULONG64: {
-            Tango::DevULong64 bd;
+            Tango::DevULong64 bd = 0;
             depth_attr >> bd;
-            imginf.bit_depth = bd;
+            imginf.bit_depth = static_cast<size_t>(bd);
             break;
          }
          default:
