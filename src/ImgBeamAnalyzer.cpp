@@ -1,4 +1,4 @@
-static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzer.cpp,v 1.47 2010-04-23 12:30:45 flanglois Exp $";
+static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzer.cpp,v 1.48 2011-08-17 13:38:21 nleclercq Exp $";
 //+=============================================================================
 //
 // file :         ImgBeamAnalyzer.cpp
@@ -11,9 +11,9 @@ static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/Im
 //
 // project :      TANGO Device Server
 //
-// $Author: flanglois $
+// $Author: nleclercq $
 //
-// $Revision: 1.47 $
+// $Revision: 1.48 $
 //
 // $Log: not supported by cvs2svn $
 //
@@ -362,7 +362,6 @@ void ImgBeamAnalyzer::init_device()
     return;
   }
 
-
   bool dev_proxy_allowed = true;
 
   if (this->device_mode_ == MODE_CONTINUOUS || this->device_mode_ == MODE_EVENT)
@@ -445,9 +444,10 @@ void ImgBeamAnalyzer::init_device()
 
     ImgBeamAnalyzerInit init_config;
 
-    assert(this->image_source_);
     //- this function will be called to get the image from the remote device
-    init_config.get_img = GetImgCB::instanciate(*this->image_source_, &IBASource::get_image);
+    if (this->image_source_)
+      init_config.get_img = GetImgCB::instanciate(*this->image_source_, &IBASource::get_image);
+
     //- this function will be called when an image has been processed
     init_config.img_processed_cb = ImgProcessedCB::instanciate(*this, &ImgBeamAnalyzer::on_image_processed);
     //- is the previous function authorized (a proxy has been configured ?)
@@ -507,10 +507,12 @@ void ImgBeamAnalyzer::init_device()
 
       if (this->device_mode_ == MODE_EVENT)
       {
-        this->image_source_->set_callback_attribute(attr2subscribe);
-        if (this->autoStart)
+        if (this->image_source_)
+        {
+          this->image_source_->set_callback_attribute(attr2subscribe);
+          if (this->autoStart)
             this->image_source_->register_observer(this);
-
+        }
         this->process_command_allowed_ = true;
         INFO_STREAM << "Well subscribed to the ImageCounter: " << this->imageDevice << "/" << this->imageCounterAttrName \
                     << ", for the image: " << this->imageDevice << "/" << this->imageAttributeName << std::endl;
@@ -3000,7 +3002,7 @@ void ImgBeamAnalyzer::start()
     try
     {
       if (this->device_mode_ == MODE_EVENT) {
-        if (!this->image_source_->observer_registered())
+        if (this->image_source_ && ! this->image_source_->observer_registered())
             this->image_source_->register_observer(this);
       } else
         this->task_->start(kCOMMAND_TIMEOUT);
@@ -3045,7 +3047,7 @@ void ImgBeamAnalyzer::stop()
   {
     try
     {
-      if (this->device_mode_ == MODE_EVENT)
+      if (this->image_source_ && this->device_mode_ == MODE_EVENT)
         this->image_source_->register_observer(0);       
       else
         this->task_->stop(kCOMMAND_TIMEOUT);
@@ -3090,9 +3092,9 @@ void ImgBeamAnalyzer::process()
   ImageAndInfo imginf;
   try
   {
-    if (!this->image_source_) {
+    if (! this->image_source_) {
       THROW_DEVFAILED("UNDEFINED__IMAGE_SOURCE",
-                      "A valid image source is not set up. Tell developers they have a mistake, you should have neverr reached here.",
+                      "No valid image source. Check the device configuration",
                       "ImgBeamAnalyzer::process");
     }
     this->image_source_->get_image(imginf);
@@ -3134,7 +3136,9 @@ void ImgBeamAnalyzer::process()
                     "Processing has failed",
                     "ImgBeamAnalyzer::process");
   }
-  this->push_change_event("ImageCounter", &this->image_counter_);
+
+  if (this->device_mode_ == MODE_EVENT)
+    this->push_change_event("ImageCounter", &this->image_counter_);
 }
 
 void ImgBeamAnalyzer::just_process(ImageAndInfo & imginf) throw (yat::Exception)
@@ -3142,7 +3146,12 @@ void ImgBeamAnalyzer::just_process(ImageAndInfo & imginf) throw (yat::Exception)
   if (this->device_mode_ != MODE_EVENT)
     return;
 
-  assert(imginf.image);
+  if (! imginf.image)
+  {
+    THROW_YAT_ERROR("NO_DATA",
+                    "no valid image to process",
+                    "ImgBeamAnalyzer::just_process");
+  }
 
   try
   {
@@ -3166,7 +3175,7 @@ void ImgBeamAnalyzer::on_image_processed(BIAData* data)
     //  - push_change_event executed in the worker, needs the
     //    tango mutex!
     //  - DEADLOCK!
-    if (!this->process_command_waiting_)
+    if (!this->process_command_waiting_ && this->device_mode_ == MODE_EVENT)
         this->push_change_event("ImageCounter", &this->image_counter_);
   } catch(...) {
     return; // just ignore any problems with this...
