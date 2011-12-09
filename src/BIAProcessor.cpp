@@ -42,7 +42,8 @@
 
 
 // #define _IBA_TIMING_TESTS_
-// #define _IBA_USE_FLOAT64_
+// Mantis bug 17127: enable 64 bit data to avoid type inconsitency in gaussian fit
+#define _IBA_USE_FLOAT64_
 
 #ifdef _IBA_TIMING_TESTS_
   #include <yat/Timer.h>
@@ -87,6 +88,7 @@ namespace ImgBeamAnalyzer_ns
   //- the scale factor used to convert the sigma of a distribution to its Full Width at Half Maximum
   //- it is approximately 2.35
   const double SIGMA2FWHM_SCALE_FACTOR = ::sqrt( 8.0f * ::log(2.0f) ); 
+  const int K_32_BIT_DATA = 32;
 
   ISL2YATException::ISL2YATException(const isl::Exception& ex)
   {
@@ -183,8 +185,24 @@ namespace ImgBeamAnalyzer_ns
   CHRONO_BEGIN(ROI_IMG_COPY);
       roi_image_d.convert(*roi_image);
 
-      data.roi_image.set_dimensions( roi.width(), roi.height() );
-      roi_image->serialize(data.roi_image.base());
+      if( roi_image->bit_per_pixel() == K_32_BIT_DATA )
+      {
+        data.roi_image.set_dimensions( roi.width(), roi.height() );
+        roi_image->serialize(data.roi_image.base());
+      }
+      // Mantis bug 14571 convert data if not 32bit
+      else
+      {
+        yat::ImageBuffer<unsigned short> short_roi_image;
+        data.roi_image.set_dimensions( roi.width(), roi.height() );
+        short_roi_image.set_dimensions( roi.width(), roi.height() );
+        roi_image->serialize(short_roi_image.base());
+        
+        for( size_t i = 0; i < roi.width() * roi.height(); i++ )
+        {
+          data.roi_image[i] = (unsigned long)short_roi_image[i];
+        }
+      }
   CHRONO_END(ROI_IMG_COPY);
 
       this->histogram(roi_image_d, config, data);;
@@ -258,9 +276,27 @@ namespace ImgBeamAnalyzer_ns
       }
       image.rotate_flip(operation);
 
+  
       //- make a raw copy of the input image
-      data.input_image.set_dimensions(image.width(), image.height());
-      image.serialize(data.input_image.base());
+      if( image.bit_per_pixel() == K_32_BIT_DATA )
+      {
+        data.input_image.set_dimensions(image.width(), image.height());
+        image.serialize(data.input_image.base());
+      }
+      // Mantis bug 14571 convert data if not 32bit
+      else
+      {
+        yat::ImageBuffer<unsigned short> short_image;
+        short_image.set_dimensions(image.width(), image.height());
+        data.input_image.set_dimensions(image.width(), image.height());
+
+        image.serialize(short_image.base());
+
+        for( size_t i = 0; i < image.width() * image.height(); i++ )
+        {
+          data.input_image[i] = (unsigned long)short_image[i];
+        }
+      }
   }
 
   
@@ -764,8 +800,10 @@ namespace ImgBeamAnalyzer_ns
         data.chamber_centroid_y = config.chamber_offset_y - data.centroid_y;
  
         //- max calculation
-        unsigned short max = 0;
-        unsigned short* cur_pix = data.roi_image.base();
+        // unsigned short max = 0;
+        // unsigned short* cur_pix = data.roi_image.base();
+        unsigned long max = 0;
+        unsigned long* cur_pix = data.roi_image.base();
         for (size_t i = 0; i < data.roi_image.length(); ++i, ++cur_pix)
         {
           if (*cur_pix > max)
