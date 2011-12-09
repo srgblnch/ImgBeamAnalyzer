@@ -432,6 +432,129 @@ void IBASourceTango::get_image(ImageAndInfo & imginf) throw (yat::Exception)
       SAFE_DELETE_PTR(serialized_image);
     }
     break;
+  // Mantis bug 14571 : enable 32 bit data
+  case Tango::DEV_LONG:
+    {
+      Tango::DevVarLongArray* serialized_image = 0;
+      image = new isl::Image(dim_x, dim_y, isl::ISL_STORAGE_LONG);
+
+      try
+      {
+        if ((*dev_attr >> serialized_image) == false)
+        {
+          SAFE_DELETE_PTR(image);
+          THROW_YAT_ERROR("OUT_OF_MEMORY",
+                          "Extraction of data from Tango::Attribute failed",
+                          "ImgBeamAnalyzerTask::get_remote_image");
+        }
+      }
+      catch(std::bad_alloc &)
+      {
+        SAFE_DELETE_PTR(image);
+        THROW_YAT_ERROR("OUT_OF_MEMORY",
+                        "Extraction of data from Tango::Attribute failed [std::bad_alloc]",
+                        "ImgBeamAnalyzerTask::get_remote_image");
+      }
+      catch(Tango::DevFailed & df)
+      {
+        SAFE_DELETE_PTR(image);
+        TangoYATException ex(df);
+        RETHROW_YAT_ERROR(ex,
+                          "SOFTWARE_FAILURE",
+                          "Extraction of data from Tango::Attribute failed [Tango::DevFailed]",
+                          "ImgBeamAnalyzerTask::get_remote_image");
+      }
+      catch(...)
+      {
+        SAFE_DELETE_PTR(image);
+        THROW_YAT_ERROR("UNKNOWN_ERROR",
+                        "Extraction of data from Tango::Attribute failed [unknown exception]",
+                        "ImgBeamAnalyzerTask::get_remote_image");
+      }
+
+      try
+      {
+        image->unserialize(serialized_image->get_buffer());
+      }
+      catch(isl::Exception & ex)
+      {
+        ISL2YATException yat_exc(ex);
+        isl::ErrorHandler::reset();
+        RETHROW_YAT_ERROR(yat_exc,
+                          "SOFTWARE_FAILURE",
+                          "Unable to unserialize image",
+                          "ImgBeamAnalyzerTask::get_remote_image");
+      }
+      catch(...)
+      {
+        THROW_YAT_ERROR("UNKNOWN_ERROR",
+                        "Unable to unserialize image",
+                        "ImgBeamAnalyzerTask::get_remote_image");
+      }
+      SAFE_DELETE_PTR(serialized_image);
+    }
+    break;
+  case Tango::DEV_ULONG:
+    {
+      Tango::DevVarULongArray* serialized_image = 0;
+      image = new isl::Image(dim_x, dim_y, isl::ISL_STORAGE_LONG);
+      
+      try
+      {
+        if ((*dev_attr >> serialized_image) == false)
+        {
+          SAFE_DELETE_PTR(image);
+          THROW_YAT_ERROR("OUT_OF_MEMORY",
+                          "Extraction of data from Tango::Attribute failed",
+                          "ImgBeamAnalyzerTask::get_remote_image");
+        }
+      }
+      catch(std::bad_alloc &)
+      {
+        SAFE_DELETE_PTR(image);
+        THROW_YAT_ERROR("OUT_OF_MEMORY",
+                        "Extraction of data from Tango::Attribute failed [std::bad_alloc]",
+                        "ImgBeamAnalyzerTask::get_remote_image");
+      }
+      catch(Tango::DevFailed & df)
+      {
+        SAFE_DELETE_PTR(image);
+        TangoYATException ex(df);
+        RETHROW_YAT_ERROR(ex,
+                          "SOFTWARE_FAILURE",
+                          "Extraction of data from Tango::Attribute failed [Tango::DevFailed]",
+                          "ImgBeamAnalyzerTask::get_remote_image");
+      }
+      catch(...)
+      {
+        SAFE_DELETE_PTR(image);
+        THROW_YAT_ERROR("UNKNOWN_ERROR",
+                        "Extraction of data from Tango::Attribute failed [unknown exception]",
+                        "ImgBeamAnalyzerTask::get_remote_image");
+      }
+
+      try
+      {
+        image->unserialize(serialized_image->get_buffer());
+      }
+      catch(isl::Exception & ex)
+      {
+        ISL2YATException yat_exc(ex);
+        isl::ErrorHandler::reset();
+        RETHROW_YAT_ERROR(yat_exc,
+                          "SOFTWARE_FAILURE",
+                          "Unable to unserialize image",
+                          "ImgBeamAnalyzerTask::get_remote_image");
+      }
+      catch(...)
+      {
+        THROW_YAT_ERROR("UNKNOWN_ERROR",
+                        "Unable to unserialize image",
+                        "ImgBeamAnalyzerTask::get_remote_image");
+      }
+      SAFE_DELETE_PTR(serialized_image);
+    }
+    break;
   default:
     {
       SAFE_DELETE_PTR(image);

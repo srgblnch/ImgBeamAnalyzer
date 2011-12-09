@@ -1,4 +1,4 @@
-static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzer.cpp,v 1.48 2011-08-17 13:38:21 nleclercq Exp $";
+static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzer.cpp,v 1.49 2011-12-09 15:35:20 jcpret Exp $";
 //+=============================================================================
 //
 // file :         ImgBeamAnalyzer.cpp
@@ -11,11 +11,15 @@ static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/Im
 //
 // project :      TANGO Device Server
 //
-// $Author: nleclercq $
+// $Author: jcpret $
 //
-// $Revision: 1.48 $
+// $Revision: 1.49 $
 //
 // $Log: not supported by cvs2svn $
+// Revision 1.48  2011/08/17 13:38:21  nleclercq
+// removed asserts
+// events fired if and only if mode == EVENT
+//
 //
 // copyleft :     European Synchrotron Radiation Facility
 //                BP 220, Grenoble 38043
@@ -33,11 +37,11 @@ static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/Im
 
 //===================================================================
 //
-//  The following table gives the correspondence
-//  between commands and method name.
+//	The following table gives the correspondence
+//	between commands and method name.
 //
 //  Command name         |  Method name
-//  ----------------------------------------
+//	----------------------------------------
 //  State                |  dev_state()
 //  Status               |  dev_status()
 //  Start                |  start()
@@ -65,6 +69,7 @@ template <> Tango::DevBoolean ImgBeamAnalyzer::DummyValue<Tango::DevBoolean>::du
 template <> Tango::DevUChar   ImgBeamAnalyzer::DummyValue<Tango::DevUChar>  ::dummy = std::numeric_limits<unsigned char>::quiet_NaN();
 template <> Tango::DevUShort  ImgBeamAnalyzer::DummyValue<Tango::DevUShort> ::dummy = std::numeric_limits<unsigned short>::quiet_NaN();
 template <> Tango::DevLong    ImgBeamAnalyzer::DummyValue<Tango::DevLong>   ::dummy = std::numeric_limits<yat_int32_t>::quiet_NaN();
+template <> Tango::DevULong    ImgBeamAnalyzer::DummyValue<Tango::DevULong>   ::dummy = std::numeric_limits<yat_uint32_t>::quiet_NaN();
 template <> Tango::DevFloat   ImgBeamAnalyzer::DummyValue<Tango::DevFloat>  ::dummy = std::numeric_limits<float>::quiet_NaN();
 template <> Tango::DevDouble  ImgBeamAnalyzer::DummyValue<Tango::DevDouble> ::dummy = std::numeric_limits<double>::quiet_NaN();
 
@@ -578,402 +583,400 @@ void ImgBeamAnalyzer::get_device_property()
 
   //  Read device properties from database.(Automatic code generation)
   //------------------------------------------------------------------
-  Tango::DbData  dev_prop;
-  dev_prop.push_back(Tango::DbDatum("AutoROIMagFactorX"));
-  dev_prop.push_back(Tango::DbDatum("AutoROIMagFactorY"));
-  dev_prop.push_back(Tango::DbDatum("AutoROIMethod"));
-  dev_prop.push_back(Tango::DbDatum("AutoStart"));
-  dev_prop.push_back(Tango::DbDatum("BitsPerPixel"));
-  dev_prop.push_back(Tango::DbDatum("ComputationPeriod"));
-  dev_prop.push_back(Tango::DbDatum("Enable2DGaussianFit"));
-  dev_prop.push_back(Tango::DbDatum("EnableAutoROI"));
-  dev_prop.push_back(Tango::DbDatum("EnableHistogram"));
-  dev_prop.push_back(Tango::DbDatum("EnableImageStats"));
-  dev_prop.push_back(Tango::DbDatum("EnableProfiles"));
-  dev_prop.push_back(Tango::DbDatum("EnableUserROI"));
-  dev_prop.push_back(Tango::DbDatum("GammaCorrection"));
-  dev_prop.push_back(Tango::DbDatum("HistogramNbBins"));
-  dev_prop.push_back(Tango::DbDatum("HistogramRangeMax"));
-  dev_prop.push_back(Tango::DbDatum("HistogramRangeMin"));
-  dev_prop.push_back(Tango::DbDatum("HorizontalFlip"));
-  dev_prop.push_back(Tango::DbDatum("ImageAttributeName"));
-  dev_prop.push_back(Tango::DbDatum("ImageCounterAttrName"));
-  dev_prop.push_back(Tango::DbDatum("ImageDevice"));
-  dev_prop.push_back(Tango::DbDatum("Mode"));
-  dev_prop.push_back(Tango::DbDatum("OpticalMagnification"));
-  dev_prop.push_back(Tango::DbDatum("PixelSizeX"));
-  dev_prop.push_back(Tango::DbDatum("PixelSizeY"));
-  dev_prop.push_back(Tango::DbDatum("ProfileFitFixedBg"));
-  dev_prop.push_back(Tango::DbDatum("Rotation"));
-  dev_prop.push_back(Tango::DbDatum("UserROIOriginX"));
-  dev_prop.push_back(Tango::DbDatum("UserROIOriginY"));
-  dev_prop.push_back(Tango::DbDatum("UserROIWidth"));
-  dev_prop.push_back(Tango::DbDatum("UserROIHeight"));
+	Tango::DbData	dev_prop;
+	dev_prop.push_back(Tango::DbDatum("AutoROIMagFactorX"));
+	dev_prop.push_back(Tango::DbDatum("AutoROIMagFactorY"));
+	dev_prop.push_back(Tango::DbDatum("AutoROIMethod"));
+	dev_prop.push_back(Tango::DbDatum("AutoStart"));
+	dev_prop.push_back(Tango::DbDatum("BitsPerPixel"));
+	dev_prop.push_back(Tango::DbDatum("ComputationPeriod"));
+	dev_prop.push_back(Tango::DbDatum("Enable2DGaussianFit"));
+	dev_prop.push_back(Tango::DbDatum("EnableAutoROI"));
+	dev_prop.push_back(Tango::DbDatum("EnableHistogram"));
+	dev_prop.push_back(Tango::DbDatum("EnableImageStats"));
+	dev_prop.push_back(Tango::DbDatum("EnableProfiles"));
+	dev_prop.push_back(Tango::DbDatum("EnableUserROI"));
+	dev_prop.push_back(Tango::DbDatum("GammaCorrection"));
+	dev_prop.push_back(Tango::DbDatum("HistogramNbBins"));
+	dev_prop.push_back(Tango::DbDatum("HistogramRangeMax"));
+	dev_prop.push_back(Tango::DbDatum("HistogramRangeMin"));
+	dev_prop.push_back(Tango::DbDatum("HorizontalFlip"));
+	dev_prop.push_back(Tango::DbDatum("ImageAttributeName"));
+	dev_prop.push_back(Tango::DbDatum("ImageCounterAttrName"));
+	dev_prop.push_back(Tango::DbDatum("ImageDevice"));
+	dev_prop.push_back(Tango::DbDatum("Mode"));
+	dev_prop.push_back(Tango::DbDatum("OpticalMagnification"));
+	dev_prop.push_back(Tango::DbDatum("PixelSizeX"));
+	dev_prop.push_back(Tango::DbDatum("PixelSizeY"));
+	dev_prop.push_back(Tango::DbDatum("ProfileFitFixedBg"));
+	dev_prop.push_back(Tango::DbDatum("Rotation"));
+	dev_prop.push_back(Tango::DbDatum("UserROIOriginX"));
+	dev_prop.push_back(Tango::DbDatum("UserROIOriginY"));
+	dev_prop.push_back(Tango::DbDatum("UserROIWidth"));
+	dev_prop.push_back(Tango::DbDatum("UserROIHeight"));
+	dev_prop.push_back(Tango::DbDatum("ChamberOffsetX"));
+	dev_prop.push_back(Tango::DbDatum("ChamberOffsetY"));
 
-  dev_prop.push_back(Tango::DbDatum("ChamberOffsetX"));
-  dev_prop.push_back(Tango::DbDatum("ChamberOffsetY"));
+	//	Call database and extract values
+	//--------------------------------------------
+	if (Tango::Util::instance()->_UseDb==true)
+		get_db_device()->get_property(dev_prop);
+	Tango::DbDatum	def_prop, cl_prop;
+	ImgBeamAnalyzerClass	*ds_class =
+		(static_cast<ImgBeamAnalyzerClass *>(get_device_class()));
+	int	i = -1;
 
+	//	Try to initialize AutoROIMagFactorX from class property
+	cl_prop = ds_class->get_class_property(dev_prop[++i].name);
+	if (cl_prop.is_empty()==false)	cl_prop  >>  autoROIMagFactorX;
+	else {
+		//	Try to initialize AutoROIMagFactorX from default device value
+		def_prop = ds_class->get_default_device_property(dev_prop[i].name);
+		if (def_prop.is_empty()==false)	def_prop  >>  autoROIMagFactorX;
+	}
+	//	And try to extract AutoROIMagFactorX value from database
+	if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  autoROIMagFactorX;
 
-  //  Call database and extract values
-  //--------------------------------------------
-  if (Tango::Util::instance()->_UseDb==true)
-    get_db_device()->get_property(dev_prop);
-  Tango::DbDatum  def_prop, cl_prop;
-  ImgBeamAnalyzerClass  *ds_class =
-    (static_cast<ImgBeamAnalyzerClass *>(get_device_class()));
-  int  i = -1;
+	//	Try to initialize AutoROIMagFactorY from class property
+	cl_prop = ds_class->get_class_property(dev_prop[++i].name);
+	if (cl_prop.is_empty()==false)	cl_prop  >>  autoROIMagFactorY;
+	else {
+		//	Try to initialize AutoROIMagFactorY from default device value
+		def_prop = ds_class->get_default_device_property(dev_prop[i].name);
+		if (def_prop.is_empty()==false)	def_prop  >>  autoROIMagFactorY;
+	}
+	//	And try to extract AutoROIMagFactorY value from database
+	if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  autoROIMagFactorY;
 
-  //  Try to initialize AutoROIMagFactorX from class property
-  cl_prop = ds_class->get_class_property(dev_prop[++i].name);
-  if (cl_prop.is_empty()==false)  cl_prop  >>  autoROIMagFactorX;
-  else {
-    //  Try to initialize AutoROIMagFactorX from default device value
-    def_prop = ds_class->get_default_device_property(dev_prop[i].name);
-    if (def_prop.is_empty()==false)  def_prop  >>  autoROIMagFactorX;
-  }
-  //  And try to extract AutoROIMagFactorX value from database
-  if (dev_prop[i].is_empty()==false)  dev_prop[i]  >>  autoROIMagFactorX;
+	//	Try to initialize AutoROIMethod from class property
+	cl_prop = ds_class->get_class_property(dev_prop[++i].name);
+	if (cl_prop.is_empty()==false)	cl_prop  >>  autoROIMethod;
+	else {
+		//	Try to initialize AutoROIMethod from default device value
+		def_prop = ds_class->get_default_device_property(dev_prop[i].name);
+		if (def_prop.is_empty()==false)	def_prop  >>  autoROIMethod;
+	}
+	//	And try to extract AutoROIMethod value from database
+	if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  autoROIMethod;
 
-  //  Try to initialize AutoROIMagFactorY from class property
-  cl_prop = ds_class->get_class_property(dev_prop[++i].name);
-  if (cl_prop.is_empty()==false)  cl_prop  >>  autoROIMagFactorY;
-  else {
-    //  Try to initialize AutoROIMagFactorY from default device value
-    def_prop = ds_class->get_default_device_property(dev_prop[i].name);
-    if (def_prop.is_empty()==false)  def_prop  >>  autoROIMagFactorY;
-  }
-  //  And try to extract AutoROIMagFactorY value from database
-  if (dev_prop[i].is_empty()==false)  dev_prop[i]  >>  autoROIMagFactorY;
+	//	Try to initialize AutoStart from class property
+	cl_prop = ds_class->get_class_property(dev_prop[++i].name);
+	if (cl_prop.is_empty()==false)	cl_prop  >>  autoStart;
+	else {
+		//	Try to initialize AutoStart from default device value
+		def_prop = ds_class->get_default_device_property(dev_prop[i].name);
+		if (def_prop.is_empty()==false)	def_prop  >>  autoStart;
+	}
+	//	And try to extract AutoStart value from database
+	if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  autoStart;
 
-  //  Try to initialize AutoROIMethod from class property
-  cl_prop = ds_class->get_class_property(dev_prop[++i].name);
-  if (cl_prop.is_empty()==false)  cl_prop  >>  autoROIMethod;
-  else {
-    //  Try to initialize AutoROIMethod from default device value
-    def_prop = ds_class->get_default_device_property(dev_prop[i].name);
-    if (def_prop.is_empty()==false)  def_prop  >>  autoROIMethod;
-  }
-  //  And try to extract AutoROIMethod value from database
-  if (dev_prop[i].is_empty()==false)  dev_prop[i]  >>  autoROIMethod;
+	//	Try to initialize BitsPerPixel from class property
+	cl_prop = ds_class->get_class_property(dev_prop[++i].name);
+	if (cl_prop.is_empty()==false)	cl_prop  >>  bitsPerPixel;
+	else {
+		//	Try to initialize BitsPerPixel from default device value
+		def_prop = ds_class->get_default_device_property(dev_prop[i].name);
+		if (def_prop.is_empty()==false)	def_prop  >>  bitsPerPixel;
+	}
+	//	And try to extract BitsPerPixel value from database
+	if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  bitsPerPixel;
 
-  //  Try to initialize AutoStart from class property
-  cl_prop = ds_class->get_class_property(dev_prop[++i].name);
-  if (cl_prop.is_empty()==false)  cl_prop  >>  autoStart;
-  else {
-    //  Try to initialize AutoStart from default device value
-    def_prop = ds_class->get_default_device_property(dev_prop[i].name);
-    if (def_prop.is_empty()==false)  def_prop  >>  autoStart;
-  }
-  //  And try to extract AutoStart value from database
-  if (dev_prop[i].is_empty()==false)  dev_prop[i]  >>  autoStart;
+	//	Try to initialize ComputationPeriod from class property
+	cl_prop = ds_class->get_class_property(dev_prop[++i].name);
+	if (cl_prop.is_empty()==false)	cl_prop  >>  computationPeriod;
+	else {
+		//	Try to initialize ComputationPeriod from default device value
+		def_prop = ds_class->get_default_device_property(dev_prop[i].name);
+		if (def_prop.is_empty()==false)	def_prop  >>  computationPeriod;
+	}
+	//	And try to extract ComputationPeriod value from database
+	if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  computationPeriod;
 
-  //  Try to initialize BitsPerPixel from class property
-  cl_prop = ds_class->get_class_property(dev_prop[++i].name);
-  if (cl_prop.is_empty()==false)  cl_prop  >>  bitsPerPixel;
-  else {
-    //  Try to initialize BitsPerPixel from default device value
-    def_prop = ds_class->get_default_device_property(dev_prop[i].name);
-    if (def_prop.is_empty()==false)  def_prop  >>  bitsPerPixel;
-  }
-  //  And try to extract BitsPerPixel value from database
-  if (dev_prop[i].is_empty()==false)  dev_prop[i]  >>  bitsPerPixel;
+	//	Try to initialize Enable2DGaussianFit from class property
+	cl_prop = ds_class->get_class_property(dev_prop[++i].name);
+	if (cl_prop.is_empty()==false)	cl_prop  >>  enable2DGaussianFit;
+	else {
+		//	Try to initialize Enable2DGaussianFit from default device value
+		def_prop = ds_class->get_default_device_property(dev_prop[i].name);
+		if (def_prop.is_empty()==false)	def_prop  >>  enable2DGaussianFit;
+	}
+	//	And try to extract Enable2DGaussianFit value from database
+	if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  enable2DGaussianFit;
 
-  //  Try to initialize ComputationPeriod from class property
-  cl_prop = ds_class->get_class_property(dev_prop[++i].name);
-  if (cl_prop.is_empty()==false)  cl_prop  >>  computationPeriod;
-  else {
-    //  Try to initialize ComputationPeriod from default device value
-    def_prop = ds_class->get_default_device_property(dev_prop[i].name);
-    if (def_prop.is_empty()==false)  def_prop  >>  computationPeriod;
-  }
-  //  And try to extract ComputationPeriod value from database
-  if (dev_prop[i].is_empty()==false)  dev_prop[i]  >>  computationPeriod;
+	//	Try to initialize EnableAutoROI from class property
+	cl_prop = ds_class->get_class_property(dev_prop[++i].name);
+	if (cl_prop.is_empty()==false)	cl_prop  >>  enableAutoROI;
+	else {
+		//	Try to initialize EnableAutoROI from default device value
+		def_prop = ds_class->get_default_device_property(dev_prop[i].name);
+		if (def_prop.is_empty()==false)	def_prop  >>  enableAutoROI;
+	}
+	//	And try to extract EnableAutoROI value from database
+	if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  enableAutoROI;
 
-  //  Try to initialize Enable2DGaussianFit from class property
-  cl_prop = ds_class->get_class_property(dev_prop[++i].name);
-  if (cl_prop.is_empty()==false)  cl_prop  >>  enable2DGaussianFit;
-  else {
-    //  Try to initialize Enable2DGaussianFit from default device value
-    def_prop = ds_class->get_default_device_property(dev_prop[i].name);
-    if (def_prop.is_empty()==false)  def_prop  >>  enable2DGaussianFit;
-  }
-  //  And try to extract Enable2DGaussianFit value from database
-  if (dev_prop[i].is_empty()==false)  dev_prop[i]  >>  enable2DGaussianFit;
+	//	Try to initialize EnableHistogram from class property
+	cl_prop = ds_class->get_class_property(dev_prop[++i].name);
+	if (cl_prop.is_empty()==false)	cl_prop  >>  enableHistogram;
+	else {
+		//	Try to initialize EnableHistogram from default device value
+		def_prop = ds_class->get_default_device_property(dev_prop[i].name);
+		if (def_prop.is_empty()==false)	def_prop  >>  enableHistogram;
+	}
+	//	And try to extract EnableHistogram value from database
+	if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  enableHistogram;
 
-  //  Try to initialize EnableAutoROI from class property
-  cl_prop = ds_class->get_class_property(dev_prop[++i].name);
-  if (cl_prop.is_empty()==false)  cl_prop  >>  enableAutoROI;
-  else {
-    //  Try to initialize EnableAutoROI from default device value
-    def_prop = ds_class->get_default_device_property(dev_prop[i].name);
-    if (def_prop.is_empty()==false)  def_prop  >>  enableAutoROI;
-  }
-  //  And try to extract EnableAutoROI value from database
-  if (dev_prop[i].is_empty()==false)  dev_prop[i]  >>  enableAutoROI;
+	//	Try to initialize EnableImageStats from class property
+	cl_prop = ds_class->get_class_property(dev_prop[++i].name);
+	if (cl_prop.is_empty()==false)	cl_prop  >>  enableImageStats;
+	else {
+		//	Try to initialize EnableImageStats from default device value
+		def_prop = ds_class->get_default_device_property(dev_prop[i].name);
+		if (def_prop.is_empty()==false)	def_prop  >>  enableImageStats;
+	}
+	//	And try to extract EnableImageStats value from database
+	if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  enableImageStats;
 
-  //  Try to initialize EnableHistogram from class property
-  cl_prop = ds_class->get_class_property(dev_prop[++i].name);
-  if (cl_prop.is_empty()==false)  cl_prop  >>  enableHistogram;
-  else {
-    //  Try to initialize EnableHistogram from default device value
-    def_prop = ds_class->get_default_device_property(dev_prop[i].name);
-    if (def_prop.is_empty()==false)  def_prop  >>  enableHistogram;
-  }
-  //  And try to extract EnableHistogram value from database
-  if (dev_prop[i].is_empty()==false)  dev_prop[i]  >>  enableHistogram;
+	//	Try to initialize EnableProfiles from class property
+	cl_prop = ds_class->get_class_property(dev_prop[++i].name);
+	if (cl_prop.is_empty()==false)	cl_prop  >>  enableProfiles;
+	else {
+		//	Try to initialize EnableProfiles from default device value
+		def_prop = ds_class->get_default_device_property(dev_prop[i].name);
+		if (def_prop.is_empty()==false)	def_prop  >>  enableProfiles;
+	}
+	//	And try to extract EnableProfiles value from database
+	if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  enableProfiles;
 
-  //  Try to initialize EnableImageStats from class property
-  cl_prop = ds_class->get_class_property(dev_prop[++i].name);
-  if (cl_prop.is_empty()==false)  cl_prop  >>  enableImageStats;
-  else {
-    //  Try to initialize EnableImageStats from default device value
-    def_prop = ds_class->get_default_device_property(dev_prop[i].name);
-    if (def_prop.is_empty()==false)  def_prop  >>  enableImageStats;
-  }
-  //  And try to extract EnableImageStats value from database
-  if (dev_prop[i].is_empty()==false)  dev_prop[i]  >>  enableImageStats;
+	//	Try to initialize EnableUserROI from class property
+	cl_prop = ds_class->get_class_property(dev_prop[++i].name);
+	if (cl_prop.is_empty()==false)	cl_prop  >>  enableUserROI;
+	else {
+		//	Try to initialize EnableUserROI from default device value
+		def_prop = ds_class->get_default_device_property(dev_prop[i].name);
+		if (def_prop.is_empty()==false)	def_prop  >>  enableUserROI;
+	}
+	//	And try to extract EnableUserROI value from database
+	if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  enableUserROI;
 
-  //  Try to initialize EnableProfiles from class property
-  cl_prop = ds_class->get_class_property(dev_prop[++i].name);
-  if (cl_prop.is_empty()==false)  cl_prop  >>  enableProfiles;
-  else {
-    //  Try to initialize EnableProfiles from default device value
-    def_prop = ds_class->get_default_device_property(dev_prop[i].name);
-    if (def_prop.is_empty()==false)  def_prop  >>  enableProfiles;
-  }
-  //  And try to extract EnableProfiles value from database
-  if (dev_prop[i].is_empty()==false)  dev_prop[i]  >>  enableProfiles;
+	//	Try to initialize GammaCorrection from class property
+	cl_prop = ds_class->get_class_property(dev_prop[++i].name);
+	if (cl_prop.is_empty()==false)	cl_prop  >>  gammaCorrection;
+	else {
+		//	Try to initialize GammaCorrection from default device value
+		def_prop = ds_class->get_default_device_property(dev_prop[i].name);
+		if (def_prop.is_empty()==false)	def_prop  >>  gammaCorrection;
+	}
+	//	And try to extract GammaCorrection value from database
+	if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  gammaCorrection;
 
-  //  Try to initialize EnableUserROI from class property
-  cl_prop = ds_class->get_class_property(dev_prop[++i].name);
-  if (cl_prop.is_empty()==false)  cl_prop  >>  enableUserROI;
-  else {
-    //  Try to initialize EnableUserROI from default device value
-    def_prop = ds_class->get_default_device_property(dev_prop[i].name);
-    if (def_prop.is_empty()==false)  def_prop  >>  enableUserROI;
-  }
-  //  And try to extract EnableUserROI value from database
-  if (dev_prop[i].is_empty()==false)  dev_prop[i]  >>  enableUserROI;
+	//	Try to initialize HistogramNbBins from class property
+	cl_prop = ds_class->get_class_property(dev_prop[++i].name);
+	if (cl_prop.is_empty()==false)	cl_prop  >>  histogramNbBins;
+	else {
+		//	Try to initialize HistogramNbBins from default device value
+		def_prop = ds_class->get_default_device_property(dev_prop[i].name);
+		if (def_prop.is_empty()==false)	def_prop  >>  histogramNbBins;
+	}
+	//	And try to extract HistogramNbBins value from database
+	if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  histogramNbBins;
 
-  //  Try to initialize GammaCorrection from class property
-  cl_prop = ds_class->get_class_property(dev_prop[++i].name);
-  if (cl_prop.is_empty()==false)  cl_prop  >>  gammaCorrection;
-  else {
-    //  Try to initialize GammaCorrection from default device value
-    def_prop = ds_class->get_default_device_property(dev_prop[i].name);
-    if (def_prop.is_empty()==false)  def_prop  >>  gammaCorrection;
-  }
-  //  And try to extract GammaCorrection value from database
-  if (dev_prop[i].is_empty()==false)  dev_prop[i]  >>  gammaCorrection;
+	//	Try to initialize HistogramRangeMax from class property
+	cl_prop = ds_class->get_class_property(dev_prop[++i].name);
+	if (cl_prop.is_empty()==false)	cl_prop  >>  histogramRangeMax;
+	else {
+		//	Try to initialize HistogramRangeMax from default device value
+		def_prop = ds_class->get_default_device_property(dev_prop[i].name);
+		if (def_prop.is_empty()==false)	def_prop  >>  histogramRangeMax;
+	}
+	//	And try to extract HistogramRangeMax value from database
+	if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  histogramRangeMax;
 
-  //  Try to initialize HistogramNbBins from class property
-  cl_prop = ds_class->get_class_property(dev_prop[++i].name);
-  if (cl_prop.is_empty()==false)  cl_prop  >>  histogramNbBins;
-  else {
-    //  Try to initialize HistogramNbBins from default device value
-    def_prop = ds_class->get_default_device_property(dev_prop[i].name);
-    if (def_prop.is_empty()==false)  def_prop  >>  histogramNbBins;
-  }
-  //  And try to extract HistogramNbBins value from database
-  if (dev_prop[i].is_empty()==false)  dev_prop[i]  >>  histogramNbBins;
+	//	Try to initialize HistogramRangeMin from class property
+	cl_prop = ds_class->get_class_property(dev_prop[++i].name);
+	if (cl_prop.is_empty()==false)	cl_prop  >>  histogramRangeMin;
+	else {
+		//	Try to initialize HistogramRangeMin from default device value
+		def_prop = ds_class->get_default_device_property(dev_prop[i].name);
+		if (def_prop.is_empty()==false)	def_prop  >>  histogramRangeMin;
+	}
+	//	And try to extract HistogramRangeMin value from database
+	if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  histogramRangeMin;
 
-  //  Try to initialize HistogramRangeMax from class property
-  cl_prop = ds_class->get_class_property(dev_prop[++i].name);
-  if (cl_prop.is_empty()==false)  cl_prop  >>  histogramRangeMax;
-  else {
-    //  Try to initialize HistogramRangeMax from default device value
-    def_prop = ds_class->get_default_device_property(dev_prop[i].name);
-    if (def_prop.is_empty()==false)  def_prop  >>  histogramRangeMax;
-  }
-  //  And try to extract HistogramRangeMax value from database
-  if (dev_prop[i].is_empty()==false)  dev_prop[i]  >>  histogramRangeMax;
+	//	Try to initialize HorizontalFlip from class property
+	cl_prop = ds_class->get_class_property(dev_prop[++i].name);
+	if (cl_prop.is_empty()==false)	cl_prop  >>  horizontalFlip;
+	else {
+		//	Try to initialize HorizontalFlip from default device value
+		def_prop = ds_class->get_default_device_property(dev_prop[i].name);
+		if (def_prop.is_empty()==false)	def_prop  >>  horizontalFlip;
+	}
+	//	And try to extract HorizontalFlip value from database
+	if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  horizontalFlip;
 
-  //  Try to initialize HistogramRangeMin from class property
-  cl_prop = ds_class->get_class_property(dev_prop[++i].name);
-  if (cl_prop.is_empty()==false)  cl_prop  >>  histogramRangeMin;
-  else {
-    //  Try to initialize HistogramRangeMin from default device value
-    def_prop = ds_class->get_default_device_property(dev_prop[i].name);
-    if (def_prop.is_empty()==false)  def_prop  >>  histogramRangeMin;
-  }
-  //  And try to extract HistogramRangeMin value from database
-  if (dev_prop[i].is_empty()==false)  dev_prop[i]  >>  histogramRangeMin;
+	//	Try to initialize ImageAttributeName from class property
+	cl_prop = ds_class->get_class_property(dev_prop[++i].name);
+	if (cl_prop.is_empty()==false)	cl_prop  >>  imageAttributeName;
+	else {
+		//	Try to initialize ImageAttributeName from default device value
+		def_prop = ds_class->get_default_device_property(dev_prop[i].name);
+		if (def_prop.is_empty()==false)	def_prop  >>  imageAttributeName;
+	}
+	//	And try to extract ImageAttributeName value from database
+	if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  imageAttributeName;
 
-  //  Try to initialize HorizontalFlip from class property
-  cl_prop = ds_class->get_class_property(dev_prop[++i].name);
-  if (cl_prop.is_empty()==false)  cl_prop  >>  horizontalFlip;
-  else {
-    //  Try to initialize HorizontalFlip from default device value
-    def_prop = ds_class->get_default_device_property(dev_prop[i].name);
-    if (def_prop.is_empty()==false)  def_prop  >>  horizontalFlip;
-  }
-  //  And try to extract HorizontalFlip value from database
-  if (dev_prop[i].is_empty()==false)  dev_prop[i]  >>  horizontalFlip;
+	//	Try to initialize ImageCounterAttrName from class property
+	cl_prop = ds_class->get_class_property(dev_prop[++i].name);
+	if (cl_prop.is_empty()==false)	cl_prop  >>  imageCounterAttrName;
+	else {
+		//	Try to initialize ImageCounterAttrName from default device value
+		def_prop = ds_class->get_default_device_property(dev_prop[i].name);
+		if (def_prop.is_empty()==false)	def_prop  >>  imageCounterAttrName;
+	}
+	//	And try to extract ImageCounterAttrName value from database
+	if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  imageCounterAttrName;
 
-  //  Try to initialize ImageAttributeName from class property
-  cl_prop = ds_class->get_class_property(dev_prop[++i].name);
-  if (cl_prop.is_empty()==false)  cl_prop  >>  imageAttributeName;
-  else {
-    //  Try to initialize ImageAttributeName from default device value
-    def_prop = ds_class->get_default_device_property(dev_prop[i].name);
-    if (def_prop.is_empty()==false)  def_prop  >>  imageAttributeName;
-  }
-  //  And try to extract ImageAttributeName value from database
-  if (dev_prop[i].is_empty()==false)  dev_prop[i]  >>  imageAttributeName;
+	//	Try to initialize ImageDevice from class property
+	cl_prop = ds_class->get_class_property(dev_prop[++i].name);
+	if (cl_prop.is_empty()==false)	cl_prop  >>  imageDevice;
+	else {
+		//	Try to initialize ImageDevice from default device value
+		def_prop = ds_class->get_default_device_property(dev_prop[i].name);
+		if (def_prop.is_empty()==false)	def_prop  >>  imageDevice;
+	}
+	//	And try to extract ImageDevice value from database
+	if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  imageDevice;
 
-  //  Try to initialize ImageCounterAttrName from class property
-  cl_prop = ds_class->get_class_property(dev_prop[++i].name);
-  if (cl_prop.is_empty()==false)  cl_prop  >>  imageCounterAttrName;
-  else {
-    //  Try to initialize ImageCounterAttrName from default device value
-    def_prop = ds_class->get_default_device_property(dev_prop[i].name);
-    if (def_prop.is_empty()==false)  def_prop  >>  imageCounterAttrName;
-  }
-  //  And try to extract ImageCounterAttrName value from database
-  if (dev_prop[i].is_empty()==false)  dev_prop[i]  >>  imageCounterAttrName;
+	//	Try to initialize Mode from class property
+	cl_prop = ds_class->get_class_property(dev_prop[++i].name);
+	if (cl_prop.is_empty()==false)	cl_prop  >>  mode;
+	else {
+		//	Try to initialize Mode from default device value
+		def_prop = ds_class->get_default_device_property(dev_prop[i].name);
+		if (def_prop.is_empty()==false)	def_prop  >>  mode;
+	}
+	//	And try to extract Mode value from database
+	if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  mode;
 
-  //  Try to initialize ImageDevice from class property
-  cl_prop = ds_class->get_class_property(dev_prop[++i].name);
-  if (cl_prop.is_empty()==false)  cl_prop  >>  imageDevice;
-  else {
-    //  Try to initialize ImageDevice from default device value
-    def_prop = ds_class->get_default_device_property(dev_prop[i].name);
-    if (def_prop.is_empty()==false)  def_prop  >>  imageDevice;
-  }
-  //  And try to extract ImageDevice value from database
-  if (dev_prop[i].is_empty()==false)  dev_prop[i]  >>  imageDevice;
+	//	Try to initialize OpticalMagnification from class property
+	cl_prop = ds_class->get_class_property(dev_prop[++i].name);
+	if (cl_prop.is_empty()==false)	cl_prop  >>  opticalMagnification;
+	else {
+		//	Try to initialize OpticalMagnification from default device value
+		def_prop = ds_class->get_default_device_property(dev_prop[i].name);
+		if (def_prop.is_empty()==false)	def_prop  >>  opticalMagnification;
+	}
+	//	And try to extract OpticalMagnification value from database
+	if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  opticalMagnification;
 
-  //  Try to initialize Mode from class property
-  cl_prop = ds_class->get_class_property(dev_prop[++i].name);
-  if (cl_prop.is_empty()==false)  cl_prop  >>  mode;
-  else {
-    //  Try to initialize Mode from default device value
-    def_prop = ds_class->get_default_device_property(dev_prop[i].name);
-    if (def_prop.is_empty()==false)  def_prop  >>  mode;
-  }
-  //  And try to extract Mode value from database
-  if (dev_prop[i].is_empty()==false)  dev_prop[i]  >>  mode;
+	//	Try to initialize PixelSizeX from class property
+	cl_prop = ds_class->get_class_property(dev_prop[++i].name);
+	if (cl_prop.is_empty()==false)	cl_prop  >>  pixelSizeX;
+	else {
+		//	Try to initialize PixelSizeX from default device value
+		def_prop = ds_class->get_default_device_property(dev_prop[i].name);
+		if (def_prop.is_empty()==false)	def_prop  >>  pixelSizeX;
+	}
+	//	And try to extract PixelSizeX value from database
+	if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  pixelSizeX;
 
-  //  Try to initialize OpticalMagnification from class property
-  cl_prop = ds_class->get_class_property(dev_prop[++i].name);
-  if (cl_prop.is_empty()==false)  cl_prop  >>  opticalMagnification;
-  else {
-    //  Try to initialize OpticalMagnification from default device value
-    def_prop = ds_class->get_default_device_property(dev_prop[i].name);
-    if (def_prop.is_empty()==false)  def_prop  >>  opticalMagnification;
-  }
-  //  And try to extract OpticalMagnification value from database
-  if (dev_prop[i].is_empty()==false)  dev_prop[i]  >>  opticalMagnification;
+	//	Try to initialize PixelSizeY from class property
+	cl_prop = ds_class->get_class_property(dev_prop[++i].name);
+	if (cl_prop.is_empty()==false)	cl_prop  >>  pixelSizeY;
+	else {
+		//	Try to initialize PixelSizeY from default device value
+		def_prop = ds_class->get_default_device_property(dev_prop[i].name);
+		if (def_prop.is_empty()==false)	def_prop  >>  pixelSizeY;
+	}
+	//	And try to extract PixelSizeY value from database
+	if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  pixelSizeY;
 
-  //  Try to initialize PixelSizeX from class property
-  cl_prop = ds_class->get_class_property(dev_prop[++i].name);
-  if (cl_prop.is_empty()==false)  cl_prop  >>  pixelSizeX;
-  else {
-    //  Try to initialize PixelSizeX from default device value
-    def_prop = ds_class->get_default_device_property(dev_prop[i].name);
-    if (def_prop.is_empty()==false)  def_prop  >>  pixelSizeX;
-  }
-  //  And try to extract PixelSizeX value from database
-  if (dev_prop[i].is_empty()==false)  dev_prop[i]  >>  pixelSizeX;
+	//	Try to initialize ProfileFitFixedBg from class property
+	cl_prop = ds_class->get_class_property(dev_prop[++i].name);
+	if (cl_prop.is_empty()==false)	cl_prop  >>  profileFitFixedBg;
+	else {
+		//	Try to initialize ProfileFitFixedBg from default device value
+		def_prop = ds_class->get_default_device_property(dev_prop[i].name);
+		if (def_prop.is_empty()==false)	def_prop  >>  profileFitFixedBg;
+	}
+	//	And try to extract ProfileFitFixedBg value from database
+	if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  profileFitFixedBg;
 
-  //  Try to initialize PixelSizeY from class property
-  cl_prop = ds_class->get_class_property(dev_prop[++i].name);
-  if (cl_prop.is_empty()==false)  cl_prop  >>  pixelSizeY;
-  else {
-    //  Try to initialize PixelSizeY from default device value
-    def_prop = ds_class->get_default_device_property(dev_prop[i].name);
-    if (def_prop.is_empty()==false)  def_prop  >>  pixelSizeY;
-  }
-  //  And try to extract PixelSizeY value from database
-  if (dev_prop[i].is_empty()==false)  dev_prop[i]  >>  pixelSizeY;
+	//	Try to initialize Rotation from class property
+	cl_prop = ds_class->get_class_property(dev_prop[++i].name);
+	if (cl_prop.is_empty()==false)	cl_prop  >>  rotation;
+	else {
+		//	Try to initialize Rotation from default device value
+		def_prop = ds_class->get_default_device_property(dev_prop[i].name);
+		if (def_prop.is_empty()==false)	def_prop  >>  rotation;
+	}
+	//	And try to extract Rotation value from database
+	if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  rotation;
 
-  //  Try to initialize ProfileFitFixedBg from class property
-  cl_prop = ds_class->get_class_property(dev_prop[++i].name);
-  if (cl_prop.is_empty()==false)  cl_prop  >>  profileFitFixedBg;
-  else {
-    //  Try to initialize ProfileFitFixedBg from default device value
-    def_prop = ds_class->get_default_device_property(dev_prop[i].name);
-    if (def_prop.is_empty()==false)  def_prop  >>  profileFitFixedBg;
-  }
-  //  And try to extract ProfileFitFixedBg value from database
-  if (dev_prop[i].is_empty()==false)  dev_prop[i]  >>  profileFitFixedBg;
+	//	Try to initialize UserROIOriginX from class property
+	cl_prop = ds_class->get_class_property(dev_prop[++i].name);
+	if (cl_prop.is_empty()==false)	cl_prop  >>  userROIOriginX;
+	else {
+		//	Try to initialize UserROIOriginX from default device value
+		def_prop = ds_class->get_default_device_property(dev_prop[i].name);
+		if (def_prop.is_empty()==false)	def_prop  >>  userROIOriginX;
+	}
+	//	And try to extract UserROIOriginX value from database
+	if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  userROIOriginX;
 
-  //  Try to initialize Rotation from class property
-  cl_prop = ds_class->get_class_property(dev_prop[++i].name);
-  if (cl_prop.is_empty()==false)  cl_prop  >>  rotation;
-  else {
-    //  Try to initialize Rotation from default device value
-    def_prop = ds_class->get_default_device_property(dev_prop[i].name);
-    if (def_prop.is_empty()==false)  def_prop  >>  rotation;
-  }
-  //  And try to extract Rotation value from database
-  if (dev_prop[i].is_empty()==false)  dev_prop[i]  >>  rotation;
+	//	Try to initialize UserROIOriginY from class property
+	cl_prop = ds_class->get_class_property(dev_prop[++i].name);
+	if (cl_prop.is_empty()==false)	cl_prop  >>  userROIOriginY;
+	else {
+		//	Try to initialize UserROIOriginY from default device value
+		def_prop = ds_class->get_default_device_property(dev_prop[i].name);
+		if (def_prop.is_empty()==false)	def_prop  >>  userROIOriginY;
+	}
+	//	And try to extract UserROIOriginY value from database
+	if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  userROIOriginY;
 
-  //  Try to initialize UserROIOriginX from class property
-  cl_prop = ds_class->get_class_property(dev_prop[++i].name);
-  if (cl_prop.is_empty()==false)  cl_prop  >>  userROIOriginX;
-  else {
-    //  Try to initialize UserROIOriginX from default device value
-    def_prop = ds_class->get_default_device_property(dev_prop[i].name);
-    if (def_prop.is_empty()==false)  def_prop  >>  userROIOriginX;
-  }
-  //  And try to extract UserROIOriginX value from database
-  if (dev_prop[i].is_empty()==false)  dev_prop[i]  >>  userROIOriginX;
+	//	Try to initialize UserROIWidth from class property
+	cl_prop = ds_class->get_class_property(dev_prop[++i].name);
+	if (cl_prop.is_empty()==false)	cl_prop  >>  userROIWidth;
+	else {
+		//	Try to initialize UserROIWidth from default device value
+		def_prop = ds_class->get_default_device_property(dev_prop[i].name);
+		if (def_prop.is_empty()==false)	def_prop  >>  userROIWidth;
+	}
+	//	And try to extract UserROIWidth value from database
+	if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  userROIWidth;
 
-  //  Try to initialize UserROIOriginY from class property
-  cl_prop = ds_class->get_class_property(dev_prop[++i].name);
-  if (cl_prop.is_empty()==false)  cl_prop  >>  userROIOriginY;
-  else {
-    //  Try to initialize UserROIOriginY from default device value
-    def_prop = ds_class->get_default_device_property(dev_prop[i].name);
-    if (def_prop.is_empty()==false)  def_prop  >>  userROIOriginY;
-  }
-  //  And try to extract UserROIOriginY value from database
-  if (dev_prop[i].is_empty()==false)  dev_prop[i]  >>  userROIOriginY;
+	//	Try to initialize UserROIHeight from class property
+	cl_prop = ds_class->get_class_property(dev_prop[++i].name);
+	if (cl_prop.is_empty()==false)	cl_prop  >>  userROIHeight;
+	else {
+		//	Try to initialize UserROIHeight from default device value
+		def_prop = ds_class->get_default_device_property(dev_prop[i].name);
+		if (def_prop.is_empty()==false)	def_prop  >>  userROIHeight;
+	}
+	//	And try to extract UserROIHeight value from database
+	if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  userROIHeight;
 
-  //  Try to initialize UserROIWidth from class property
-  cl_prop = ds_class->get_class_property(dev_prop[++i].name);
-  if (cl_prop.is_empty()==false)  cl_prop  >>  userROIWidth;
-  else {
-    //  Try to initialize UserROIWidth from default device value
-    def_prop = ds_class->get_default_device_property(dev_prop[i].name);
-    if (def_prop.is_empty()==false)  def_prop  >>  userROIWidth;
-  }
-  //  And try to extract UserROIWidth value from database
-  if (dev_prop[i].is_empty()==false)  dev_prop[i]  >>  userROIWidth;
+	//	Try to initialize ChamberOffsetX from class property
+	cl_prop = ds_class->get_class_property(dev_prop[++i].name);
+	if (cl_prop.is_empty()==false)	cl_prop  >>  chamberOffsetX;
+	else {
+		//	Try to initialize ChamberOffsetX from default device value
+		def_prop = ds_class->get_default_device_property(dev_prop[i].name);
+		if (def_prop.is_empty()==false)	def_prop  >>  chamberOffsetX;
+	}
+	//	And try to extract ChamberOffsetX value from database
+	if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  chamberOffsetX;
 
-  //  Try to initialize UserROIHeight from class property
-  cl_prop = ds_class->get_class_property(dev_prop[++i].name);
-  if (cl_prop.is_empty()==false)  cl_prop  >>  userROIHeight;
-  else {
-    //  Try to initialize UserROIHeight from default device value
-    def_prop = ds_class->get_default_device_property(dev_prop[i].name);
-    if (def_prop.is_empty()==false)  def_prop  >>  userROIHeight;
-  }
-  //  And try to extract UserROIHeight value from database
-  if (dev_prop[i].is_empty()==false)  dev_prop[i]  >>  userROIHeight;
-
-  //  Try to initialize ChamberOffsetX from class property
-  cl_prop = ds_class->get_class_property(dev_prop[++i].name);
-  if (cl_prop.is_empty()==false)  cl_prop  >>  chamberOffsetX;
-  else {
-    //  Try to initialize ChamberOffsetX from default device value
-    def_prop = ds_class->get_default_device_property(dev_prop[i].name);
-    if (def_prop.is_empty()==false) def_prop  >>  chamberOffsetX;
-  }
-  //  And try to extract ChamberOffsetX value from database
-  if (dev_prop[i].is_empty()==false)  dev_prop[i]  >>  chamberOffsetX;
-
-  //  Try to initialize ChamberOffsetY from class property
-  cl_prop = ds_class->get_class_property(dev_prop[++i].name);
-  if (cl_prop.is_empty()==false)  cl_prop  >>  chamberOffsetY;
-  else {
-    //  Try to initialize ChamberOffsetY from default device value
-    def_prop = ds_class->get_default_device_property(dev_prop[i].name);
-    if (def_prop.is_empty()==false) def_prop  >>  chamberOffsetY;
-  }
-  //  And try to extract ChamberOffsetY value from database
-  if (dev_prop[i].is_empty()==false)  dev_prop[i]  >>  chamberOffsetY;
+	//	Try to initialize ChamberOffsetY from class property
+	cl_prop = ds_class->get_class_property(dev_prop[++i].name);
+	if (cl_prop.is_empty()==false)	cl_prop  >>  chamberOffsetY;
+	else {
+		//	Try to initialize ChamberOffsetY from default device value
+		def_prop = ds_class->get_default_device_property(dev_prop[i].name);
+		if (def_prop.is_empty()==false)	def_prop  >>  chamberOffsetY;
+	}
+	//	And try to extract ChamberOffsetY value from database
+	if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  chamberOffsetY;
 
 
 
@@ -2410,7 +2413,8 @@ void ImgBeamAnalyzer::read_AutoROIHeight(Tango::Attribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_ROIImage(Tango::Attribute &attr)
 {
-  READ_OUTPUT_IMAGE_ATTR_ALWAYSACTIV(roi_image, Tango::DevUShort);
+  // Mantis bug 14571 : enable 32 bit data
+  READ_OUTPUT_IMAGE_ATTR_ALWAYSACTIV(roi_image, Tango::DevULong);  // JCP
 }
 
 //+----------------------------------------------------------------------------
@@ -2950,7 +2954,8 @@ void ImgBeamAnalyzer::write_EnableProfiles(Tango::WAttribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_InputImage(Tango::Attribute &attr)
 {
-  READ_OUTPUT_IMAGE_ATTR_ALWAYSACTIV(input_image, Tango::DevUShort);
+  // Mantis bug 14571 : enable 32 bit data
+  READ_OUTPUT_IMAGE_ATTR_ALWAYSACTIV(input_image, Tango::DevULong);
 }
 
 //+----------------------------------------------------------------------------
@@ -2980,10 +2985,9 @@ void ImgBeamAnalyzer::read_ImageCounter(Tango::Attribute &attr)
 
 //+------------------------------------------------------------------
 /**
- *  method:  ImgBeamAnalyzer::start
+ *	method:	ImgBeamAnalyzer::start
  *
- *  description:  method to execute "Start"
- *  [CONTINUOUS mode only] When the device is in STANDBY, this command starts the computation
+ *	description:	method to execute "Start"
  *
  *
  */
@@ -3026,10 +3030,9 @@ void ImgBeamAnalyzer::start()
 
 //+------------------------------------------------------------------
 /**
- *  method:  ImgBeamAnalyzer::stop
+ *	method:	ImgBeamAnalyzer::stop
  *
- *  description:  method to execute "Stop"
- *  [CONTINUOUS mode only] When the device is RUNNING, this command stops the computation
+ *	description:	method to execute "Stop"
  *
  *
  */
@@ -3071,10 +3074,9 @@ void ImgBeamAnalyzer::stop()
 
 //+------------------------------------------------------------------
 /**
- *  method:  ImgBeamAnalyzer::process
+ *	method:	ImgBeamAnalyzer::process
  *
- *  description:  method to execute "Process"
- *  [ONESHOT mode only] get an image from the specified remote device, process it and return to STANDBY state
+ *	description:	method to execute "Process"
  *
  *
  */
@@ -3184,10 +3186,9 @@ void ImgBeamAnalyzer::on_image_processed(BIAData* data)
 
 //+------------------------------------------------------------------
 /**
- *  method:  ImgBeamAnalyzer::save_current_settings
+ *	method:	ImgBeamAnalyzer::save_current_settings
  *
- *  description:  method to execute "SaveCurrentSettings"
- *  stores the current configuration in the Tango database as properties
+ *	description:	method to execute "SaveCurrentSettings"
  *
  *
  */
@@ -3259,12 +3260,11 @@ void ImgBeamAnalyzer::save_current_settings()
 
 //+------------------------------------------------------------------
 /**
- *  method:  ImgBeamAnalyzer::get_version_number
+ *	method:	ImgBeamAnalyzer::get_version_number
  *
- *  description:  method to execute "GetVersionNumber"
- *  returns the DeviceServer version number
+ *	description:	method to execute "GetVersionNumber"
  *
- * @return  the Device Server version number
+ * @return	the Device Server version number
  *
  */
 //+------------------------------------------------------------------
@@ -3320,4 +3320,7 @@ void ImgBeamAnalyzer::update_state()
 
 
 
-}  //  namespace
+
+
+
+}	//	namespace

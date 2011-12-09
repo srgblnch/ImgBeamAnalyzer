@@ -48,7 +48,8 @@ public:
 
 
   //- processed image
-  yat::ImageBuffer<unsigned short> input_image;
+  // Mantis bug 14571 : enable 32 bit data
+  yat::ImageBuffer<unsigned long> input_image;
 
   //- input parameters
   BIAConfig            config;
@@ -63,7 +64,8 @@ public:
   yat_int32_t              auto_roi_origin_y;
   yat_int32_t              auto_roi_width;
   yat_int32_t              auto_roi_height;
-  yat::ImageBuffer<unsigned short> roi_image;
+  // Mantis bug 14571 : enable 32 bit data
+  yat::ImageBuffer<unsigned long> roi_image;
 
   //- noise
   yat_int32_t              nb_noise_image;

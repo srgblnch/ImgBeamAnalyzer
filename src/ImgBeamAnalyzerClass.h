@@ -10,11 +10,14 @@
 //			
 // project :      TANGO Device Server
 //
-// $Author: ollupac $
+// $Author: jcpret $
 //
-// $Revision: 1.20 $
+// $Revision: 1.21 $
 //
 // $Log: not supported by cvs2svn $
+// Revision 1.20  2009/12/18 13:23:53  ollupac
+// New attribute: ImageCounter (and with events!)
+//
 //
 // copyleft :     European Synchrotron Radiation Facility
 //                BP 220, Grenoble 38043
@@ -66,7 +69,7 @@ public:
 class ROIImageAttrib: public Tango::ImageAttr
 {
 public:
-	ROIImageAttrib():ImageAttr("ROIImage", Tango::DEV_USHORT, Tango::READ, 131072, 131072) {};
+	ROIImageAttrib():ImageAttr("ROIImage", Tango::DEV_ULONG, Tango::READ, 131072, 131072) {};
 	~ROIImageAttrib() {};
 	
 	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
@@ -78,7 +81,7 @@ public:
 class InputImageAttrib: public Tango::ImageAttr
 {
 public:
-	InputImageAttrib():ImageAttr("InputImage", Tango::DEV_USHORT, Tango::READ_WRITE, 131072, 131072) {};
+	InputImageAttrib():ImageAttr("InputImage", Tango::DEV_ULONG, Tango::READ_WRITE, 131072, 131072) {};
 	~InputImageAttrib() {};
 	
 	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
@@ -1053,32 +1056,52 @@ public:
 	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_UserROIOriginX_allowed(ty);}
 };
 
-class LineProfileThicknessAttrib: public Tango::Attr
+class ChamberYProjFitCenterAttrib: public Tango::Attr
 {
 public:
-	LineProfileThicknessAttrib():Attr("LineProfileThickness", Tango::DEV_LONG, Tango::READ_WRITE) {};
-	~LineProfileThicknessAttrib() {};
+	ChamberYProjFitCenterAttrib():Attr("ChamberYProjFitCenter", Tango::DEV_DOUBLE, Tango::READ) {};
+	~ChamberYProjFitCenterAttrib() {};
 	
 	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
-	{(static_cast<ImgBeamAnalyzer *>(dev))->read_LineProfileThickness(att);}
-	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
-	{(static_cast<ImgBeamAnalyzer *>(dev))->write_LineProfileThickness(att);}
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_ChamberYProjFitCenter(att);}
 	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
-	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_LineProfileThickness_allowed(ty);}
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_ChamberYProjFitCenter_allowed(ty);}
 };
 
-class ChamberOffsetXAttrib: public Tango::Attr
+class ChamberXProjFitCenterAttrib: public Tango::Attr
 {
 public:
-	ChamberOffsetXAttrib():Attr("ChamberOffsetX", Tango::DEV_DOUBLE, Tango::READ_WRITE) {};
-	~ChamberOffsetXAttrib() {};
+	ChamberXProjFitCenterAttrib():Attr("ChamberXProjFitCenter", Tango::DEV_DOUBLE, Tango::READ) {};
+	~ChamberXProjFitCenterAttrib() {};
 	
 	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
-	{(static_cast<ImgBeamAnalyzer *>(dev))->read_ChamberOffsetX(att);}
-	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
-	{(static_cast<ImgBeamAnalyzer *>(dev))->write_ChamberOffsetX(att);}
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_ChamberXProjFitCenter(att);}
 	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
-	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_ChamberOffsetX_allowed(ty);}
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_ChamberXProjFitCenter_allowed(ty);}
+};
+
+class ChamberCentroidYAttrib: public Tango::Attr
+{
+public:
+	ChamberCentroidYAttrib():Attr("ChamberCentroidY", Tango::DEV_DOUBLE, Tango::READ) {};
+	~ChamberCentroidYAttrib() {};
+	
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_ChamberCentroidY(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_ChamberCentroidY_allowed(ty);}
+};
+
+class ChamberCentroidXAttrib: public Tango::Attr
+{
+public:
+	ChamberCentroidXAttrib():Attr("ChamberCentroidX", Tango::DEV_DOUBLE, Tango::READ) {};
+	~ChamberCentroidXAttrib() {};
+	
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_ChamberCentroidX(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_ChamberCentroidX_allowed(ty);}
 };
 
 class ChamberOffsetYAttrib: public Tango::Attr
@@ -1095,52 +1118,32 @@ public:
 	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_ChamberOffsetY_allowed(ty);}
 };
 
-class ChamberCentroidXAttrib: public Tango::Attr
+class ChamberOffsetXAttrib: public Tango::Attr
 {
 public:
-	ChamberCentroidXAttrib():Attr("ChamberCentroidX", Tango::DEV_DOUBLE, Tango::READ) {};
-	~ChamberCentroidXAttrib() {};
+	ChamberOffsetXAttrib():Attr("ChamberOffsetX", Tango::DEV_DOUBLE, Tango::READ_WRITE) {};
+	~ChamberOffsetXAttrib() {};
 	
 	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
-	{(static_cast<ImgBeamAnalyzer *>(dev))->read_ChamberCentroidX(att);}
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_ChamberOffsetX(att);}
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+	{(static_cast<ImgBeamAnalyzer *>(dev))->write_ChamberOffsetX(att);}
 	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
-	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_ChamberCentroidX_allowed(ty);}
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_ChamberOffsetX_allowed(ty);}
 };
 
-class ChamberCentroidYAttrib: public Tango::Attr
+class LineProfileThicknessAttrib: public Tango::Attr
 {
 public:
-	ChamberCentroidYAttrib():Attr("ChamberCentroidY", Tango::DEV_DOUBLE, Tango::READ) {};
-	~ChamberCentroidYAttrib() {};
+	LineProfileThicknessAttrib():Attr("LineProfileThickness", Tango::DEV_LONG, Tango::READ_WRITE) {};
+	~LineProfileThicknessAttrib() {};
 	
 	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
-	{(static_cast<ImgBeamAnalyzer *>(dev))->read_ChamberCentroidY(att);}
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_LineProfileThickness(att);}
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+	{(static_cast<ImgBeamAnalyzer *>(dev))->write_LineProfileThickness(att);}
 	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
-	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_ChamberCentroidY_allowed(ty);}
-};
-
-class ChamberXProjFitCenterAttrib: public Tango::Attr
-{
-public:
-	ChamberXProjFitCenterAttrib():Attr("ChamberXProjFitCenter", Tango::DEV_DOUBLE, Tango::READ) {};
-	~ChamberXProjFitCenterAttrib() {};
-	
-	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
-	{(static_cast<ImgBeamAnalyzer *>(dev))->read_ChamberXProjFitCenter(att);}
-	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
-	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_ChamberXProjFitCenter_allowed(ty);}
-};
-
-class ChamberYProjFitCenterAttrib: public Tango::Attr
-{
-public:
-	ChamberYProjFitCenterAttrib():Attr("ChamberYProjFitCenter", Tango::DEV_DOUBLE, Tango::READ) {};
-	~ChamberYProjFitCenterAttrib() {};
-	
-	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
-	{(static_cast<ImgBeamAnalyzer *>(dev))->read_ChamberYProjFitCenter(att);}
-	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
-	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_ChamberYProjFitCenter_allowed(ty);}
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_LineProfileThickness_allowed(ty);}
 };
 
 class LineProfileEndYAttrib: public Tango::Attr
@@ -1533,17 +1536,6 @@ public:
 	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_EnableImageStats_allowed(ty);}
 };
 
-class ImageCounterAttrib: public Tango::Attr
-{
-public:
-	ImageCounterAttrib():Attr("ImageCounter", Tango::DEV_ULONG, Tango::READ) {};
-	~ImageCounterAttrib() {}
-
-        virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
-        {(static_cast<ImgBeamAnalyzer *>(dev))->read_ImageCounter(att);}
-        virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
-        {return (static_cast<ImgBeamAnalyzer *>(dev))->is_ImageCounter_allowed(ty);}
-};
 //=========================================
 //	Define classes for commands
 //=========================================
@@ -1671,7 +1663,11 @@ public:
 // The ImgBeamAnalyzerClass singleton definition
 //
 
-class ImgBeamAnalyzerClass : public Tango::DeviceClass
+class
+#ifdef WIN32
+	__declspec(dllexport)
+#endif
+	ImgBeamAnalyzerClass : public Tango::DeviceClass
 {
 public:
 //	properties member data
@@ -1700,6 +1696,8 @@ protected:
 	void attribute_factory(vector<Tango::Attr *> &);
 	void write_class_property();
 	void set_default_property();
+	string get_cvstag();
+	string get_cvsroot();
 
 private:
 	void device_factory(const Tango::DevVarStringArray *);

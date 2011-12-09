@@ -1,4 +1,7 @@
-static const char *RcsId     = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzerClass.cpp,v 1.24 2010-04-12 08:31:45 flanglois Exp $";
+static const char *ClassId    = "$Id: ImgBeamAnalyzerClass.cpp,v 1.25 2011-12-09 15:35:20 jcpret Exp $";
+static const char *CvsPath    = "$Source: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzerClass.cpp,v $";
+static const char *SvnPath    = "$HeadURL: $";
+static const char *RcsId     = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzerClass.cpp,v 1.25 2011-12-09 15:35:20 jcpret Exp $";
 static const char *TagName   = "$Name: not supported by cvs2svn $";
 static const char *HttpServer= "http://www.esrf.fr/computing/cs/tango/tango_doc/ds_doc/";
 //+=============================================================================
@@ -12,11 +15,14 @@ static const char *HttpServer= "http://www.esrf.fr/computing/cs/tango/tango_doc/
 //
 // project :     TANGO Device Server
 //
-// $Author: flanglois $
+// $Author: jcpret $
 //
-// $Revision: 1.24 $
+// $Revision: 1.25 $
 //
 // $Log: not supported by cvs2svn $
+// Revision 1.24  2010/04/12 08:31:45  flanglois
+// switch to impl4
+//
 //
 // copyleft :   European Synchrotron Radiation Facility
 //              BP 220, Grenoble 38043
@@ -428,7 +434,7 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	RotationAttrib	*rotation = new RotationAttrib();
 	Tango::UserDefaultAttrProp	rotation_prop;
 	rotation_prop.set_label("Rotation");
-	rotation_prop.set_unit("°");
+	rotation_prop.set_unit("ï¿½");
 	rotation_prop.set_format("%4d");
 	rotation_prop.set_description("the rotation applied in preprocessing. only multiple of 90 are recognized as valid values");
 	rotation->set_default_properties(rotation_prop);
@@ -547,7 +553,7 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	PixelSizeXAttrib	*pixel_size_x = new PixelSizeXAttrib();
 	Tango::UserDefaultAttrProp	pixel_size_x_prop;
 	pixel_size_x_prop.set_label("PixelSizeX");
-	pixel_size_x_prop.set_unit("µm/pix");
+	pixel_size_x_prop.set_unit("ï¿½m/pix");
 	pixel_size_x_prop.set_format("%5.2f");
 	pixel_size_x_prop.set_description("the correspondence between pixel width and mm");
 	pixel_size_x->set_default_properties(pixel_size_x_prop);
@@ -557,7 +563,7 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	PixelSizeYAttrib	*pixel_size_y = new PixelSizeYAttrib();
 	Tango::UserDefaultAttrProp	pixel_size_y_prop;
 	pixel_size_y_prop.set_label("PixelSizeY");
-	pixel_size_y_prop.set_unit("µm/pix");
+	pixel_size_y_prop.set_unit("ï¿½m/pix");
 	pixel_size_y_prop.set_format("%5.2f");
 	pixel_size_y_prop.set_description("the correspondence between pixel height and mm");
 	pixel_size_y->set_default_properties(pixel_size_y_prop);
@@ -636,7 +642,7 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	ChamberOffsetXAttrib	*chamber_offset_x = new ChamberOffsetXAttrib();
 	Tango::UserDefaultAttrProp	chamber_offset_x_prop;
 	chamber_offset_x_prop.set_label("Chamber Center Offset X");
-	chamber_offset_x_prop.set_unit("µm");
+	chamber_offset_x_prop.set_unit("ï¿½m");
 	chamber_offset_x_prop.set_format("%6.2f");
 	chamber_offset_x_prop.set_description("An offset to be substracted to CentroidX and XProjFitCenter and get Chamber*");
 	chamber_offset_x->set_default_properties(chamber_offset_x_prop);
@@ -646,50 +652,26 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	ChamberOffsetYAttrib	*chamber_offset_y = new ChamberOffsetYAttrib();
 	Tango::UserDefaultAttrProp	chamber_offset_y_prop;
 	chamber_offset_y_prop.set_label("Chamber Center Offset Y");
-	chamber_offset_y_prop.set_unit("µm");
+	chamber_offset_y_prop.set_unit("ï¿½m");
 	chamber_offset_y_prop.set_format("%6.2f");
 	chamber_offset_y_prop.set_description("An offset to be substracted to CentroidY and YProjFitCenter and get Chamber*");
 	chamber_offset_y->set_default_properties(chamber_offset_y_prop);
 	att_list.push_back(chamber_offset_y);
 
-	//      Attribute : ChamberCentroidX
-	ChamberCentroidXAttrib *chamber_centroid_x = new ChamberCentroidXAttrib();
-	Tango::UserDefaultAttrProp      chamber_centroid_x_prop;
-	chamber_centroid_x_prop.set_label("Ch Centroid X");
-	chamber_centroid_x_prop.set_unit("µm");
-	chamber_centroid_x_prop.set_format("%10.2f");
-	chamber_centroid_x_prop.set_description("the X coordinate of the centroid, relative to Chamber.");
-	chamber_centroid_x->set_default_properties(chamber_centroid_x_prop);
+	//	Attribute : ChamberCentroidX
+	ChamberCentroidXAttrib	*chamber_centroid_x = new ChamberCentroidXAttrib();
 	att_list.push_back(chamber_centroid_x);
 
-	//      Attribute : ChamberCentroidY
-	ChamberCentroidYAttrib *chamber_centroid_y = new ChamberCentroidYAttrib();
-	Tango::UserDefaultAttrProp      chamber_centroid_y_prop;
-	chamber_centroid_y_prop.set_label("Ch Centroid Y");
-	chamber_centroid_y_prop.set_unit("µm");
-	chamber_centroid_y_prop.set_format("%10.2f");
-	chamber_centroid_y_prop.set_description("the Y coordinate of the centroid, relative to Chamber.");
-	chamber_centroid_y->set_default_properties(chamber_centroid_y_prop);
+	//	Attribute : ChamberCentroidY
+	ChamberCentroidYAttrib	*chamber_centroid_y = new ChamberCentroidYAttrib();
 	att_list.push_back(chamber_centroid_y);
 
-	//      Attribute : ChamberXProjFitCenter
-	ChamberXProjFitCenterAttrib *chamber_xproj_fit_center = new ChamberXProjFitCenterAttrib();
-	Tango::UserDefaultAttrProp      chamber_xproj_fit_center_prop;
-	chamber_xproj_fit_center_prop.set_label("X Proj Fit Center");
-	chamber_xproj_fit_center_prop.set_unit("µm");
-	chamber_xproj_fit_center_prop.set_format("%10.2f");
-	chamber_xproj_fit_center_prop.set_description("the X position of the center of the fitted gaussian corresponding to the X projection relative to Chamber");
-	chamber_xproj_fit_center->set_default_properties(chamber_xproj_fit_center_prop);
+	//	Attribute : ChamberXProjFitCenter
+	ChamberXProjFitCenterAttrib	*chamber_xproj_fit_center = new ChamberXProjFitCenterAttrib();
 	att_list.push_back(chamber_xproj_fit_center);
 
-	//      Attribute : ChamberYProjFitCenter
-	ChamberYProjFitCenterAttrib *chamber_yproj_fit_center = new ChamberYProjFitCenterAttrib();
-	Tango::UserDefaultAttrProp      chamber_yproj_fit_center_prop;
-	chamber_yproj_fit_center_prop.set_label("X Proj Fit Center");
-	chamber_yproj_fit_center_prop.set_unit("µm");
-	chamber_yproj_fit_center_prop.set_format("%10.2f");
-	chamber_yproj_fit_center_prop.set_description("the X position of the center of the fitted gaussian corresponding to the X projection relative to Chamber");
-	chamber_yproj_fit_center->set_default_properties(chamber_yproj_fit_center_prop);
+	//	Attribute : ChamberYProjFitCenter
+	ChamberYProjFitCenterAttrib	*chamber_yproj_fit_center = new ChamberYProjFitCenterAttrib();
 	att_list.push_back(chamber_yproj_fit_center);
 
 	//	Attribute : UserROIOriginX
@@ -808,7 +790,7 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	CentroidXAttrib	*centroid_x = new CentroidXAttrib();
 	Tango::UserDefaultAttrProp	centroid_x_prop;
 	centroid_x_prop.set_label("CentroidX");
-	centroid_x_prop.set_unit("µm");
+	centroid_x_prop.set_unit("ï¿½m");
 	centroid_x_prop.set_format("%10.2f");
 	centroid_x_prop.set_description("the X coordinate of the centroid");
 	centroid_x->set_default_properties(centroid_x_prop);
@@ -818,7 +800,7 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	CentroidYAttrib	*centroid_y = new CentroidYAttrib();
 	Tango::UserDefaultAttrProp	centroid_y_prop;
 	centroid_y_prop.set_label("CentroidY");
-	centroid_y_prop.set_unit("µm");
+	centroid_y_prop.set_unit("ï¿½m");
 	centroid_y_prop.set_format("%10.2f");
 	centroid_y_prop.set_description("the Y coordinate of the centroid");
 	centroid_y->set_default_properties(centroid_y_prop);
@@ -836,7 +818,7 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	VarianceXAttrib	*variance_x = new VarianceXAttrib();
 	Tango::UserDefaultAttrProp	variance_x_prop;
 	variance_x_prop.set_label("VarianceX");
-	variance_x_prop.set_unit("µm²");
+	variance_x_prop.set_unit("ï¿½mï¿½");
 	variance_x_prop.set_format("%10.2f");
 	variance_x_prop.set_description("the variance along the X axis");
 	variance_x->set_default_properties(variance_x_prop);
@@ -846,7 +828,7 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	VarianceYAttrib	*variance_y = new VarianceYAttrib();
 	Tango::UserDefaultAttrProp	variance_y_prop;
 	variance_y_prop.set_label("VarianceY");
-	variance_y_prop.set_unit("µm²");
+	variance_y_prop.set_unit("ï¿½mï¿½");
 	variance_y_prop.set_format("%10.2f");
 	variance_y_prop.set_description("the variance along the Y axis");
 	variance_y->set_default_properties(variance_y_prop);
@@ -856,7 +838,7 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	CovarianceXYAttrib	*covariance_xy = new CovarianceXYAttrib();
 	Tango::UserDefaultAttrProp	covariance_xy_prop;
 	covariance_xy_prop.set_label("Covariance X-Y");
-	covariance_xy_prop.set_unit("µm²");
+	covariance_xy_prop.set_unit("ï¿½mï¿½");
 	covariance_xy_prop.set_format("%10.2f");
 	covariance_xy_prop.set_description("the covariance with respect to the X and Y axis");
 	covariance_xy->set_default_properties(covariance_xy_prop);
@@ -876,7 +858,7 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	SkewXAttrib	*skew_x = new SkewXAttrib();
 	Tango::UserDefaultAttrProp	skew_x_prop;
 	skew_x_prop.set_label("Skew X^3");
-	skew_x_prop.set_unit("µm3");
+	skew_x_prop.set_unit("ï¿½m3");
 	skew_x_prop.set_format("%10.2f");
 	skew_x_prop.set_description("the skew along the X axis");
 	skew_x->set_default_properties(skew_x_prop);
@@ -886,7 +868,7 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	SkewYAttrib	*skew_y = new SkewYAttrib();
 	Tango::UserDefaultAttrProp	skew_y_prop;
 	skew_y_prop.set_label("Skew Y^3");
-	skew_y_prop.set_unit("µm3");
+	skew_y_prop.set_unit("ï¿½m3");
 	skew_y_prop.set_format("%10.2f");
 	skew_y_prop.set_description("the skew along the Y axis");
 	skew_y->set_default_properties(skew_y_prop);
@@ -895,20 +877,20 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	//	Attribute : SkewX2Y
 	SkewX2YAttrib	*skew_x2_y = new SkewX2YAttrib();
 	Tango::UserDefaultAttrProp	skew_x2_y_prop;
-	skew_x2_y_prop.set_label("Skew X².Y");
-	skew_x2_y_prop.set_unit("µm3");
+	skew_x2_y_prop.set_label("Skew Xï¿½.Y");
+	skew_x2_y_prop.set_unit("ï¿½m3");
 	skew_x2_y_prop.set_format("%10.2f");
-	skew_x2_y_prop.set_description("the skew cross coefficient for X².Y");
+	skew_x2_y_prop.set_description("the skew cross coefficient for Xï¿½.Y");
 	skew_x2_y->set_default_properties(skew_x2_y_prop);
 	att_list.push_back(skew_x2_y);
 
 	//	Attribute : SkewXY2
 	SkewXY2Attrib	*skew_xy2 = new SkewXY2Attrib();
 	Tango::UserDefaultAttrProp	skew_xy2_prop;
-	skew_xy2_prop.set_label("Skew X.Y²");
-	skew_xy2_prop.set_unit("µm3");
+	skew_xy2_prop.set_label("Skew X.Yï¿½");
+	skew_xy2_prop.set_unit("ï¿½m3");
 	skew_xy2_prop.set_format("%10.2f");
-	skew_xy2_prop.set_description("the skew cross coefficient for X.Y²");
+	skew_xy2_prop.set_description("the skew cross coefficient for X.Yï¿½");
 	skew_xy2->set_default_properties(skew_xy2_prop);
 	att_list.push_back(skew_xy2);
 
@@ -924,7 +906,7 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	XProjFitCenterAttrib	*xproj_fit_center = new XProjFitCenterAttrib();
 	Tango::UserDefaultAttrProp	xproj_fit_center_prop;
 	xproj_fit_center_prop.set_label("X Projection Fit Center");
-	xproj_fit_center_prop.set_unit("µm");
+	xproj_fit_center_prop.set_unit("ï¿½m");
 	xproj_fit_center_prop.set_format("%10.2f");
 	xproj_fit_center_prop.set_description("the X position of the center of the fitted gaussian corresponding to the X projection");
 	xproj_fit_center->set_default_properties(xproj_fit_center_prop);
@@ -944,7 +926,7 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	XProjFitSigmaAttrib	*xproj_fit_sigma = new XProjFitSigmaAttrib();
 	Tango::UserDefaultAttrProp	xproj_fit_sigma_prop;
 	xproj_fit_sigma_prop.set_label("X Projection Fit Sigma");
-	xproj_fit_sigma_prop.set_unit("µm");
+	xproj_fit_sigma_prop.set_unit("ï¿½m");
 	xproj_fit_sigma_prop.set_format("%10.2f");
 	xproj_fit_sigma_prop.set_description("the standard deviation of  fitted gaussian corresponding to the X projection");
 	xproj_fit_sigma->set_default_properties(xproj_fit_sigma_prop);
@@ -954,7 +936,7 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	XProjFitFWHMAttrib	*xproj_fit_fwhm = new XProjFitFWHMAttrib();
 	Tango::UserDefaultAttrProp	xproj_fit_fwhm_prop;
 	xproj_fit_fwhm_prop.set_label("X Projection Fit FWHM");
-	xproj_fit_fwhm_prop.set_unit("µm");
+	xproj_fit_fwhm_prop.set_unit("ï¿½m");
 	xproj_fit_fwhm_prop.set_format("%10.2f");
 	xproj_fit_fwhm_prop.set_description("the full width at half maximum of the fitted gaussian corresponding to the X projection, calculated as approximately 2.35 * XProjFitSigma");
 	xproj_fit_fwhm->set_default_properties(xproj_fit_fwhm_prop);
@@ -992,7 +974,7 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	YProjFitCenterAttrib	*yproj_fit_center = new YProjFitCenterAttrib();
 	Tango::UserDefaultAttrProp	yproj_fit_center_prop;
 	yproj_fit_center_prop.set_label("Y Projection Fit Center");
-	yproj_fit_center_prop.set_unit("µm");
+	yproj_fit_center_prop.set_unit("ï¿½m");
 	yproj_fit_center_prop.set_format("%10.2f");
 	yproj_fit_center_prop.set_description("the Y position of the center of the fitted gaussian corresponding to the Y projection");
 	yproj_fit_center->set_default_properties(yproj_fit_center_prop);
@@ -1012,7 +994,7 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	YProjFitSigmaAttrib	*yproj_fit_sigma = new YProjFitSigmaAttrib();
 	Tango::UserDefaultAttrProp	yproj_fit_sigma_prop;
 	yproj_fit_sigma_prop.set_label("Y Projection Fit Sigma");
-	yproj_fit_sigma_prop.set_unit("µm");
+	yproj_fit_sigma_prop.set_unit("ï¿½m");
 	yproj_fit_sigma_prop.set_format("%10.2f");
 	yproj_fit_sigma_prop.set_description("the standard deviation of  fitted gaussian corresponding to the Y projection");
 	yproj_fit_sigma->set_default_properties(yproj_fit_sigma_prop);
@@ -1022,7 +1004,7 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	YProjFitFWHMAttrib	*yproj_fit_fwhm = new YProjFitFWHMAttrib();
 	Tango::UserDefaultAttrProp	yproj_fit_fwhm_prop;
 	yproj_fit_fwhm_prop.set_label("Y Projection Fit FWHM");
-	yproj_fit_fwhm_prop.set_unit("µm");
+	yproj_fit_fwhm_prop.set_unit("ï¿½m");
 	yproj_fit_fwhm_prop.set_format("%10.2f");
 	yproj_fit_fwhm_prop.set_description("the full width at half maximum of the fitted gaussian corresponding to the Y projection, calculated approximately as 2.35 * YProjFitSigma");
 	yproj_fit_fwhm->set_default_properties(yproj_fit_fwhm_prop);
@@ -1138,7 +1120,7 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	GaussianFitCenterXAttrib	*gaussian_fit_center_x = new GaussianFitCenterXAttrib();
 	Tango::UserDefaultAttrProp	gaussian_fit_center_x_prop;
 	gaussian_fit_center_x_prop.set_label("GaussianFitCenterX");
-	gaussian_fit_center_x_prop.set_unit("µm");
+	gaussian_fit_center_x_prop.set_unit("ï¿½m");
 	gaussian_fit_center_x_prop.set_format("%10.2f");
 	gaussian_fit_center_x_prop.set_description("the X coordinate of the centroid of the 2D gaussian fitted to the image");
 	gaussian_fit_center_x->set_default_properties(gaussian_fit_center_x_prop);
@@ -1148,7 +1130,7 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	GaussianFitCenterYAttrib	*gaussian_fit_center_y = new GaussianFitCenterYAttrib();
 	Tango::UserDefaultAttrProp	gaussian_fit_center_y_prop;
 	gaussian_fit_center_y_prop.set_label("GaussianFitCenterY");
-	gaussian_fit_center_y_prop.set_unit("µm");
+	gaussian_fit_center_y_prop.set_unit("ï¿½m");
 	gaussian_fit_center_y_prop.set_format("%10.2f");
 	gaussian_fit_center_y_prop.set_description("the Y coordinate of the centroid of the 2D gaussian fitted to the image");
 	gaussian_fit_center_y->set_default_properties(gaussian_fit_center_y_prop);
@@ -1158,7 +1140,7 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	GaussianFitVarianceXAttrib	*gaussian_fit_variance_x = new GaussianFitVarianceXAttrib();
 	Tango::UserDefaultAttrProp	gaussian_fit_variance_x_prop;
 	gaussian_fit_variance_x_prop.set_label("GaussianFitVarianceX");
-	gaussian_fit_variance_x_prop.set_unit("µm²");
+	gaussian_fit_variance_x_prop.set_unit("ï¿½mï¿½");
 	gaussian_fit_variance_x_prop.set_format("%10.2f");
 	gaussian_fit_variance_x_prop.set_description("the variance of the 2D gaussian along the X axis");
 	gaussian_fit_variance_x->set_default_properties(gaussian_fit_variance_x_prop);
@@ -1168,7 +1150,7 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	GaussianFitVarianceYAttrib	*gaussian_fit_variance_y = new GaussianFitVarianceYAttrib();
 	Tango::UserDefaultAttrProp	gaussian_fit_variance_y_prop;
 	gaussian_fit_variance_y_prop.set_label("GaussianFitVarianceY");
-	gaussian_fit_variance_y_prop.set_unit("µm²");
+	gaussian_fit_variance_y_prop.set_unit("ï¿½mï¿½");
 	gaussian_fit_variance_y_prop.set_format("%10.2f");
 	gaussian_fit_variance_y_prop.set_description("the variance of the 2D gaussian along the Y axis");
 	gaussian_fit_variance_y->set_default_properties(gaussian_fit_variance_y_prop);
@@ -1178,7 +1160,7 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	GaussianFitCovarianceXYAttrib	*gaussian_fit_covariance_xy = new GaussianFitCovarianceXYAttrib();
 	Tango::UserDefaultAttrProp	gaussian_fit_covariance_xy_prop;
 	gaussian_fit_covariance_xy_prop.set_label("GaussianFitCovarianceXY");
-	gaussian_fit_covariance_xy_prop.set_unit("µm²");
+	gaussian_fit_covariance_xy_prop.set_unit("ï¿½mï¿½");
 	gaussian_fit_covariance_xy_prop.set_format("%10.2f");
 	gaussian_fit_covariance_xy_prop.set_description("the covariance of the 2D gaussian");
 	gaussian_fit_covariance_xy->set_default_properties(gaussian_fit_covariance_xy_prop);
@@ -1188,7 +1170,7 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	GaussianFitMajorAxisFWHMAttrib	*gaussian_fit_major_axis_fwhm = new GaussianFitMajorAxisFWHMAttrib();
 	Tango::UserDefaultAttrProp	gaussian_fit_major_axis_fwhm_prop;
 	gaussian_fit_major_axis_fwhm_prop.set_label("GaussianFitMajorAxisFWHM");
-	gaussian_fit_major_axis_fwhm_prop.set_unit("µm");
+	gaussian_fit_major_axis_fwhm_prop.set_unit("ï¿½m");
 	gaussian_fit_major_axis_fwhm_prop.set_format("%10.2f");
 	gaussian_fit_major_axis_fwhm_prop.set_description("the FWHM along the major axis of the fitted gaussian, calculated approximately as 2.35 * sqrt(GaussianFitVarianceX)");
 	gaussian_fit_major_axis_fwhm->set_default_properties(gaussian_fit_major_axis_fwhm_prop);
@@ -1198,7 +1180,7 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	GaussianFitMinorAxisFWHMAttrib	*gaussian_fit_minor_axis_fwhm = new GaussianFitMinorAxisFWHMAttrib();
 	Tango::UserDefaultAttrProp	gaussian_fit_minor_axis_fwhm_prop;
 	gaussian_fit_minor_axis_fwhm_prop.set_label("GaussianFitMinorAxisFWHM");
-	gaussian_fit_minor_axis_fwhm_prop.set_unit("µm");
+	gaussian_fit_minor_axis_fwhm_prop.set_unit("ï¿½m");
 	gaussian_fit_minor_axis_fwhm_prop.set_format("%10.2f");
 	gaussian_fit_minor_axis_fwhm_prop.set_description("the FWHM along the minor axis of the fitted gaussian, calculated approximately as 2.35 * sqrt(GaussianFitVarianceY)");
 	gaussian_fit_minor_axis_fwhm->set_default_properties(gaussian_fit_minor_axis_fwhm_prop);
@@ -1208,7 +1190,7 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	GaussianFitTiltAttrib	*gaussian_fit_tilt = new GaussianFitTiltAttrib();
 	Tango::UserDefaultAttrProp	gaussian_fit_tilt_prop;
 	gaussian_fit_tilt_prop.set_label("GaussianFitTilt");
-	gaussian_fit_tilt_prop.set_unit("°");
+	gaussian_fit_tilt_prop.set_unit("ï¿½");
 	gaussian_fit_tilt_prop.set_format("%10.2f");
 	gaussian_fit_tilt_prop.set_description("the angle made by the major axis of the gaussian and the X axis");
 	gaussian_fit_tilt->set_default_properties(gaussian_fit_tilt_prop);
@@ -1370,7 +1352,7 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	RmsXAttrib	*rms_x = new RmsXAttrib();
 	Tango::UserDefaultAttrProp	rms_x_prop;
 	rms_x_prop.set_label("RmsX");
-	rms_x_prop.set_unit("µm");
+	rms_x_prop.set_unit("ï¿½m");
 	rms_x_prop.set_format("%10.3f");
 	rms_x_prop.set_description("the variance square root along the X axis");
 	rms_x->set_default_properties(rms_x_prop);
@@ -1380,7 +1362,7 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	RmsYAttrib	*rms_y = new RmsYAttrib();
 	Tango::UserDefaultAttrProp	rms_y_prop;
 	rms_y_prop.set_label("RmsY");
-	rms_y_prop.set_unit("µm");
+	rms_y_prop.set_unit("ï¿½m");
 	rms_y_prop.set_format("%10.3f");
 	rms_y_prop.set_description("the variance square root along the Y axis");
 	rms_y->set_default_properties(rms_y_prop);
@@ -1524,12 +1506,6 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	gaussian_fit_parameter_covariance->set_disp_level(Tango::EXPERT);
 	att_list.push_back(gaussian_fit_parameter_covariance);
 
-	ImageCounterAttrib *image_counter = new ImageCounterAttrib();
-	Tango::UserDefaultAttrProp image_counter_prop;
-	image_counter_prop.set_format("%10d");
-	image_counter->set_default_properties(image_counter_prop);
-	image_counter->set_change_event(true, false);
-	att_list.push_back(image_counter);
 	//	End of Automatic code generation
 	//-------------------------------------------------------------
 }
@@ -1599,6 +1575,7 @@ void ImgBeamAnalyzerClass::set_default_property()
 	prop_name = "AutoROIMagFactorY";
 	prop_desc = "initial value of AutoROIMagFactorY attribute. if not defined, it is set to 1";
 	prop_def  = "";
+	vect_data.clear();
 	if (prop_def.length()>0)
 	{
 		Tango::DbDatum	data(prop_name);
@@ -1642,6 +1619,7 @@ void ImgBeamAnalyzerClass::set_default_property()
 	prop_name = "BitsPerPixel";
 	prop_desc = "the initial value of the BitsPerPixel attribute";
 	prop_def  = "";
+	vect_data.clear();
 	if (prop_def.length()>0)
 	{
 		Tango::DbDatum	data(prop_name);
@@ -1700,6 +1678,7 @@ void ImgBeamAnalyzerClass::set_default_property()
 	prop_name = "EnableHistogram";
 	prop_desc = "the initial value of the EnableHistogram attribute";
 	prop_def  = "";
+	vect_data.clear();
 	if (prop_def.length()>0)
 	{
 		Tango::DbDatum	data(prop_name);
@@ -1758,6 +1737,7 @@ void ImgBeamAnalyzerClass::set_default_property()
 	prop_name = "GammaCorrection";
 	prop_desc = "the initial value of the GammaCorrection attribute";
 	prop_def  = "";
+	vect_data.clear();
 	if (prop_def.length()>0)
 	{
 		Tango::DbDatum	data(prop_name);
@@ -1771,6 +1751,7 @@ void ImgBeamAnalyzerClass::set_default_property()
 	prop_name = "HistogramNbBins";
 	prop_desc = "the initial value of the HistogramNbBins attribute";
 	prop_def  = "";
+	vect_data.clear();
 	if (prop_def.length()>0)
 	{
 		Tango::DbDatum	data(prop_name);
@@ -1784,6 +1765,7 @@ void ImgBeamAnalyzerClass::set_default_property()
 	prop_name = "HistogramRangeMax";
 	prop_desc = "the upper bound of the histogram bins. must be <= 2^BitsPerPixel";
 	prop_def  = "";
+	vect_data.clear();
 	if (prop_def.length()>0)
 	{
 		Tango::DbDatum	data(prop_name);
@@ -1797,6 +1779,7 @@ void ImgBeamAnalyzerClass::set_default_property()
 	prop_name = "HistogramRangeMin";
 	prop_desc = "the lower bound of the histogram bins. must be >= 0";
 	prop_def  = "";
+	vect_data.clear();
 	if (prop_def.length()>0)
 	{
 		Tango::DbDatum	data(prop_name);
@@ -1810,6 +1793,7 @@ void ImgBeamAnalyzerClass::set_default_property()
 	prop_name = "HorizontalFlip";
 	prop_desc = "the initial value of the HorizontalFlip attribute";
 	prop_def  = "";
+	vect_data.clear();
 	if (prop_def.length()>0)
 	{
 		Tango::DbDatum	data(prop_name);
@@ -1823,6 +1807,7 @@ void ImgBeamAnalyzerClass::set_default_property()
 	prop_name = "ImageAttributeName";
 	prop_desc = "the name of the image attribute to take in ImageDevice";
 	prop_def  = "";
+	vect_data.clear();
 	if (prop_def.length()>0)
 	{
 		Tango::DbDatum	data(prop_name);
@@ -1836,6 +1821,7 @@ void ImgBeamAnalyzerClass::set_default_property()
 	prop_name = "ImageCounterAttrName";
 	prop_desc = "the name of the imageCounter attribute to take in ImageDevice";
 	prop_def  = "";
+	vect_data.clear();
 	if (prop_def.length()>0)
 	{
 		Tango::DbDatum	data(prop_name);
@@ -1849,6 +1835,7 @@ void ImgBeamAnalyzerClass::set_default_property()
 	prop_name = "ImageDevice";
 	prop_desc = "the device from which the image is taken";
 	prop_def  = "";
+	vect_data.clear();
 	if (prop_def.length()>0)
 	{
 		Tango::DbDatum	data(prop_name);
@@ -1877,6 +1864,7 @@ void ImgBeamAnalyzerClass::set_default_property()
 	prop_name = "OpticalMagnification";
 	prop_desc = "the initial value of the OpticalMagnification attribute";
 	prop_def  = "";
+	vect_data.clear();
 	if (prop_def.length()>0)
 	{
 		Tango::DbDatum	data(prop_name);
@@ -1890,6 +1878,7 @@ void ImgBeamAnalyzerClass::set_default_property()
 	prop_name = "PixelSizeX";
 	prop_desc = "the initial value of the PixelSizeX attribute";
 	prop_def  = "";
+	vect_data.clear();
 	if (prop_def.length()>0)
 	{
 		Tango::DbDatum	data(prop_name);
@@ -1903,6 +1892,7 @@ void ImgBeamAnalyzerClass::set_default_property()
 	prop_name = "PixelSizeY";
 	prop_desc = "the initial value of the PixelSizeY attribute";
 	prop_def  = "";
+	vect_data.clear();
 	if (prop_def.length()>0)
 	{
 		Tango::DbDatum	data(prop_name);
@@ -1916,6 +1906,7 @@ void ImgBeamAnalyzerClass::set_default_property()
 	prop_name = "ProfileFitFixedBg";
 	prop_desc = "the initial value of the ProfileFitFixedBg attribute";
 	prop_def  = "";
+	vect_data.clear();
 	if (prop_def.length()>0)
 	{
 		Tango::DbDatum	data(prop_name);
@@ -1929,6 +1920,7 @@ void ImgBeamAnalyzerClass::set_default_property()
 	prop_name = "Rotation";
 	prop_desc = "the initial value of the Rotation attribute";
 	prop_def  = "";
+	vect_data.clear();
 	if (prop_def.length()>0)
 	{
 		Tango::DbDatum	data(prop_name);
@@ -1942,6 +1934,7 @@ void ImgBeamAnalyzerClass::set_default_property()
 	prop_name = "UserROIOriginX";
 	prop_desc = "The memorized value of userROIOriginX attribute when SaveCurrentSettings command is called.<br>";
 	prop_def  = "";
+	vect_data.clear();
 	if (prop_def.length()>0)
 	{
 		Tango::DbDatum	data(prop_name);
@@ -1955,6 +1948,7 @@ void ImgBeamAnalyzerClass::set_default_property()
 	prop_name = "UserROIOriginY";
 	prop_desc = "The memorized value of userROIOriginY attribute when SaveCurrentSettings command is called.<br>";
 	prop_def  = "";
+	vect_data.clear();
 	if (prop_def.length()>0)
 	{
 		Tango::DbDatum	data(prop_name);
@@ -1968,6 +1962,7 @@ void ImgBeamAnalyzerClass::set_default_property()
 	prop_name = "UserROIWidth";
 	prop_desc = "The memorized value of userROIWidth attribute when SaveCurrentSettings command is called.<br>";
 	prop_def  = "";
+	vect_data.clear();
 	if (prop_def.length()>0)
 	{
 		Tango::DbDatum	data(prop_name);
@@ -1981,6 +1976,7 @@ void ImgBeamAnalyzerClass::set_default_property()
 	prop_name = "UserROIHeight";
 	prop_desc = "The memorized value of userROIHeight attribute when SaveCurrentSettings command is called.<br>";
 	prop_def  = "";
+	vect_data.clear();
 	if (prop_def.length()>0)
 	{
 		Tango::DbDatum	data(prop_name);
@@ -1991,31 +1987,33 @@ void ImgBeamAnalyzerClass::set_default_property()
 	else
 		add_wiz_dev_prop(prop_name, prop_desc);
 
-        prop_name = "ChamberOffsetX";
-        prop_desc = "the initial value of the ChamberOffsetX attribute";
-        prop_def  = "";
-        if (prop_def.length()>0)
-        {
-                Tango::DbDatum  data(prop_name);
-                data << vect_data ;
-                dev_def_prop.push_back(data);
-                add_wiz_dev_prop(prop_name, prop_desc,  prop_def);
-        }
-        else
-                add_wiz_dev_prop(prop_name, prop_desc);
+	prop_name = "ChamberOffsetX";
+	prop_desc = "the initial value of the ChamberOffsetX attribute";
+	prop_def  = "";
+	vect_data.clear();
+	if (prop_def.length()>0)
+	{
+		Tango::DbDatum	data(prop_name);
+		data << vect_data ;
+		dev_def_prop.push_back(data);
+		add_wiz_dev_prop(prop_name, prop_desc,  prop_def);
+	}
+	else
+		add_wiz_dev_prop(prop_name, prop_desc);
 
-        prop_name = "ChamberOffsetY";
-        prop_desc = "the initial value of the ChamberOffsetY attribute";
-        prop_def  = "";
-        if (prop_def.length()>0)
-        {
-                Tango::DbDatum  data(prop_name);
-                data << vect_data ;
-                dev_def_prop.push_back(data);
-                add_wiz_dev_prop(prop_name, prop_desc,  prop_def);
-        }
-        else
-                add_wiz_dev_prop(prop_name, prop_desc);
+	prop_name = "ChamberOffsetY";
+	prop_desc = "the initial value of the ChamberOffsetY attribute";
+	prop_def  = "";
+	vect_data.clear();
+	if (prop_def.length()>0)
+	{
+		Tango::DbDatum	data(prop_name);
+		data << vect_data ;
+		dev_def_prop.push_back(data);
+		add_wiz_dev_prop(prop_name, prop_desc,  prop_def);
+	}
+	else
+		add_wiz_dev_prop(prop_name, prop_desc);
 
 }
 //+----------------------------------------------------------------------------
@@ -2058,17 +2056,23 @@ void ImgBeamAnalyzerClass::write_class_property()
 	description << str_desc;
 	data.push_back(description);
 		
-	//	put cvs location
-	string	rcsId(RcsId);
+	//	put cvs or svn location
 	string	filename(classname);
-	start = rcsId.find("/");
+	filename += "Class.cpp";
+	
+	// Create a string with the class ID to
+	// get the string into the binary
+	string	class_id(ClassId);
+	
+	// check for cvs information
+	string	src_path(CvsPath);
+	start = src_path.find("/");
 	if (start!=string::npos)
 	{
-		filename += "Class.cpp";
-		end   = rcsId.find(filename);
+		end   = src_path.find(filename);
 		if (end>start)
 		{
-			string	strloc = rcsId.substr(start, end-start);
+			string	strloc = src_path.substr(start, end-start);
 			//	Check if specific repository
 			start = strloc.find("/cvsroot/");
 			if (start!=string::npos && start>0)
@@ -2082,12 +2086,35 @@ void ImgBeamAnalyzerClass::write_class_property()
 			data.push_back(cvs_loc);
 		}
 	}
+	// check for svn information
+	else
+	{
+		string	src_path(SvnPath);
+		start = src_path.find("://");
+		if (start!=string::npos)
+		{
+			end = src_path.find(filename);
+			if (end>start)
+			{
+				header = "$HeadURL: ";
+				start = header.length();
+				string	strloc = src_path.substr(start, (end-start));
+				
+				Tango::DbDatum	svn_loc("svn_location");
+				svn_loc << strloc;
+				data.push_back(svn_loc);
+			}
+		}
+	}
 
-	//	Get CVS tag revision
+	//	Get CVS or SVN revision tag
+	
+	// CVS tag
 	string	tagname(TagName);
 	header = "$Name: ";
 	start = header.length();
 	string	endstr(" $");
+	
 	end   = tagname.find(endstr);
 	if (end!=string::npos && end>start)
 	{
@@ -2095,6 +2122,30 @@ void ImgBeamAnalyzerClass::write_class_property()
 		Tango::DbDatum	cvs_tag("cvs_tag");
 		cvs_tag << strtag;
 		data.push_back(cvs_tag);
+	}
+	
+	// SVN tag
+	string	svnpath(SvnPath);
+	header = "$HeadURL: ";
+	start = header.length();
+	
+	end   = svnpath.find(endstr);
+	if (end!=string::npos && end>start)
+	{
+		string	strloc = svnpath.substr(start, end-start);
+		
+		string tagstr ("/tags/");
+		start = strloc.find(tagstr);
+		if ( start!=string::npos )
+		{
+			start = start + tagstr.length();
+			end   = strloc.find(filename);
+			string	strtag = strloc.substr(start, end-start-1);
+			
+			Tango::DbDatum	svn_tag("svn_tag");
+			svn_tag << strtag;
+			data.push_back(svn_tag);
+		}
 	}
 
 	//	Get URL location

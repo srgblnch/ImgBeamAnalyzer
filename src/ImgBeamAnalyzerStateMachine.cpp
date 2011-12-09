@@ -1,4 +1,4 @@
-static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzerStateMachine.cpp,v 1.18 2009-12-18 13:23:53 ollupac Exp $";
+static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzerStateMachine.cpp,v 1.19 2011-12-09 15:35:20 jcpret Exp $";
 //+=============================================================================
 //
 // file :         ImgBeamAnalyzerStateMachine.cpp
@@ -8,11 +8,14 @@ static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/Im
 //
 // project :      TANGO Device Server
 //
-// $Author: ollupac $
+// $Author: jcpret $
 //
-// $Revision: 1.18 $
+// $Revision: 1.19 $
 //
 // $Log: not supported by cvs2svn $
+// Revision 1.18  2009/12/18 13:23:53  ollupac
+// New attribute: ImageCounter (and with events!)
+//
 //
 // copyleft :     European Synchrotron Radiation Facility
 //                BP 220, Grenoble 38043
@@ -1674,20 +1677,6 @@ bool ImgBeamAnalyzer::is_LineProfileFitRelChange_allowed(Tango::AttReqType type)
 //
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_LineProfileHelperImg_allowed(Tango::AttReqType type)
-{
-		//	End of Generated Code
-
-		//	Re-Start of Generated Code
-	return true;
-}
-//+----------------------------------------------------------------------------
-//
-// method : 		ImgBeamAnalyzer::is_ImageCounter_allowed
-// 
-// description : 	Read/Write allowed for ImageCounter attribute.
-//
-//-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_ImageCounter_allowed(Tango::AttReqType type)
 {
 		//	End of Generated Code
 
