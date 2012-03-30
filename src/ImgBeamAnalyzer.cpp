@@ -1,4 +1,4 @@
-static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzer.cpp,v 1.49 2011-12-09 15:35:20 jcpret Exp $";
+static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzer.cpp,v 1.50 2012-03-30 18:23:15 buteau Exp $";
 //+=============================================================================
 //
 // file :         ImgBeamAnalyzer.cpp
@@ -11,9 +11,9 @@ static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/Im
 //
 // project :      TANGO Device Server
 //
-// $Author: jcpret $
+// $Author: buteau $
 //
-// $Revision: 1.49 $
+// $Revision: 1.50 $
 //
 // $Log: not supported by cvs2svn $
 // Revision 1.48  2011/08/17 13:38:21  nleclercq
@@ -3315,6 +3315,7 @@ void ImgBeamAnalyzer::update_state()
     this->set_status(status);
   }
 };
+
 
 
 

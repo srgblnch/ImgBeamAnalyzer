@@ -1,4 +1,4 @@
-static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzerStateMachine.cpp,v 1.19 2011-12-09 15:35:20 jcpret Exp $";
+static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzerStateMachine.cpp,v 1.20 2012-03-30 18:23:15 buteau Exp $";
 //+=============================================================================
 //
 // file :         ImgBeamAnalyzerStateMachine.cpp
@@ -8,9 +8,9 @@ static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/Im
 //
 // project :      TANGO Device Server
 //
-// $Author: jcpret $
+// $Author: buteau $
 //
-// $Revision: 1.19 $
+// $Revision: 1.20 $
 //
 // $Log: not supported by cvs2svn $
 // Revision 1.18  2009/12/18 13:23:53  ollupac
@@ -1725,13 +1725,9 @@ bool ImgBeamAnalyzer::is_RmsY_allowed(Tango::AttReqType type)
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_Start_allowed(const CORBA::Any &any)
 {
-	if (get_state() == Tango::RUNNING)
-	{
 		//	End of Generated Code
 
 		//	Re-Start of Generated Code
-		return false;
-	}
 	return true;
 }
 //+----------------------------------------------------------------------------
@@ -1743,13 +1739,9 @@ bool ImgBeamAnalyzer::is_Start_allowed(const CORBA::Any &any)
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_Stop_allowed(const CORBA::Any &any)
 {
-	if (get_state() == Tango::STANDBY)
-	{
 		//	End of Generated Code
 
 		//	Re-Start of Generated Code
-		return false;
-	}
 	return true;
 }
 //+----------------------------------------------------------------------------

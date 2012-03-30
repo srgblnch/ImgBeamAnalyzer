@@ -1,0 +1,11 @@
+/**
+ * Device Class Identification:
+ * 
+ * Class Name   :	ImgBeamAnalyzer
+ * Contact      :	leclercq@synchrotron-soleil.fr
+ * Class Family :	Calculation
+ * Platform     :	All Platforms
+ * Bus          :	Not Applicable
+ * Manufacturer :	none
+ * Reference    :	
+ */
