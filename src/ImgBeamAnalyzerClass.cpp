@@ -1,7 +1,7 @@
-static const char *ClassId    = "$Id: ImgBeamAnalyzerClass.cpp,v 1.25 2011-12-09 15:35:20 jcpret Exp $";
+static const char *ClassId    = "$Id: ImgBeamAnalyzerClass.cpp,v 1.26 2012-07-09 14:05:48 sergiblanch Exp $";
 static const char *CvsPath    = "$Source: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzerClass.cpp,v $";
 static const char *SvnPath    = "$HeadURL: $";
-static const char *RcsId     = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzerClass.cpp,v 1.25 2011-12-09 15:35:20 jcpret Exp $";
+static const char *RcsId     = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzerClass.cpp,v 1.26 2012-07-09 14:05:48 sergiblanch Exp $";
 static const char *TagName   = "$Name: not supported by cvs2svn $";
 static const char *HttpServer= "http://www.esrf.fr/computing/cs/tango/tango_doc/ds_doc/";
 //+=============================================================================
@@ -15,11 +15,14 @@ static const char *HttpServer= "http://www.esrf.fr/computing/cs/tango/tango_doc/
 //
 // project :     TANGO Device Server
 //
-// $Author: jcpret $
+// $Author: sergiblanch $
 //
-// $Revision: 1.25 $
+// $Revision: 1.26 $
 //
 // $Log: not supported by cvs2svn $
+// Revision 1.25  2011/12/09 15:35:20  jcpret
+// Fixed Mantis buf 14571
+//
 // Revision 1.24  2010/04/12 08:31:45  flanglois
 // switch to impl4
 //
@@ -660,18 +663,42 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 
 	//	Attribute : ChamberCentroidX
 	ChamberCentroidXAttrib	*chamber_centroid_x = new ChamberCentroidXAttrib();
+	Tango::UserDefaultAttrProp	chamber_centroid_x_prop;
+	chamber_centroid_x_prop.set_label("Ch Centroid X");
+	chamber_centroid_x_prop.set_unit("�m");
+	chamber_centroid_x_prop.set_format("%10.2f");
+	chamber_centroid_x_prop.set_description("the X coordinate of the centroid, relative to Chamber.");
+	chamber_centroid_x->set_default_properties(chamber_centroid_x_prop);
 	att_list.push_back(chamber_centroid_x);
 
 	//	Attribute : ChamberCentroidY
 	ChamberCentroidYAttrib	*chamber_centroid_y = new ChamberCentroidYAttrib();
+	Tango::UserDefaultAttrProp	chamber_centroid_y_prop;
+	chamber_centroid_y_prop.set_label("Ch Centroid Y");
+	chamber_centroid_y_prop.set_unit("�m");
+	chamber_centroid_y_prop.set_format("%10.2f");
+	chamber_centroid_y_prop.set_description("the Y coordinate of the centroid, relative to Chamber.");
+	chamber_centroid_y->set_default_properties(chamber_centroid_y_prop);
 	att_list.push_back(chamber_centroid_y);
 
 	//	Attribute : ChamberXProjFitCenter
 	ChamberXProjFitCenterAttrib	*chamber_xproj_fit_center = new ChamberXProjFitCenterAttrib();
+	Tango::UserDefaultAttrProp	chamber_xproj_fit_center_prop;
+	chamber_xproj_fit_center_prop.set_label("X Proj Fit Center");
+	chamber_xproj_fit_center_prop.set_unit("�m");
+	chamber_xproj_fit_center_prop.set_format("%10.2f");
+	chamber_xproj_fit_center_prop.set_description("the X position of the center of the fitted gaussian corresponding to the X projection relative to Chamber");
+	chamber_xproj_fit_center->set_default_properties(chamber_xproj_fit_center_prop);
 	att_list.push_back(chamber_xproj_fit_center);
 
 	//	Attribute : ChamberYProjFitCenter
 	ChamberYProjFitCenterAttrib	*chamber_yproj_fit_center = new ChamberYProjFitCenterAttrib();
+	Tango::UserDefaultAttrProp	chamber_yproj_fit_center_prop;
+	chamber_yproj_fit_center_prop.set_label("X Proj Fit Center");
+	chamber_yproj_fit_center_prop.set_unit("�m");
+	chamber_yproj_fit_center_prop.set_format("%10.2f");
+	chamber_yproj_fit_center_prop.set_description("the X position of the center of the fitted gaussian corresponding to the X projection relative to Chamber");
+	chamber_yproj_fit_center->set_default_properties(chamber_yproj_fit_center_prop);
 	att_list.push_back(chamber_yproj_fit_center);
 
 	//	Attribute : UserROIOriginX
@@ -813,6 +840,22 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	centroid_saturated_prop.set_description("Is the pixel area around the centroid saturated?");
 	centroid_saturated->set_default_properties(centroid_saturated_prop);
 	att_list.push_back(centroid_saturated);
+
+	//	Attribute : CentroidSaturationRegionSide
+	CentroidSaturationRegionSideAttrib *centroid_side = new CentroidSaturationRegionSideAttrib();
+	Tango::UserDefaultAttrProp	centroid_side_prop;
+	centroid_side_prop.set_label("CentroidSaturationRegionSide");
+	centroid_side_prop.set_description("See CentroidSaturated.");
+	centroid_side->set_default_properties(centroid_side_prop);
+	att_list.push_back(centroid_side);
+
+	//	Attribute : CentroidSaturationRegionThreshold
+	CentroidSaturationRegionThresholdAttrib *centroid_threshold = new CentroidSaturationRegionThresholdAttrib();
+	Tango::UserDefaultAttrProp	centroid_threshold_prop;
+	centroid_threshold_prop.set_label("CentroidSaturationRegionThreshold");
+	centroid_threshold_prop.set_description("See CentroidSaturated.");
+	centroid_threshold->set_default_properties(centroid_threshold_prop);
+	att_list.push_back(centroid_threshold);
 
 	//	Attribute : VarianceX
 	VarianceXAttrib	*variance_x = new VarianceXAttrib();
@@ -1506,6 +1549,12 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	gaussian_fit_parameter_covariance->set_disp_level(Tango::EXPERT);
 	att_list.push_back(gaussian_fit_parameter_covariance);
 
+	ImageCounterAttrib *image_counter = new ImageCounterAttrib();
+	Tango::UserDefaultAttrProp image_counter_prop;
+	image_counter_prop.set_format("%10d");
+	image_counter->set_default_properties(image_counter_prop);
+	image_counter->set_change_event(true, false);
+	att_list.push_back(image_counter);
 	//	End of Automatic code generation
 	//-------------------------------------------------------------
 }
@@ -1847,7 +1896,7 @@ void ImgBeamAnalyzerClass::set_default_property()
 		add_wiz_dev_prop(prop_name, prop_desc);
 
 	prop_name = "Mode";
-	prop_desc = "ONESHOT or CONTINUOUS";
+	prop_desc = "ONESHOT or CONTINUOUS or EVENT";
 	prop_def  = "ONESHOT";
 	vect_data.clear();
 	vect_data.push_back("ONESHOT");
@@ -2008,6 +2057,32 @@ void ImgBeamAnalyzerClass::set_default_property()
 	if (prop_def.length()>0)
 	{
 		Tango::DbDatum	data(prop_name);
+		data << vect_data ;
+		dev_def_prop.push_back(data);
+		add_wiz_dev_prop(prop_name, prop_desc,  prop_def);
+	}
+	else
+		add_wiz_dev_prop(prop_name, prop_desc);
+
+	prop_name = "CentroidSaturationRegionSide";
+	prop_desc = "the initial value of the CentroidSaturationRegionSide attribute";
+	prop_def  = "5";
+	if (prop_def.length()>0)
+	{
+		Tango::DbDatum  data(prop_name);
+		data << vect_data ;
+		dev_def_prop.push_back(data);
+		add_wiz_dev_prop(prop_name, prop_desc,  prop_def);
+	}
+	else
+		add_wiz_dev_prop(prop_name, prop_desc);
+
+	prop_name = "CentroidSaturationRegionThreshold";
+	prop_desc = "the initial value of the CentroidSaturationRegionThreshold attribute";
+	prop_def  = "5";
+	if (prop_def.length()>0)
+	{
+		Tango::DbDatum  data(prop_name);
 		data << vect_data ;
 		dev_def_prop.push_back(data);
 		add_wiz_dev_prop(prop_name, prop_desc,  prop_def);

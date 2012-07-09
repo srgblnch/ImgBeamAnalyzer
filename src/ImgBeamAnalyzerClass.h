@@ -10,11 +10,14 @@
 //			
 // project :      TANGO Device Server
 //
-// $Author: jcpret $
+// $Author: sergiblanch $
 //
-// $Revision: 1.21 $
+// $Revision: 1.22 $
 //
 // $Log: not supported by cvs2svn $
+// Revision 1.21  2011/12/09 15:35:20  jcpret
+// Fixed Mantis buf 14571
+//
 // Revision 1.20  2009/12/18 13:23:53  ollupac
 // New attribute: ImageCounter (and with events!)
 //
@@ -892,6 +895,34 @@ public:
 	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_CentroidSaturated_allowed(ty);}
 };
 
+class CentroidSaturationRegionSideAttrib: public Tango::Attr
+{
+public:
+	CentroidSaturationRegionSideAttrib():Attr("CentroidSaturationRegionSide", Tango::DEV_LONG, Tango::READ_WRITE) {};
+	~CentroidSaturationRegionSideAttrib() {};
+
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_CentroidSaturationRegionSide(att);}
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+	{(static_cast<ImgBeamAnalyzer *>(dev))->write_CentroidSaturationRegionSide(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_CentroidSaturationRegionSide_allowed(ty);}
+};
+
+class CentroidSaturationRegionThresholdAttrib: public Tango::Attr
+{
+public:
+	CentroidSaturationRegionThresholdAttrib():Attr("CentroidSaturationRegionThreshold", Tango::DEV_LONG, Tango::READ_WRITE) {};
+	~CentroidSaturationRegionThresholdAttrib() {};
+
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_CentroidSaturationRegionThreshold(att);}
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+	{(static_cast<ImgBeamAnalyzer *>(dev))->write_CentroidSaturationRegionThreshold(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_CentroidSaturationRegionThreshold_allowed(ty);}
+};
+
 class CentroidYAttrib: public Tango::Attr
 {
 public:
@@ -1534,6 +1565,18 @@ public:
 	{(static_cast<ImgBeamAnalyzer *>(dev))->write_EnableImageStats(att);}
 	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
 	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_EnableImageStats_allowed(ty);}
+};
+
+class ImageCounterAttrib: public Tango::Attr
+{
+public:
+	ImageCounterAttrib():Attr("ImageCounter", Tango::DEV_ULONG, Tango::READ) {};
+	~ImageCounterAttrib() {}
+
+        virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+        {(static_cast<ImgBeamAnalyzer *>(dev))->read_ImageCounter(att);}
+        virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+        {return (static_cast<ImgBeamAnalyzer *>(dev))->is_ImageCounter_allowed(ty);}
 };
 
 //=========================================

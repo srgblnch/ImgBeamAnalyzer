@@ -203,6 +203,9 @@ void IBASourceTango::get_image(ImageAndInfo & imginf) throw (yat::Exception)
       case Tango::DEV_LONG:
         image = new isl::Image(dim_x, dim_y, isl::ISL_STORAGE_LONG);
         break;
+      case Tango::DEV_ULONG:
+        image = new isl::Image(dim_x, dim_y, isl::ISL_STORAGE_ULONG);
+        break;
       default:  // to avoid "bad_alloc" exception
         image = new isl::Image(dim_x, dim_y, isl::ISL_STORAGE_USHORT);
         break;

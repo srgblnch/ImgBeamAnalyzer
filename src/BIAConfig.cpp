@@ -49,6 +49,8 @@ namespace ImgBeamAnalyzer_ns
   const yat_int32_t kDEFAULT_HISTO_RANGE_MAX = 0; //- means : 2^pixel_depth
   const yat_int32_t kDEFAULT_BG_SUBSTRACTION = 0;
   const yat_int32_t kDEFAULT_PROFILE_THICKNESS = 1;
+  const yat_int32_t kDEFAULT_CENTROID_SATURATION_REGION_SIDE = 20;
+  const yat_int32_t kDEFAULT_CENTROID_SATURATION_REGION_THRESHOLD = 5;
 
   BIAConfig::BIAConfig() :
     enable_image_stats(kDEFAULT_ENABLE_IMAGE_STATS),
@@ -88,7 +90,9 @@ namespace ImgBeamAnalyzer_ns
     profile_end_y(0),
     profile_thickness(kDEFAULT_PROFILE_THICKNESS),
     chamber_offset_x(0.0),
-    chamber_offset_y(0.0)
+    chamber_offset_y(0.0),
+    centroid_saturation_region_side(kDEFAULT_CENTROID_SATURATION_REGION_SIDE),
+    centroid_saturation_region_threshold(kDEFAULT_CENTROID_SATURATION_REGION_THRESHOLD)
   {}
 
   bool BIAConfig::is_user_roi_empty(void) const
@@ -132,7 +136,8 @@ namespace ImgBeamAnalyzer_ns
     CHECK( this->histo_range_max       < 0   , "HistogramRangeMax must be positive" );
     CHECK( this->histo_range_max > 0 && this->histo_range_min >= this->histo_range_max  , "HistogramRangeMin must be inferior to HistogramRangeMax" );
     CHECK( this->histo_range_max > ((1 << pixel_depth) - 1) , "HistogramRangeMax must be inferior to 2^PixelDepth - 1" );
-
+    CHECK( this->centroid_saturation_region_side < 0, "CentroidSaturationRegionSide must be positive" );
+    CHECK( this->centroid_saturation_region_threshold < 0, "CentroidSaturationRegionThreshold must be positive" );
   }
 
 } // namespace

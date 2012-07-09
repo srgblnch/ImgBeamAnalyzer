@@ -87,7 +87,7 @@ namespace ImgBeamAnalyzer_ns
 
   //- the scale factor used to convert the sigma of a distribution to its Full Width at Half Maximum
   //- it is approximately 2.35
-  const double SIGMA2FWHM_SCALE_FACTOR = ::sqrt( 8.0f * ::log(2.0f) ); 
+  const double SIGMA2FWHM_SCALE_FACTOR = ::sqrt( 8.0f * ::log(2.0f) );
   const int K_32_BIT_DATA = 32;
 
   ISL2YATException::ISL2YATException(const isl::Exception& ex)
@@ -197,7 +197,7 @@ namespace ImgBeamAnalyzer_ns
         data.roi_image.set_dimensions( roi.width(), roi.height() );
         short_roi_image.set_dimensions( roi.width(), roi.height() );
         roi_image->serialize(short_roi_image.base());
-        
+
         for( size_t i = 0; i < roi.width() * roi.height(); i++ )
         {
           data.roi_image[i] = (unsigned long)short_roi_image[i];
@@ -540,7 +540,7 @@ namespace ImgBeamAnalyzer_ns
           data.xproj_nb_iter = gaussian_fit.nb_iter();
           data.xproj_eps     = gaussian_fit.epsilon();
 
-          data.chamber_xproj_center = data.xproj_center - config.chamber_offset_x;
+          data.chamber_xproj_center = - data.xproj_center + config.chamber_offset_x;
         
           for (int i = 0; i < projections.size_x(); i++)
           {
@@ -796,7 +796,7 @@ namespace ImgBeamAnalyzer_ns
         data.skew_xy2       = img_moments.mu12() / m00 * px * py * py;
         data.skew_y         = img_moments.mu03() / m00 * py * py * py;
 
-        data.chamber_centroid_x = data.centroid_x - config.chamber_offset_x;
+        data.chamber_centroid_x = - data.centroid_x + config.chamber_offset_x;
         data.chamber_centroid_y = config.chamber_offset_y - data.centroid_y;
  
         //- max calculation
@@ -862,8 +862,8 @@ namespace ImgBeamAnalyzer_ns
       return;
     }
     
-    const index sat_matrix_width = 5;
-    const index sat_matrix_height = 5;
+    const index sat_matrix_width = config.centroid_saturation_region_side;
+    const index sat_matrix_height = config.centroid_saturation_region_side;
     
     const index half_width = sat_matrix_width / 2;
     const index half_height = sat_matrix_height / 2;
@@ -878,17 +878,20 @@ namespace ImgBeamAnalyzer_ns
     const index y_end = (pre_y_end > roi_image.height()) ? roi_image.height() : pre_y_end;
     
     // Check all the pixels around the centroid
+    size_t total_saturated = 0;
     for (index y = y_begin; y < y_end; ++y) {
       for (index x = x_begin; x < x_end; ++x) {
         const double value = roi_image.value(x, y);
-        if (::fabs(max_pixel_value - value) > DBL_EPSILON ) {
-          data.centroid_saturated = false;
-          return;
+        if (::fabs(max_pixel_value - value) <= DBL_EPSILON ) {
+          total_saturated += 1;//count pixels with value about the saturation
         }
       }
     }
-    // All the pixels around the centroid have the same value => saturated
-    data.centroid_saturated = true;
+    // More than 5% pixels around the centroid are saturated => saturated
+    if ((100.0*total_saturated)/(sat_matrix_width*sat_matrix_height) >= config.centroid_saturation_region_threshold)
+      data.centroid_saturated = true;
+    else
+      data.centroid_saturated = false;
 
     assert(cvGetErrStatus() == 0);
   }

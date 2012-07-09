@@ -1,4 +1,4 @@
-static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzerStateMachine.cpp,v 1.20 2012-03-30 18:23:15 buteau Exp $";
+static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzerStateMachine.cpp,v 1.21 2012-07-09 14:05:48 sergiblanch Exp $";
 //+=============================================================================
 //
 // file :         ImgBeamAnalyzerStateMachine.cpp
@@ -8,11 +8,14 @@ static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/Im
 //
 // project :      TANGO Device Server
 //
-// $Author: buteau $
+// $Author: sergiblanch $
 //
-// $Revision: 1.20 $
+// $Revision: 1.21 $
 //
 // $Log: not supported by cvs2svn $
+// Revision 1.20  2012/03/30 18:23:15  buteau
+// MANTIS 0022238
+//
 // Revision 1.18  2009/12/18 13:23:53  ollupac
 // New attribute: ImageCounter (and with events!)
 //
@@ -354,6 +357,34 @@ bool ImgBeamAnalyzer::is_CentroidY_allowed(Tango::AttReqType type)
 //
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_CentroidSaturated_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_CentroidSaturationRegionSide_allowed
+//
+// description : 	Read/Write allowed for CentroidSaturationRegionSide attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_CentroidSaturationRegionSide_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_CentroidSaturationRegionThreshold_allowed
+//
+// description : 	Read/Write allowed for CentroidSaturationRegionThreshold attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_CentroidSaturationRegionThreshold_allowed(Tango::AttReqType type)
 {
 		//	End of Generated Code
 
@@ -1685,6 +1716,20 @@ bool ImgBeamAnalyzer::is_LineProfileHelperImg_allowed(Tango::AttReqType type)
 }
 //+----------------------------------------------------------------------------
 //
+// method : 		ImgBeamAnalyzer::is_ImageCounter_allowed
+//
+// description : 	Read/Write allowed for ImageCounter attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_ImageCounter_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
 // method : 		ImgBeamAnalyzer::is_RmsX_allowed
 // 
 // description : 	Read/Write allowed for RmsX attribute.
@@ -1725,9 +1770,13 @@ bool ImgBeamAnalyzer::is_RmsY_allowed(Tango::AttReqType type)
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_Start_allowed(const CORBA::Any &any)
 {
+	if (get_state() == Tango::RUNNING)
+	{
 		//	End of Generated Code
 
 		//	Re-Start of Generated Code
+		return false;
+	}
 	return true;
 }
 //+----------------------------------------------------------------------------
@@ -1739,9 +1788,13 @@ bool ImgBeamAnalyzer::is_Start_allowed(const CORBA::Any &any)
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_Stop_allowed(const CORBA::Any &any)
 {
+	if (get_state() == Tango::STANDBY)
+	{
 		//	End of Generated Code
 
 		//	Re-Start of Generated Code
+		return false;
+	}
 	return true;
 }
 //+----------------------------------------------------------------------------

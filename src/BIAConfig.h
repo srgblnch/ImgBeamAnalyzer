@@ -68,6 +68,8 @@ struct BIAConfig
   yat_int32_t       profile_thickness;
   double        chamber_offset_x;
   double        chamber_offset_y;
+  yat_int32_t	centroid_saturation_region_side;
+  yat_int32_t	centroid_saturation_region_threshold;
 
   bool is_user_roi_empty(void) const;
 

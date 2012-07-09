@@ -6,11 +6,14 @@
 //
 // project :	Image Analyzer
 //
-// $Author: jcpret $
+// $Author: sergiblanch $
 //
-// $Revision: 1.29 $
+// $Revision: 1.30 $
 //
 // $Log: not supported by cvs2svn $
+// Revision 1.29  2011/12/09 15:35:20  jcpret
+// Fixed Mantis buf 14571
+//
 // Revision 1.28  2010/04/12 08:31:33  flanglois
 // switch to impl4
 //
@@ -32,8 +35,8 @@
 //using namespace Tango;
 
 /**
- * @author  $Author: jcpret $
- * @version  $Revision: 1.29 $
+ * @author  $Author: sergiblanch $
+ * @version  $Revision: 1.30 $
  */
 
  //  Add your own constants definitions here.
@@ -393,6 +396,14 @@ public :
  *	the initial value of the ChamberOffsetY attribute
  */
 	Tango::DevDouble	chamberOffsetY;
+/**
+ *  the initial value of the CentroidSaturationRegionSide attribute
+ */
+	Tango::DevLong  centroidSaturationRegionSide;
+/**
+ *  the initial value of the CentroidSaturationRegionThreshold attribute
+ */
+	Tango::DevLong  centroidSaturationRegionThreshold;
 //@}
 
 /**@name Constructors
@@ -791,6 +802,22 @@ public :
  */
 	virtual void read_CentroidSaturated(Tango::Attribute &attr);
 /**
+ *  Extract real attribute values for CentroidSaturationRegionSide acquisition result.
+ */
+	virtual void read_CentroidSaturationRegionSide(Tango::Attribute &attr);
+/**
+ *  Write CentroidSaturationRegionSide attribute values to hardware.
+ */
+	virtual void write_CentroidSaturationRegionSide(Tango::WAttribute &attr);
+/**
+*  Extract real attribute values for CentroidSaturationRegionThreshold acquisition result.
+ */
+	virtual void read_CentroidSaturationRegionThreshold(Tango::Attribute &attr);
+/**
+ *  Write CentroidSaturationRegionThreshold attribute values to hardware.
+ */
+	virtual void write_CentroidSaturationRegionThreshold(Tango::WAttribute &attr);
+/**
  *	Extract real attribute values for VarianceX acquisition result.
  */
 	virtual void read_VarianceX(Tango::Attribute &attr);
@@ -1067,6 +1094,10 @@ public :
  */
 	virtual void read_Histogram(Tango::Attribute &attr);
 /**
+ *  Extract real attribute values for ImageCounter acquisition result.
+ */
+	virtual void read_ImageCounter(Tango::Attribute &attr);
+/**
  *	Extract real attribute values for InputImage acquisition result.
  */
 	virtual void read_InputImage(Tango::Attribute &attr);
@@ -1282,6 +1313,14 @@ public :
  *	Read/Write allowed for CentroidSaturated attribute.
  */
 	virtual bool is_CentroidSaturated_allowed(Tango::AttReqType type);
+/**
+ *  Read/Write allowed for CentroidSaturationRegionSide attribute.
+ */
+	virtual bool is_CentroidSaturationRegionSide_allowed(Tango::AttReqType type);
+/**
+ *  Read/Write allowed for CentroidSaturationRegionThreshold attribute.
+ */
+	virtual bool is_CentroidSaturationRegionThreshold_allowed(Tango::AttReqType type);
 /**
  *	Read/Write allowed for VarianceX attribute.
  */
@@ -1543,6 +1582,10 @@ public :
  */
 	virtual bool is_Histogram_allowed(Tango::AttReqType type);
 /**
+ *  Read/Write allowed for ImageCounter attribute.
+ */
+	virtual bool is_ImageCounter_allowed(Tango::AttReqType type);
+/**
  *	Read/Write allowed for InputImage attribute.
  */
 	virtual bool is_InputImage_allowed(Tango::AttReqType type);
@@ -1640,10 +1683,7 @@ protected :
 
   void update_state();
   void on_image_processed(BIAData* data);
-/**
- *  Extract real attribute values for ImageCounter acquisition result.
- */
-  virtual void read_ImageCounter(Tango::Attribute &attr);
+
 public:
 
   void just_process(ImageAndInfo & imginf) throw (yat::Exception);

@@ -28,6 +28,7 @@ namespace ImgBeamAnalyzer_ns
 
 const char* kINIT_STATUS_MSG    = "The device is initializing";
 const char* kRUNNING_STATUS_MSG = "The device is up and running";
+const char* kRUNNING_EVENTS_MSG = "The device is running on events";
 const char* kSTANDBY_STATUS_MSG = "The device is in standby";
 
 ImgBeamAnalyzerTask::ImgBeamAnalyzerTask()
@@ -211,6 +212,10 @@ void ImgBeamAnalyzerTask::handle_message (yat::Message& _msg)
         if (this->mode_ == MODE_ONESHOT)
         {
           this->set_state_status(RUNNING, kRUNNING_STATUS_MSG);
+        }
+        if (this->mode_ == MODE_EVENT)
+        {
+          this->set_state_status(RUNNING, kRUNNING_EVENTS_MSG);
         }
 
         isl::Image* image = 0;
