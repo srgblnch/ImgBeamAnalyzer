@@ -1,4 +1,4 @@
-static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzer.cpp,v 1.51 2012-07-09 14:05:48 sergiblanch Exp $";
+static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzer.cpp,v 1.52 2012-07-17 14:28:08 flanglois Exp $";
 //+=============================================================================
 //
 // file :         ImgBeamAnalyzer.cpp
@@ -11,9 +11,9 @@ static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/Im
 //
 // project :      TANGO Device Server
 //
-// $Author: sergiblanch $
+// $Author: flanglois $
 //
-// $Revision: 1.51 $
+// $Revision: 1.52 $
 //
 // $Log: not supported by cvs2svn $
 // Revision 1.50  2012/03/30 18:23:15  buteau
@@ -2473,7 +2473,6 @@ void ImgBeamAnalyzer::read_AutoROIHeight(Tango::Attribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_ROIImage(Tango::Attribute &attr)
 {
-  INFO_STREAM << "read_ROIImage" << std::endl;
   // Mantis bug 14571 : enable 32 bit data
   READ_OUTPUT_IMAGE_ATTR_ALWAYSACTIV(roi_image, Tango::DevULong);  // JCP
 }
@@ -3061,7 +3060,6 @@ void ImgBeamAnalyzer::write_EnableProfiles(Tango::WAttribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_InputImage(Tango::Attribute &attr)
 {
-  INFO_STREAM << "read_InputImage" << std::endl;
   // Mantis bug 14571 : enable 32 bit data
   READ_OUTPUT_IMAGE_ATTR_ALWAYSACTIV(input_image, Tango::DevULong);
 }
