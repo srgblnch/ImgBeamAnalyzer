@@ -1,4 +1,4 @@
-static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzer.cpp,v 1.52 2012-07-17 14:28:08 flanglois Exp $";
+static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzer.cpp,v 1.53 2013-01-04 17:34:06 flanglois Exp $";
 //+=============================================================================
 //
 // file :         ImgBeamAnalyzer.cpp
@@ -13,7 +13,7 @@ static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/Im
 //
 // $Author: flanglois $
 //
-// $Revision: 1.52 $
+// $Revision: 1.53 $
 //
 // $Log: not supported by cvs2svn $
 // Revision 1.50  2012/03/30 18:23:15  buteau
@@ -250,7 +250,6 @@ template <> Tango::DevDouble  ImgBeamAnalyzer::DummyValue<Tango::DevDouble> ::du
           dev_prop << value;                                                   \
           db_data.push_back(dev_prop);                                         \
           db->put_device_property(this->get_name(), db_data);                  \
-          std::cout << "value=" << value << ";" << std::endl;                  \
       }                                                                        \
       catch(...)                                                               \
       {                                                                        \

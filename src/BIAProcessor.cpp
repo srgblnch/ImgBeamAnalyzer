@@ -1006,8 +1006,7 @@ namespace ImgBeamAnalyzer_ns
         }
         catch(isl::Exception &ex)
         {
-          std::cout << ex << std::endl;
-          isl::ErrorHandler::reset();
+           isl::ErrorHandler::reset();
           //- Unable to do the fit
           data.gaussfit_magnitude = 0;
           data.gaussfit_centroid_x = 0;
