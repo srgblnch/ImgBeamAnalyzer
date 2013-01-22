@@ -1,4 +1,4 @@
-static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzerStateMachine.cpp,v 1.22 2013-01-22 12:40:27 buteau Exp $";
+static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzerStateMachine.cpp,v 1.23 2013-01-22 18:23:05 buteau Exp $";
 //+=============================================================================
 //
 // file :         ImgBeamAnalyzerStateMachine.cpp
@@ -10,9 +10,12 @@ static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/Im
 //
 // $Author: buteau $
 //
-// $Revision: 1.22 $
+// $Revision: 1.23 $
 //
 // $Log: not supported by cvs2svn $
+// Revision 1.22  2013/01/22 12:40:27  buteau
+// MANTIS 22737
+//
 // Revision 1.21  2012/07/09 14:05:48  sergiblanch
 // - Saturated centroid boolean tunable by region side and threshold attributes
 // - Add ULong capacity for image data type (before a default in a switch sets it to UShort)
@@ -1778,7 +1781,8 @@ bool ImgBeamAnalyzer::is_Start_allowed(const CORBA::Any &any)
 {
 		//	End of Generated Code
 
-		//	Re-Start of Generated Codereturn true;
+		//	Re-Start of Generated Code
+	return true;
 }
 //+----------------------------------------------------------------------------
 //
