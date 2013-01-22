@@ -1,4 +1,4 @@
-static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzerStateMachine.cpp,v 1.21 2012-07-09 14:05:48 sergiblanch Exp $";
+static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzerStateMachine.cpp,v 1.22 2013-01-22 12:40:27 buteau Exp $";
 //+=============================================================================
 //
 // file :         ImgBeamAnalyzerStateMachine.cpp
@@ -8,11 +8,17 @@ static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/Im
 //
 // project :      TANGO Device Server
 //
-// $Author: sergiblanch $
+// $Author: buteau $
 //
-// $Revision: 1.21 $
+// $Revision: 1.22 $
 //
 // $Log: not supported by cvs2svn $
+// Revision 1.21  2012/07/09 14:05:48  sergiblanch
+// - Saturated centroid boolean tunable by region side and threshold attributes
+// - Add ULong capacity for image data type (before a default in a switch sets it to UShort)
+// - Mode property description EVENT added
+// - improve the status message when run in events
+//
 // Revision 1.20  2012/03/30 18:23:15  buteau
 // MANTIS 0022238
 //
@@ -1770,14 +1776,9 @@ bool ImgBeamAnalyzer::is_RmsY_allowed(Tango::AttReqType type)
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_Start_allowed(const CORBA::Any &any)
 {
-	if (get_state() == Tango::RUNNING)
-	{
 		//	End of Generated Code
 
-		//	Re-Start of Generated Code
-		return false;
-	}
-	return true;
+		//	Re-Start of Generated Codereturn true;
 }
 //+----------------------------------------------------------------------------
 //
@@ -1788,13 +1789,9 @@ bool ImgBeamAnalyzer::is_Start_allowed(const CORBA::Any &any)
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_Stop_allowed(const CORBA::Any &any)
 {
-	if (get_state() == Tango::STANDBY)
-	{
 		//	End of Generated Code
 
 		//	Re-Start of Generated Code
-		return false;
-	}
 	return true;
 }
 //+----------------------------------------------------------------------------
