@@ -1,3 +1,10 @@
+//*******************************************************************************
+//* Copyright (c) 2004-2014 Synchrotron SOLEIL
+//* All rights reserved. This program and the accompanying materials
+//* are made available under the terms of the GNU Lesser Public License v3
+//* which accompanies this distribution, and is available at
+//* http://www.gnu.org/licenses/lgpl.html
+//******************************************************************************
 static const char *ClassId    = "$Id: ImgBeamAnalyzerClass.cpp,v 1.26 2012-07-09 14:05:48 sergiblanch Exp $";
 static const char *CvsPath    = "$Source: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzerClass.cpp,v $";
 static const char *SvnPath    = "$HeadURL: $";

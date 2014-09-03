@@ -1,3 +1,10 @@
+//*******************************************************************************
+//* Copyright (c) 2004-2014 Synchrotron SOLEIL
+//* All rights reserved. This program and the accompanying materials
+//* are made available under the terms of the GNU Lesser Public License v3
+//* which accompanies this distribution, and is available at
+//* http://www.gnu.org/licenses/lgpl.html
+//******************************************************************************
 static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/main.cpp,v 1.6 2010-10-06 21:25:43 vince_soleil Exp $";
 //+=============================================================================
 //
