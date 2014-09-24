@@ -3198,7 +3198,7 @@ void ImgBeamAnalyzer::process()
   if (this->process_command_allowed_ == false)
   {
     THROW_DEVFAILED("OPERATION_NOT_ALLOWED",
-                    "the current configuration does not allow the use of the 'Process' command",
+                    "Device mode must be ONESHOT to use the 'Process' command",
                     "ImgBeamAnalyzer::process");
   }
 

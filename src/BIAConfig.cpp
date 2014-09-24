@@ -120,7 +120,7 @@ namespace ImgBeamAnalyzer_ns
     }
 
     CHECK( this->enable_2d_gaussian_fit == true && this->enable_image_stats == false , "EnableImageStats must be true when Enable2DGaussianFit is true" );
-    CHECK( this->auto_roi_threshold >= (1 << pixel_depth) , "AutoROIThreshold cannot be bigger than the maximum representable with selected pixel depth(BitsPerPixel)" );
+    CHECK( this->auto_roi_threshold >= pow(2,(double)  pixel_depth) , "AutoROIThreshold cannot be bigger than the maximum representable with selected pixel depth(BitsPerPixel)" );
     CHECK( this->auto_roi_mag_factor_x <=  0 , "AutoROIMagFactorX must be stricly positive" );
     CHECK( this->auto_roi_mag_factor_y <=  0 , "AutoROIMagFactorY must be stricly positive" );
     CHECK( this->comput_period         <=  0 , "ComputationPeriod must be stricly positive" );
