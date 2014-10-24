@@ -1422,7 +1422,7 @@ void ImgBeamAnalyzer::read_LineProfileFitNbIter(Tango::Attribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_LineProfileFitRelChange(Tango::Attribute &attr)
 {
-  READ_OUTPUT_SCALAR_ATTR(line_profile_eps, enable_profile, Tango::DevLong);
+  READ_OUTPUT_SCALAR_ATTR(line_profile_eps, enable_profile, Tango::DevDouble);
 }
 
 //+----------------------------------------------------------------------------
