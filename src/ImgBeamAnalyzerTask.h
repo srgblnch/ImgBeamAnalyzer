@@ -81,6 +81,7 @@ public:
   //- returns the last available data ------
   void get_data ( BIAData*& data )
     throw (yat::Exception);
+  yat::Mutex* get_data_mutex() { return &data_mutex_; };
 
   //- start
   void start( size_t timeout )
@@ -107,6 +108,9 @@ protected:
 	virtual void handle_message (yat::Message& msg)
     throw (yat::Exception);
 
+  yat::Mutex          data_mutex_;
+  BIAData*            data_;
+
 private:
 
   void init( const ImgBeamAnalyzerInit& init_config )
@@ -122,9 +126,6 @@ private:
   yat::Mutex          config_mutex_;
   BIAConfig           config_;
   
-  yat::Mutex          data_mutex_;
-  BIAData*            data_;
-
   //- Error handling
   //static Tango::DevFailed isl_to_tango_exception (const isl::Exception& e);
   void set_state_status(State state, std::string status);

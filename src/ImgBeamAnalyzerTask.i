@@ -10,6 +10,7 @@
 //    Julien Malik
 //
 // ============================================================================
+#include <tango.h>
 
 namespace ImgBeamAnalyzer_ns
 {
@@ -53,6 +54,26 @@ ImgBeamAnalyzerTask::get_data (BIAData*& data)
     data = 0;
   else
     data = this->data_ ? this->data_->duplicate() : 0;
+    
+  if (this->data_ != NULL)
+  {
+#ifdef OUTPUT_DEBUG
+// --------------------------------------------------------------------
+    Tango::DevUShort* p = data_->roi_image.base();
+    char Res[150];
+    if (data_->reference_count() > 1)
+      sprintf(Res, "ImgBeamAnalyzerTask::get_data transmit data_ and release it (Data Start Address = %p, ROIImage Address=%p, Ref count before release=%d)\r\n", 
+                    &(data_->config), p, data_->reference_count());
+    else
+      sprintf(Res, "ImgBeamAnalyzerTask::get_data transmit data_ (Data Start Address = %p, ROIImage Address=%p) and DESTROY it !\r\n", 
+                    &(data_->config), p);
+    OutputDebugString(Res);
+// --------------------------------------------------------------------
+#endif //OUTPUT_DEBUG
+
+    this->data_->release();
+    data_ = 0;
+  }
 }
 
 // ============================================================================

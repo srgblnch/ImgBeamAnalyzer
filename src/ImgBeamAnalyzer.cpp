@@ -68,6 +68,9 @@ static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/Im
 #include <limits>
 #include <ImgBeamAnalyzerVersion.h>
 #include <yat4tango/ExceptionHelper.h>
+#ifdef WIN32
+#include <Windows.h>
+#endif
 
 #define kDEFAULT_CONTINUOUS_TIMEOUT 1000
 #define kCOMMAND_TIMEOUT 2000
@@ -84,141 +87,274 @@ template <> Tango::DevFloat   ImgBeamAnalyzer::DummyValue<Tango::DevFloat>  ::du
 template <> Tango::DevDouble  ImgBeamAnalyzer::DummyValue<Tango::DevDouble> ::dummy = std::numeric_limits<double>::quiet_NaN();
 
 
+// ---------------------------------------------------------------------------------------
+// OP 07/07/2014 :
+// Define TANGO_MUTEX to have a mutex protection during the Tango attributes serialization
+// Define OUTPUT_DEBUG to have some debug trace in VC Output Window
+// ---------------------------------------------------------------------------------------
+#ifdef TANGO_MUTEX
+
+#define INTERNAL_LOCK_AD m_AvailableDataListMutex.lock();
+#define INTERNAL_UNLOCK_AD m_AvailableDataListMutex.unlock();
+#define INTERNAL_ATTRUNLOCK_AD attr.set_user_attr_mutex(&m_AvailableDataListMutex);
+
+#else
+
+#define INTERNAL_LOCK_AD m_AvailableDataListMutex.lock();
+#define INTERNAL_UNLOCK_AD m_AvailableDataListMutex.unlock();
+#define INTERNAL_ATTRUNLOCK_AD m_AvailableDataListMutex.unlock();
+
+#endif  //TANGO_MUTEX
+
+#define LOCK_AD \
+  INTERNAL_LOCK_AD\
+	FUNC_LOCK_AD_TRACE
+
+#define UNLOCK_AD \
+  INTERNAL_UNLOCK_AD\
+	FUNC_UNLOCK_AD_TRACE
+
+#define ATTRUNLOCK_AD \
+  INTERNAL_ATTRUNLOCK_AD\
+	FUNC_ATTRUNLOCK_AD_TRACE
+
+#ifdef OUTPUT_DEBUG
+
+#define ENTER_FUNC \
+	OutputDebugString("=>Enter ");\
+	OutputDebugString(__FUNCTION__);\
+	OutputDebugString("\r\n");
+
+#define LEAVE_FUNC\
+	OutputDebugString("<=Leave ");\
+	OutputDebugString(__FUNCTION__);\
+	OutputDebugString("\r\n");
+
+#define FUNC_LOCK_AD_TRACE \
+	OutputDebugString(__FUNCTION__);\
+	OutputDebugString("Lock\r\n");
+
+#define FUNC_UNLOCK_AD_TRACE \
+	OutputDebugString(__FUNCTION__);\
+	OutputDebugString("Unlock\r\n");
+
+#ifdef TANGO_MUTEX
+#define FUNC_ATTRUNLOCK_AD_TRACE \
+	OutputDebugString(__FUNCTION__);\
+	OutputDebugString("SettAttrUnlock\r\n");
+#else
+#define FUNC_ATTRUNLOCK_AD_TRACE \
+	OutputDebugString(__FUNCTION__);\
+	OutputDebugString("Unlock\r\n");
+#endif  //TANGO_MUTEX
+
+#else
+
+#define ENTER_FUNC
+#define LEAVE_FUNC
+#define FUNC_LOCK_AD_TRACE
+#define FUNC_UNLOCK_AD_TRACE
+#define FUNC_ATTRUNLOCK_AD_TRACE
+
+#endif
 
 #define READ_OUTPUT_SCALAR_ATTR_ALWAYSACTIV( data_member, TangoType )          \
-  {                                                                            \
-    if (this->available_data_ == 0                                             \
-         || &this->available_data_->data_member == 0)                          \
+  {     \
+    ENTER_FUNC\
+    BIAData* pLastAvailableData = NULL;\
+    LOCK_AD\
+    if (m_AvailableDataList.size() > 0)\
+      pLastAvailableData = m_AvailableDataList.front();\
+    if (pLastAvailableData == 0                                               \
+         || &pLastAvailableData->data_member == 0)                          \
     {                                                                          \
+	    UNLOCK_AD\
       attr.set_value(&DummyValue<TangoType>::dummy);                           \
       attr.set_quality(Tango::ATTR_ALARM);                                     \
     }                                                                          \
     else                                                                       \
     {                                                                          \
       attr.set_value(reinterpret_cast<TangoType*>                              \
-                                        (&this->available_data_->data_member));\
-      if (this->available_data_->alarm == true)                                \
+                                        (&pLastAvailableData->data_member));\
+      ATTRUNLOCK_AD\
+      if (pLastAvailableData->alarm == true)                                \
         attr.set_quality(Tango::ATTR_ALARM);                                   \
       else                                                                     \
         attr.set_quality(Tango::ATTR_VALID);                                   \
-    }                                                                          \
+    }    \
+    LEAVE_FUNC\
   }
 
 #define READ_OUTPUT_SCALAR_ATTR( data_member, activated, TangoType )           \
   {                                                                            \
-    if (this->available_data_ == 0                                             \
-         || this->available_data_->config.activated == false                   \
-         || &this->available_data_->data_member == 0)                          \
+    ENTER_FUNC\
+    BIAData* pLastAvailableData = NULL;\
+    LOCK_AD\
+    if (m_AvailableDataList.size() > 0)\
+      pLastAvailableData = m_AvailableDataList.front();\
+    if (pLastAvailableData == 0                                             \
+         || pLastAvailableData->config.activated == false                   \
+		 || &pLastAvailableData->data_member == 0)                          \
     {                                                                          \
+	  UNLOCK_AD\
       attr.set_value(&DummyValue<TangoType>::dummy);                           \
       attr.set_quality(Tango::ATTR_ALARM);                                     \
     }                                                                          \
     else                                                                       \
     {                                                                          \
       attr.set_value(reinterpret_cast<TangoType*>                              \
-                                        (&this->available_data_->data_member));\
-      if (this->available_data_->alarm == true)                                \
+                                        (&pLastAvailableData->data_member));\
+      ATTRUNLOCK_AD\
+      if (pLastAvailableData->alarm == true)                                \
         attr.set_quality(Tango::ATTR_ALARM);                                   \
       else                                                                     \
         attr.set_quality(Tango::ATTR_VALID);                                   \
     }                                                                          \
+    LEAVE_FUNC\
   }
 
 #define READ_OUTPUT_SPECTRUM_ATTR( data_member, activated, TangoType )         \
   {                                                                            \
-    if (this->available_data_ == 0                                             \
-         || this->available_data_->config.activated == false                   \
-         || this->available_data_->data_member.base() == 0 )                   \
+    ENTER_FUNC\
+    BIAData* pLastAvailableData = NULL;\
+    LOCK_AD\
+    if (m_AvailableDataList.size() > 0)\
+      pLastAvailableData = m_AvailableDataList.front();\
+    if (pLastAvailableData == 0                                             \
+         || pLastAvailableData->config.activated == false                   \
+         || pLastAvailableData->data_member.base() == 0 )                   \
     {                                                                          \
+	  UNLOCK_AD\
       attr.set_value(&DummyValue<TangoType>::dummy, 1, 0);                     \
       attr.set_quality(Tango::ATTR_ALARM);                                     \
     }                                                                          \
     else                                                                       \
     {                                                                          \
-      attr.set_value(this->available_data_->data_member.base(),                \
+      attr.set_value(pLastAvailableData->data_member.base(),                \
                      static_cast<yat_int32_t>                                  \
-                                (this->available_data_->data_member.length()));\
-      if (this->available_data_->alarm == true)                                \
+                                (pLastAvailableData->data_member.length()));\
+      ATTRUNLOCK_AD\
+      if (pLastAvailableData->alarm == true)                                \
         attr.set_quality(Tango::ATTR_ALARM);                                   \
       else                                                                     \
         attr.set_quality(Tango::ATTR_VALID);                                   \
     }                                                                          \
+    LEAVE_FUNC\
   }
 
 #define READ_OUTPUT_IMAGE_ATTR_ALWAYSACTIV( data_member, TangoType )           \
   {                                                                            \
-    if (this->available_data_ == 0                                             \
-         || this->available_data_->data_member.base() == 0 )                   \
+    ENTER_FUNC\
+    BIAData* pLastAvailableData = NULL;\
+    LOCK_AD\
+    if (m_AvailableDataList.size() > 0)\
+      pLastAvailableData = m_AvailableDataList.front();\
+    if (pLastAvailableData == 0                                             \
+         || pLastAvailableData->data_member.base() == 0 )                   \
     {                                                                          \
+	  UNLOCK_AD\
       attr.set_value(&DummyValue<TangoType>::dummy, 1, 1);                     \
       attr.set_quality(Tango::ATTR_ALARM);                                     \
     }                                                                          \
     else                                                                       \
     {                                                                          \
-      attr.set_value(this->available_data_->data_member.base(),                \
+      attr.set_value(pLastAvailableData->data_member.base(),                \
                      static_cast<yat_int32_t>                                  \
-                                (this->available_data_->data_member.width()),  \
+                                (pLastAvailableData->data_member.width()),  \
                      static_cast<yat_int32_t>                                  \
-                              (this->available_data_->data_member.height()));  \
-      if (this->available_data_->alarm == true)                                \
+                              (pLastAvailableData->data_member.height()));  \
+      ATTRUNLOCK_AD\
+      if (pLastAvailableData->alarm == true)                                \
         attr.set_quality(Tango::ATTR_ALARM);                                   \
       else                                                                     \
         attr.set_quality(Tango::ATTR_VALID);                                   \
     }                                                                          \
+    LEAVE_FUNC\
   }
 
 #define READ_OUTPUT_IMAGE_ATTR( data_member, activated, TangoType )            \
   {                                                                            \
-    if (this->available_data_ == 0                                             \
-         || this->available_data_->config.activated == false                   \
-         || this->available_data_->data_member.base() == 0 )                   \
+    ENTER_FUNC\
+    BIAData* pLastAvailableData = NULL;\
+    LOCK_AD\
+    if (m_AvailableDataList.size() > 0)\
+      pLastAvailableData = m_AvailableDataList.front();\
+    if (pLastAvailableData == 0                                             \
+         || pLastAvailableData->config.activated == false                   \
+         || pLastAvailableData->data_member.base() == 0 )                   \
     {                                                                          \
+	  UNLOCK_AD\
       attr.set_value(&DummyValue<TangoType>::dummy, 1, 1);                     \
       attr.set_quality(Tango::ATTR_ALARM);                                     \
     }                                                                          \
     else                                                                       \
     {                                                                          \
-      attr.set_value(this->available_data_->data_member.base(),                \
+      attr.set_value(pLastAvailableData->data_member.base(),                \
                      static_cast<yat_int32_t>                                  \
-                                  (this->available_data_->data_member.width()),\
+                                  (pLastAvailableData->data_member.width()),\
                      static_cast<yat_int32_t>                                  \
-                                (this->available_data_->data_member.height()));\
-      if (this->available_data_->alarm == true)                                \
+                                (pLastAvailableData->data_member.height()));\
+      ATTRUNLOCK_AD\
+      if (pLastAvailableData->alarm == true)                                \
         attr.set_quality(Tango::ATTR_ALARM);                                   \
       else                                                                     \
         attr.set_quality(Tango::ATTR_VALID);                                   \
     }                                                                          \
+    LEAVE_FUNC\
   }
 
 #define READ_INPUT_ATTR( config_member_name, TangoType )                       \
   {                                                                            \
-    if (this->available_data_ == 0 || this->get_state() == Tango::FAULT)       \
-    attr.set_value(reinterpret_cast<TangoType*>                                \
+    ENTER_FUNC\
+    BIAData* pLastAvailableData = NULL;\
+    LOCK_AD\
+    if (m_AvailableDataList.size() > 0)\
+      pLastAvailableData = m_AvailableDataList.front();\
+    if (pLastAvailableData == 0 || this->get_state() == Tango::FAULT)       \
+  	{\
+      attr.set_value(reinterpret_cast<TangoType*>                               \
                                   (&this->current_config_.config_member_name));\
-  else                                                                         \
-    attr.set_value(reinterpret_cast<TangoType*>                                \
-                          (&this->available_data_->config.config_member_name));\
+      UNLOCK_AD\
+	  }\
+    else                       \
+	  {\
+      attr.set_value(reinterpret_cast<TangoType*>                                \
+                          (&pLastAvailableData->config.config_member_name));\
+      ATTRUNLOCK_AD\
+	  }\
+    LEAVE_FUNC\
   }
 
 #define READ_INPUT_ATTR_WITH_ALARM(config_member_name,alarm_boolean,TangoType) \
   {                                                                            \
-    if (this->available_data_ == 0 || this->get_state() == Tango::FAULT)       \
+    ENTER_FUNC\
+    BIAData* pLastAvailableData = NULL;\
+    LOCK_AD\
+    if (m_AvailableDataList.size() > 0)\
+      pLastAvailableData = m_AvailableDataList.front();\
+    if (pLastAvailableData == 0 || this->get_state() == Tango::FAULT)       \
+	{\
       attr.set_value(reinterpret_cast<TangoType*>                              \
                                   (&this->current_config_.config_member_name));\
+      UNLOCK_AD\
+    }\
     else                                                                       \
     {                                                                          \
       attr.set_value(reinterpret_cast<TangoType*>                              \
-                          (&this->available_data_->config.config_member_name));\
-      if (this->available_data_->alarm_boolean == true)                        \
+                          (&pLastAvailableData->config.config_member_name));\
+      ATTRUNLOCK_AD\
+      if (pLastAvailableData->alarm_boolean == true)                        \
         attr.set_quality(Tango::ATTR_ALARM);                                   \
       else                                                                     \
         attr.set_quality(Tango::ATTR_VALID);                                   \
     }                                                                          \
+    LEAVE_FUNC\
   }
 
 
 #define WRITE_INPUT_ATTR( config_member_name, TangoType )                      \
   {                                                                            \
+    ENTER_FUNC\
     if (this->task_ == 0)                                                      \
       return;                                                                  \
                                                                                \
@@ -266,6 +402,7 @@ template <> Tango::DevDouble  ImgBeamAnalyzer::DummyValue<Tango::DevDouble> ::du
                           "ImgBeamAnalyzer::write_" #config_member_name);      \
       }                                                                        \
     }                                                                          \
+    LEAVE_FUNC\
   }
 
 
@@ -326,11 +463,7 @@ void ImgBeamAnalyzer::delete_device()
     this->task_ = 0;
   }
   
-  if (this->available_data_)
-  {
-    this->available_data_->release ();
-    this->available_data_ = 0;
-  }
+  CleanAvailableList();
 
   delete this->image_source_;
   this->image_source_ = 0;
@@ -341,18 +474,33 @@ void ImgBeamAnalyzer::delete_device()
 // method :     ImgBeamAnalyzer::init_device()
 // 
 // description :   will be called at device initialization.
-//
+//²
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::init_device()
 {
   INFO_STREAM << "ImgBeamAnalyzer::ImgBeamAnalyzer() create device " << device_name << endl;
+
+
+  //Tango::Attribute &att = dev_attr->get_attr_by_name("ROIImage"); 
+  //att.set_attr_serial_model(Tango::ATTR_BY_USER); 
+  std::vector<Tango::Attribute*> w_attrList = this->get_device_attr()->get_attribute_list();
+  for(unsigned short iter = 0; iter < w_attrList.size(); iter++)
+  {
+	if( w_attrList[iter]->get_writable() == Tango::READ || 
+		w_attrList[iter]->get_writable() == Tango::READ_WRITE)
+	{
+		OutputDebugString("init_device set_serial model ");
+		OutputDebugString(w_attrList[iter]->get_name().c_str());
+		OutputDebugString("\n");
+		w_attrList[iter]->set_attr_serial_model(Tango::ATTR_BY_USER); 
+	}
+  }
 
   // Initialise variables to default values
   //--------------------------------------------
   cvUseOptimized( 0 );
 
   this->image_source_ = 0;
-  this->available_data_ = 0;
   this->task_ = 0;
   this->critical_property_missing_ = false;
   this->properly_initialized_ = false;
@@ -598,6 +746,7 @@ void ImgBeamAnalyzer::get_device_property()
   this->enableUserROI        = default_config.enable_user_roi;
   this->enableAutoROI        = default_config.enable_auto_roi;
   this->enable2DGaussianFit  = default_config.enable_2d_gaussian_fit;
+  this->enableSuperGaussianFit	= default_config.enable_super_gaussian_fit;
   this->autoROIMagFactorX    = default_config.auto_roi_mag_factor_x;
   this->autoROIMagFactorY    = default_config.auto_roi_mag_factor_y;
   this->pixelSizeX           = default_config.pixel_size_x;
@@ -659,6 +808,7 @@ void ImgBeamAnalyzer::get_device_property()
 	dev_prop.push_back(Tango::DbDatum("ChamberOffsetY"));
 	dev_prop.push_back(Tango::DbDatum("CentroidSaturationRegionSide"));
 	dev_prop.push_back(Tango::DbDatum("CentroidSaturationRegionThreshold"));
+	dev_prop.push_back(Tango::DbDatum("EnableSuperGaussianFit"));
 
 	//	Call database and extract values
 	//--------------------------------------------
@@ -1021,27 +1171,40 @@ void ImgBeamAnalyzer::get_device_property()
 	//	And try to extract ChamberOffsetY value from database
 	if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  chamberOffsetY;
 
-	//  Try to initialize CentroidSaturationRegionSide from class property
+	//	Try to initialize CentroidSaturationRegionSide from class property
 	cl_prop = ds_class->get_class_property(dev_prop[++i].name);
-	if (cl_prop.is_empty()==false)  cl_prop  >>  centroidSaturationRegionSide;
+	if (cl_prop.is_empty()==false)	cl_prop  >>  centroidSaturationRegionSide;
 	else {
-		//  Try to initialize CentroidSaturationRegionSide from default device value
+		//	Try to initialize CentroidSaturationRegionSide from default device value
 		def_prop = ds_class->get_default_device_property(dev_prop[i].name);
-		if (def_prop.is_empty()==false)  def_prop  >>  centroidSaturationRegionSide;
+		if (def_prop.is_empty()==false)	def_prop  >>  centroidSaturationRegionSide;
 	}
-	//  And try to extract CentroidSaturationRegionSide value from database
-	if (dev_prop[i].is_empty()==false)  dev_prop[i]  >>  centroidSaturationRegionSide;
+	//	And try to extract CentroidSaturationRegionSide value from database
+	if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  centroidSaturationRegionSide;
 
-	//  Try to initialize CentroidSaturationRegionThreshold from class property
+	//	Try to initialize CentroidSaturationRegionThreshold from class property
 	cl_prop = ds_class->get_class_property(dev_prop[++i].name);
-	if (cl_prop.is_empty()==false)  cl_prop  >>  centroidSaturationRegionThreshold;
+	if (cl_prop.is_empty()==false)	cl_prop  >>  centroidSaturationRegionThreshold;
 	else {
-		//  Try to initialize CentroidSaturationRegionThreshold from default device value
+		//	Try to initialize CentroidSaturationRegionThreshold from default device value
 		def_prop = ds_class->get_default_device_property(dev_prop[i].name);
-		if (def_prop.is_empty()==false)  def_prop  >>  centroidSaturationRegionThreshold;
+		if (def_prop.is_empty()==false)	def_prop  >>  centroidSaturationRegionThreshold;
 	}
-	//  And try to extract CentroidSaturationRegionThreshold value from database
-	if (dev_prop[i].is_empty()==false)  dev_prop[i]  >>  centroidSaturationRegionThreshold;
+	//	And try to extract CentroidSaturationRegionThreshold value from database
+	if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  centroidSaturationRegionThreshold;
+
+	//	Try to initialize EnableSuperGaussianFit from class property
+	cl_prop = ds_class->get_class_property(dev_prop[++i].name);
+	if (cl_prop.is_empty()==false)	cl_prop  >>  enableSuperGaussianFit;
+	else {
+		//	Try to initialize EnableSuperGaussianFit from default device value
+		def_prop = ds_class->get_default_device_property(dev_prop[i].name);
+		if (def_prop.is_empty()==false)	def_prop  >>  enableSuperGaussianFit;
+	}
+	//	And try to extract EnableSuperGaussianFit value from database
+	if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  enableSuperGaussianFit;
+
+
 
   //  End of Automatic code generation
   //------------------------------------------------------------------
@@ -1068,6 +1231,7 @@ void ImgBeamAnalyzer::get_device_property()
   this->current_config_.enable_profile          = enableProfiles;
   this->current_config_.enable_histogram        = enableHistogram;
   this->current_config_.enable_2d_gaussian_fit  = enable2DGaussianFit;
+  this->current_config_.enable_super_gaussian_fit  = enableSuperGaussianFit;
   this->current_config_.enable_auto_roi         = enableAutoROI;
   this->current_config_.enable_user_roi         = enableUserROI;
   this->current_config_.comput_period           = computationPeriod;
@@ -1111,6 +1275,36 @@ void ImgBeamAnalyzer::always_executed_hook()
   this->update_state();
 }
 
+void ImgBeamAnalyzer::CleanAvailableList(unsigned int nbLeft/* = 0*/)
+{
+  LOCK_AD
+
+  if (m_AvailableDataList.size() > nbLeft)
+  {
+	  while (m_AvailableDataList.size() > nbLeft)
+	  {
+		  BIAData* pNoLongerUsed = m_AvailableDataList.back();
+#ifdef OUTPUT_DEBUG
+      // ----------------------------------------------------------------------
+      Tango::DevUShort* p = pNoLongerUsed->roi_image.base();
+      char Res[200];
+      if (pNoLongerUsed->reference_count() > 1)
+        sprintf(Res, "CleanAvailableList : Release this data (Data Start Address = %p, ROIImage Address=%p, Ref count before release=%d)\r\n", 
+                      &(pNoLongerUsed->config), p, pNoLongerUsed->reference_count());
+      else
+        sprintf(Res, "CleanAvailableList : This data (Data Start Address = %p, ROIImage Address=%p) was DESTROYED !\r\n", 
+                      &(pNoLongerUsed->config), p);
+      OutputDebugString(Res);
+      // ----------------------------------------------------------------------
+#endif  //OUTPUT_DEBUG
+		  pNoLongerUsed->release();
+      m_AvailableDataList.pop_back();
+	  }
+  }
+
+  UNLOCK_AD
+}
+
 //+----------------------------------------------------------------------------
 //
 // method :     ImgBeamAnalyzer::read_attr_hardware
@@ -1121,25 +1315,71 @@ void ImgBeamAnalyzer::always_executed_hook()
 void ImgBeamAnalyzer::read_attr_hardware(vector<long> &attr_list)
 {
   //  Add your own code here
-  
+  ENTER_FUNC
+
+#ifdef OUTPUT_DEBUG
+  // ----------------------------------------------------------------------
+	bool IsROIImage = false;
+	for (unsigned int i = 0;i < attr_list.size();i++)
+	{	
+		if (dev_attr->get_attr_by_ind(attr_list[i]).get_name() == "ROIImage")
+		{
+			IsROIImage = true;
+			break;
+		}
+	}
+  char Res[512];
+  if (IsROIImage)
+  {
+    sprintf(Res, "IN>>read_attr_hardware ROIImage(Nb ROIImage in list=%d)\r\n", m_AvailableDataList.size());
+    OutputDebugString(Res);
+  }
+  // ------------------------------------------------------------------------
+#endif //OUTPUT_DEBUG
+
   try
   {
     //---- READ DATA ---------------------------------------------------------------------
-    //- release any existing data
-    if (this->available_data_)
-    {
-      this->available_data_->release ();
-      this->available_data_ = 0;
-    }
+    //- release any unused existing data
+    CleanAvailableList(10 /* leave the last 10 available data read to give time for Tango
+                         Client devices to read available data without any memory release 
+                         in concurent thread risk when we don't use the mutex method
+                         is Tango::Attribute::set_value */);
 
     //- read data
     //- if not available, return value will be 0
     //- we DON'T put the device in a FAULT state if data is not available
     //- but we update the status...
-    this->task_->get_data (this->available_data_);
+    BIAData* pLastProcessed;
+    this->task_->get_data (pLastProcessed);
+
+    LOCK_AD
+
+    BIAData* pLastAvailableData = NULL;
+    if (m_AvailableDataList.size() > 0)
+      pLastAvailableData = m_AvailableDataList.front();
+    if (pLastProcessed != NULL && pLastProcessed->roi_image.base() != NULL &&       // An image was processed AND
+          (pLastAvailableData == NULL ||                                            // No image available yet OR
+          pLastAvailableData->roi_image.base() != pLastProcessed->roi_image.base()))// Last available image is not the same
+    {
+        m_AvailableDataList.push_front(pLastProcessed);
+#ifdef OUTPUT_DEBUG
+      // ----------------------------------------------------------------------
+      char Res[200];
+      Tango::DevUShort* p = pLastProcessed->roi_image.base();
+      sprintf(Res, "read_attr_hardware ROIImage : A new Data was processed (Data Start Address = %p, ROIImage Address=%p) \r\n", 
+                    &(pLastProcessed->config), p);
+      OutputDebugString(Res);
+      // ----------------------------------------------------------------------
+#endif  //OUTPUT_DEBUG
+    }
+
+    UNLOCK_AD
   }
   catch(...)
   {
+    UNLOCK_AD
+
     THROW_DEVFAILED("UNKNOWN_ERROR",
                     "An unknown error occured",
                     "ImgBeamAnalyzer::read_attr_hardware()");
@@ -1148,7 +1388,444 @@ void ImgBeamAnalyzer::read_attr_hardware(vector<long> &attr_list)
   //- the state/status may be updated by the call to this->task_->get_data()
   this->update_state();
 
+#ifdef OUTPUT_DEBUG
+  // ------------------------------------------------------------------------
+  if (IsROIImage)
+  {
+	  OutputDebugString("OUT>>read_attr_hardware ROIImage\r\n");
+  }
+  // -----------------------------------------------------------------------
+#endif //OUTPUT_DEBUG
+
+  LEAVE_FUNC
 }
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_GaussianFitMinorAxisCenter
+// 
+// description : 	Extract real attribute values for GaussianFitMinorAxisCenter acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_GaussianFitMinorAxisCenter(Tango::Attribute &attr)
+{
+	 READ_OUTPUT_SCALAR_ATTR(gaussfit_minor_axis_center, enable_2d_gaussian_fit, Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_GaussianFitMinorAxisMagnitude
+// 
+// description : 	Extract real attribute values for GaussianFitMinorAxisMagnitude acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_GaussianFitMinorAxisMagnitude(Tango::Attribute &attr)
+{
+	 READ_OUTPUT_SCALAR_ATTR(gaussfit_minor_axis_mag, enable_2d_gaussian_fit, Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_GaussianFitMinorAxisFlat
+// 
+// description : 	Extract real attribute values for GaussianFitMinorAxisFlat acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_GaussianFitMinorAxisFlat(Tango::Attribute &attr)
+{
+	 READ_OUTPUT_SCALAR_ATTR(gaussfit_minor_axis_flat, enable_2d_gaussian_fit, Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_GaussianFitMajorAxisFlat
+// 
+// description : 	Extract real attribute values for GaussianFitMajorAxisFlat acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_GaussianFitMajorAxisFlat(Tango::Attribute &attr)
+{
+	 READ_OUTPUT_SCALAR_ATTR(gaussfit_major_axis_flat, enable_2d_gaussian_fit, Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_GaussianFitMajorAxisCenter
+// 
+// description : 	Extract real attribute values for GaussianFitMajorAxisCenter acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_GaussianFitMajorAxisCenter(Tango::Attribute &attr)
+{
+		 READ_OUTPUT_SCALAR_ATTR(gaussfit_major_axis_center, enable_2d_gaussian_fit, Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_GaussianFitMajorAxisMagnitude
+// 
+// description : 	Extract real attribute values for GaussianFitMajorAxisMagnitude acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_GaussianFitMajorAxisMagnitude(Tango::Attribute &attr)
+{
+	 READ_OUTPUT_SCALAR_ATTR(gaussfit_major_axis_mag, enable_2d_gaussian_fit, Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::write_ReductionPercent
+// 
+// description : 	Write ReductionPercent attribute values to hardware.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::write_ReductionPercent(Tango::WAttribute &attr)
+{
+	WRITE_INPUT_ATTR( reductionPercent, Tango::DevDouble );
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_ReductionPercent
+// 
+// description : 	Extract real attribute values for ReductionPercent acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_ReductionPercent(Tango::Attribute &attr)
+{
+	 READ_OUTPUT_SCALAR_ATTR_ALWAYSACTIV( reductionPercent, Tango::DevDouble ) ;
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_LineProfileFitOrder
+// 
+// description : 	Extract real attribute values for LineProfileFitOrder acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_LineProfileFitOrder(Tango::Attribute &attr)
+{
+  READ_OUTPUT_SCALAR_ATTR(line_profile_order, enable_profile, Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_XProjFitOrder
+// 
+// description : 	Extract real attribute values for XProjFitOrder acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_XProjFitOrder(Tango::Attribute &attr)
+{
+  READ_OUTPUT_SCALAR_ATTR(xproj_order, enable_profile, Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_YProjFitOrder
+// 
+// description : 	Extract real attribute values for YProjFitOrder acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_YProjFitOrder(Tango::Attribute &attr)
+{
+  READ_OUTPUT_SCALAR_ATTR(yproj_order, enable_profile, Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_GaussianFitMajorAxisOrder
+// 
+// description : 	Extract real attribute values for GaussianFitMajorAxisOrder acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_GaussianFitMajorAxisOrder(Tango::Attribute &attr)
+{
+  READ_OUTPUT_SCALAR_ATTR(gaussfit_major_axis_order, enable_2d_gaussian_fit, Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_GaussianFitMinorAxisOrder
+// 
+// description : 	Extract real attribute values for GaussianFitMinorAxisOrder acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_GaussianFitMinorAxisOrder(Tango::Attribute &attr)
+{
+  READ_OUTPUT_SCALAR_ATTR(gaussfit_minor_axis_order, enable_2d_gaussian_fit, Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_MajorAxisEndX
+// 
+// description : 	Extract real attribute values for MajorAxisEndX acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_MajorAxisEndX(Tango::Attribute &attr)
+{
+	DEBUG_STREAM << "ImgBeamAnalyzer::read_MajorAxisEndX(Tango::Attribute &attr) entering... "<< endl;
+	READ_OUTPUT_SCALAR_ATTR(gaussfit_major_pt2_x, enable_2d_gaussian_fit, Tango::DevLong);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_MajorAxisEndY
+// 
+// description : 	Extract real attribute values for MajorAxisEndY acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_MajorAxisEndY(Tango::Attribute &attr)
+{
+	DEBUG_STREAM << "ImgBeamAnalyzer::read_MajorAxisEndY(Tango::Attribute &attr) entering... "<< endl;
+	READ_OUTPUT_SCALAR_ATTR(gaussfit_major_pt2_y, enable_2d_gaussian_fit, Tango::DevLong);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_MinorAxisOriginX
+// 
+// description : 	Extract real attribute values for MinorAxisOriginX acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_MinorAxisOriginX(Tango::Attribute &attr)
+{
+	DEBUG_STREAM << "ImgBeamAnalyzer::read_MinorAxisOriginX(Tango::Attribute &attr) entering... "<< endl;
+	READ_OUTPUT_SCALAR_ATTR(gaussfit_minor_pt1_x, enable_2d_gaussian_fit, Tango::DevLong);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_MinorAxisOriginY
+// 
+// description : 	Extract real attribute values for MinorAxisOriginY acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_MinorAxisOriginY(Tango::Attribute &attr)
+{
+	DEBUG_STREAM << "ImgBeamAnalyzer::read_MinorAxisOriginY(Tango::Attribute &attr) entering... "<< endl;
+	READ_OUTPUT_SCALAR_ATTR(gaussfit_minor_pt1_y, enable_2d_gaussian_fit, Tango::DevLong);
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_MinorAxisEndX
+// 
+// description : 	Extract real attribute values for MinorAxisEndX acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_MinorAxisEndX(Tango::Attribute &attr)
+{
+	DEBUG_STREAM << "ImgBeamAnalyzer::read_MinorAxisEndX(Tango::Attribute &attr) entering... "<< endl;
+	READ_OUTPUT_SCALAR_ATTR(gaussfit_minor_pt2_x, enable_2d_gaussian_fit, Tango::DevLong);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_MinorAxisEndY
+// 
+// description : 	Extract real attribute values for MinorAxisEndY acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_MinorAxisEndY(Tango::Attribute &attr)
+{
+	DEBUG_STREAM << "ImgBeamAnalyzer::read_MinorAxisEndY(Tango::Attribute &attr) entering... "<< endl;
+	READ_OUTPUT_SCALAR_ATTR(gaussfit_minor_pt2_y, enable_2d_gaussian_fit, Tango::DevLong);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_MajorAxisOriginX
+// 
+// description : 	Extract real attribute values for MajorAxisOriginX acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_MajorAxisOriginX(Tango::Attribute &attr)
+{
+	DEBUG_STREAM << "ImgBeamAnalyzer::read_MajorAxisOriginX(Tango::Attribute &attr) entering... "<< endl;
+	READ_OUTPUT_SCALAR_ATTR(gaussfit_major_pt1_x, enable_2d_gaussian_fit, Tango::DevLong);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_MajorAxisOriginY
+// 
+// description : 	Extract real attribute values for MajorAxisOriginY acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_MajorAxisOriginY(Tango::Attribute &attr)
+{
+	DEBUG_STREAM << "ImgBeamAnalyzer::read_MajorAxisOriginY(Tango::Attribute &attr) entering... "<< endl;
+	READ_OUTPUT_SCALAR_ATTR(gaussfit_major_pt1_y, enable_2d_gaussian_fit, Tango::DevLong);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_GaussianFitMajorAxis1e2
+// 
+// description : 	Extract real attribute values for GaussianFitMajorAxis1e2 acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_GaussianFitMajorAxis1e2(Tango::Attribute &attr)
+{
+  READ_OUTPUT_SCALAR_ATTR(gaussfit_major_axis_1e2, enable_2d_gaussian_fit, Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_PeakX
+// 
+// description : 	Extract real attribute values for PeakX acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_PeakX(Tango::Attribute &attr)
+{
+  READ_OUTPUT_SCALAR_ATTR(peak_x, enable_image_stats, Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_PeakY
+// 
+// description : 	Extract real attribute values for PeakY acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_PeakY(Tango::Attribute &attr)
+{
+  READ_OUTPUT_SCALAR_ATTR(peak_y, enable_image_stats, Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_GaussianFitEllipticity
+// 
+// description : 	Extract real attribute values for GaussianFitEllipticity acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_GaussianFitEllipticity(Tango::Attribute &attr)
+{
+  READ_OUTPUT_SCALAR_ATTR(gaussfit_ellipticity, enable_2d_gaussian_fit, Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_GaussianFitEccentricity
+// 
+// description : 	Extract real attribute values for GaussianFitEccentricity acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_GaussianFitEccentricity(Tango::Attribute &attr)
+{
+  READ_OUTPUT_SCALAR_ATTR(gaussfit_eccentricity, enable_2d_gaussian_fit, Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_GaussianFitDivergence
+// 
+// description : 	Extract real attribute values for GaussianFitDivergence acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_GaussianFitDivergence(Tango::Attribute &attr)
+{
+  READ_OUTPUT_SCALAR_ATTR(gaussfit_divergence, enable_2d_gaussian_fit, Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_XProjFit1e2
+// 
+// description : 	Extract real attribute values for XProjFit1e2 acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_XProjFit1e2(Tango::Attribute &attr)
+{
+  READ_OUTPUT_SCALAR_ATTR(xproj_1e2, enable_profile, Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_YProjFit1e2
+// 
+// description : 	Extract real attribute values for YProjFit1e2 acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_YProjFit1e2(Tango::Attribute &attr)
+{
+  READ_OUTPUT_SCALAR_ATTR(yproj_1e2, enable_profile, Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_LineProfileFit1e2
+// 
+// description : 	Extract real attribute values for LineProfileFit1e2 acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_LineProfileFit1e2(Tango::Attribute &attr)
+{
+  READ_OUTPUT_SCALAR_ATTR(line_profile_1e2, enable_profile, Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_GaussianFitMinorAxis1e2
+// 
+// description : 	Extract real attribute values for GaussianFitMinorAxis1e2 acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_GaussianFitMinorAxis1e2(Tango::Attribute &attr)
+{
+  READ_OUTPUT_SCALAR_ATTR(gaussfit_minor_axis_1e2, enable_2d_gaussian_fit, Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_MajorAxis
+// 
+// description : 	Extract real attribute values for MajorAxis acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_MajorAxis(Tango::Attribute &attr)
+{
+  READ_OUTPUT_SPECTRUM_ATTR(gaussfit_major_axis, enable_2d_gaussian_fit, Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_MinorAxis
+// 
+// description : 	Extract real attribute values for MinorAxis acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_MinorAxis(Tango::Attribute &attr)
+{
+  READ_OUTPUT_SPECTRUM_ATTR(gaussfit_minor_axis, enable_2d_gaussian_fit, Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_MajorAxisFitted
+// 
+// description : 	Extract real attribute values for MajorAxisFitted acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_MajorAxisFitted(Tango::Attribute &attr)
+{
+  READ_OUTPUT_SPECTRUM_ATTR(gaussfit_major_axis_fitted, enable_2d_gaussian_fit, Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_MinorAxisFitted
+// 
+// description : 	Extract real attribute values for MinorAxisFitted acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_MinorAxisFitted(Tango::Attribute &attr)
+{
+  READ_OUTPUT_SPECTRUM_ATTR(gaussfit_minor_axis_fitted, enable_2d_gaussian_fit, Tango::DevDouble);
+}
+
 //+----------------------------------------------------------------------------
 //
 // method :     ImgBeamAnalyzer::read_RmsX
@@ -2479,8 +3156,53 @@ void ImgBeamAnalyzer::read_AutoROIHeight(Tango::Attribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_ROIImage(Tango::Attribute &attr)
 {
-  // Mantis bug 14571 : enable 32 bit data
-  READ_OUTPUT_IMAGE_ATTR_ALWAYSACTIV(roi_image, Tango::DevULong);  // JCP
+	// Mantis bug 14571 : enable 32 bit data
+ // READ_OUTPUT_IMAGE_ATTR_ALWAYSACTIV(roi_image, Tango::DevULong);  // JCP
+	// start time
+  ENTER_FUNC
+  
+  BIAData* pLastAvailableData  = NULL;
+
+  LOCK_AD
+
+  if (m_AvailableDataList.size() > 0)
+    pLastAvailableData  = m_AvailableDataList.front();
+  if (pLastAvailableData  == NULL
+       || pLastAvailableData ->roi_image.base() == 0 )                   
+  {                                                                          
+	  UNLOCK_AD
+    attr.set_value(&DummyValue<Tango::DevULong>::dummy, 1, 1);                    
+    attr.set_quality(Tango::ATTR_ALARM);                                     
+  }                                                                          
+  else                                                                       
+  {                                                                          
+#ifdef OUTPUT_DEBUG
+      // ------------------------------------------------------------------------
+      char Res[150];
+      sprintf(Res, "IN>>read_ROIImage(Adress=%p)\r\n", pLastAvailableData ->roi_image.base());
+      OutputDebugString(Res);
+      // ------------------------------------------------------------------------
+#endif //OUTPUT_DEBUG
+
+      attr.set_value(pLastAvailableData ->roi_image.base(),                
+                    static_cast<yat_int32_t>                                  
+                              (pLastAvailableData ->roi_image.width()),  
+                    static_cast<yat_int32_t>                                  
+                            (pLastAvailableData ->roi_image.height()));  
+      ATTRUNLOCK_AD
+      if (pLastAvailableData->alarm == true)                                
+        attr.set_quality(Tango::ATTR_ALARM);                                   
+      else                                                                     
+        attr.set_quality(Tango::ATTR_VALID);                                   
+
+#ifdef OUTPUT_DEBUG
+      // ------------------------------------------------------------------------
+      OutputDebugString("OUT>>read_ROIImage\r\n");
+      // ------------------------------------------------------------------------
+#endif //OUTPUT_DEBUG
+  }
+  // end time
+  LEAVE_FUNC
 }
 
 //+----------------------------------------------------------------------------
@@ -3288,7 +4010,7 @@ void ImgBeamAnalyzer::on_image_processed(BIAData* data)
     //    while holding the tango mutex.
     //  - push_change_event executed in the worker, needs the
     //    tango mutex!
-    //  - DEADLOCK!
+    //  - DEADLOCK_AVAILABLE_LIST!
     if (!this->process_command_waiting_ && this->device_mode_ == MODE_EVENT)
         this->push_change_event("ImageCounter", &this->image_counter_);
   } catch(...) {
@@ -3430,6 +4152,25 @@ void ImgBeamAnalyzer::update_state()
     this->set_status(status);
   }
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

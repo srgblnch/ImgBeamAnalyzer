@@ -28,6 +28,8 @@
 #include <isl/Exception.h>
 #include <isl/ErrorHandler.h>
 
+#include <exception>
+
 #include "BIAData.h"
 #include "BIAConfig.h"
 
@@ -41,6 +43,12 @@ namespace ImgBeamAnalyzer_ns
     ISL2YATException(const isl::Exception&);
   };
 
+   /// @todo Shouldn't it be somewhere more publicly available?
+  class NoDataAvailableNowException : public std::exception
+  {
+  public:
+    virtual const char * what(void) const throw ();
+  };
 
   class BIAProcessor
   {
@@ -76,7 +84,19 @@ namespace ImgBeamAnalyzer_ns
     void saturation(const isl::Image& roi_image, const BIAConfig& config, BIAData& data, const double centroid_x_, const double centroid_y_) const
       throw (isl::Exception);
 
-    void gaussian_fit_2d(const isl::Image& roi_image_d, const isl::Rectangle& roi, const BIAConfig& config, BIAData& data) const
+    void gaussian_fit_2d(const isl::Image& roi_image_d, const isl::Image& roi_image_f, const isl::Rectangle& roi, const BIAConfig& config, BIAData& data) const
+      throw (isl::Exception);
+
+	void computeAndFitMajorMinorAxis(const isl::Image& roi_image_d, const isl::Image& roi_image_f, const isl::Rectangle& roi, const BIAConfig& config, BIAData& data) const
+      throw (isl::Exception);
+	
+	void computeMajorAndMinorAxisPositions(double x, double  y, double  angle, const int width, int height, BIAData& data) const 
+	  throw (isl::Exception);
+
+	double getValueOnAxisEllipse(const bool isMajor, const bool isGetY, const double  value, const double  center_x, const double center_y, const double angle) const
+	  throw (isl::Exception);
+
+	void computeMajorAndMinorAxisPosition(BIAData& data) const 
       throw (isl::Exception);
   };
 

@@ -1,10 +1,3 @@
-//*******************************************************************************
-//* Copyright (c) 2004-2014 Synchrotron SOLEIL
-//* All rights reserved. This program and the accompanying materials
-//* are made available under the terms of the GNU Lesser Public License v3
-//* which accompanies this distribution, and is available at
-//* http://www.gnu.org/licenses/lgpl.html
-//******************************************************************************
 // ============================================================================
 //
 // = CONTEXT
@@ -52,6 +45,8 @@ ImgBeamAnalyzerTask::ImgBeamAnalyzerTask()
 ImgBeamAnalyzerTask::~ImgBeamAnalyzerTask()
 {
 }
+
+static WORD StartMillis = 0;
 
 void ImgBeamAnalyzerTask::handle_message (yat::Message& _msg)
   throw (yat::Exception)
@@ -162,6 +157,10 @@ void ImgBeamAnalyzerTask::handle_message (yat::Message& _msg)
                               "Unable to get remote image",
                               "ImgBeamAnalyzerTask::handle_message");
           }
+          catch(NoDataAvailableNowException &ex)
+          {
+			  throw ex;
+          }
           catch(...)
           {
             THROW_YAT_ERROR("UNKNOWN_ERROR",
@@ -198,6 +197,12 @@ void ImgBeamAnalyzerTask::handle_message (yat::Message& _msg)
           this->set_state_status(FAULT, os.str());
           break;
         }
+		catch(NoDataAvailableNowException &ex)
+		{
+			// no data aivalable. Is not a error.
+			this->set_state_status(STANDBY, ex.what());
+			break;
+		}
         catch( ... )
         {
           yat::OSStream os;
@@ -238,6 +243,14 @@ void ImgBeamAnalyzerTask::handle_message (yat::Message& _msg)
             image = imginf->image;
             bit_depth = imginf->bit_depth;
 
+#ifdef OUTPUT_DEBUG
+// --------------------------------------------------------------------
+			OutputDebugString("CRASH_ANALYSE ");
+			OutputDebugString(__FUNCTION__);
+			OutputDebugString(" ");
+			OutputDebugString(" delete imginf\n");
+// --------------------------------------------------------------------
+#endif //OUTPUT_DEBUG
             delete imginf;
           }
           catch(yat::Exception& ex)
@@ -284,18 +297,52 @@ void ImgBeamAnalyzerTask::handle_message (yat::Message& _msg)
             
             data->config = config;
             
+#ifdef OUTPUT_DEBUG
+// --------------------------------------------------------------------
+	SYSTEMTIME time;
+	GetSystemTime(&time);
+  WORD Prev = StartMillis;
+	StartMillis = (time.wSecond * 1000) + time.wMilliseconds;	
+  OutputDebugString("*************************************************************\r\n");
+  char StartMes[512];
+	sprintf(StartMes, "*** Start processing an image (time since last process = %d)***\r\n", StartMillis - Prev);
+  OutputDebugString(StartMes);
+// --------------------------------------------------------------------
+#endif //OUTPUT_DEBUG
+
             this->proc_.process(*image, config, *data);
 
-            //- update the available data
-            BIAData* last_data = this->data_;
+#ifdef OUTPUT_DEBUG
+// --------------------------------------------------------------------
+	GetSystemTime(&time);
+	WORD Duration = (time.wSecond * 1000) + time.wMilliseconds - StartMillis;	
+  char EndMes[150];
+	sprintf(EndMes,   "** End processing in %d ms **\r\n", Duration);
+  OutputDebugString(EndMes);
+  OutputDebugString("***********************************************\r\n");
+// --------------------------------------------------------------------
+#endif //OUTPUT_DEBUG
+
             {
               yat::MutexLock guard(this->data_mutex_);
+			  if (this->data_ != NULL)
+			  {
+#ifdef OUTPUT_DEBUG
+// --------------------------------------------------------------------
+				  Tango::DevUShort* p = data_->roi_image.base();
+				  char Res[150];
+				  if (data_->reference_count() > 1)
+					  sprintf(Res, "ImgBeamAnalyzerTask : Just after process, release previous data (Data Start Address = %p, ROIImage Address=%p, Ref count before release=%d)\r\n", 
+                          &(data_->config), p, data_->reference_count());
+				  else
+					  sprintf(Res, "ImgBeamAnalyzerTask : Just after process, previous data (Data Start Address = %p, ROIImage Address=%p) was DESTROYED !\r\n", 
+                          &(data_->config), p);
+				  OutputDebugString(Res);
+// --------------------------------------------------------------------
+#endif //OUTPUT_DEBUG
+	            this->data_->release();
+			  }
               this->data_ = data;
-            }
-            if (last_data)
-            {
-              last_data->release();
-              last_data = 0;
             }
             this->on_img_processed_callback_(data);
           }
