@@ -94,8 +94,6 @@ public:
   double               skew_x2y;
   double               skew_xy2;
   bool                 centroid_saturated;
-  double               peak_x;
-  double               peak_y;
 
   //- projections & profile
   yat::Buffer<double>  xproj;
@@ -110,8 +108,6 @@ public:
   double               xproj_chi2;
   yat_int32_t          xproj_nb_iter;
   double               xproj_eps;
-  double               xproj_1e2;
-  double		       xproj_order;
 
   yat::Buffer<double>  yproj;
   bool                 yproj_fit_converged;
@@ -125,8 +121,6 @@ public:
   double               yproj_chi2;
   yat_int32_t          yproj_nb_iter;
   double               yproj_eps;
-  double               yproj_1e2;
-  double			   yproj_order;
 
   yat::Buffer<double>  line_profile;
   bool                 line_profile_fit_converged;
@@ -141,8 +135,6 @@ public:
   yat_int32_t          line_profile_nb_iter;
   double               line_profile_eps;
   yat::ImageBuffer<float> line_profile_helper_img;
-  double               line_profile_1e2;
-  double		       line_profile_order;
 
   //- histogram
   yat::Buffer<float>   histogram;
@@ -158,31 +150,12 @@ public:
   double               gaussfit_correlation_xy;
   double               gaussfit_major_axis_fwhm;
   double               gaussfit_minor_axis_fwhm;
-  double               gaussfit_major_axis_1e2;
-  double               gaussfit_minor_axis_1e2;
-  double		       gaussfit_major_order;
-  double		       gaussfit_minor_order;
-  int				   gaussfit_major_pt1_x;
-  int				   gaussfit_major_pt1_y;
-  int			   	   gaussfit_major_pt2_x;
-  int			   	   gaussfit_major_pt2_y;
-  int			   	   gaussfit_minor_pt1_x;
-  int			   	   gaussfit_minor_pt1_y;
-  int			   	   gaussfit_minor_pt2_x;
-  int			   	   gaussfit_minor_pt2_y;
   double               gaussfit_tilt;
-  double               gaussfit_ellipticity;
-  double               gaussfit_eccentricity;
-  double               gaussfit_divergence;
   double               gaussfit_bg;
   double               gaussfit_chi2;
   yat_int32_t              gaussfit_nb_iter;
   double               gaussfit_eps;
   yat::ImageBuffer<double> gaussfit_parameters_covariance;
-  yat::Buffer<double>  gaussfit_major_axis;
-  yat::Buffer<double>  gaussfit_major_axis_fitted;
-  yat::Buffer<double>  gaussfit_minor_axis;
-  yat::Buffer<double>  gaussfit_minor_axis_fitted;
 
   double               chamber_centroid_x;
   double               chamber_centroid_y;

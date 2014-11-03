@@ -746,7 +746,6 @@ void ImgBeamAnalyzer::get_device_property()
   this->enableUserROI        = default_config.enable_user_roi;
   this->enableAutoROI        = default_config.enable_auto_roi;
   this->enable2DGaussianFit  = default_config.enable_2d_gaussian_fit;
-  this->enableSuperGaussianFit	= default_config.enable_super_gaussian_fit;
   this->autoROIMagFactorX    = default_config.auto_roi_mag_factor_x;
   this->autoROIMagFactorY    = default_config.auto_roi_mag_factor_y;
   this->pixelSizeX           = default_config.pixel_size_x;
@@ -808,7 +807,6 @@ void ImgBeamAnalyzer::get_device_property()
 	dev_prop.push_back(Tango::DbDatum("ChamberOffsetY"));
 	dev_prop.push_back(Tango::DbDatum("CentroidSaturationRegionSide"));
 	dev_prop.push_back(Tango::DbDatum("CentroidSaturationRegionThreshold"));
-	dev_prop.push_back(Tango::DbDatum("EnableSuperGaussianFit"));
 
 	//	Call database and extract values
 	//--------------------------------------------
@@ -1193,19 +1191,6 @@ void ImgBeamAnalyzer::get_device_property()
 	//	And try to extract CentroidSaturationRegionThreshold value from database
 	if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  centroidSaturationRegionThreshold;
 
-	//	Try to initialize EnableSuperGaussianFit from class property
-	cl_prop = ds_class->get_class_property(dev_prop[++i].name);
-	if (cl_prop.is_empty()==false)	cl_prop  >>  enableSuperGaussianFit;
-	else {
-		//	Try to initialize EnableSuperGaussianFit from default device value
-		def_prop = ds_class->get_default_device_property(dev_prop[i].name);
-		if (def_prop.is_empty()==false)	def_prop  >>  enableSuperGaussianFit;
-	}
-	//	And try to extract EnableSuperGaussianFit value from database
-	if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  enableSuperGaussianFit;
-
-
-
   //  End of Automatic code generation
   //------------------------------------------------------------------
 
@@ -1231,7 +1216,6 @@ void ImgBeamAnalyzer::get_device_property()
   this->current_config_.enable_profile          = enableProfiles;
   this->current_config_.enable_histogram        = enableHistogram;
   this->current_config_.enable_2d_gaussian_fit  = enable2DGaussianFit;
-  this->current_config_.enable_super_gaussian_fit  = enableSuperGaussianFit;
   this->current_config_.enable_auto_roi         = enableAutoROI;
   this->current_config_.enable_user_roi         = enableUserROI;
   this->current_config_.comput_period           = computationPeriod;
