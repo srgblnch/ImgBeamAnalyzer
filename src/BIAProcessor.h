@@ -47,8 +47,9 @@ namespace ImgBeamAnalyzer_ns
   class NoDataAvailableNowException : public std::exception
   {
   public:
-    virtual const char * what(void) const throw ();
+    virtual const char * what(void) const throw ()  {  return "No data available now.";}
   };
+
 
   class BIAProcessor
   {

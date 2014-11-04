@@ -52,8 +52,10 @@ ImgBeamAnalyzerTask::ImgBeamAnalyzerTask()
 ImgBeamAnalyzerTask::~ImgBeamAnalyzerTask()
 {
 }
-
+#ifdef OUTPUT_DEBUG
 static WORD StartMillis = 0;
+#endif
+
 
 void ImgBeamAnalyzerTask::handle_message (yat::Message& _msg)
   throw (yat::Exception)
