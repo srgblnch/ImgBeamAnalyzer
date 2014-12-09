@@ -3406,7 +3406,7 @@ void ImgBeamAnalyzer::process()
   if (this->process_command_allowed_ == false)
   {
     THROW_DEVFAILED("OPERATION_NOT_ALLOWED",
-                    "Device mode must be ONESHOT to use the 'Process' command",
+                    "Device mode must be ONESHOT (configured in a device property) to use the 'Process' command",
                     "ImgBeamAnalyzer::process");
   }
 
