@@ -75,7 +75,6 @@
       _TIMESTAMP end_ts;
       _GET_TIME(end_ts);
       const double milis = _ELAPSED_MSEC(begin_ts, end_ts);
-      std::cout << "PROFILE " << func_name << "(): " << milis << "ms" << std::endl;
     }
   };
   #define CHRONO_PROFILE() _ProfileFunction __erprofileeer__(__FUNCTION__)
@@ -375,7 +374,7 @@ namespace ImgBeamAnalyzer_ns
       }
       catch(isl::Exception& ex)
       {
-        std::cerr << ex << std::endl;
+//        std::cerr << ex << std::endl;
         isl::ErrorHandler::reset();
        
         // failed to determine the ROI automatically : take the user roi image (already clipped by user roi)
@@ -407,7 +406,7 @@ namespace ImgBeamAnalyzer_ns
       }
       catch(isl::Exception& ex)
       {
-        std::cerr << ex << std::endl;
+//        std::cerr << ex << std::endl;
         isl::ErrorHandler::reset();
         // failed to determine the ROI automatically : take the whole image
         // (already clipped by user roi)

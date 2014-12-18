@@ -236,7 +236,7 @@ ImgBeamAnalyzerClass *ImgBeamAnalyzerClass::instance()
 {
 	if (_instance == NULL)
 	{
-		cerr << "Class is not initialised !!" << endl;
+//		cerr << "Class is not initialised !!" << endl;
 		exit(-1);
 	}
 	return _instance;
