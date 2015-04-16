@@ -1,16 +1,8 @@
-//*******************************************************************************
-//* Copyright (c) 2004-2014 Synchrotron SOLEIL
-//* All rights reserved. This program and the accompanying materials
-//* are made available under the terms of the GNU Lesser Public License v3
-//* which accompanies this distribution, and is available at
-//* http://www.gnu.org/licenses/lgpl.html
-//******************************************************************************
-static const char *ClassId    = "$Id: ImgBeamAnalyzerClass.cpp,v 1.26 2012-07-09 14:05:48 sergiblanch Exp $";
-static const char *CvsPath    = "$Source: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzerClass.cpp,v $";
+static const char *ClassId    = "$Id:  $";
+static const char *TagName    = "$Name:  $";
+static const char *CvsPath    = "$Source:  $";
 static const char *SvnPath    = "$HeadURL: $";
-static const char *RcsId     = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzerClass.cpp,v 1.26 2012-07-09 14:05:48 sergiblanch Exp $";
-static const char *TagName   = "$Name: not supported by cvs2svn $";
-static const char *HttpServer= "http://www.esrf.fr/computing/cs/tango/tango_doc/ds_doc/";
+static const char *HttpServer = "http://www.esrf.fr/computing/cs/tango/tango_doc/ds_doc/";
 //+=============================================================================
 //
 // file :        ImgBeamAnalyzerClass.cpp
@@ -22,17 +14,11 @@ static const char *HttpServer= "http://www.esrf.fr/computing/cs/tango/tango_doc/
 //
 // project :     TANGO Device Server
 //
-// $Author: sergiblanch $
+// $Author:  $
 //
-// $Revision: 1.26 $
+// $Revision:  $
 //
-// $Log: not supported by cvs2svn $
-// Revision 1.25  2011/12/09 15:35:20  jcpret
-// Fixed Mantis buf 14571
-//
-// Revision 1.24  2010/04/12 08:31:45  flanglois
-// switch to impl4
-//
+// $Log:  $
 //
 // copyleft :   European Synchrotron Radiation Facility
 //              BP 220, Grenoble 38043
@@ -47,8 +33,28 @@ static const char *HttpServer= "http://www.esrf.fr/computing/cs/tango/tango_doc/
 //=============================================================================
 
 
+#include <tango.h>
+
 #include <ImgBeamAnalyzer.h>
 #include <ImgBeamAnalyzerClass.h>
+
+
+//+----------------------------------------------------------------------------
+/**
+ *	Create ImgBeamAnalyzerClass singleton and return it in a C function for Python usage
+ */
+//+----------------------------------------------------------------------------
+extern "C" {
+#ifdef WIN32
+
+__declspec(dllexport)
+
+#endif
+
+	Tango::DeviceClass *_create_ImgBeamAnalyzer_class(const char *name) {
+		return ImgBeamAnalyzer_ns::ImgBeamAnalyzerClass::init(name);
+	}
+}
 
 
 namespace ImgBeamAnalyzer_ns
@@ -56,25 +62,47 @@ namespace ImgBeamAnalyzer_ns
 
 //+----------------------------------------------------------------------------
 //
-// method : 		GetVersionNumberClass::execute()
+// method : 		StartCmd::execute()
 // 
 // description : 	method to trigger the execution of the command.
 //                PLEASE DO NOT MODIFY this method core without pogo   
 //
-// in : - device : The device on which the command must be excuted
+// in : - device : The device on which the command must be executed
 //		- in_any : The command input data
 //
 // returns : The command output data (packed in the Any object)
 //
 //-----------------------------------------------------------------------------
-CORBA::Any *GetVersionNumberClass::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
+CORBA::Any *StartCmd::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
 {
 
-	cout2 << "GetVersionNumberClass::execute(): arrived" << endl;
+	cout2 << "StartCmd::execute(): arrived" << endl;
 
-	return insert((static_cast<ImgBeamAnalyzer *>(device))->get_version_number());
+	((static_cast<ImgBeamAnalyzer *>(device))->start());
+	return new CORBA::Any();
 }
 
+//+----------------------------------------------------------------------------
+//
+// method : 		StopCmd::execute()
+// 
+// description : 	method to trigger the execution of the command.
+//                PLEASE DO NOT MODIFY this method core without pogo   
+//
+// in : - device : The device on which the command must be executed
+//		- in_any : The command input data
+//
+// returns : The command output data (packed in the Any object)
+//
+//-----------------------------------------------------------------------------
+CORBA::Any *StopCmd::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
+{
+
+	cout2 << "StopCmd::execute(): arrived" << endl;
+
+	((static_cast<ImgBeamAnalyzer *>(device))->stop());
+	return new CORBA::Any();
+}
 
 //+----------------------------------------------------------------------------
 //
@@ -83,7 +111,7 @@ CORBA::Any *GetVersionNumberClass::execute(Tango::DeviceImpl *device,const CORBA
 // description : 	method to trigger the execution of the command.
 //                PLEASE DO NOT MODIFY this method core without pogo   
 //
-// in : - device : The device on which the command must be excuted
+// in : - device : The device on which the command must be executed
 //		- in_any : The command input data
 //
 // returns : The command output data (packed in the Any object)
@@ -105,7 +133,7 @@ CORBA::Any *ProcessCmd::execute(Tango::DeviceImpl *device,const CORBA::Any &in_a
 // description : 	method to trigger the execution of the command.
 //                PLEASE DO NOT MODIFY this method core without pogo   
 //
-// in : - device : The device on which the command must be excuted
+// in : - device : The device on which the command must be executed
 //		- in_any : The command input data
 //
 // returns : The command output data (packed in the Any object)
@@ -120,49 +148,25 @@ CORBA::Any *SaveCurrentSettingsCmd::execute(Tango::DeviceImpl *device,const CORB
 	return new CORBA::Any();
 }
 
-
 //+----------------------------------------------------------------------------
 //
-// method : 		StopCmd::execute()
+// method : 		GetVersionNumberClass::execute()
 // 
 // description : 	method to trigger the execution of the command.
 //                PLEASE DO NOT MODIFY this method core without pogo   
 //
-// in : - device : The device on which the command must be excuted
+// in : - device : The device on which the command must be executed
 //		- in_any : The command input data
 //
 // returns : The command output data (packed in the Any object)
 //
 //-----------------------------------------------------------------------------
-CORBA::Any *StopCmd::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
+CORBA::Any *GetVersionNumberClass::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
 {
 
-	cout2 << "StopCmd::execute(): arrived" << endl;
+	cout2 << "GetVersionNumberClass::execute(): arrived" << endl;
 
-	((static_cast<ImgBeamAnalyzer *>(device))->stop());
-	return new CORBA::Any();
-}
-
-//+----------------------------------------------------------------------------
-//
-// method : 		StartCmd::execute()
-// 
-// description : 	method to trigger the execution of the command.
-//                PLEASE DO NOT MODIFY this method core without pogo   
-//
-// in : - device : The device on which the command must be excuted
-//		- in_any : The command input data
-//
-// returns : The command output data (packed in the Any object)
-//
-//-----------------------------------------------------------------------------
-CORBA::Any *StartCmd::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
-{
-
-	cout2 << "StartCmd::execute(): arrived" << endl;
-
-	((static_cast<ImgBeamAnalyzer *>(device))->start());
-	return new CORBA::Any();
+	return insert((static_cast<ImgBeamAnalyzer *>(device))->get_version_number());
 }
 
 
@@ -186,8 +190,8 @@ ImgBeamAnalyzerClass::ImgBeamAnalyzerClass(string &s):DeviceClass(s)
 {
 
 	cout2 << "Entering ImgBeamAnalyzerClass constructor" << endl;
-	get_class_property();
 	set_default_property();
+	get_class_property();
 	write_class_property();
 	
 	cout2 << "Leaving ImgBeamAnalyzerClass constructor" << endl;
@@ -236,7 +240,7 @@ ImgBeamAnalyzerClass *ImgBeamAnalyzerClass::instance()
 {
 	if (_instance == NULL)
 	{
-//		cerr << "Class is not initialised !!" << endl;
+		cerr << "Class is not initialised !!" << endl;
 		exit(-1);
 	}
 	return _instance;
@@ -849,20 +853,12 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	att_list.push_back(centroid_saturated);
 
 	//	Attribute : CentroidSaturationRegionSide
-	CentroidSaturationRegionSideAttrib *centroid_side = new CentroidSaturationRegionSideAttrib();
-	Tango::UserDefaultAttrProp	centroid_side_prop;
-	centroid_side_prop.set_label("CentroidSaturationRegionSide");
-	centroid_side_prop.set_description("See CentroidSaturated.");
-	centroid_side->set_default_properties(centroid_side_prop);
-	att_list.push_back(centroid_side);
+	CentroidSaturationRegionSideAttrib	*centroid_saturation_region_side = new CentroidSaturationRegionSideAttrib();
+	att_list.push_back(centroid_saturation_region_side);
 
 	//	Attribute : CentroidSaturationRegionThreshold
-	CentroidSaturationRegionThresholdAttrib *centroid_threshold = new CentroidSaturationRegionThresholdAttrib();
-	Tango::UserDefaultAttrProp	centroid_threshold_prop;
-	centroid_threshold_prop.set_label("CentroidSaturationRegionThreshold");
-	centroid_threshold_prop.set_description("See CentroidSaturated.");
-	centroid_threshold->set_default_properties(centroid_threshold_prop);
-	att_list.push_back(centroid_threshold);
+	CentroidSaturationRegionThresholdAttrib	*centroid_saturation_region_threshold = new CentroidSaturationRegionThresholdAttrib();
+	att_list.push_back(centroid_saturation_region_threshold);
 
 	//	Attribute : VarianceX
 	VarianceXAttrib	*variance_x = new VarianceXAttrib();
@@ -1418,6 +1414,13 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	rms_y->set_default_properties(rms_y_prop);
 	att_list.push_back(rms_y);
 
+	//	Attribute : ImageCounter
+	ImageCounterAttrib	*image_counter = new ImageCounterAttrib();
+	Tango::UserDefaultAttrProp	image_counter_prop;
+	image_counter_prop.set_format("%10d");
+	image_counter->set_default_properties(image_counter_prop);
+	att_list.push_back(image_counter);
+
 	//	Attribute : XProj
 	XProjAttrib	*xproj = new XProjAttrib();
 	Tango::UserDefaultAttrProp	xproj_prop;
@@ -1556,12 +1559,6 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	gaussian_fit_parameter_covariance->set_disp_level(Tango::EXPERT);
 	att_list.push_back(gaussian_fit_parameter_covariance);
 
-	ImageCounterAttrib *image_counter = new ImageCounterAttrib();
-	Tango::UserDefaultAttrProp image_counter_prop;
-	image_counter_prop.set_format("%10d");
-	image_counter->set_default_properties(image_counter_prop);
-	image_counter->set_change_event(true, false);
-	att_list.push_back(image_counter);
 	//	End of Automatic code generation
 	//-------------------------------------------------------------
 }
@@ -1903,7 +1900,7 @@ void ImgBeamAnalyzerClass::set_default_property()
 		add_wiz_dev_prop(prop_name, prop_desc);
 
 	prop_name = "Mode";
-	prop_desc = "ONESHOT or CONTINUOUS or EVENT";
+	prop_desc = "ONESHOT or CONTINUOUS";
 	prop_def  = "ONESHOT";
 	vect_data.clear();
 	vect_data.push_back("ONESHOT");
@@ -2074,9 +2071,11 @@ void ImgBeamAnalyzerClass::set_default_property()
 	prop_name = "CentroidSaturationRegionSide";
 	prop_desc = "the initial value of the CentroidSaturationRegionSide attribute";
 	prop_def  = "5";
+	vect_data.clear();
+	vect_data.push_back("5");
 	if (prop_def.length()>0)
 	{
-		Tango::DbDatum  data(prop_name);
+		Tango::DbDatum	data(prop_name);
 		data << vect_data ;
 		dev_def_prop.push_back(data);
 		add_wiz_dev_prop(prop_name, prop_desc,  prop_def);
@@ -2087,9 +2086,11 @@ void ImgBeamAnalyzerClass::set_default_property()
 	prop_name = "CentroidSaturationRegionThreshold";
 	prop_desc = "the initial value of the CentroidSaturationRegionThreshold attribute";
 	prop_def  = "5";
+	vect_data.clear();
+	vect_data.push_back("5");
 	if (prop_def.length()>0)
 	{
-		Tango::DbDatum  data(prop_name);
+		Tango::DbDatum	data(prop_name);
 		data << vect_data ;
 		dev_def_prop.push_back(data);
 		add_wiz_dev_prop(prop_name, prop_desc,  prop_def);

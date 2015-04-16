@@ -474,7 +474,7 @@ void ImgBeamAnalyzer::delete_device()
 // method :     ImgBeamAnalyzer::init_device()
 // 
 // description :   will be called at device initialization.
-//²
+//ï¿½
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::init_device()
 {

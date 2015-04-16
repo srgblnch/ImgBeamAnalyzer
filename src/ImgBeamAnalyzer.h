@@ -191,6 +191,10 @@ public :
 		Tango::DevDouble	*attr_CentroidX_read;
 		Tango::DevDouble	*attr_CentroidY_read;
 		Tango::DevBoolean	*attr_CentroidSaturated_read;
+		Tango::DevLong	*attr_CentroidSaturationRegionSide_read;
+		Tango::DevLong	attr_CentroidSaturationRegionSide_write;
+		Tango::DevLong	*attr_CentroidSaturationRegionThreshold_read;
+		Tango::DevLong	attr_CentroidSaturationRegionThreshold_write;
 		Tango::DevDouble	*attr_VarianceX_read;
 		Tango::DevDouble	*attr_VarianceY_read;
 		Tango::DevDouble	*attr_CovarianceXY_read;
@@ -250,6 +254,7 @@ public :
 		Tango::DevDouble	*attr_GaussianFitRelChange_read;
 		Tango::DevDouble	*attr_RmsX_read;
 		Tango::DevDouble	*attr_RmsY_read;
+		Tango::DevULong	*attr_ImageCounter_read;
 		Tango::DevDouble	*attr_XProj_read;
 		Tango::DevDouble	*attr_XProjFitted_read;
 		Tango::DevDouble	*attr_XProjError_read;
@@ -260,10 +265,6 @@ public :
 		Tango::DevDouble	*attr_LineProfileFitted_read;
 		Tango::DevDouble	*attr_LineProfileError_read;
 		Tango::DevFloat	*attr_Histogram_read;
-		Tango::DevDouble	*attr_MajorAxis_read;
-		Tango::DevDouble	*attr_MinorAxis_read;
-		Tango::DevDouble	*attr_MajorAxisFitted_read;
-		Tango::DevDouble	*attr_MinorAxisFitted_read;
 		Tango::DevULong	*attr_InputImage_read;
 		Tango::DevULong	attr_InputImage_write;
 		Tango::DevULong	*attr_ROIImage_read;
@@ -408,13 +409,13 @@ public :
  */
 	Tango::DevDouble	chamberOffsetY;
 /**
- *  the initial value of the CentroidSaturationRegionSide attribute
+ *	the initial value of the CentroidSaturationRegionSide attribute
  */
-	Tango::DevLong  centroidSaturationRegionSide;
+	Tango::DevLong	centroidSaturationRegionSide;
 /**
- *  the initial value of the CentroidSaturationRegionThreshold attribute
+ *	the initial value of the CentroidSaturationRegionThreshold attribute
  */
-	Tango::DevLong  centroidSaturationRegionThreshold;
+	Tango::DevLong	centroidSaturationRegionThreshold;
 //@}
 
 /**@name Constructors
@@ -813,19 +814,19 @@ public :
  */
 	virtual void read_CentroidSaturated(Tango::Attribute &attr);
 /**
- *  Extract real attribute values for CentroidSaturationRegionSide acquisition result.
+ *	Extract real attribute values for CentroidSaturationRegionSide acquisition result.
  */
 	virtual void read_CentroidSaturationRegionSide(Tango::Attribute &attr);
 /**
- *  Write CentroidSaturationRegionSide attribute values to hardware.
+ *	Write CentroidSaturationRegionSide attribute values to hardware.
  */
 	virtual void write_CentroidSaturationRegionSide(Tango::WAttribute &attr);
 /**
-*  Extract real attribute values for CentroidSaturationRegionThreshold acquisition result.
+ *	Extract real attribute values for CentroidSaturationRegionThreshold acquisition result.
  */
 	virtual void read_CentroidSaturationRegionThreshold(Tango::Attribute &attr);
 /**
- *  Write CentroidSaturationRegionThreshold attribute values to hardware.
+ *	Write CentroidSaturationRegionThreshold attribute values to hardware.
  */
 	virtual void write_CentroidSaturationRegionThreshold(Tango::WAttribute &attr);
 /**
@@ -1325,11 +1326,11 @@ public :
  */
 	virtual bool is_CentroidSaturated_allowed(Tango::AttReqType type);
 /**
- *  Read/Write allowed for CentroidSaturationRegionSide attribute.
+ *	Read/Write allowed for CentroidSaturationRegionSide attribute.
  */
 	virtual bool is_CentroidSaturationRegionSide_allowed(Tango::AttReqType type);
 /**
- *  Read/Write allowed for CentroidSaturationRegionThreshold attribute.
+ *	Read/Write allowed for CentroidSaturationRegionThreshold attribute.
  */
 	virtual bool is_CentroidSaturationRegionThreshold_allowed(Tango::AttReqType type);
 /**

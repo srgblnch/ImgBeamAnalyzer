@@ -1,40 +1,24 @@
-//*******************************************************************************
-//* Copyright (c) 2004-2014 Synchrotron SOLEIL
-//* All rights reserved. This program and the accompanying materials
-//* are made available under the terms of the GNU Lesser Public License v3
-//* which accompanies this distribution, and is available at
-//* http://www.gnu.org/licenses/lgpl.html
-//******************************************************************************
-static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/ImgBeamAnalyzer/src/ImgBeamAnalyzerStateMachine.cpp,v 1.23 2013-01-22 18:23:05 buteau Exp $";
+static const char *RcsId = "$Id $";
 //+=============================================================================
 //
 // file :         ImgBeamAnalyzerStateMachine.cpp
 //
-// description :  C++ source for the ImgBeamAnalyzer and its alowed. 
-//                method for commands and attributes
+// description :  C++ source for the ImgBeamAnalyzer and its alowed 
+//                methods for commands and attributes
 //
 // project :      TANGO Device Server
 //
-// $Author: buteau $
+// $Author:  $
 //
-// $Revision: 1.23 $
+// $Revision:  $
+// $Date:  $
 //
-// $Log: not supported by cvs2svn $
-// Revision 1.22  2013/01/22 12:40:27  buteau
-// MANTIS 22737
+// SVN only:
+// $HeadURL: $
 //
-// Revision 1.21  2012/07/09 14:05:48  sergiblanch
-// - Saturated centroid boolean tunable by region side and threshold attributes
-// - Add ULong capacity for image data type (before a default in a switch sets it to UShort)
-// - Mode property description EVENT added
-// - improve the status message when run in events
-//
-// Revision 1.20  2012/03/30 18:23:15  buteau
-// MANTIS 0022238
-//
-// Revision 1.18  2009/12/18 13:23:53  ollupac
-// New attribute: ImageCounter (and with events!)
-//
+// CVS only:
+// $Source:  $
+// $Log:  $
 //
 // copyleft :     European Synchrotron Radiation Facility
 //                BP 220, Grenoble 38043
@@ -48,6 +32,7 @@ static const char *RcsId = "$Header: /users/chaize/newsvn/cvsroot/Calculation/Im
 //         (c) - Software Engineering Group - ESRF
 //=============================================================================
 
+#include <tango.h>
 #include <ImgBeamAnalyzer.h>
 #include <ImgBeamAnalyzerClass.h>
 
@@ -99,12 +84,12 @@ bool ImgBeamAnalyzer::is_EnableProfiles_allowed(Tango::AttReqType type)
 }
 //+----------------------------------------------------------------------------
 //
-// method : 		ImgBeamAnalyzer::is_InputImage_allowed
+// method : 		ImgBeamAnalyzer::is_EnableHistogram_allowed
 // 
-// description : 	Read/Write allowed for InputImage attribute.
+// description : 	Read/Write allowed for EnableHistogram attribute.
 //
 //-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_InputImage_allowed(Tango::AttReqType type)
+bool ImgBeamAnalyzer::is_EnableHistogram_allowed(Tango::AttReqType type)
 {
 		//	End of Generated Code
 
@@ -113,12 +98,40 @@ bool ImgBeamAnalyzer::is_InputImage_allowed(Tango::AttReqType type)
 }
 //+----------------------------------------------------------------------------
 //
-// method : 		ImgBeamAnalyzer::is_MeanIntensity_allowed
+// method : 		ImgBeamAnalyzer::is_EnableUserROI_allowed
 // 
-// description : 	Read/Write allowed for MeanIntensity attribute.
+// description : 	Read/Write allowed for EnableUserROI attribute.
 //
 //-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_MeanIntensity_allowed(Tango::AttReqType type)
+bool ImgBeamAnalyzer::is_EnableUserROI_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_EnableAutoROI_allowed
+// 
+// description : 	Read/Write allowed for EnableAutoROI attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_EnableAutoROI_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_Enable2DGaussianFit_allowed
+// 
+// description : 	Read/Write allowed for Enable2DGaussianFit attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_Enable2DGaussianFit_allowed(Tango::AttReqType type)
 {
 		//	End of Generated Code
 
@@ -155,12 +168,12 @@ bool ImgBeamAnalyzer::is_EstimComputTime_allowed(Tango::AttReqType type)
 }
 //+----------------------------------------------------------------------------
 //
-// method : 		ImgBeamAnalyzer::is_Enable2DGaussianFit_allowed
+// method : 		ImgBeamAnalyzer::is_Rotation_allowed
 // 
-// description : 	Read/Write allowed for Enable2DGaussianFit attribute.
+// description : 	Read/Write allowed for Rotation attribute.
 //
 //-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_Enable2DGaussianFit_allowed(Tango::AttReqType type)
+bool ImgBeamAnalyzer::is_Rotation_allowed(Tango::AttReqType type)
 {
 		//	End of Generated Code
 
@@ -169,12 +182,12 @@ bool ImgBeamAnalyzer::is_Enable2DGaussianFit_allowed(Tango::AttReqType type)
 }
 //+----------------------------------------------------------------------------
 //
-// method : 		ImgBeamAnalyzer::is_GaussianFitMagnitude_allowed
+// method : 		ImgBeamAnalyzer::is_HorizontalFlip_allowed
 // 
-// description : 	Read/Write allowed for GaussianFitMagnitude attribute.
+// description : 	Read/Write allowed for HorizontalFlip attribute.
 //
 //-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_GaussianFitMagnitude_allowed(Tango::AttReqType type)
+bool ImgBeamAnalyzer::is_HorizontalFlip_allowed(Tango::AttReqType type)
 {
 		//	End of Generated Code
 
@@ -183,28 +196,12 @@ bool ImgBeamAnalyzer::is_GaussianFitMagnitude_allowed(Tango::AttReqType type)
 }
 //+----------------------------------------------------------------------------
 //
-// method : 		ImgBeamAnalyzer::is_GaussianFitTilt_allowed
+// method : 		ImgBeamAnalyzer::is_BitsPerPixel_allowed
 // 
-// description : 	Read/Write allowed for GaussianFitTilt attribute.
+// description : 	Read/Write allowed for BitsPerPixel attribute.
 //
 //-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_GaussianFitTilt_allowed(Tango::AttReqType type)
-{
-		//	End of Generated Code
-
-		//	Re-Start of Generated Code
-	return true;
-}
-
-
-//+----------------------------------------------------------------------------
-//
-// method : 		ImgBeamAnalyzer::is_GaussianFitChi2_allowed
-// 
-// description : 	Read/Write allowed for GaussianFitChi2 attribute.
-//
-//-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_GaussianFitChi2_allowed(Tango::AttReqType type)
+bool ImgBeamAnalyzer::is_BitsPerPixel_allowed(Tango::AttReqType type)
 {
 		//	End of Generated Code
 
@@ -213,12 +210,110 @@ bool ImgBeamAnalyzer::is_GaussianFitChi2_allowed(Tango::AttReqType type)
 }
 //+----------------------------------------------------------------------------
 //
-// method : 		ImgBeamAnalyzer::is_GaussianFitParameterCovariance_allowed
+// method : 		ImgBeamAnalyzer::is_HistogramNbBins_allowed
 // 
-// description : 	Read/Write allowed for GaussianFitParameterCovariance attribute.
+// description : 	Read/Write allowed for HistogramNbBins attribute.
 //
 //-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_GaussianFitParameterCovariance_allowed(Tango::AttReqType type)
+bool ImgBeamAnalyzer::is_HistogramNbBins_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_HistogramRangeMin_allowed
+// 
+// description : 	Read/Write allowed for HistogramRangeMin attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_HistogramRangeMin_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_HistogramRangeMax_allowed
+// 
+// description : 	Read/Write allowed for HistogramRangeMax attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_HistogramRangeMax_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_GammaCorrection_allowed
+// 
+// description : 	Read/Write allowed for GammaCorrection attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_GammaCorrection_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_AutoROIMagFactorX_allowed
+// 
+// description : 	Read/Write allowed for AutoROIMagFactorX attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_AutoROIMagFactorX_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_AutoROIMagFactorY_allowed
+// 
+// description : 	Read/Write allowed for AutoROIMagFactorY attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_AutoROIMagFactorY_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_AutoROIThreshold_allowed
+// 
+// description : 	Read/Write allowed for AutoROIThreshold attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_AutoROIThreshold_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_BgSubstraction_allowed
+// 
+// description : 	Read/Write allowed for BgSubstraction attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_BgSubstraction_allowed(Tango::AttReqType type)
 {
 		//	End of Generated Code
 
@@ -241,12 +336,12 @@ bool ImgBeamAnalyzer::is_AlarmZone_allowed(Tango::AttReqType type)
 }
 //+----------------------------------------------------------------------------
 //
-// method : 		ImgBeamAnalyzer::is_Fit2DNbIterMax_allowed
+// method : 		ImgBeamAnalyzer::is_PixelSizeX_allowed
 // 
-// description : 	Read/Write allowed for Fit2DNbIterMax attribute.
+// description : 	Read/Write allowed for PixelSizeX attribute.
 //
 //-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_Fit2DNbIterMax_allowed(Tango::AttReqType type)
+bool ImgBeamAnalyzer::is_PixelSizeX_allowed(Tango::AttReqType type)
 {
 		//	End of Generated Code
 
@@ -255,12 +350,12 @@ bool ImgBeamAnalyzer::is_Fit2DNbIterMax_allowed(Tango::AttReqType type)
 }
 //+----------------------------------------------------------------------------
 //
-// method : 		ImgBeamAnalyzer::is_Fit2DMaxRelChange_allowed
+// method : 		ImgBeamAnalyzer::is_PixelSizeY_allowed
 // 
-// description : 	Read/Write allowed for Fit2DMaxRelChange attribute.
+// description : 	Read/Write allowed for PixelSizeY attribute.
 //
 //-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_Fit2DMaxRelChange_allowed(Tango::AttReqType type)
+bool ImgBeamAnalyzer::is_PixelSizeY_allowed(Tango::AttReqType type)
 {
 		//	End of Generated Code
 
@@ -269,12 +364,12 @@ bool ImgBeamAnalyzer::is_Fit2DMaxRelChange_allowed(Tango::AttReqType type)
 }
 //+----------------------------------------------------------------------------
 //
-// method : 		ImgBeamAnalyzer::is_Fit1DNbIterMax_allowed
+// method : 		ImgBeamAnalyzer::is_OpticalMagnification_allowed
 // 
-// description : 	Read/Write allowed for Fit1DNbIterMax attribute.
+// description : 	Read/Write allowed for OpticalMagnification attribute.
 //
 //-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_Fit1DNbIterMax_allowed(Tango::AttReqType type)
+bool ImgBeamAnalyzer::is_OpticalMagnification_allowed(Tango::AttReqType type)
 {
 		//	End of Generated Code
 
@@ -283,12 +378,12 @@ bool ImgBeamAnalyzer::is_Fit1DNbIterMax_allowed(Tango::AttReqType type)
 }
 //+----------------------------------------------------------------------------
 //
-// method : 		ImgBeamAnalyzer::is_Fit1DMaxRelChange_allowed
+// method : 		ImgBeamAnalyzer::is_ProfileFitFixedBg_allowed
 // 
-// description : 	Read/Write allowed for Fit1DMaxRelChange attribute.
+// description : 	Read/Write allowed for ProfileFitFixedBg attribute.
 //
 //-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_Fit1DMaxRelChange_allowed(Tango::AttReqType type)
+bool ImgBeamAnalyzer::is_ProfileFitFixedBg_allowed(Tango::AttReqType type)
 {
 		//	End of Generated Code
 
@@ -297,12 +392,12 @@ bool ImgBeamAnalyzer::is_Fit1DMaxRelChange_allowed(Tango::AttReqType type)
 }
 //+----------------------------------------------------------------------------
 //
-// method : 		ImgBeamAnalyzer::is_GaussianFitBG_allowed
+// method : 		ImgBeamAnalyzer::is_LineProfileOriginX_allowed
 // 
-// description : 	Read/Write allowed for GaussianFitBG attribute.
+// description : 	Read/Write allowed for LineProfileOriginX attribute.
 //
 //-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_GaussianFitBG_allowed(Tango::AttReqType type)
+bool ImgBeamAnalyzer::is_LineProfileOriginX_allowed(Tango::AttReqType type)
 {
 		//	End of Generated Code
 
@@ -311,12 +406,12 @@ bool ImgBeamAnalyzer::is_GaussianFitBG_allowed(Tango::AttReqType type)
 }
 //+----------------------------------------------------------------------------
 //
-// method : 		ImgBeamAnalyzer::is_EnableAutoROI_allowed
+// method : 		ImgBeamAnalyzer::is_LineProfileOriginY_allowed
 // 
-// description : 	Read/Write allowed for EnableAutoROI attribute.
+// description : 	Read/Write allowed for LineProfileOriginY attribute.
 //
 //-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_EnableAutoROI_allowed(Tango::AttReqType type)
+bool ImgBeamAnalyzer::is_LineProfileOriginY_allowed(Tango::AttReqType type)
 {
 		//	End of Generated Code
 
@@ -325,12 +420,12 @@ bool ImgBeamAnalyzer::is_EnableAutoROI_allowed(Tango::AttReqType type)
 }
 //+----------------------------------------------------------------------------
 //
-// method : 		ImgBeamAnalyzer::is_MaxIntensity_allowed
+// method : 		ImgBeamAnalyzer::is_LineProfileEndX_allowed
 // 
-// description : 	Read/Write allowed for MaxIntensity attribute.
+// description : 	Read/Write allowed for LineProfileEndX attribute.
 //
 //-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_MaxIntensity_allowed(Tango::AttReqType type)
+bool ImgBeamAnalyzer::is_LineProfileEndX_allowed(Tango::AttReqType type)
 {
 		//	End of Generated Code
 
@@ -339,12 +434,12 @@ bool ImgBeamAnalyzer::is_MaxIntensity_allowed(Tango::AttReqType type)
 }
 //+----------------------------------------------------------------------------
 //
-// method : 		ImgBeamAnalyzer::is_CentroidX_allowed
+// method : 		ImgBeamAnalyzer::is_LineProfileEndY_allowed
 // 
-// description : 	Read/Write allowed for CentroidX attribute.
+// description : 	Read/Write allowed for LineProfileEndY attribute.
 //
 //-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_CentroidX_allowed(Tango::AttReqType type)
+bool ImgBeamAnalyzer::is_LineProfileEndY_allowed(Tango::AttReqType type)
 {
 		//	End of Generated Code
 
@@ -353,12 +448,12 @@ bool ImgBeamAnalyzer::is_CentroidX_allowed(Tango::AttReqType type)
 }
 //+----------------------------------------------------------------------------
 //
-// method : 		ImgBeamAnalyzer::is_CentroidY_allowed
+// method : 		ImgBeamAnalyzer::is_LineProfileThickness_allowed
 // 
-// description : 	Read/Write allowed for CentroidY attribute.
+// description : 	Read/Write allowed for LineProfileThickness attribute.
 //
 //-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_CentroidY_allowed(Tango::AttReqType type)
+bool ImgBeamAnalyzer::is_LineProfileThickness_allowed(Tango::AttReqType type)
 {
 		//	End of Generated Code
 
@@ -367,12 +462,12 @@ bool ImgBeamAnalyzer::is_CentroidY_allowed(Tango::AttReqType type)
 }
 //+----------------------------------------------------------------------------
 //
-// method : 		ImgBeamAnalyzer::is_CentroidSaturated_allowed
+// method : 		ImgBeamAnalyzer::is_ChamberOffsetX_allowed
 // 
-// description : 	Read/Write allowed for CentroidSaturated attribute.
+// description : 	Read/Write allowed for ChamberOffsetX attribute.
 //
 //-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_CentroidSaturated_allowed(Tango::AttReqType type)
+bool ImgBeamAnalyzer::is_ChamberOffsetX_allowed(Tango::AttReqType type)
 {
 		//	End of Generated Code
 
@@ -381,40 +476,12 @@ bool ImgBeamAnalyzer::is_CentroidSaturated_allowed(Tango::AttReqType type)
 }
 //+----------------------------------------------------------------------------
 //
-// method : 		ImgBeamAnalyzer::is_CentroidSaturationRegionSide_allowed
-//
-// description : 	Read/Write allowed for CentroidSaturationRegionSide attribute.
-//
-//-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_CentroidSaturationRegionSide_allowed(Tango::AttReqType type)
-{
-		//	End of Generated Code
-
-		//	Re-Start of Generated Code
-	return true;
-}
-//+----------------------------------------------------------------------------
-//
-// method : 		ImgBeamAnalyzer::is_CentroidSaturationRegionThreshold_allowed
-//
-// description : 	Read/Write allowed for CentroidSaturationRegionThreshold attribute.
-//
-//-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_CentroidSaturationRegionThreshold_allowed(Tango::AttReqType type)
-{
-		//	End of Generated Code
-
-		//	Re-Start of Generated Code
-	return true;
-}
-//+----------------------------------------------------------------------------
-//
-// method : 		ImgBeamAnalyzer::is_VarianceX_allowed
+// method : 		ImgBeamAnalyzer::is_ChamberOffsetY_allowed
 // 
-// description : 	Read/Write allowed for VarianceX attribute.
+// description : 	Read/Write allowed for ChamberOffsetY attribute.
 //
 //-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_VarianceX_allowed(Tango::AttReqType type)
+bool ImgBeamAnalyzer::is_ChamberOffsetY_allowed(Tango::AttReqType type)
 {
 		//	End of Generated Code
 
@@ -423,12 +490,12 @@ bool ImgBeamAnalyzer::is_VarianceX_allowed(Tango::AttReqType type)
 }
 //+----------------------------------------------------------------------------
 //
-// method : 		ImgBeamAnalyzer::is_VarianceY_allowed
+// method : 		ImgBeamAnalyzer::is_ChamberCentroidX_allowed
 // 
-// description : 	Read/Write allowed for VarianceY attribute.
+// description : 	Read/Write allowed for ChamberCentroidX attribute.
 //
 //-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_VarianceY_allowed(Tango::AttReqType type)
+bool ImgBeamAnalyzer::is_ChamberCentroidX_allowed(Tango::AttReqType type)
 {
 		//	End of Generated Code
 
@@ -437,117 +504,12 @@ bool ImgBeamAnalyzer::is_VarianceY_allowed(Tango::AttReqType type)
 }
 //+----------------------------------------------------------------------------
 //
-// method : 		ImgBeamAnalyzer::is_CovarianceXY_allowed
+// method : 		ImgBeamAnalyzer::is_ChamberCentroidY_allowed
 // 
-// description : 	Read/Write allowed for CovarianceXY attribute.
+// description : 	Read/Write allowed for ChamberCentroidY attribute.
 //
 //-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_CovarianceXY_allowed(Tango::AttReqType type)
-{
-		//	End of Generated Code
-
-		//	Re-Start of Generated Code
-	return true;
-}
-
-//+----------------------------------------------------------------------------
-//
-// method : 		ImgBeamAnalyzer::is_CorrelationXY_allowed
-// 
-// description : 	Read/Write allowed for CorrelationXY attribute.
-//
-//-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_CorrelationXY_allowed(Tango::AttReqType type)
-{
-		//	End of Generated Code
-
-		//	Re-Start of Generated Code
-	return true;
-}
-
-//+----------------------------------------------------------------------------
-//
-// method : 		ImgBeamAnalyzer::is_SkewX_allowed
-// 
-// description : 	Read/Write allowed for SkewX attribute.
-//
-//-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_SkewX_allowed(Tango::AttReqType type)
-{
-		//	End of Generated Code
-
-		//	Re-Start of Generated Code
-	return true;
-}
-
-//+----------------------------------------------------------------------------
-//
-// method : 		ImgBeamAnalyzer::is_SkewY_allowed
-// 
-// description : 	Read/Write allowed for SkewY attribute.
-//
-//-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_SkewY_allowed(Tango::AttReqType type)
-{
-		//	End of Generated Code
-
-		//	Re-Start of Generated Code
-	return true;
-}
-
-//+----------------------------------------------------------------------------
-//
-// method : 		ImgBeamAnalyzer::is_SkewX2Y_allowed
-// 
-// description : 	Read/Write allowed for SkewX2Y attribute.
-//
-//-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_SkewX2Y_allowed(Tango::AttReqType type)
-{
-		//	End of Generated Code
-
-		//	Re-Start of Generated Code
-	return true;
-}
-
-//+----------------------------------------------------------------------------
-//
-// method : 		ImgBeamAnalyzer::is_SkewXY2_allowed
-// 
-// description : 	Read/Write allowed for SkewXY2 attribute.
-//
-//-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_SkewXY2_allowed(Tango::AttReqType type)
-{
-		//	End of Generated Code
-
-		//	Re-Start of Generated Code
-	return true;
-}
-
-//+----------------------------------------------------------------------------
-//
-// method : 		ImgBeamAnalyzer::is_GaussianFitCenterX_allowed
-// 
-// description : 	Read/Write allowed for GaussianFitCenterX attribute.
-//
-//-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_GaussianFitCenterX_allowed(Tango::AttReqType type)
-{
-		//	End of Generated Code
-
-		//	Re-Start of Generated Code
-	return true;
-}
-
-//+----------------------------------------------------------------------------
-//
-// method : 		ImgBeamAnalyzer::is_GaussianFitCenterY_allowed
-// 
-// description : 	Read/Write allowed for GaussianFitCenterY attribute.
-//
-//-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_GaussianFitCenterY_allowed(Tango::AttReqType type)
+bool ImgBeamAnalyzer::is_ChamberCentroidY_allowed(Tango::AttReqType type)
 {
 		//	End of Generated Code
 
@@ -556,12 +518,12 @@ bool ImgBeamAnalyzer::is_GaussianFitCenterY_allowed(Tango::AttReqType type)
 }
 //+----------------------------------------------------------------------------
 //
-// method : 		ImgBeamAnalyzer::is_GaussianFitVarianceX_allowed
+// method : 		ImgBeamAnalyzer::is_ChamberXProjFitCenter_allowed
 // 
-// description : 	Read/Write allowed for GaussianFitVarianceX attribute.
+// description : 	Read/Write allowed for ChamberXProjFitCenter attribute.
 //
 //-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_GaussianFitVarianceX_allowed(Tango::AttReqType type)
+bool ImgBeamAnalyzer::is_ChamberXProjFitCenter_allowed(Tango::AttReqType type)
 {
 		//	End of Generated Code
 
@@ -570,54 +532,12 @@ bool ImgBeamAnalyzer::is_GaussianFitVarianceX_allowed(Tango::AttReqType type)
 }
 //+----------------------------------------------------------------------------
 //
-// method : 		ImgBeamAnalyzer::is_GaussianFitVarianceY_allowed
+// method : 		ImgBeamAnalyzer::is_ChamberYProjFitCenter_allowed
 // 
-// description : 	Read/Write allowed for GaussianFitVarianceY attribute.
+// description : 	Read/Write allowed for ChamberYProjFitCenter attribute.
 //
 //-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_GaussianFitVarianceY_allowed(Tango::AttReqType type)
-{
-		//	End of Generated Code
-
-		//	Re-Start of Generated Code
-	return true;
-}
-//+----------------------------------------------------------------------------
-//
-// method : 		ImgBeamAnalyzer::is_GaussianFitCovarianceXY_allowed
-// 
-// description : 	Read/Write allowed for GaussianFitCovarianceXY attribute.
-//
-//-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_GaussianFitCovarianceXY_allowed(Tango::AttReqType type)
-{
-		//	End of Generated Code
-
-		//	Re-Start of Generated Code
-	return true;
-}
-//+----------------------------------------------------------------------------
-//
-// method : 		ImgBeamAnalyzer::is_ROIImage_allowed
-// 
-// description : 	Read/Write allowed for ROIImage attribute.
-//
-//-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_ROIImage_allowed(Tango::AttReqType type)
-{
-		//	End of Generated Code
-
-		//	Re-Start of Generated Code
-	return true;
-}
-//+----------------------------------------------------------------------------
-//
-// method : 		ImgBeamAnalyzer::is_EnableUserROI_allowed
-// 
-// description : 	Read/Write allowed for EnableUserROI attribute.
-//
-//-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_EnableUserROI_allowed(Tango::AttReqType type)
+bool ImgBeamAnalyzer::is_ChamberYProjFitCenter_allowed(Tango::AttReqType type)
 {
 		//	End of Generated Code
 
@@ -682,6 +602,20 @@ bool ImgBeamAnalyzer::is_UserROIHeight_allowed(Tango::AttReqType type)
 }
 //+----------------------------------------------------------------------------
 //
+// method : 		ImgBeamAnalyzer::is_AutoROIFound_allowed
+// 
+// description : 	Read/Write allowed for AutoROIFound attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_AutoROIFound_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
 // method : 		ImgBeamAnalyzer::is_AutoROIOriginX_allowed
 // 
 // description : 	Read/Write allowed for AutoROIOriginX attribute.
@@ -738,12 +672,12 @@ bool ImgBeamAnalyzer::is_AutoROIHeight_allowed(Tango::AttReqType type)
 }
 //+----------------------------------------------------------------------------
 //
-// method : 		ImgBeamAnalyzer::is_GaussianFitMajorAxisFWHM_allowed
+// method : 		ImgBeamAnalyzer::is_MaxIntensity_allowed
 // 
-// description : 	Read/Write allowed for GaussianFitMajorAxisFWHM attribute.
+// description : 	Read/Write allowed for MaxIntensity attribute.
 //
 //-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_GaussianFitMajorAxisFWHM_allowed(Tango::AttReqType type)
+bool ImgBeamAnalyzer::is_MaxIntensity_allowed(Tango::AttReqType type)
 {
 		//	End of Generated Code
 
@@ -752,12 +686,12 @@ bool ImgBeamAnalyzer::is_GaussianFitMajorAxisFWHM_allowed(Tango::AttReqType type
 }
 //+----------------------------------------------------------------------------
 //
-// method : 		ImgBeamAnalyzer::is_GaussianFitMinorAxisFWHM_allowed
+// method : 		ImgBeamAnalyzer::is_MeanIntensity_allowed
 // 
-// description : 	Read/Write allowed for GaussianFitMinorAxisFWHM attribute.
+// description : 	Read/Write allowed for MeanIntensity attribute.
 //
 //-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_GaussianFitMinorAxisFWHM_allowed(Tango::AttReqType type)
+bool ImgBeamAnalyzer::is_MeanIntensity_allowed(Tango::AttReqType type)
 {
 		//	End of Generated Code
 
@@ -766,12 +700,12 @@ bool ImgBeamAnalyzer::is_GaussianFitMinorAxisFWHM_allowed(Tango::AttReqType type
 }
 //+----------------------------------------------------------------------------
 //
-// method : 		ImgBeamAnalyzer::is_Rotation_allowed
+// method : 		ImgBeamAnalyzer::is_CentroidX_allowed
 // 
-// description : 	Read/Write allowed for Rotation attribute.
+// description : 	Read/Write allowed for CentroidX attribute.
 //
 //-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_Rotation_allowed(Tango::AttReqType type)
+bool ImgBeamAnalyzer::is_CentroidX_allowed(Tango::AttReqType type)
 {
 		//	End of Generated Code
 
@@ -780,12 +714,12 @@ bool ImgBeamAnalyzer::is_Rotation_allowed(Tango::AttReqType type)
 }
 //+----------------------------------------------------------------------------
 //
-// method : 		ImgBeamAnalyzer::is_HorizontalFlip_allowed
+// method : 		ImgBeamAnalyzer::is_CentroidY_allowed
 // 
-// description : 	Read/Write allowed for HorizontalFlip attribute.
+// description : 	Read/Write allowed for CentroidY attribute.
 //
 //-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_HorizontalFlip_allowed(Tango::AttReqType type)
+bool ImgBeamAnalyzer::is_CentroidY_allowed(Tango::AttReqType type)
 {
 		//	End of Generated Code
 
@@ -794,12 +728,12 @@ bool ImgBeamAnalyzer::is_HorizontalFlip_allowed(Tango::AttReqType type)
 }
 //+----------------------------------------------------------------------------
 //
-// method : 		ImgBeamAnalyzer::is_GammaCorrection_allowed
+// method : 		ImgBeamAnalyzer::is_CentroidSaturated_allowed
 // 
-// description : 	Read/Write allowed for GammaCorrection attribute.
+// description : 	Read/Write allowed for CentroidSaturated attribute.
 //
 //-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_GammaCorrection_allowed(Tango::AttReqType type)
+bool ImgBeamAnalyzer::is_CentroidSaturated_allowed(Tango::AttReqType type)
 {
 		//	End of Generated Code
 
@@ -808,12 +742,12 @@ bool ImgBeamAnalyzer::is_GammaCorrection_allowed(Tango::AttReqType type)
 }
 //+----------------------------------------------------------------------------
 //
-// method : 		ImgBeamAnalyzer::is_BitsPerPixel_allowed
+// method : 		ImgBeamAnalyzer::is_CentroidSaturationRegionSide_allowed
 // 
-// description : 	Read/Write allowed for BitsPerPixel attribute.
+// description : 	Read/Write allowed for CentroidSaturationRegionSide attribute.
 //
 //-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_BitsPerPixel_allowed(Tango::AttReqType type)
+bool ImgBeamAnalyzer::is_CentroidSaturationRegionSide_allowed(Tango::AttReqType type)
 {
 		//	End of Generated Code
 
@@ -822,12 +756,12 @@ bool ImgBeamAnalyzer::is_BitsPerPixel_allowed(Tango::AttReqType type)
 }
 //+----------------------------------------------------------------------------
 //
-// method : 		ImgBeamAnalyzer::is_PixelSizeX_allowed
+// method : 		ImgBeamAnalyzer::is_CentroidSaturationRegionThreshold_allowed
 // 
-// description : 	Read/Write allowed for PixelSizeX attribute.
+// description : 	Read/Write allowed for CentroidSaturationRegionThreshold attribute.
 //
 //-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_PixelSizeX_allowed(Tango::AttReqType type)
+bool ImgBeamAnalyzer::is_CentroidSaturationRegionThreshold_allowed(Tango::AttReqType type)
 {
 		//	End of Generated Code
 
@@ -836,12 +770,12 @@ bool ImgBeamAnalyzer::is_PixelSizeX_allowed(Tango::AttReqType type)
 }
 //+----------------------------------------------------------------------------
 //
-// method : 		ImgBeamAnalyzer::is_PixelSizeY_allowed
+// method : 		ImgBeamAnalyzer::is_VarianceX_allowed
 // 
-// description : 	Read/Write allowed for PixelSizeY attribute.
+// description : 	Read/Write allowed for VarianceX attribute.
 //
 //-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_PixelSizeY_allowed(Tango::AttReqType type)
+bool ImgBeamAnalyzer::is_VarianceX_allowed(Tango::AttReqType type)
 {
 		//	End of Generated Code
 
@@ -850,12 +784,12 @@ bool ImgBeamAnalyzer::is_PixelSizeY_allowed(Tango::AttReqType type)
 }
 //+----------------------------------------------------------------------------
 //
-// method : 		ImgBeamAnalyzer::is_OpticalMagnification_allowed
+// method : 		ImgBeamAnalyzer::is_VarianceY_allowed
 // 
-// description : 	Read/Write allowed for OpticalMagnification attribute.
+// description : 	Read/Write allowed for VarianceY attribute.
 //
 //-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_OpticalMagnification_allowed(Tango::AttReqType type)
+bool ImgBeamAnalyzer::is_VarianceY_allowed(Tango::AttReqType type)
 {
 		//	End of Generated Code
 
@@ -864,12 +798,12 @@ bool ImgBeamAnalyzer::is_OpticalMagnification_allowed(Tango::AttReqType type)
 }
 //+----------------------------------------------------------------------------
 //
-// method : 		ImgBeamAnalyzer::is_AutoROIFound_allowed
+// method : 		ImgBeamAnalyzer::is_CovarianceXY_allowed
 // 
-// description : 	Read/Write allowed for AutoROIFound attribute.
+// description : 	Read/Write allowed for CovarianceXY attribute.
 //
 //-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_AutoROIFound_allowed(Tango::AttReqType type)
+bool ImgBeamAnalyzer::is_CovarianceXY_allowed(Tango::AttReqType type)
 {
 		//	End of Generated Code
 
@@ -878,12 +812,12 @@ bool ImgBeamAnalyzer::is_AutoROIFound_allowed(Tango::AttReqType type)
 }
 //+----------------------------------------------------------------------------
 //
-// method : 		ImgBeamAnalyzer::is_GaussianFitConverged_allowed
+// method : 		ImgBeamAnalyzer::is_CorrelationXY_allowed
 // 
-// description : 	Read/Write allowed for GaussianFitConverged attribute.
+// description : 	Read/Write allowed for CorrelationXY attribute.
 //
 //-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_GaussianFitConverged_allowed(Tango::AttReqType type)
+bool ImgBeamAnalyzer::is_CorrelationXY_allowed(Tango::AttReqType type)
 {
 		//	End of Generated Code
 
@@ -892,12 +826,12 @@ bool ImgBeamAnalyzer::is_GaussianFitConverged_allowed(Tango::AttReqType type)
 }
 //+----------------------------------------------------------------------------
 //
-// method : 		ImgBeamAnalyzer::is_GaussianFitNbIter_allowed
+// method : 		ImgBeamAnalyzer::is_SkewX_allowed
 // 
-// description : 	Read/Write allowed for GaussianFitNbIter attribute.
+// description : 	Read/Write allowed for SkewX attribute.
 //
 //-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_GaussianFitNbIter_allowed(Tango::AttReqType type)
+bool ImgBeamAnalyzer::is_SkewX_allowed(Tango::AttReqType type)
 {
 		//	End of Generated Code
 
@@ -906,12 +840,12 @@ bool ImgBeamAnalyzer::is_GaussianFitNbIter_allowed(Tango::AttReqType type)
 }
 //+----------------------------------------------------------------------------
 //
-// method : 		ImgBeamAnalyzer::is_GaussianFitRelChange_allowed
+// method : 		ImgBeamAnalyzer::is_SkewY_allowed
 // 
-// description : 	Read/Write allowed for GaussianFitRelChange attribute.
+// description : 	Read/Write allowed for SkewY attribute.
 //
 //-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_GaussianFitRelChange_allowed(Tango::AttReqType type)
+bool ImgBeamAnalyzer::is_SkewY_allowed(Tango::AttReqType type)
 {
 		//	End of Generated Code
 
@@ -920,12 +854,12 @@ bool ImgBeamAnalyzer::is_GaussianFitRelChange_allowed(Tango::AttReqType type)
 }
 //+----------------------------------------------------------------------------
 //
-// method : 		ImgBeamAnalyzer::is_HistogramNbBins_allowed
+// method : 		ImgBeamAnalyzer::is_SkewX2Y_allowed
 // 
-// description : 	Read/Write allowed for HistogramNbBins attribute.
+// description : 	Read/Write allowed for SkewX2Y attribute.
 //
 //-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_HistogramNbBins_allowed(Tango::AttReqType type)
+bool ImgBeamAnalyzer::is_SkewX2Y_allowed(Tango::AttReqType type)
 {
 		//	End of Generated Code
 
@@ -934,124 +868,12 @@ bool ImgBeamAnalyzer::is_HistogramNbBins_allowed(Tango::AttReqType type)
 }
 //+----------------------------------------------------------------------------
 //
-// method : 		ImgBeamAnalyzer::is_Histogram_allowed
+// method : 		ImgBeamAnalyzer::is_SkewXY2_allowed
 // 
-// description : 	Read/Write allowed for Histogram attribute.
+// description : 	Read/Write allowed for SkewXY2 attribute.
 //
 //-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_Histogram_allowed(Tango::AttReqType type)
-{
-		//	End of Generated Code
-
-		//	Re-Start of Generated Code
-	return true;
-}
-//+----------------------------------------------------------------------------
-//
-// method : 		ImgBeamAnalyzer::is_EnableHistogram_allowed
-// 
-// description : 	Read/Write allowed for EnableHistogram attribute.
-//
-//-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_EnableHistogram_allowed(Tango::AttReqType type)
-{
-		//	End of Generated Code
-
-		//	Re-Start of Generated Code
-	return true;
-}
-//+----------------------------------------------------------------------------
-//
-// method : 		ImgBeamAnalyzer::is_HistogramRangeMin_allowed
-// 
-// description : 	Read/Write allowed for HistogramRangeMin attribute.
-//
-//-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_HistogramRangeMin_allowed(Tango::AttReqType type)
-{
-		//	End of Generated Code
-
-		//	Re-Start of Generated Code
-	return true;
-}
-//+----------------------------------------------------------------------------
-//
-// method : 		ImgBeamAnalyzer::is_HistogramRangeMax_allowed
-// 
-// description : 	Read/Write allowed for HistogramRangeMax attribute.
-//
-//-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_HistogramRangeMax_allowed(Tango::AttReqType type)
-{
-		//	End of Generated Code
-
-		//	Re-Start of Generated Code
-	return true;
-}
-//+----------------------------------------------------------------------------
-//
-// method : 		ImgBeamAnalyzer::is_AutoROIMagFactorX_allowed
-// 
-// description : 	Read/Write allowed for AutoROIMagFactorX attribute.
-//
-//-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_AutoROIMagFactorX_allowed(Tango::AttReqType type)
-{
-		//	End of Generated Code
-
-		//	Re-Start of Generated Code
-	return true;
-}
-//+----------------------------------------------------------------------------
-//
-// method : 		ImgBeamAnalyzer::is_AutoROIMagFactorY_allowed
-// 
-// description : 	Read/Write allowed for AutoROIMagFactorY attribute.
-//
-//-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_AutoROIMagFactorY_allowed(Tango::AttReqType type)
-{
-		//	End of Generated Code
-
-		//	Re-Start of Generated Code
-	return true;
-}
-//+----------------------------------------------------------------------------
-//
-// method : 		ImgBeamAnalyzer::is_ProfileFitFixedBg_allowed
-// 
-// description : 	Read/Write allowed for ProfileFitFixedBg attribute.
-//
-//-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_ProfileFitFixedBg_allowed(Tango::AttReqType type)
-{
-		//	End of Generated Code
-
-		//	Re-Start of Generated Code
-	return true;
-}
-//+----------------------------------------------------------------------------
-//
-// method : 		ImgBeamAnalyzer::is_AutoROIThreshold_allowed
-// 
-// description : 	Read/Write allowed for AutoROIThreshold attribute.
-//
-//-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_AutoROIThreshold_allowed(Tango::AttReqType type)
-{
-		//	End of Generated Code
-
-		//	Re-Start of Generated Code
-	return true;
-}
-//+----------------------------------------------------------------------------
-//
-// method : 		ImgBeamAnalyzer::is_BgSubstraction_allowed
-// 
-// description : 	Read/Write allowed for BgSubstraction attribute.
-//
-//-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_BgSubstraction_allowed(Tango::AttReqType type)
+bool ImgBeamAnalyzer::is_SkewXY2_allowed(Tango::AttReqType type)
 {
 		//	End of Generated Code
 
@@ -1256,6 +1078,328 @@ bool ImgBeamAnalyzer::is_YProjFitChi2_allowed(Tango::AttReqType type)
 }
 //+----------------------------------------------------------------------------
 //
+// method : 		ImgBeamAnalyzer::is_LineProfileFitConverged_allowed
+// 
+// description : 	Read/Write allowed for LineProfileFitConverged attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_LineProfileFitConverged_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_LineProfileFitCenter_allowed
+// 
+// description : 	Read/Write allowed for LineProfileFitCenter attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_LineProfileFitCenter_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_LineProfileFitMag_allowed
+// 
+// description : 	Read/Write allowed for LineProfileFitMag attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_LineProfileFitMag_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_LineProfileFitSigma_allowed
+// 
+// description : 	Read/Write allowed for LineProfileFitSigma attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_LineProfileFitSigma_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_LineProfileFitFWHM_allowed
+// 
+// description : 	Read/Write allowed for LineProfileFitFWHM attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_LineProfileFitFWHM_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_LineProfileFitBG_allowed
+// 
+// description : 	Read/Write allowed for LineProfileFitBG attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_LineProfileFitBG_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_LineProfileFitChi2_allowed
+// 
+// description : 	Read/Write allowed for LineProfileFitChi2 attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_LineProfileFitChi2_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_GaussianFitConverged_allowed
+// 
+// description : 	Read/Write allowed for GaussianFitConverged attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_GaussianFitConverged_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_GaussianFitMagnitude_allowed
+// 
+// description : 	Read/Write allowed for GaussianFitMagnitude attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_GaussianFitMagnitude_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_GaussianFitCenterX_allowed
+// 
+// description : 	Read/Write allowed for GaussianFitCenterX attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_GaussianFitCenterX_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_GaussianFitCenterY_allowed
+// 
+// description : 	Read/Write allowed for GaussianFitCenterY attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_GaussianFitCenterY_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_GaussianFitVarianceX_allowed
+// 
+// description : 	Read/Write allowed for GaussianFitVarianceX attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_GaussianFitVarianceX_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_GaussianFitVarianceY_allowed
+// 
+// description : 	Read/Write allowed for GaussianFitVarianceY attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_GaussianFitVarianceY_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_GaussianFitCovarianceXY_allowed
+// 
+// description : 	Read/Write allowed for GaussianFitCovarianceXY attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_GaussianFitCovarianceXY_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_GaussianFitMajorAxisFWHM_allowed
+// 
+// description : 	Read/Write allowed for GaussianFitMajorAxisFWHM attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_GaussianFitMajorAxisFWHM_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_GaussianFitMinorAxisFWHM_allowed
+// 
+// description : 	Read/Write allowed for GaussianFitMinorAxisFWHM attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_GaussianFitMinorAxisFWHM_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_GaussianFitTilt_allowed
+// 
+// description : 	Read/Write allowed for GaussianFitTilt attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_GaussianFitTilt_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_GaussianFitBG_allowed
+// 
+// description : 	Read/Write allowed for GaussianFitBG attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_GaussianFitBG_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_GaussianFitChi2_allowed
+// 
+// description : 	Read/Write allowed for GaussianFitChi2 attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_GaussianFitChi2_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_Fit1DNbIterMax_allowed
+// 
+// description : 	Read/Write allowed for Fit1DNbIterMax attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_Fit1DNbIterMax_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_Fit1DMaxRelChange_allowed
+// 
+// description : 	Read/Write allowed for Fit1DMaxRelChange attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_Fit1DMaxRelChange_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_Fit2DNbIterMax_allowed
+// 
+// description : 	Read/Write allowed for Fit2DNbIterMax attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_Fit2DNbIterMax_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_Fit2DMaxRelChange_allowed
+// 
+// description : 	Read/Write allowed for Fit2DMaxRelChange attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_Fit2DMaxRelChange_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
 // method : 		ImgBeamAnalyzer::is_XProjFitNbIter_allowed
 // 
 // description : 	Read/Write allowed for XProjFitNbIter attribute.
@@ -1304,6 +1448,104 @@ bool ImgBeamAnalyzer::is_YProjFitNbIter_allowed(Tango::AttReqType type)
 //
 //-----------------------------------------------------------------------------
 bool ImgBeamAnalyzer::is_YProjFitRelChange_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_LineProfileFitNbIter_allowed
+// 
+// description : 	Read/Write allowed for LineProfileFitNbIter attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_LineProfileFitNbIter_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_LineProfileFitRelChange_allowed
+// 
+// description : 	Read/Write allowed for LineProfileFitRelChange attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_LineProfileFitRelChange_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_GaussianFitNbIter_allowed
+// 
+// description : 	Read/Write allowed for GaussianFitNbIter attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_GaussianFitNbIter_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_GaussianFitRelChange_allowed
+// 
+// description : 	Read/Write allowed for GaussianFitRelChange attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_GaussianFitRelChange_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_RmsX_allowed
+// 
+// description : 	Read/Write allowed for RmsX attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_RmsX_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_RmsY_allowed
+// 
+// description : 	Read/Write allowed for RmsY attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_RmsY_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_ImageCounter_allowed
+// 
+// description : 	Read/Write allowed for ImageCounter attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_ImageCounter_allowed(Tango::AttReqType type)
 {
 		//	End of Generated Code
 
@@ -1396,90 +1638,6 @@ bool ImgBeamAnalyzer::is_YProjError_allowed(Tango::AttReqType type)
 }
 //+----------------------------------------------------------------------------
 //
-// method : 		ImgBeamAnalyzer::is_LineProfileFitConverged_allowed
-// 
-// description : 	Read/Write allowed for LineProfileFitConverged attribute.
-//
-//-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_LineProfileFitConverged_allowed(Tango::AttReqType type)
-{
-		//	End of Generated Code
-
-		//	Re-Start of Generated Code
-	return true;
-}
-//+----------------------------------------------------------------------------
-//
-// method : 		ImgBeamAnalyzer::is_LineProfileFitCenter_allowed
-// 
-// description : 	Read/Write allowed for LineProfileFitCenter attribute.
-//
-//-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_LineProfileFitCenter_allowed(Tango::AttReqType type)
-{
-		//	End of Generated Code
-
-		//	Re-Start of Generated Code
-	return true;
-}
-//+----------------------------------------------------------------------------
-//
-// method : 		ImgBeamAnalyzer::is_LineProfileFitMag_allowed
-// 
-// description : 	Read/Write allowed for LineProfileFitMag attribute.
-//
-//-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_LineProfileFitMag_allowed(Tango::AttReqType type)
-{
-		//	End of Generated Code
-
-		//	Re-Start of Generated Code
-	return true;
-}
-//+----------------------------------------------------------------------------
-//
-// method : 		ImgBeamAnalyzer::is_LineProfileFitSigma_allowed
-// 
-// description : 	Read/Write allowed for LineProfileFitSigma attribute.
-//
-//-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_LineProfileFitSigma_allowed(Tango::AttReqType type)
-{
-		//	End of Generated Code
-
-		//	Re-Start of Generated Code
-	return true;
-}
-//+----------------------------------------------------------------------------
-//
-// method : 		ImgBeamAnalyzer::is_LineProfileFitFWHM_allowed
-// 
-// description : 	Read/Write allowed for LineProfileFitFWHM attribute.
-//
-//-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_LineProfileFitFWHM_allowed(Tango::AttReqType type)
-{
-		//	End of Generated Code
-
-		//	Re-Start of Generated Code
-	return true;
-}
-//+----------------------------------------------------------------------------
-//
-// method : 		ImgBeamAnalyzer::is_LineProfileFitChi2_allowed
-// 
-// description : 	Read/Write allowed for LineProfileFitChi2 attribute.
-//
-//-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_LineProfileFitChi2_allowed(Tango::AttReqType type)
-{
-		//	End of Generated Code
-
-		//	Re-Start of Generated Code
-	return true;
-}
-//+----------------------------------------------------------------------------
-//
 // method : 		ImgBeamAnalyzer::is_LineProfile_allowed
 // 
 // description : 	Read/Write allowed for LineProfile attribute.
@@ -1522,12 +1680,12 @@ bool ImgBeamAnalyzer::is_LineProfileError_allowed(Tango::AttReqType type)
 }
 //+----------------------------------------------------------------------------
 //
-// method : 		ImgBeamAnalyzer::is_LineProfileFitBG_allowed
+// method : 		ImgBeamAnalyzer::is_Histogram_allowed
 // 
-// description : 	Read/Write allowed for LineProfileFitBG attribute.
+// description : 	Read/Write allowed for Histogram attribute.
 //
 //-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_LineProfileFitBG_allowed(Tango::AttReqType type)
+bool ImgBeamAnalyzer::is_Histogram_allowed(Tango::AttReqType type)
 {
 		//	End of Generated Code
 
@@ -1536,12 +1694,12 @@ bool ImgBeamAnalyzer::is_LineProfileFitBG_allowed(Tango::AttReqType type)
 }
 //+----------------------------------------------------------------------------
 //
-// method : 		ImgBeamAnalyzer::is_LineProfileOriginX_allowed
+// method : 		ImgBeamAnalyzer::is_InputImage_allowed
 // 
-// description : 	Read/Write allowed for LineProfileOriginX attribute.
+// description : 	Read/Write allowed for InputImage attribute.
 //
 //-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_LineProfileOriginX_allowed(Tango::AttReqType type)
+bool ImgBeamAnalyzer::is_InputImage_allowed(Tango::AttReqType type)
 {
 		//	End of Generated Code
 
@@ -1550,166 +1708,12 @@ bool ImgBeamAnalyzer::is_LineProfileOriginX_allowed(Tango::AttReqType type)
 }
 //+----------------------------------------------------------------------------
 //
-// method : 		ImgBeamAnalyzer::is_LineProfileOriginY_allowed
+// method : 		ImgBeamAnalyzer::is_ROIImage_allowed
 // 
-// description : 	Read/Write allowed for LineProfileOriginY attribute.
+// description : 	Read/Write allowed for ROIImage attribute.
 //
 //-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_LineProfileOriginY_allowed(Tango::AttReqType type)
-{
-		//	End of Generated Code
-
-		//	Re-Start of Generated Code
-	return true;
-}
-//+----------------------------------------------------------------------------
-//
-// method : 		ImgBeamAnalyzer::is_LineProfileEndX_allowed
-// 
-// description : 	Read/Write allowed for LineProfileEndX attribute.
-//
-//-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_LineProfileEndX_allowed(Tango::AttReqType type)
-{
-		//	End of Generated Code
-
-		//	Re-Start of Generated Code
-	return true;
-}
-//+----------------------------------------------------------------------------
-//
-// method : 		ImgBeamAnalyzer::is_LineProfileEndY_allowed
-// 
-// description : 	Read/Write allowed for LineProfileEndY attribute.
-//
-//-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_LineProfileEndY_allowed(Tango::AttReqType type)
-{
-		//	End of Generated Code
-
-		//	Re-Start of Generated Code
-	return true;
-}
-//+----------------------------------------------------------------------------
-//
-// method : 		ImgBeamAnalyzer::is_LineProfileThickness_allowed
-// 
-// description : 	Read/Write allowed for LineProfileThickness attribute.
-//
-//-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_LineProfileThickness_allowed(Tango::AttReqType type)
-{
-		//	End of Generated Code
-
-		//	Re-Start of Generated Code
-	return true;
-}
-//+----------------------------------------------------------------------------
-//
-// method : 		ImgBeamAnalyzer::is_ChamberOffsetX_allowed
-// 
-// description : 	Read/Write allowed for ChamberOffsetX attribute.
-//
-//-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_ChamberOffsetX_allowed(Tango::AttReqType type)
-{
-		//	End of Generated Code
-
-		//	Re-Start of Generated Code
-	return true;
-}
-//+----------------------------------------------------------------------------
-//
-// method : 		ImgBeamAnalyzer::is_ChamberOffsetY_allowed
-// 
-// description : 	Read/Write allowed for ChamberOffsetY attribute.
-//
-//-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_ChamberOffsetY_allowed(Tango::AttReqType type)
-{
-		//	End of Generated Code
-
-		//	Re-Start of Generated Code
-	return true;
-}
-//+----------------------------------------------------------------------------
-//
-// method : 		ImgBeamAnalyzer::is_ChamberCentroidX_allowed
-// 
-// description : 	Read/Write allowed for ChamberCentroidX attribute.
-//
-//-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_ChamberCentroidX_allowed(Tango::AttReqType type)
-{
-		//	End of Generated Code
-
-		//	Re-Start of Generated Code
-	return true;
-}
-//+----------------------------------------------------------------------------
-//
-// method : 		ImgBeamAnalyzer::is_ChamberCentroidY_allowed
-// 
-// description : 	Read/Write allowed for ChamberCentroidY attribute.
-//
-//-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_ChamberCentroidY_allowed(Tango::AttReqType type)
-{
-		//	End of Generated Code
-
-		//	Re-Start of Generated Code
-	return true;
-}
-//+----------------------------------------------------------------------------
-//
-// method : 		ImgBeamAnalyzer::is_ChamberXProjFitCenter_allowed
-// 
-// description : 	Read/Write allowed for ChamberXProjFitCenter attribute.
-//
-//-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_ChamberXProjFitCenter_allowed(Tango::AttReqType type)
-{
-		//	End of Generated Code
-
-		//	Re-Start of Generated Code
-	return true;
-}
-//+----------------------------------------------------------------------------
-//
-// method : 		ImgBeamAnalyzer::is_ChamberYProjFitCenter_allowed
-// 
-// description : 	Read/Write allowed for ChamberYProjFitCenter attribute.
-//
-//-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_ChamberYProjFitCenter_allowed(Tango::AttReqType type)
-{
-		//	End of Generated Code
-
-		//	Re-Start of Generated Code
-	return true;
-}
-//+----------------------------------------------------------------------------
-//
-// method : 		ImgBeamAnalyzer::is_LineProfileFitNbIter_allowed
-// 
-// description : 	Read/Write allowed for LineProfileFitNbIter attribute.
-//
-//-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_LineProfileFitNbIter_allowed(Tango::AttReqType type)
-{
-		//	End of Generated Code
-
-		//	Re-Start of Generated Code
-	return true;
-}
-//+----------------------------------------------------------------------------
-//
-// method : 		ImgBeamAnalyzer::is_LineProfileFitRelChange_allowed
-// 
-// description : 	Read/Write allowed for LineProfileFitRelChange attribute.
-//
-//-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_LineProfileFitRelChange_allowed(Tango::AttReqType type)
+bool ImgBeamAnalyzer::is_ROIImage_allowed(Tango::AttReqType type)
 {
 		//	End of Generated Code
 
@@ -1732,40 +1736,12 @@ bool ImgBeamAnalyzer::is_LineProfileHelperImg_allowed(Tango::AttReqType type)
 }
 //+----------------------------------------------------------------------------
 //
-// method : 		ImgBeamAnalyzer::is_ImageCounter_allowed
-//
-// description : 	Read/Write allowed for ImageCounter attribute.
-//
-//-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_ImageCounter_allowed(Tango::AttReqType type)
-{
-		//	End of Generated Code
-
-		//	Re-Start of Generated Code
-	return true;
-}
-//+----------------------------------------------------------------------------
-//
-// method : 		ImgBeamAnalyzer::is_RmsX_allowed
+// method : 		ImgBeamAnalyzer::is_GaussianFitParameterCovariance_allowed
 // 
-// description : 	Read/Write allowed for RmsX attribute.
+// description : 	Read/Write allowed for GaussianFitParameterCovariance attribute.
 //
 //-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_RmsX_allowed(Tango::AttReqType type)
-{
-		//	End of Generated Code
-
-		//	Re-Start of Generated Code
-	return true;
-}
-//+----------------------------------------------------------------------------
-//
-// method : 		ImgBeamAnalyzer::is_RmsY_allowed
-// 
-// description : 	Read/Write allowed for RmsY attribute.
-//
-//-----------------------------------------------------------------------------
-bool ImgBeamAnalyzer::is_RmsY_allowed(Tango::AttReqType type)
+bool ImgBeamAnalyzer::is_GaussianFitParameterCovariance_allowed(Tango::AttReqType type)
 {
 		//	End of Generated Code
 

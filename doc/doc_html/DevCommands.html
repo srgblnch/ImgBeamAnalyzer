@@ -11,27 +11,31 @@
     <TR>
         <TD ALIGN="left">
 			<A HREF="http://www.esrf.fr/" TARGET=new>
-			<IMG SRC="http://controle/icons/esrf_logo.gif" BORDER=0></A>
+			<IMG SRC="http://www.esrf.fr/gifs/logo/80.gif" BORDER=0 Height="60"></A>
 		</Td>
         <TD ALIGN="center">
 			<A HREF="http://www.elettra.trieste.it/" TARGET=new>
-			<IMG SRC="http://controle/icons/elettra_logo.gif" BORDER=0></A>
+			<IMG SRC="http://www.esrf.fr/computing/cs/tango/elettra_logo.gif" BORDER=0 Height="60"></A>
 
 		</Td>
         <TD ALIGN="center">
 			<A HREF="http://www.synchrotron-soleil.fr/" TARGET=new>
-			<IMG SRC="http://controle/icons/soleil_logo.gif" BORDER=0></A>
+			<IMG SRC="http://www.esrf.fr/computing/cs/tango/soleil_logo.gif" BORDER=0 Height="60"></A>
 		</Td>
         <TD ALIGN="right">
 			<A HREF="http://www.cells.es/" TARGET=new>
-			<IMG SRC="http://controle/icons/alba_logo.gif" BORDER=0></A>
+			<IMG SRC="http://www.esrf.fr/computing/cs/tango/alba.jpg" BORDER=0 Height="54"></A>
+		</Td>
+        <TD ALIGN="right">
+			<A HREF="http://www.desy.de/html/home/index_eng.html" TARGET=new>
+			<IMG SRC="http://www.esrf.fr/computing/cs/tango/desy.gif" BORDER=0 Height="60"></A>
 		</Td>
     	 <Td>
 			<H2><FONT COLOR="#7F00FF">
-			<Center><A HREF="http://www.esrf.fr/Infrastructure/Computing/tango/" TARGET="_top">
+			<Center><A HREF="http://www.tango-controls.org/" TARGET="_top">
 					 TANGO </a> <Br> Device Server
 			</Center></FONT>
-    	</Td>
+		</Td>
     </TR>
 </TABLE>
 
@@ -44,7 +48,7 @@ Device Commands Description 		<Br> <Br>
 ImgBeamAnalyzer Class	<Br>
 </h1>
 <b>
-Revision:  - Author: 
+Revision:  - Author: sergiblanch
 </b>
 </center>
 
@@ -102,13 +106,13 @@ The language device desctructor automatically calls the <i> delete_device() </i>
 <A NAME="Start"><!-- --></A>
 <h2>4 - Start</h2>
 <ul>
-<Li><Strong>Description: </Strong> [CONTINUOUS mode only] When the device is in STANDBY, this command starts the computation<Br>&nbsp
+<Li><Strong>Description: </Strong> <Br>&nbsp
 <Li><Strong>Argin:<Br>DEV_VOID</Strong>
  : <Br>&nbsp
 <Li><Strong>Argout:<Br>DEV_VOID</Strong>
  : <Br>&nbsp
 <Li><Strong>Command allowed for: </Strong><Ul>
-<Li>Tango::FAULT<Li>Tango::STANDBY</Ul>
+<Li>Tango::FAULT<Li>Tango::RUNNING<Li>Tango::STANDBY</Ul>
 <Br>&nbsp
 </ul><Br>
 <Br>
@@ -116,13 +120,13 @@ The language device desctructor automatically calls the <i> delete_device() </i>
 <A NAME="Stop"><!-- --></A>
 <h2>5 - Stop</h2>
 <ul>
-<Li><Strong>Description: </Strong> [CONTINUOUS mode only] When the device is RUNNING, this command stops the computation<Br>&nbsp
+<Li><Strong>Description: </Strong> <Br>&nbsp
 <Li><Strong>Argin:<Br>DEV_VOID</Strong>
  : <Br>&nbsp
 <Li><Strong>Argout:<Br>DEV_VOID</Strong>
  : <Br>&nbsp
 <Li><Strong>Command allowed for: </Strong><Ul>
-<Li>Tango::FAULT<Li>Tango::RUNNING</Ul>
+<Li>Tango::FAULT<Li>Tango::RUNNING<Li>Tango::STANDBY</Ul>
 <Br>&nbsp
 </ul><Br>
 <Br>
@@ -130,7 +134,7 @@ The language device desctructor automatically calls the <i> delete_device() </i>
 <A NAME="Process"><!-- --></A>
 <h2>6 - Process</h2>
 <ul>
-<Li><Strong>Description: </Strong> [ONESHOT mode only] get an image from the specified remote device, process it and return to STANDBY state<Br>&nbsp
+<Li><Strong>Description: </Strong> <Br>&nbsp
 <Li><Strong>Argin:<Br>DEV_VOID</Strong>
  : <Br>&nbsp
 <Li><Strong>Argout:<Br>DEV_VOID</Strong>
@@ -144,7 +148,7 @@ The language device desctructor automatically calls the <i> delete_device() </i>
 <A NAME="SaveCurrentSettings"><!-- --></A>
 <h2>7 - SaveCurrentSettings</h2>
 <ul>
-<Li><Strong>Description: </Strong> stores the current configuration in the Tango database as properties<Br>&nbsp
+<Li><Strong>Description: </Strong> <Br>&nbsp
 <Li><Strong>Argin:<Br>DEV_VOID</Strong>
  : <Br>&nbsp
 <Li><Strong>Argout:<Br>DEV_VOID</Strong>
@@ -158,7 +162,7 @@ The language device desctructor automatically calls the <i> delete_device() </i>
 <A NAME="GetVersionNumber"><!-- --></A>
 <h2>8 - GetVersionNumber</h2>
 <ul>
-<Li><Strong>Description: </Strong> returns the DeviceServer version number<Br>&nbsp
+<Li><Strong>Description: </Strong> <Br>&nbsp
 <Li><Strong>Argin:<Br>DEV_VOID</Strong>
  : <Br>&nbsp
 <Li><Strong>Argout:<Br>DEV_STRING</Strong>
@@ -169,10 +173,46 @@ The language device desctructor automatically calls the <i> delete_device() </i>
 </ul><Br>
 <Br>
 
+<!--- html Footer --->
+
 <Center>
-<Br>
-<HR WIDTH="100%"></H5>
-<H3> ESRF - Software Engineering Group </H3>
+<Font size=-1>
+<br>
+<br>
+<TABLE BORDER="1" WIDTH="100%">
+    <Tr>
+		<!--- Hosted by Sourceforge --->
+        <Td Align="Center">
+			<Font size=-1>
+			<b>TANGO</b> is an open source project hosted by :<br>
+			<A href="http://sourceforge.net" Target="new">
+					<IMG title="Sourceforge logo"
+						alt="Sourceforge logo small"
+						src="http://www.esrf.fr/computing/cs/tango/sourceforge.gif"
+						border=0> </a>
+			</Font>
+		</Td>
+		<!--- 2 Sourceforge Repositories --->
+		<Td Align="Center">
+			<Font size=-1>
+			Core and Tools :
+			<a href="http://tango-cs.cvs.sourceforge.net/tango-cs/" Target="new">
+			CVS repository</a> on
+			<a href="https://sourceforge.net/projects/tango-cs" Target=new>
+			tango-cs project</a>
+
+			<br>
+
+			Device Servers :
+			<a href="http://tango-ds.cvs.sourceforge.net/tango-ds/" Target="new">
+					CVS repository</a> on
+			<a href="https://sourceforge.net/projects/tango-ds" Target=new>
+					tango-ds project</a>
+			</Font>
+		</Td>
+    </Tr>
+</Table>
+</Font>
 </Center>
 </body>
 </html>
