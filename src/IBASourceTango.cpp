@@ -12,6 +12,7 @@
 #include <cstring>
 
 using ImgBeamAnalyzer_ns::ISL2YATException;
+using ImgBeamAnalyzer_ns::NoDataAvailableNowException;
 
 /*static*/ IBASourceFactoryTango IBASourceFactoryTango::s_singleton;
 
@@ -30,7 +31,7 @@ IBASourceTango::IBASourceTango(const std::string &deviceName)
     // Now we are going to search for attributes named
     // "BitDepth" or "Depth" in the device. If found, we will use
     // them as the bit depth of the image.
-    static const char* possible_names[] = { "BitDepth", "Depth" };
+    static const char* possible_names[] = { "BitDepth", "Depth", "BitsPerPixel" };
     static const size_t total_names = sizeof(possible_names)/sizeof(char*);
     typedef std::vector< std::string > string_vector;
     
@@ -115,6 +116,7 @@ void IBASourceTango::get_image(ImageAndInfo & imginf) throw (yat::Exception)
   int dim_x = 0;
   int dim_y = 0;
   const bool read_bit_depth = !this->bit_depth_attribute_name_.empty();
+  bool dataAvailable = false;
   
   try
   {
@@ -124,10 +126,26 @@ void IBASourceTango::get_image(ImageAndInfo & imginf) throw (yat::Exception)
       attribute_names.push_back(this->bit_depth_attribute_name_);
     }
     
-    //- Read the attribute contents
-    attributes.reset(this->dev_proxy_->read_attributes(attribute_names));
-    
-    dev_attr = &((*attributes)[0]);
+  	//- Read the attribute contents
+	try
+	{
+		attributes.reset(this->dev_proxy_->read_attributes(attribute_names));
+		dev_attr = &((*attributes)[0]);
+		if (dev_attr != NULL)
+		{
+			if ( dev_attr->get_quality() != Tango::ATTR_VALID)
+			{
+				throw NoDataAvailableNowException( );
+			}
+		}
+	}
+	catch (Tango::DevFailed &df)
+	{
+		throw NoDataAvailableNowException( );
+	}	
+
+	//attributes.reset(this->dev_proxy_->read_attributes(attribute_names));
+	//dev_attr = &((*attributes)[0]);
     
     dim_x = (*attributes)[0].get_dim_x();
     dim_y = (*attributes)[0].get_dim_y();
@@ -189,6 +207,10 @@ void IBASourceTango::get_image(ImageAndInfo & imginf) throw (yat::Exception)
                       "SOFTWARE_FAILURE",
                       "Error while getting remote image",
                       "ImgBeamAnalyzerTask::get_remote_image");
+  }
+  catch (NoDataAvailableNowException &ndane)
+  {
+    throw ndane;
   }
   catch(...)
   {

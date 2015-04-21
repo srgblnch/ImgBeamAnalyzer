@@ -1748,6 +1748,594 @@ bool ImgBeamAnalyzer::is_GaussianFitParameterCovariance_allowed(Tango::AttReqTyp
 		//	Re-Start of Generated Code
 	return true;
 }
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_XProjFitDivergence_allowed
+// 
+// description : 	Read/Write allowed for XProjFitDivergence attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_XProjFitDivergence_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_XProjFit1e2_allowed
+// 
+// description : 	Read/Write allowed for XProjFit1e2 attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_XProjFit1e2_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_XProjFitOrder_allowed
+// 
+// description : 	Read/Write allowed for XProjFitOrder attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_XProjFitOrder_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_XProjFitFlat_allowed
+// 
+// description : 	Read/Write allowed for XProjFitFlat attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_XProjFitFlat_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_YProjFitDivergence_allowed
+// 
+// description : 	Read/Write allowed for YProjFitDivergence attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_YProjFitDivergence_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_YProjFit1e2_allowed
+// 
+// description : 	Read/Write allowed for YProjFit1e2 attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_YProjFit1e2_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_YProjFitOrder_allowed
+// 
+// description : 	Read/Write allowed for YProjFitOrder attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_YProjFitOrder_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_YProjFitFlat_allowed
+// 
+// description : 	Read/Write allowed for YProjFitFlat attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_YProjFitFlat_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_LineProfileFit1e2_allowed
+// 
+// description : 	Read/Write allowed for LineProfileFit1e2 attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_LineProfileFit1e2_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_LineProfileFitOrder_allowed
+// 
+// description : 	Read/Write allowed for LineProfileFitOrder attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_LineProfileFitOrder_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_LineProfileFitFlat_allowed
+// 
+// description : 	Read/Write allowed for LineProfileFitFlat attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_LineProfileFitFlat_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_GaussianFitMajorAxis1e2_allowed
+// 
+// description : 	Read/Write allowed for GaussianFitMajorAxis1e2 attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_GaussianFitMajorAxis1e2_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_GaussianFitMajorAxisOrder_allowed
+// 
+// description : 	Read/Write allowed for GaussianFitMajorAxisOrder attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_GaussianFitMajorAxisOrder_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_GaussianFitMinorAxis1e2_allowed
+// 
+// description : 	Read/Write allowed for GaussianFitMinorAxis1e2 attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_GaussianFitMinorAxis1e2_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_GaussianFitMinorAxisOrder_allowed
+// 
+// description : 	Read/Write allowed for GaussianFitMinorAxisOrder attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_GaussianFitMinorAxisOrder_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_GaussianFitEllipticity_allowed
+// 
+// description : 	Read/Write allowed for GaussianFitEllipticity attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_GaussianFitEllipticity_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_GaussianFitEccentricity_allowed
+// 
+// description : 	Read/Write allowed for GaussianFitEccentricity attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_GaussianFitEccentricity_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_GaussianFitMinorAxisCenter_allowed
+// 
+// description : 	Read/Write allowed for GaussianFitMinorAxisCenter attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_GaussianFitMinorAxisCenter_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_GaussianFitMinorAxisMagnitude_allowed
+// 
+// description : 	Read/Write allowed for GaussianFitMinorAxisMagnitude attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_GaussianFitMinorAxisMagnitude_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_GaussianFitMinorAxisFlat_allowed
+// 
+// description : 	Read/Write allowed for GaussianFitMinorAxisFlat attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_GaussianFitMinorAxisFlat_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_GaussianFitMajorAxisFlat_allowed
+// 
+// description : 	Read/Write allowed for GaussianFitMajorAxisFlat attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_GaussianFitMajorAxisFlat_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_GaussianFitMajorAxisCenter_allowed
+// 
+// description : 	Read/Write allowed for GaussianFitMajorAxisCenter attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_GaussianFitMajorAxisCenter_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_GaussianFitMajorAxisMagnitude_allowed
+// 
+// description : 	Read/Write allowed for GaussianFitMajorAxisMagnitude attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_GaussianFitMajorAxisMagnitude_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_GaussianFitFlatX_allowed
+// 
+// description : 	Read/Write allowed for GaussianFitFlatX attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_GaussianFitFlatX_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_GaussianFitFlatY_allowed
+// 
+// description : 	Read/Write allowed for GaussianFitFlatY attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_GaussianFitFlatY_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_MajorAxisOriginX_allowed
+// 
+// description : 	Read/Write allowed for MajorAxisOriginX attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_MajorAxisOriginX_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_MajorAxisOriginY_allowed
+// 
+// description : 	Read/Write allowed for MajorAxisOriginY attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_MajorAxisOriginY_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_MajorAxisEndX_allowed
+// 
+// description : 	Read/Write allowed for MajorAxisEndX attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_MajorAxisEndX_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_MajorAxisEndY_allowed
+// 
+// description : 	Read/Write allowed for MajorAxisEndY attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_MajorAxisEndY_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_MinorAxisOriginX_allowed
+// 
+// description : 	Read/Write allowed for MinorAxisOriginX attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_MinorAxisOriginX_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_MinorAxisOriginY_allowed
+// 
+// description : 	Read/Write allowed for MinorAxisOriginY attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_MinorAxisOriginY_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_MinorAxisEndX_allowed
+// 
+// description : 	Read/Write allowed for MinorAxisEndX attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_MinorAxisEndX_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_MinorAxisEndY_allowed
+// 
+// description : 	Read/Write allowed for MinorAxisEndY attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_MinorAxisEndY_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_ReductionPercent_allowed
+// 
+// description : 	Read/Write allowed for ReductionPercent attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_ReductionPercent_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_DevEncROIImageMedium_allowed
+// 
+// description : 	Read/Write allowed for DevEncROIImageMedium attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_DevEncROIImageMedium_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_MajorAxis_allowed
+// 
+// description : 	Read/Write allowed for MajorAxis attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_MajorAxis_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_MinorAxis_allowed
+// 
+// description : 	Read/Write allowed for MinorAxis attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_MinorAxis_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_MajorAxisFitted_allowed
+// 
+// description : 	Read/Write allowed for MajorAxisFitted attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_MajorAxisFitted_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_MinorAxisFitted_allowed
+// 
+// description : 	Read/Write allowed for MinorAxisFitted attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_MinorAxisFitted_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_ROIImageMedium_allowed
+// 
+// description : 	Read/Write allowed for ROIImageMedium attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_ROIImageMedium_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_PeakX_allowed
+// 
+// description : 	Read/Write allowed for PeakX attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_PeakX_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::is_PeakY_allowed
+// 
+// description : 	Read/Write allowed for PeakY attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_PeakY_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
 
 //=================================================
 //		Commands Allowed Methods

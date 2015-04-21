@@ -188,6 +188,8 @@ public :
 		Tango::DevLong	*attr_AutoROIHeight_read;
 		Tango::DevDouble	*attr_MaxIntensity_read;
 		Tango::DevDouble	*attr_MeanIntensity_read;
+		Tango::DevDouble	*attr_PeakX_read;
+		Tango::DevDouble	*attr_PeakY_read;
 		Tango::DevDouble	*attr_CentroidX_read;
 		Tango::DevDouble	*attr_CentroidY_read;
 		Tango::DevBoolean	*attr_CentroidSaturated_read;
@@ -204,26 +206,45 @@ public :
 		Tango::DevDouble	*attr_SkewX2Y_read;
 		Tango::DevDouble	*attr_SkewXY2_read;
 		Tango::DevBoolean	*attr_XProjFitConverged_read;
+		Tango::DevDouble	*attr_XProjFitDivergence_read;
+		Tango::DevDouble	attr_XProjFitDivergence_write;
 		Tango::DevDouble	*attr_XProjFitCenter_read;
 		Tango::DevDouble	*attr_XProjFitMag_read;
 		Tango::DevDouble	*attr_XProjFitSigma_read;
 		Tango::DevDouble	*attr_XProjFitFWHM_read;
+		Tango::DevDouble	*attr_XProjFit1e2_read;
 		Tango::DevDouble	*attr_XProjFitBG_read;
 		Tango::DevDouble	*attr_XProjFitChi2_read;
+		Tango::DevDouble	*attr_XProjFitOrder_read;
+		Tango::DevDouble	*attr_XProjFitFlat_read;
+		Tango::DevLong	*attr_XProjFitNbIter_read;
+		Tango::DevDouble	*attr_XProjFitRelChange_read;
 		Tango::DevBoolean	*attr_YProjFitConverged_read;
+		Tango::DevDouble	*attr_YProjFitDivergence_read;
+		Tango::DevDouble	attr_YProjFitDivergence_write;
 		Tango::DevDouble	*attr_YProjFitCenter_read;
 		Tango::DevDouble	*attr_YProjFitMag_read;
 		Tango::DevDouble	*attr_YProjFitSigma_read;
 		Tango::DevDouble	*attr_YProjFitFWHM_read;
+		Tango::DevDouble	*attr_YProjFit1e2_read;
 		Tango::DevDouble	*attr_YProjFitBG_read;
 		Tango::DevDouble	*attr_YProjFitChi2_read;
+		Tango::DevDouble	*attr_YProjFitOrder_read;
+		Tango::DevDouble	*attr_YProjFitFlat_read;
+		Tango::DevLong	*attr_YProjFitNbIter_read;
+		Tango::DevDouble	*attr_YProjFitRelChange_read;
 		Tango::DevBoolean	*attr_LineProfileFitConverged_read;
 		Tango::DevDouble	*attr_LineProfileFitCenter_read;
 		Tango::DevDouble	*attr_LineProfileFitMag_read;
 		Tango::DevDouble	*attr_LineProfileFitSigma_read;
 		Tango::DevDouble	*attr_LineProfileFitFWHM_read;
+		Tango::DevDouble	*attr_LineProfileFit1e2_read;
 		Tango::DevDouble	*attr_LineProfileFitBG_read;
 		Tango::DevDouble	*attr_LineProfileFitChi2_read;
+		Tango::DevDouble	*attr_LineProfileFitOrder_read;
+		Tango::DevLong	*attr_LineProfileFitNbIter_read;
+		Tango::DevDouble	*attr_LineProfileFitFlat_read;
+		Tango::DevDouble	*attr_LineProfileFitRelChange_read;
 		Tango::DevBoolean	*attr_GaussianFitConverged_read;
 		Tango::DevDouble	*attr_GaussianFitMagnitude_read;
 		Tango::DevDouble	*attr_GaussianFitCenterX_read;
@@ -232,10 +253,34 @@ public :
 		Tango::DevDouble	*attr_GaussianFitVarianceY_read;
 		Tango::DevDouble	*attr_GaussianFitCovarianceXY_read;
 		Tango::DevDouble	*attr_GaussianFitMajorAxisFWHM_read;
+		Tango::DevDouble	*attr_GaussianFitMajorAxis1e2_read;
+		Tango::DevDouble	*attr_GaussianFitMajorAxisOrder_read;
 		Tango::DevDouble	*attr_GaussianFitMinorAxisFWHM_read;
+		Tango::DevDouble	*attr_GaussianFitMinorAxis1e2_read;
+		Tango::DevDouble	*attr_GaussianFitMinorAxisOrder_read;
 		Tango::DevDouble	*attr_GaussianFitTilt_read;
 		Tango::DevDouble	*attr_GaussianFitBG_read;
 		Tango::DevDouble	*attr_GaussianFitChi2_read;
+		Tango::DevDouble	*attr_GaussianFitEllipticity_read;
+		Tango::DevDouble	*attr_GaussianFitEccentricity_read;
+		Tango::DevDouble	*attr_GaussianFitMinorAxisCenter_read;
+		Tango::DevDouble	*attr_GaussianFitMinorAxisMagnitude_read;
+		Tango::DevDouble	*attr_GaussianFitMinorAxisFlat_read;
+		Tango::DevDouble	*attr_GaussianFitMajorAxisFlat_read;
+		Tango::DevDouble	*attr_GaussianFitMajorAxisCenter_read;
+		Tango::DevDouble	*attr_GaussianFitMajorAxisMagnitude_read;
+		Tango::DevDouble	*attr_GaussianFitFlatX_read;
+		Tango::DevDouble	*attr_GaussianFitFlatY_read;
+		Tango::DevLong	*attr_GaussianFitNbIter_read;
+		Tango::DevDouble	*attr_GaussianFitRelChange_read;
+		Tango::DevLong	*attr_MajorAxisOriginX_read;
+		Tango::DevLong	*attr_MajorAxisOriginY_read;
+		Tango::DevLong	*attr_MajorAxisEndX_read;
+		Tango::DevLong	*attr_MajorAxisEndY_read;
+		Tango::DevLong	*attr_MinorAxisOriginX_read;
+		Tango::DevLong	*attr_MinorAxisOriginY_read;
+		Tango::DevLong	*attr_MinorAxisEndX_read;
+		Tango::DevLong	*attr_MinorAxisEndY_read;
 		Tango::DevLong	*attr_Fit1DNbIterMax_read;
 		Tango::DevLong	attr_Fit1DNbIterMax_write;
 		Tango::DevDouble	*attr_Fit1DMaxRelChange_read;
@@ -244,17 +289,12 @@ public :
 		Tango::DevLong	attr_Fit2DNbIterMax_write;
 		Tango::DevDouble	*attr_Fit2DMaxRelChange_read;
 		Tango::DevDouble	attr_Fit2DMaxRelChange_write;
-		Tango::DevLong	*attr_XProjFitNbIter_read;
-		Tango::DevDouble	*attr_XProjFitRelChange_read;
-		Tango::DevLong	*attr_YProjFitNbIter_read;
-		Tango::DevDouble	*attr_YProjFitRelChange_read;
-		Tango::DevLong	*attr_LineProfileFitNbIter_read;
-		Tango::DevDouble	*attr_LineProfileFitRelChange_read;
-		Tango::DevLong	*attr_GaussianFitNbIter_read;
-		Tango::DevDouble	*attr_GaussianFitRelChange_read;
 		Tango::DevDouble	*attr_RmsX_read;
 		Tango::DevDouble	*attr_RmsY_read;
 		Tango::DevULong	*attr_ImageCounter_read;
+		Tango::DevDouble	*attr_ReductionPercent_read;
+		Tango::DevDouble	attr_ReductionPercent_write;
+		Tango::DevEncoded	*attr_DevEncROIImageMedium_read;
 		Tango::DevDouble	*attr_XProj_read;
 		Tango::DevDouble	*attr_XProjFitted_read;
 		Tango::DevDouble	*attr_XProjError_read;
@@ -265,11 +305,16 @@ public :
 		Tango::DevDouble	*attr_LineProfileFitted_read;
 		Tango::DevDouble	*attr_LineProfileError_read;
 		Tango::DevFloat	*attr_Histogram_read;
+		Tango::DevDouble	*attr_MajorAxis_read;
+		Tango::DevDouble	*attr_MinorAxis_read;
+		Tango::DevDouble	*attr_MajorAxisFitted_read;
+		Tango::DevDouble	*attr_MinorAxisFitted_read;
 		Tango::DevULong	*attr_InputImage_read;
 		Tango::DevULong	attr_InputImage_write;
-		Tango::DevULong	*attr_ROIImage_read;
+		Tango::DevUShort	*attr_ROIImage_read;
 		Tango::DevFloat	*attr_LineProfileHelperImg_read;
 		Tango::DevDouble	*attr_GaussianFitParameterCovariance_read;
+		Tango::DevUShort	*attr_ROIImageMedium_read;
 //@}
 
 /**
@@ -416,6 +461,14 @@ public :
  *	the initial value of the CentroidSaturationRegionThreshold attribute
  */
 	Tango::DevLong	centroidSaturationRegionThreshold;
+/**
+ *	Width and Height of the ROIImageLarge
+ */
+	vector<short>	beforeProcessResize;
+/**
+ *	Width and Height of the ROIImageMedium
+ */
+	vector<short>	rOIImageMediumSize;
 //@}
 
 /**@name Constructors
@@ -802,6 +855,14 @@ public :
  */
 	virtual void read_MeanIntensity(Tango::Attribute &attr);
 /**
+ *	Extract real attribute values for PeakX acquisition result.
+ */
+	virtual void read_PeakX(Tango::Attribute &attr);
+/**
+ *	Extract real attribute values for PeakY acquisition result.
+ */
+	virtual void read_PeakY(Tango::Attribute &attr);
+/**
  *	Extract real attribute values for CentroidX acquisition result.
  */
 	virtual void read_CentroidX(Tango::Attribute &attr);
@@ -866,6 +927,14 @@ public :
  */
 	virtual void read_XProjFitConverged(Tango::Attribute &attr);
 /**
+ *	Extract real attribute values for XProjFitDivergence acquisition result.
+ */
+	virtual void read_XProjFitDivergence(Tango::Attribute &attr);
+/**
+ *	Write XProjFitDivergence attribute values to hardware.
+ */
+	virtual void write_XProjFitDivergence(Tango::WAttribute &attr);
+/**
  *	Extract real attribute values for XProjFitCenter acquisition result.
  */
 	virtual void read_XProjFitCenter(Tango::Attribute &attr);
@@ -882,6 +951,10 @@ public :
  */
 	virtual void read_XProjFitFWHM(Tango::Attribute &attr);
 /**
+ *	Extract real attribute values for XProjFit1e2 acquisition result.
+ */
+	virtual void read_XProjFit1e2(Tango::Attribute &attr);
+/**
  *	Extract real attribute values for XProjFitBG acquisition result.
  */
 	virtual void read_XProjFitBG(Tango::Attribute &attr);
@@ -890,9 +963,33 @@ public :
  */
 	virtual void read_XProjFitChi2(Tango::Attribute &attr);
 /**
+ *	Extract real attribute values for XProjFitOrder acquisition result.
+ */
+	virtual void read_XProjFitOrder(Tango::Attribute &attr);
+/**
+ *	Extract real attribute values for XProjFitFlat acquisition result.
+ */
+	virtual void read_XProjFitFlat(Tango::Attribute &attr);
+/**
+ *	Extract real attribute values for XProjFitNbIter acquisition result.
+ */
+	virtual void read_XProjFitNbIter(Tango::Attribute &attr);
+/**
+ *	Extract real attribute values for XProjFitRelChange acquisition result.
+ */
+	virtual void read_XProjFitRelChange(Tango::Attribute &attr);
+/**
  *	Extract real attribute values for YProjFitConverged acquisition result.
  */
 	virtual void read_YProjFitConverged(Tango::Attribute &attr);
+/**
+ *	Extract real attribute values for YProjFitDivergence acquisition result.
+ */
+	virtual void read_YProjFitDivergence(Tango::Attribute &attr);
+/**
+ *	Write YProjFitDivergence attribute values to hardware.
+ */
+	virtual void write_YProjFitDivergence(Tango::WAttribute &attr);
 /**
  *	Extract real attribute values for YProjFitCenter acquisition result.
  */
@@ -910,6 +1007,10 @@ public :
  */
 	virtual void read_YProjFitFWHM(Tango::Attribute &attr);
 /**
+ *	Extract real attribute values for YProjFit1e2 acquisition result.
+ */
+	virtual void read_YProjFit1e2(Tango::Attribute &attr);
+/**
  *	Extract real attribute values for YProjFitBG acquisition result.
  */
 	virtual void read_YProjFitBG(Tango::Attribute &attr);
@@ -917,6 +1018,22 @@ public :
  *	Extract real attribute values for YProjFitChi2 acquisition result.
  */
 	virtual void read_YProjFitChi2(Tango::Attribute &attr);
+/**
+ *	Extract real attribute values for YProjFitOrder acquisition result.
+ */
+	virtual void read_YProjFitOrder(Tango::Attribute &attr);
+/**
+ *	Extract real attribute values for YProjFitFlat acquisition result.
+ */
+	virtual void read_YProjFitFlat(Tango::Attribute &attr);
+/**
+ *	Extract real attribute values for YProjFitNbIter acquisition result.
+ */
+	virtual void read_YProjFitNbIter(Tango::Attribute &attr);
+/**
+ *	Extract real attribute values for YProjFitRelChange acquisition result.
+ */
+	virtual void read_YProjFitRelChange(Tango::Attribute &attr);
 /**
  *	Extract real attribute values for LineProfileFitConverged acquisition result.
  */
@@ -938,6 +1055,10 @@ public :
  */
 	virtual void read_LineProfileFitFWHM(Tango::Attribute &attr);
 /**
+ *	Extract real attribute values for LineProfileFit1e2 acquisition result.
+ */
+	virtual void read_LineProfileFit1e2(Tango::Attribute &attr);
+/**
  *	Extract real attribute values for LineProfileFitBG acquisition result.
  */
 	virtual void read_LineProfileFitBG(Tango::Attribute &attr);
@@ -945,6 +1066,22 @@ public :
  *	Extract real attribute values for LineProfileFitChi2 acquisition result.
  */
 	virtual void read_LineProfileFitChi2(Tango::Attribute &attr);
+/**
+ *	Extract real attribute values for LineProfileFitOrder acquisition result.
+ */
+	virtual void read_LineProfileFitOrder(Tango::Attribute &attr);
+/**
+ *	Extract real attribute values for LineProfileFitNbIter acquisition result.
+ */
+	virtual void read_LineProfileFitNbIter(Tango::Attribute &attr);
+/**
+ *	Extract real attribute values for LineProfileFitFlat acquisition result.
+ */
+	virtual void read_LineProfileFitFlat(Tango::Attribute &attr);
+/**
+ *	Extract real attribute values for LineProfileFitRelChange acquisition result.
+ */
+	virtual void read_LineProfileFitRelChange(Tango::Attribute &attr);
 /**
  *	Extract real attribute values for GaussianFitConverged acquisition result.
  */
@@ -978,9 +1115,25 @@ public :
  */
 	virtual void read_GaussianFitMajorAxisFWHM(Tango::Attribute &attr);
 /**
+ *	Extract real attribute values for GaussianFitMajorAxis1e2 acquisition result.
+ */
+	virtual void read_GaussianFitMajorAxis1e2(Tango::Attribute &attr);
+/**
+ *	Extract real attribute values for GaussianFitMajorAxisOrder acquisition result.
+ */
+	virtual void read_GaussianFitMajorAxisOrder(Tango::Attribute &attr);
+/**
  *	Extract real attribute values for GaussianFitMinorAxisFWHM acquisition result.
  */
 	virtual void read_GaussianFitMinorAxisFWHM(Tango::Attribute &attr);
+/**
+ *	Extract real attribute values for GaussianFitMinorAxis1e2 acquisition result.
+ */
+	virtual void read_GaussianFitMinorAxis1e2(Tango::Attribute &attr);
+/**
+ *	Extract real attribute values for GaussianFitMinorAxisOrder acquisition result.
+ */
+	virtual void read_GaussianFitMinorAxisOrder(Tango::Attribute &attr);
 /**
  *	Extract real attribute values for GaussianFitTilt acquisition result.
  */
@@ -993,6 +1146,86 @@ public :
  *	Extract real attribute values for GaussianFitChi2 acquisition result.
  */
 	virtual void read_GaussianFitChi2(Tango::Attribute &attr);
+/**
+ *	Extract real attribute values for GaussianFitEllipticity acquisition result.
+ */
+	virtual void read_GaussianFitEllipticity(Tango::Attribute &attr);
+/**
+ *	Extract real attribute values for GaussianFitEccentricity acquisition result.
+ */
+	virtual void read_GaussianFitEccentricity(Tango::Attribute &attr);
+/**
+ *	Extract real attribute values for GaussianFitMinorAxisCenter acquisition result.
+ */
+	virtual void read_GaussianFitMinorAxisCenter(Tango::Attribute &attr);
+/**
+ *	Extract real attribute values for GaussianFitMinorAxisMagnitude acquisition result.
+ */
+	virtual void read_GaussianFitMinorAxisMagnitude(Tango::Attribute &attr);
+/**
+ *	Extract real attribute values for GaussianFitMinorAxisFlat acquisition result.
+ */
+	virtual void read_GaussianFitMinorAxisFlat(Tango::Attribute &attr);
+/**
+ *	Extract real attribute values for GaussianFitMajorAxisFlat acquisition result.
+ */
+	virtual void read_GaussianFitMajorAxisFlat(Tango::Attribute &attr);
+/**
+ *	Extract real attribute values for GaussianFitMajorAxisCenter acquisition result.
+ */
+	virtual void read_GaussianFitMajorAxisCenter(Tango::Attribute &attr);
+/**
+ *	Extract real attribute values for GaussianFitMajorAxisMagnitude acquisition result.
+ */
+	virtual void read_GaussianFitMajorAxisMagnitude(Tango::Attribute &attr);
+/**
+ *	Extract real attribute values for GaussianFitFlatX acquisition result.
+ */
+	virtual void read_GaussianFitFlatX(Tango::Attribute &attr);
+/**
+ *	Extract real attribute values for GaussianFitFlatY acquisition result.
+ */
+	virtual void read_GaussianFitFlatY(Tango::Attribute &attr);
+/**
+ *	Extract real attribute values for GaussianFitNbIter acquisition result.
+ */
+	virtual void read_GaussianFitNbIter(Tango::Attribute &attr);
+/**
+ *	Extract real attribute values for GaussianFitRelChange acquisition result.
+ */
+	virtual void read_GaussianFitRelChange(Tango::Attribute &attr);
+/**
+ *	Extract real attribute values for MajorAxisOriginX acquisition result.
+ */
+	virtual void read_MajorAxisOriginX(Tango::Attribute &attr);
+/**
+ *	Extract real attribute values for MajorAxisOriginY acquisition result.
+ */
+	virtual void read_MajorAxisOriginY(Tango::Attribute &attr);
+/**
+ *	Extract real attribute values for MajorAxisEndX acquisition result.
+ */
+	virtual void read_MajorAxisEndX(Tango::Attribute &attr);
+/**
+ *	Extract real attribute values for MajorAxisEndY acquisition result.
+ */
+	virtual void read_MajorAxisEndY(Tango::Attribute &attr);
+/**
+ *	Extract real attribute values for MinorAxisOriginX acquisition result.
+ */
+	virtual void read_MinorAxisOriginX(Tango::Attribute &attr);
+/**
+ *	Extract real attribute values for MinorAxisOriginY acquisition result.
+ */
+	virtual void read_MinorAxisOriginY(Tango::Attribute &attr);
+/**
+ *	Extract real attribute values for MinorAxisEndX acquisition result.
+ */
+	virtual void read_MinorAxisEndX(Tango::Attribute &attr);
+/**
+ *	Extract real attribute values for MinorAxisEndY acquisition result.
+ */
+	virtual void read_MinorAxisEndY(Tango::Attribute &attr);
 /**
  *	Extract real attribute values for Fit1DNbIterMax acquisition result.
  */
@@ -1026,38 +1259,6 @@ public :
  */
 	virtual void write_Fit2DMaxRelChange(Tango::WAttribute &attr);
 /**
- *	Extract real attribute values for XProjFitNbIter acquisition result.
- */
-	virtual void read_XProjFitNbIter(Tango::Attribute &attr);
-/**
- *	Extract real attribute values for XProjFitRelChange acquisition result.
- */
-	virtual void read_XProjFitRelChange(Tango::Attribute &attr);
-/**
- *	Extract real attribute values for YProjFitNbIter acquisition result.
- */
-	virtual void read_YProjFitNbIter(Tango::Attribute &attr);
-/**
- *	Extract real attribute values for YProjFitRelChange acquisition result.
- */
-	virtual void read_YProjFitRelChange(Tango::Attribute &attr);
-/**
- *	Extract real attribute values for LineProfileFitNbIter acquisition result.
- */
-	virtual void read_LineProfileFitNbIter(Tango::Attribute &attr);
-/**
- *	Extract real attribute values for LineProfileFitRelChange acquisition result.
- */
-	virtual void read_LineProfileFitRelChange(Tango::Attribute &attr);
-/**
- *	Extract real attribute values for GaussianFitNbIter acquisition result.
- */
-	virtual void read_GaussianFitNbIter(Tango::Attribute &attr);
-/**
- *	Extract real attribute values for GaussianFitRelChange acquisition result.
- */
-	virtual void read_GaussianFitRelChange(Tango::Attribute &attr);
-/**
  *	Extract real attribute values for RmsX acquisition result.
  */
 	virtual void read_RmsX(Tango::Attribute &attr);
@@ -1069,6 +1270,18 @@ public :
  *	Extract real attribute values for ImageCounter acquisition result.
  */
 	virtual void read_ImageCounter(Tango::Attribute &attr);
+/**
+ *	Extract real attribute values for ReductionPercent acquisition result.
+ */
+	virtual void read_ReductionPercent(Tango::Attribute &attr);
+/**
+ *	Write ReductionPercent attribute values to hardware.
+ */
+	virtual void write_ReductionPercent(Tango::WAttribute &attr);
+/**
+ *	Extract real attribute values for DevEncROIImageMedium acquisition result.
+ */
+	virtual void read_DevEncROIImageMedium(Tango::Attribute &attr);
 /**
  *	Extract real attribute values for XProj acquisition result.
  */
@@ -1110,6 +1323,22 @@ public :
  */
 	virtual void read_Histogram(Tango::Attribute &attr);
 /**
+ *	Extract real attribute values for MajorAxis acquisition result.
+ */
+	virtual void read_MajorAxis(Tango::Attribute &attr);
+/**
+ *	Extract real attribute values for MinorAxis acquisition result.
+ */
+	virtual void read_MinorAxis(Tango::Attribute &attr);
+/**
+ *	Extract real attribute values for MajorAxisFitted acquisition result.
+ */
+	virtual void read_MajorAxisFitted(Tango::Attribute &attr);
+/**
+ *	Extract real attribute values for MinorAxisFitted acquisition result.
+ */
+	virtual void read_MinorAxisFitted(Tango::Attribute &attr);
+/**
  *	Extract real attribute values for InputImage acquisition result.
  */
 	virtual void read_InputImage(Tango::Attribute &attr);
@@ -1129,6 +1358,10 @@ public :
  *	Extract real attribute values for GaussianFitParameterCovariance acquisition result.
  */
 	virtual void read_GaussianFitParameterCovariance(Tango::Attribute &attr);
+/**
+ *	Extract real attribute values for ROIImageMedium acquisition result.
+ */
+	virtual void read_ROIImageMedium(Tango::Attribute &attr);
 /**
  *	Read/Write allowed for EnableImageStats attribute.
  */
@@ -1314,6 +1547,14 @@ public :
  */
 	virtual bool is_MeanIntensity_allowed(Tango::AttReqType type);
 /**
+ *	Read/Write allowed for PeakX attribute.
+ */
+	virtual bool is_PeakX_allowed(Tango::AttReqType type);
+/**
+ *	Read/Write allowed for PeakY attribute.
+ */
+	virtual bool is_PeakY_allowed(Tango::AttReqType type);
+/**
  *	Read/Write allowed for CentroidX attribute.
  */
 	virtual bool is_CentroidX_allowed(Tango::AttReqType type);
@@ -1370,6 +1611,10 @@ public :
  */
 	virtual bool is_XProjFitConverged_allowed(Tango::AttReqType type);
 /**
+ *	Read/Write allowed for XProjFitDivergence attribute.
+ */
+	virtual bool is_XProjFitDivergence_allowed(Tango::AttReqType type);
+/**
  *	Read/Write allowed for XProjFitCenter attribute.
  */
 	virtual bool is_XProjFitCenter_allowed(Tango::AttReqType type);
@@ -1386,6 +1631,10 @@ public :
  */
 	virtual bool is_XProjFitFWHM_allowed(Tango::AttReqType type);
 /**
+ *	Read/Write allowed for XProjFit1e2 attribute.
+ */
+	virtual bool is_XProjFit1e2_allowed(Tango::AttReqType type);
+/**
  *	Read/Write allowed for XProjFitBG attribute.
  */
 	virtual bool is_XProjFitBG_allowed(Tango::AttReqType type);
@@ -1394,9 +1643,29 @@ public :
  */
 	virtual bool is_XProjFitChi2_allowed(Tango::AttReqType type);
 /**
+ *	Read/Write allowed for XProjFitOrder attribute.
+ */
+	virtual bool is_XProjFitOrder_allowed(Tango::AttReqType type);
+/**
+ *	Read/Write allowed for XProjFitFlat attribute.
+ */
+	virtual bool is_XProjFitFlat_allowed(Tango::AttReqType type);
+/**
+ *	Read/Write allowed for XProjFitNbIter attribute.
+ */
+	virtual bool is_XProjFitNbIter_allowed(Tango::AttReqType type);
+/**
+ *	Read/Write allowed for XProjFitRelChange attribute.
+ */
+	virtual bool is_XProjFitRelChange_allowed(Tango::AttReqType type);
+/**
  *	Read/Write allowed for YProjFitConverged attribute.
  */
 	virtual bool is_YProjFitConverged_allowed(Tango::AttReqType type);
+/**
+ *	Read/Write allowed for YProjFitDivergence attribute.
+ */
+	virtual bool is_YProjFitDivergence_allowed(Tango::AttReqType type);
 /**
  *	Read/Write allowed for YProjFitCenter attribute.
  */
@@ -1414,6 +1683,10 @@ public :
  */
 	virtual bool is_YProjFitFWHM_allowed(Tango::AttReqType type);
 /**
+ *	Read/Write allowed for YProjFit1e2 attribute.
+ */
+	virtual bool is_YProjFit1e2_allowed(Tango::AttReqType type);
+/**
  *	Read/Write allowed for YProjFitBG attribute.
  */
 	virtual bool is_YProjFitBG_allowed(Tango::AttReqType type);
@@ -1421,6 +1694,22 @@ public :
  *	Read/Write allowed for YProjFitChi2 attribute.
  */
 	virtual bool is_YProjFitChi2_allowed(Tango::AttReqType type);
+/**
+ *	Read/Write allowed for YProjFitOrder attribute.
+ */
+	virtual bool is_YProjFitOrder_allowed(Tango::AttReqType type);
+/**
+ *	Read/Write allowed for YProjFitFlat attribute.
+ */
+	virtual bool is_YProjFitFlat_allowed(Tango::AttReqType type);
+/**
+ *	Read/Write allowed for YProjFitNbIter attribute.
+ */
+	virtual bool is_YProjFitNbIter_allowed(Tango::AttReqType type);
+/**
+ *	Read/Write allowed for YProjFitRelChange attribute.
+ */
+	virtual bool is_YProjFitRelChange_allowed(Tango::AttReqType type);
 /**
  *	Read/Write allowed for LineProfileFitConverged attribute.
  */
@@ -1442,6 +1731,10 @@ public :
  */
 	virtual bool is_LineProfileFitFWHM_allowed(Tango::AttReqType type);
 /**
+ *	Read/Write allowed for LineProfileFit1e2 attribute.
+ */
+	virtual bool is_LineProfileFit1e2_allowed(Tango::AttReqType type);
+/**
  *	Read/Write allowed for LineProfileFitBG attribute.
  */
 	virtual bool is_LineProfileFitBG_allowed(Tango::AttReqType type);
@@ -1449,6 +1742,22 @@ public :
  *	Read/Write allowed for LineProfileFitChi2 attribute.
  */
 	virtual bool is_LineProfileFitChi2_allowed(Tango::AttReqType type);
+/**
+ *	Read/Write allowed for LineProfileFitOrder attribute.
+ */
+	virtual bool is_LineProfileFitOrder_allowed(Tango::AttReqType type);
+/**
+ *	Read/Write allowed for LineProfileFitNbIter attribute.
+ */
+	virtual bool is_LineProfileFitNbIter_allowed(Tango::AttReqType type);
+/**
+ *	Read/Write allowed for LineProfileFitFlat attribute.
+ */
+	virtual bool is_LineProfileFitFlat_allowed(Tango::AttReqType type);
+/**
+ *	Read/Write allowed for LineProfileFitRelChange attribute.
+ */
+	virtual bool is_LineProfileFitRelChange_allowed(Tango::AttReqType type);
 /**
  *	Read/Write allowed for GaussianFitConverged attribute.
  */
@@ -1482,9 +1791,25 @@ public :
  */
 	virtual bool is_GaussianFitMajorAxisFWHM_allowed(Tango::AttReqType type);
 /**
+ *	Read/Write allowed for GaussianFitMajorAxis1e2 attribute.
+ */
+	virtual bool is_GaussianFitMajorAxis1e2_allowed(Tango::AttReqType type);
+/**
+ *	Read/Write allowed for GaussianFitMajorAxisOrder attribute.
+ */
+	virtual bool is_GaussianFitMajorAxisOrder_allowed(Tango::AttReqType type);
+/**
  *	Read/Write allowed for GaussianFitMinorAxisFWHM attribute.
  */
 	virtual bool is_GaussianFitMinorAxisFWHM_allowed(Tango::AttReqType type);
+/**
+ *	Read/Write allowed for GaussianFitMinorAxis1e2 attribute.
+ */
+	virtual bool is_GaussianFitMinorAxis1e2_allowed(Tango::AttReqType type);
+/**
+ *	Read/Write allowed for GaussianFitMinorAxisOrder attribute.
+ */
+	virtual bool is_GaussianFitMinorAxisOrder_allowed(Tango::AttReqType type);
 /**
  *	Read/Write allowed for GaussianFitTilt attribute.
  */
@@ -1497,6 +1822,86 @@ public :
  *	Read/Write allowed for GaussianFitChi2 attribute.
  */
 	virtual bool is_GaussianFitChi2_allowed(Tango::AttReqType type);
+/**
+ *	Read/Write allowed for GaussianFitEllipticity attribute.
+ */
+	virtual bool is_GaussianFitEllipticity_allowed(Tango::AttReqType type);
+/**
+ *	Read/Write allowed for GaussianFitEccentricity attribute.
+ */
+	virtual bool is_GaussianFitEccentricity_allowed(Tango::AttReqType type);
+/**
+ *	Read/Write allowed for GaussianFitMinorAxisCenter attribute.
+ */
+	virtual bool is_GaussianFitMinorAxisCenter_allowed(Tango::AttReqType type);
+/**
+ *	Read/Write allowed for GaussianFitMinorAxisMagnitude attribute.
+ */
+	virtual bool is_GaussianFitMinorAxisMagnitude_allowed(Tango::AttReqType type);
+/**
+ *	Read/Write allowed for GaussianFitMinorAxisFlat attribute.
+ */
+	virtual bool is_GaussianFitMinorAxisFlat_allowed(Tango::AttReqType type);
+/**
+ *	Read/Write allowed for GaussianFitMajorAxisFlat attribute.
+ */
+	virtual bool is_GaussianFitMajorAxisFlat_allowed(Tango::AttReqType type);
+/**
+ *	Read/Write allowed for GaussianFitMajorAxisCenter attribute.
+ */
+	virtual bool is_GaussianFitMajorAxisCenter_allowed(Tango::AttReqType type);
+/**
+ *	Read/Write allowed for GaussianFitMajorAxisMagnitude attribute.
+ */
+	virtual bool is_GaussianFitMajorAxisMagnitude_allowed(Tango::AttReqType type);
+/**
+ *	Read/Write allowed for GaussianFitFlatX attribute.
+ */
+	virtual bool is_GaussianFitFlatX_allowed(Tango::AttReqType type);
+/**
+ *	Read/Write allowed for GaussianFitFlatY attribute.
+ */
+	virtual bool is_GaussianFitFlatY_allowed(Tango::AttReqType type);
+/**
+ *	Read/Write allowed for GaussianFitNbIter attribute.
+ */
+	virtual bool is_GaussianFitNbIter_allowed(Tango::AttReqType type);
+/**
+ *	Read/Write allowed for GaussianFitRelChange attribute.
+ */
+	virtual bool is_GaussianFitRelChange_allowed(Tango::AttReqType type);
+/**
+ *	Read/Write allowed for MajorAxisOriginX attribute.
+ */
+	virtual bool is_MajorAxisOriginX_allowed(Tango::AttReqType type);
+/**
+ *	Read/Write allowed for MajorAxisOriginY attribute.
+ */
+	virtual bool is_MajorAxisOriginY_allowed(Tango::AttReqType type);
+/**
+ *	Read/Write allowed for MajorAxisEndX attribute.
+ */
+	virtual bool is_MajorAxisEndX_allowed(Tango::AttReqType type);
+/**
+ *	Read/Write allowed for MajorAxisEndY attribute.
+ */
+	virtual bool is_MajorAxisEndY_allowed(Tango::AttReqType type);
+/**
+ *	Read/Write allowed for MinorAxisOriginX attribute.
+ */
+	virtual bool is_MinorAxisOriginX_allowed(Tango::AttReqType type);
+/**
+ *	Read/Write allowed for MinorAxisOriginY attribute.
+ */
+	virtual bool is_MinorAxisOriginY_allowed(Tango::AttReqType type);
+/**
+ *	Read/Write allowed for MinorAxisEndX attribute.
+ */
+	virtual bool is_MinorAxisEndX_allowed(Tango::AttReqType type);
+/**
+ *	Read/Write allowed for MinorAxisEndY attribute.
+ */
+	virtual bool is_MinorAxisEndY_allowed(Tango::AttReqType type);
 /**
  *	Read/Write allowed for Fit1DNbIterMax attribute.
  */
@@ -1514,38 +1919,6 @@ public :
  */
 	virtual bool is_Fit2DMaxRelChange_allowed(Tango::AttReqType type);
 /**
- *	Read/Write allowed for XProjFitNbIter attribute.
- */
-	virtual bool is_XProjFitNbIter_allowed(Tango::AttReqType type);
-/**
- *	Read/Write allowed for XProjFitRelChange attribute.
- */
-	virtual bool is_XProjFitRelChange_allowed(Tango::AttReqType type);
-/**
- *	Read/Write allowed for YProjFitNbIter attribute.
- */
-	virtual bool is_YProjFitNbIter_allowed(Tango::AttReqType type);
-/**
- *	Read/Write allowed for YProjFitRelChange attribute.
- */
-	virtual bool is_YProjFitRelChange_allowed(Tango::AttReqType type);
-/**
- *	Read/Write allowed for LineProfileFitNbIter attribute.
- */
-	virtual bool is_LineProfileFitNbIter_allowed(Tango::AttReqType type);
-/**
- *	Read/Write allowed for LineProfileFitRelChange attribute.
- */
-	virtual bool is_LineProfileFitRelChange_allowed(Tango::AttReqType type);
-/**
- *	Read/Write allowed for GaussianFitNbIter attribute.
- */
-	virtual bool is_GaussianFitNbIter_allowed(Tango::AttReqType type);
-/**
- *	Read/Write allowed for GaussianFitRelChange attribute.
- */
-	virtual bool is_GaussianFitRelChange_allowed(Tango::AttReqType type);
-/**
  *	Read/Write allowed for RmsX attribute.
  */
 	virtual bool is_RmsX_allowed(Tango::AttReqType type);
@@ -1557,6 +1930,14 @@ public :
  *	Read/Write allowed for ImageCounter attribute.
  */
 	virtual bool is_ImageCounter_allowed(Tango::AttReqType type);
+/**
+ *	Read/Write allowed for ReductionPercent attribute.
+ */
+	virtual bool is_ReductionPercent_allowed(Tango::AttReqType type);
+/**
+ *	Read/Write allowed for DevEncROIImageMedium attribute.
+ */
+	virtual bool is_DevEncROIImageMedium_allowed(Tango::AttReqType type);
 /**
  *	Read/Write allowed for XProj attribute.
  */
@@ -1598,6 +1979,22 @@ public :
  */
 	virtual bool is_Histogram_allowed(Tango::AttReqType type);
 /**
+ *	Read/Write allowed for MajorAxis attribute.
+ */
+	virtual bool is_MajorAxis_allowed(Tango::AttReqType type);
+/**
+ *	Read/Write allowed for MinorAxis attribute.
+ */
+	virtual bool is_MinorAxis_allowed(Tango::AttReqType type);
+/**
+ *	Read/Write allowed for MajorAxisFitted attribute.
+ */
+	virtual bool is_MajorAxisFitted_allowed(Tango::AttReqType type);
+/**
+ *	Read/Write allowed for MinorAxisFitted attribute.
+ */
+	virtual bool is_MinorAxisFitted_allowed(Tango::AttReqType type);
+/**
  *	Read/Write allowed for InputImage attribute.
  */
 	virtual bool is_InputImage_allowed(Tango::AttReqType type);
@@ -1613,6 +2010,10 @@ public :
  *	Read/Write allowed for GaussianFitParameterCovariance attribute.
  */
 	virtual bool is_GaussianFitParameterCovariance_allowed(Tango::AttReqType type);
+/**
+ *	Read/Write allowed for ROIImageMedium attribute.
+ */
+	virtual bool is_ROIImageMedium_allowed(Tango::AttReqType type);
 /**
  *	Execution allowed for Start command.
  */
@@ -1688,8 +2089,10 @@ protected :
   int       device_mode_;
   bool      process_command_allowed_;
   bool      process_command_waiting_;
-
+  
   Tango::DevULong image_counter_;
+  Tango::EncodedAttribute* encodedImageLarge_;
+  Tango::EncodedAttribute* encodedImageMedium_;
 
   template <typename T>
   class DummyValue
@@ -1704,7 +2107,7 @@ public:
 
   void just_process(ImageAndInfo & imginf) throw (yat::Exception);
 
-  IBASource* image_source_;
+  IBASource* image_source_; 
 };
 
 #ifdef WIN32

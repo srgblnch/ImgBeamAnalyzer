@@ -193,7 +193,7 @@ template <> Tango::DevDouble  ImgBeamAnalyzer::DummyValue<Tango::DevDouble> ::du
     if (m_AvailableDataList.size() > 0)\
       pLastAvailableData = m_AvailableDataList.front();\
     if (pLastAvailableData == 0                                             \
-         || pLastAvailableData->config.activated == false                   \
+         || !activated \
 		 || &pLastAvailableData->data_member == 0)                          \
     {                                                                          \
 	  UNLOCK_AD\
@@ -221,7 +221,7 @@ template <> Tango::DevDouble  ImgBeamAnalyzer::DummyValue<Tango::DevDouble> ::du
     if (m_AvailableDataList.size() > 0)\
       pLastAvailableData = m_AvailableDataList.front();\
     if (pLastAvailableData == 0                                             \
-         || pLastAvailableData->config.activated == false                   \
+         || !activated \
          || pLastAvailableData->data_member.base() == 0 )                   \
     {                                                                          \
 	  UNLOCK_AD\
@@ -280,7 +280,7 @@ template <> Tango::DevDouble  ImgBeamAnalyzer::DummyValue<Tango::DevDouble> ::du
     if (m_AvailableDataList.size() > 0)\
       pLastAvailableData = m_AvailableDataList.front();\
     if (pLastAvailableData == 0                                             \
-         || pLastAvailableData->config.activated == false                   \
+         || !activated \
          || pLastAvailableData->data_member.base() == 0 )                   \
     {                                                                          \
 	  UNLOCK_AD\
@@ -474,11 +474,25 @@ void ImgBeamAnalyzer::delete_device()
 // method :     ImgBeamAnalyzer::init_device()
 // 
 // description :   will be called at device initialization.
-//�
+//
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::init_device()
 {
   INFO_STREAM << "ImgBeamAnalyzer::ImgBeamAnalyzer() create device " << device_name << endl;
+
+
+  //Tango::Attribute &att = dev_attr->get_attr_by_name("ROIImage"); 
+  //att.set_attr_serial_model(Tango::ATTR_BY_USER); 
+  std::vector<Tango::Attribute*> w_attrList = this->get_device_attr()->get_attribute_list();
+  for(unsigned short iter = 0; iter < w_attrList.size(); iter++)
+  {
+	if( w_attrList[iter]->get_writable() == Tango::READ || 
+		w_attrList[iter]->get_writable() == Tango::READ_WRITE)
+	{
+		DEBUG_STREAM<<"init_device set_serial model "<<w_attrList[iter]->get_name().c_str()<<endl;
+		w_attrList[iter]->set_attr_serial_model(Tango::ATTR_BY_USER); 
+	}
+  }
 
   // Initialise variables to default values
   //--------------------------------------------
@@ -491,6 +505,8 @@ void ImgBeamAnalyzer::init_device()
   this->image_counter_ = 0;
   this->process_command_allowed_ = false;
   this->process_command_waiting_ = false;
+//  this->attr_DevEncROIImageLarge_read = NULL;
+  this->attr_DevEncROIImageMedium_read = NULL;
 
   try
   {
@@ -521,6 +537,12 @@ void ImgBeamAnalyzer::init_device()
     this->delete_device();
     return;
   }
+
+  encodedImageLarge_ = new Tango::EncodedAttribute();
+  encodedImageMedium_= new Tango::EncodedAttribute();
+  unsigned char w_padding = 0;
+  encodedImageLarge_->encode_jpeg_gray8(&w_padding, 1, 1, 10);
+  encodedImageMedium_->encode_jpeg_gray8(&w_padding, 1, 1, 10);
 
   if (this->mode == "oneshot")
     this->device_mode_ = MODE_ONESHOT;
@@ -718,8 +740,11 @@ void ImgBeamAnalyzer::get_device_property()
   this->autoStart = false;
   this->mode = "unspecified";
   this->autoROIMethod = "unspecified";
+  this->beforeProcessResize.push_back(1);
+  this->beforeProcessResize.push_back(1);
+  this->rOIImageMediumSize.push_back(1);
+  this->rOIImageMediumSize.push_back(1);	
 
-  
   //- Generate a default configuration object
   BIAConfig default_config;
 
@@ -791,6 +816,8 @@ void ImgBeamAnalyzer::get_device_property()
 	dev_prop.push_back(Tango::DbDatum("ChamberOffsetY"));
 	dev_prop.push_back(Tango::DbDatum("CentroidSaturationRegionSide"));
 	dev_prop.push_back(Tango::DbDatum("CentroidSaturationRegionThreshold"));
+	dev_prop.push_back(Tango::DbDatum("BeforeProcessResize"));
+	dev_prop.push_back(Tango::DbDatum("ROIImageMediumSize"));
 
 	//	Call database and extract values
 	//--------------------------------------------
@@ -1175,6 +1202,30 @@ void ImgBeamAnalyzer::get_device_property()
 	//	And try to extract CentroidSaturationRegionThreshold value from database
 	if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  centroidSaturationRegionThreshold;
 
+	//	Try to initialize BeforeProcessResize from class property
+	cl_prop = ds_class->get_class_property(dev_prop[++i].name);
+	if (cl_prop.is_empty()==false)	cl_prop  >>  beforeProcessResize;
+	else {
+		//	Try to initialize BeforeProcessResize from default device value
+		def_prop = ds_class->get_default_device_property(dev_prop[i].name);
+		if (def_prop.is_empty()==false)	def_prop  >>  beforeProcessResize;
+	}
+	//	And try to extract BeforeProcessResize value from database
+	if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  beforeProcessResize;
+
+	//	Try to initialize ROIImageMediumSize from class property
+	cl_prop = ds_class->get_class_property(dev_prop[++i].name);
+	if (cl_prop.is_empty()==false)	cl_prop  >>  rOIImageMediumSize;
+	else {
+		//	Try to initialize ROIImageMediumSize from default device value
+		def_prop = ds_class->get_default_device_property(dev_prop[i].name);
+		if (def_prop.is_empty()==false)	def_prop  >>  rOIImageMediumSize;
+	}
+	//	And try to extract ROIImageMediumSize value from database
+	if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  rOIImageMediumSize;
+
+
+
   //  End of Automatic code generation
   //------------------------------------------------------------------
 
@@ -1227,6 +1278,12 @@ void ImgBeamAnalyzer::get_device_property()
 
   this->current_config_.centroid_saturation_region_side = centroidSaturationRegionSide;
   this->current_config_.centroid_saturation_region_threshold = centroidSaturationRegionThreshold;
+
+  this->current_config_.beforeProcessResize.x    =  beforeProcessResize.size() > 0 ? beforeProcessResize[0] : 1;
+  this->current_config_.beforeProcessResize.y   =   beforeProcessResize.size() > 1 ? beforeProcessResize[1] : 1;
+
+  this->current_config_.rOIImageMediumSize.x    =  rOIImageMediumSize.size() > 0 ? rOIImageMediumSize[0] : 1;
+  this->current_config_.rOIImageMediumSize.y   =   rOIImageMediumSize.size() > 1 ? rOIImageMediumSize[1] : 1;
 
   //- leave the other members to their default values
 }
@@ -1296,7 +1353,7 @@ void ImgBeamAnalyzer::read_attr_hardware(vector<long> &attr_list)
 			break;
 		}
 	}
-  char Res[512];
+  char Res[150];
   if (IsROIImage)
   {
     sprintf(Res, "IN>>read_attr_hardware ROIImage(Nb ROIImage in list=%d)\r\n", m_AvailableDataList.size());
@@ -1356,7 +1413,648 @@ void ImgBeamAnalyzer::read_attr_hardware(vector<long> &attr_list)
   //- the state/status may be updated by the call to this->task_->get_data()
   this->update_state();
 
+#ifdef OUTPUT_DEBUG
+  // ------------------------------------------------------------------------
+  if (IsROIImage)
+  {
+	  OutputDebugString("OUT>>read_attr_hardware ROIImage\r\n");
+  }
+  // -----------------------------------------------------------------------
+#endif //OUTPUT_DEBUG
+
+  LEAVE_FUNC
 }
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_DevEncROIImageMedium
+// 
+// description : 	Extract real attribute values for DevEncROIImageMedium acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_DevEncROIImageMedium(Tango::Attribute &attr)
+{
+	ENTER_FUNC
+    BIAData* pLastAvailableData = NULL;
+    LOCK_AD
+
+    if (m_AvailableDataList.size() > 0)
+      pLastAvailableData = m_AvailableDataList.front();
+    if (pLastAvailableData == NULL                                             
+		 || pLastAvailableData->roi_imageMedium.base() == 0)                      
+    {                                                                          
+	  UNLOCK_AD
+      attr.set_value(&DummyValue<Tango::DevUShort>::dummy, 1, 1);                          
+      attr.set_quality(Tango::ATTR_ALARM);                                    
+    }                                                                         
+    else                                                                      
+    {                                                                         
+     //////////
+	encodedImageMedium_->encode_gray16(pLastAvailableData->roi_imageMedium.base(), 
+		pLastAvailableData->roi_imageMedium.width(), 
+		pLastAvailableData->roi_imageMedium.height());
+	attr.set_value(encodedImageMedium_);
+	//////////
+
+      ATTRUNLOCK_AD
+      if (pLastAvailableData->alarm == true)                                
+        attr.set_quality(Tango::ATTR_ALARM);                                  
+      else                                                                    
+        attr.set_quality(Tango::ATTR_VALID);                                  
+    }                                                                         
+    LEAVE_FUNC
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_ROIImageMedium
+// 
+// description : 	Extract real attribute values for ROIImageMedium acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_ROIImageMedium(Tango::Attribute &attr)
+{
+	ENTER_FUNC
+    BIAData* pLastAvailableData = NULL;
+    LOCK_AD
+
+    if (m_AvailableDataList.size() > 0)
+      pLastAvailableData = m_AvailableDataList.front();
+    if (pLastAvailableData == NULL                                             
+		 || pLastAvailableData->roi_imageMedium.base() == 0)                      
+    {                                                                          
+	  UNLOCK_AD
+      attr.set_value(&DummyValue<Tango::DevUShort>::dummy, 1, 1);                          
+      attr.set_quality(Tango::ATTR_ALARM);                                    
+    }                                                                         
+    else                                                                      
+    {                                                                         
+      attr.set_value(pLastAvailableData ->roi_imageMedium.base(),                
+                    static_cast<yat_int32_t>                                  
+                              (pLastAvailableData ->roi_imageMedium.width()),  
+                    static_cast<yat_int32_t>                                  
+                            (pLastAvailableData ->roi_imageMedium.height()));
+
+      ATTRUNLOCK_AD
+      if (pLastAvailableData->alarm == true)                                
+        attr.set_quality(Tango::ATTR_ALARM);                                  
+      else                                                                    
+        attr.set_quality(Tango::ATTR_VALID);                                  
+    }                                                                         
+    LEAVE_FUNC
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_XProjFitDivergence
+// 
+// description : 	Extract real attribute values for XProjFitDivergence acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_XProjFitDivergence(Tango::Attribute &attr)
+{
+	READ_INPUT_ATTR(xproj_divergence, Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::write_XProjFitDivergence
+// 
+// description : 	Write XProjFitDivergence attribute values to hardware.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::write_XProjFitDivergence(Tango::WAttribute &attr)
+{
+	WRITE_INPUT_ATTR(xproj_divergence, Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_YProjFitDivergence
+// 
+// description : 	Extract real attribute values for YProjFitDivergence acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_YProjFitDivergence(Tango::Attribute &attr)
+{
+	READ_INPUT_ATTR(yproj_divergence, Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::write_YProjFitDivergence
+// 
+// description : 	Write YProjFitDivergence attribute values to hardware.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::write_YProjFitDivergence(Tango::WAttribute &attr)
+{
+	WRITE_INPUT_ATTR(yproj_divergence, Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_LineProfileFitFlat
+// 
+// description : 	Extract real attribute values for LineProfileFitFlat acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_LineProfileFitFlat(Tango::Attribute &attr)
+{
+	READ_OUTPUT_SCALAR_ATTR(line_profile_flat, (pLastAvailableData->config.enable_profile &&
+												pLastAvailableData->line_profile_fit_converged), Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_XProjFitFlat
+// 
+// description : 	Extract real attribute values for XProjFitFlat acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_XProjFitFlat(Tango::Attribute &attr)
+{
+	READ_OUTPUT_SCALAR_ATTR(xproj_flat, ( pLastAvailableData->config.enable_profile &&
+										pLastAvailableData->xproj_fit_converged ), Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_YProjFitFlat
+// 
+// description : 	Extract real attribute values for YProjFitFlat acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_YProjFitFlat(Tango::Attribute &attr)
+{
+	READ_OUTPUT_SCALAR_ATTR(yproj_flat, ( pLastAvailableData->config.enable_profile &&
+										pLastAvailableData->yproj_fit_converged ), Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_GaussianFitFlatX
+// 
+// description : 	Extract real attribute values for GaussianFitFlatX acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_GaussianFitFlatX(Tango::Attribute &attr)
+{
+	READ_OUTPUT_SCALAR_ATTR(gaussfit_flat_X, ( pLastAvailableData->config.enable_2d_gaussian_fit &&
+										pLastAvailableData->gaussfit_converged ), Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_GaussianFitFlatY
+// 
+// description : 	Extract real attribute values for GaussianFitFlatY acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_GaussianFitFlatY(Tango::Attribute &attr)
+{
+	READ_OUTPUT_SCALAR_ATTR(gaussfit_flat_Y, ( pLastAvailableData->config.enable_2d_gaussian_fit &&
+										pLastAvailableData->gaussfit_converged ), Tango::DevDouble);
+}
+
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_GaussianFitMinorAxisCenter
+// 
+// description : 	Extract real attribute values for GaussianFitMinorAxisCenter acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_GaussianFitMinorAxisCenter(Tango::Attribute &attr)
+{
+	 READ_OUTPUT_SCALAR_ATTR(gaussfit_minor_axis_center, ( pLastAvailableData->config.enable_2d_gaussian_fit &&
+										pLastAvailableData->gaussfit_minor_converged ), Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_GaussianFitMinorAxisMagnitude
+// 
+// description : 	Extract real attribute values for GaussianFitMinorAxisMagnitude acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_GaussianFitMinorAxisMagnitude(Tango::Attribute &attr)
+{
+	 READ_OUTPUT_SCALAR_ATTR(gaussfit_minor_axis_mag, ( pLastAvailableData->config.enable_2d_gaussian_fit &&
+										pLastAvailableData->gaussfit_minor_converged ), Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_GaussianFitMinorAxisFlat
+// 
+// description : 	Extract real attribute values for GaussianFitMinorAxisFlat acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_GaussianFitMinorAxisFlat(Tango::Attribute &attr)
+{
+	 READ_OUTPUT_SCALAR_ATTR(gaussfit_minor_axis_flat, ( pLastAvailableData->config.enable_2d_gaussian_fit &&
+										pLastAvailableData->gaussfit_minor_converged ), Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_GaussianFitMajorAxisFlat
+// 
+// description : 	Extract real attribute values for GaussianFitMajorAxisFlat acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_GaussianFitMajorAxisFlat(Tango::Attribute &attr)
+{
+	 READ_OUTPUT_SCALAR_ATTR(gaussfit_major_axis_flat, ( pLastAvailableData->config.enable_2d_gaussian_fit &&
+										pLastAvailableData->gaussfit_major_converged ), Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_GaussianFitMajorAxisCenter
+// 
+// description : 	Extract real attribute values for GaussianFitMajorAxisCenter acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_GaussianFitMajorAxisCenter(Tango::Attribute &attr)
+{
+		 READ_OUTPUT_SCALAR_ATTR(gaussfit_major_axis_center, ( pLastAvailableData->config.enable_2d_gaussian_fit &&
+										pLastAvailableData->gaussfit_major_converged ), Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_GaussianFitMajorAxisMagnitude
+// 
+// description : 	Extract real attribute values for GaussianFitMajorAxisMagnitude acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_GaussianFitMajorAxisMagnitude(Tango::Attribute &attr)
+{
+	 READ_OUTPUT_SCALAR_ATTR(gaussfit_major_axis_mag, ( pLastAvailableData->config.enable_2d_gaussian_fit &&
+										pLastAvailableData->gaussfit_major_converged ), Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::write_ReductionPercent
+// 
+// description : 	Write ReductionPercent attribute values to hardware.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::write_ReductionPercent(Tango::WAttribute &attr)
+{
+	WRITE_INPUT_ATTR( reductionPercent, Tango::DevDouble );
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_ReductionPercent
+// 
+// description : 	Extract real attribute values for ReductionPercent acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_ReductionPercent(Tango::Attribute &attr)
+{
+	 READ_OUTPUT_SCALAR_ATTR_ALWAYSACTIV( reductionPercent, Tango::DevDouble ) ;
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_LineProfileFitOrder
+// 
+// description : 	Extract real attribute values for LineProfileFitOrder acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_LineProfileFitOrder(Tango::Attribute &attr)
+{
+  READ_OUTPUT_SCALAR_ATTR(line_profile_order, ( pLastAvailableData->config.enable_profile &&
+					pLastAvailableData->line_profile_fit_converged ), Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_XProjFitOrder
+// 
+// description : 	Extract real attribute values for XProjFitOrder acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_XProjFitOrder(Tango::Attribute &attr)
+{
+  READ_OUTPUT_SCALAR_ATTR(xproj_order, ( pLastAvailableData->config.enable_profile &&
+					pLastAvailableData->xproj_fit_converged ), Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_YProjFitOrder
+// 
+// description : 	Extract real attribute values for YProjFitOrder acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_YProjFitOrder(Tango::Attribute &attr)
+{
+  READ_OUTPUT_SCALAR_ATTR(yproj_order, ( pLastAvailableData->config.enable_profile &&
+					pLastAvailableData->yproj_fit_converged ), Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_GaussianFitMajorAxisOrder
+// 
+// description : 	Extract real attribute values for GaussianFitMajorAxisOrder acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_GaussianFitMajorAxisOrder(Tango::Attribute &attr)
+{
+  READ_OUTPUT_SCALAR_ATTR(gaussfit_major_axis_order, ( pLastAvailableData->config.enable_2d_gaussian_fit &&
+										pLastAvailableData->gaussfit_major_converged ), Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_GaussianFitMinorAxisOrder
+// 
+// description : 	Extract real attribute values for GaussianFitMinorAxisOrder acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_GaussianFitMinorAxisOrder(Tango::Attribute &attr)
+{
+  READ_OUTPUT_SCALAR_ATTR(gaussfit_minor_axis_order, ( pLastAvailableData->config.enable_2d_gaussian_fit &&
+										pLastAvailableData->gaussfit_minor_converged ), Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_MajorAxisEndX
+// 
+// description : 	Extract real attribute values for MajorAxisEndX acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_MajorAxisEndX(Tango::Attribute &attr)
+{
+	READ_OUTPUT_SCALAR_ATTR(gaussfit_major_pt2_x, ( pLastAvailableData->config.enable_2d_gaussian_fit &&
+										pLastAvailableData->gaussfit_converged ), Tango::DevLong);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_MajorAxisEndY
+// 
+// description : 	Extract real attribute values for MajorAxisEndY acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_MajorAxisEndY(Tango::Attribute &attr)
+{
+	READ_OUTPUT_SCALAR_ATTR(gaussfit_major_pt2_y, ( pLastAvailableData->config.enable_2d_gaussian_fit &&
+										pLastAvailableData->gaussfit_converged ), Tango::DevLong);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_MinorAxisOriginX
+// 
+// description : 	Extract real attribute values for MinorAxisOriginX acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_MinorAxisOriginX(Tango::Attribute &attr)
+{
+	READ_OUTPUT_SCALAR_ATTR(gaussfit_minor_pt1_x, ( pLastAvailableData->config.enable_2d_gaussian_fit &&
+										pLastAvailableData->gaussfit_converged ), Tango::DevLong);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_MinorAxisOriginY
+// 
+// description : 	Extract real attribute values for MinorAxisOriginY acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_MinorAxisOriginY(Tango::Attribute &attr)
+{
+	READ_OUTPUT_SCALAR_ATTR(gaussfit_minor_pt1_y, ( pLastAvailableData->config.enable_2d_gaussian_fit &&
+										pLastAvailableData->gaussfit_converged ), Tango::DevLong);
+}
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_MinorAxisEndX
+// 
+// description : 	Extract real attribute values for MinorAxisEndX acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_MinorAxisEndX(Tango::Attribute &attr)
+{
+	READ_OUTPUT_SCALAR_ATTR(gaussfit_minor_pt2_x, ( pLastAvailableData->config.enable_2d_gaussian_fit &&
+										pLastAvailableData->gaussfit_converged ), Tango::DevLong);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_MinorAxisEndY
+// 
+// description : 	Extract real attribute values for MinorAxisEndY acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_MinorAxisEndY(Tango::Attribute &attr)
+{
+	READ_OUTPUT_SCALAR_ATTR(gaussfit_minor_pt2_y, ( pLastAvailableData->config.enable_2d_gaussian_fit &&
+										pLastAvailableData->gaussfit_converged ), Tango::DevLong);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_MajorAxisOriginX
+// 
+// description : 	Extract real attribute values for MajorAxisOriginX acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_MajorAxisOriginX(Tango::Attribute &attr)
+{
+	READ_OUTPUT_SCALAR_ATTR(gaussfit_major_pt1_x, ( pLastAvailableData->config.enable_2d_gaussian_fit &&
+										pLastAvailableData->gaussfit_converged ), Tango::DevLong);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_MajorAxisOriginY
+// 
+// description : 	Extract real attribute values for MajorAxisOriginY acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_MajorAxisOriginY(Tango::Attribute &attr)
+{
+	READ_OUTPUT_SCALAR_ATTR(gaussfit_major_pt1_y, ( pLastAvailableData->config.enable_2d_gaussian_fit &&
+										pLastAvailableData->gaussfit_converged ), Tango::DevLong);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_GaussianFitMajorAxis1e2
+// 
+// description : 	Extract real attribute values for GaussianFitMajorAxis1e2 acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_GaussianFitMajorAxis1e2(Tango::Attribute &attr)
+{
+  READ_OUTPUT_SCALAR_ATTR(gaussfit_major_axis_1e2, ( pLastAvailableData->config.enable_2d_gaussian_fit &&
+										pLastAvailableData->gaussfit_major_converged ), Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_PeakX
+// 
+// description : 	Extract real attribute values for PeakX acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_PeakX(Tango::Attribute &attr)
+{
+  READ_OUTPUT_SCALAR_ATTR(peak_x, pLastAvailableData->config.enable_image_stats, Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_PeakY
+// 
+// description : 	Extract real attribute values for PeakY acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_PeakY(Tango::Attribute &attr)
+{
+  READ_OUTPUT_SCALAR_ATTR(peak_y, pLastAvailableData->config.enable_image_stats, Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_GaussianFitEllipticity
+// 
+// description : 	Extract real attribute values for GaussianFitEllipticity acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_GaussianFitEllipticity(Tango::Attribute &attr)
+{
+  READ_OUTPUT_SCALAR_ATTR(gaussfit_ellipticity, ( pLastAvailableData->config.enable_2d_gaussian_fit &&
+										pLastAvailableData->gaussfit_converged ), Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_GaussianFitEccentricity
+// 
+// description : 	Extract real attribute values for GaussianFitEccentricity acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_GaussianFitEccentricity(Tango::Attribute &attr)
+{
+  READ_OUTPUT_SCALAR_ATTR(gaussfit_eccentricity, ( pLastAvailableData->config.enable_2d_gaussian_fit &&
+										pLastAvailableData->gaussfit_converged ), Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_XProjFit1e2
+// 
+// description : 	Extract real attribute values for XProjFit1e2 acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_XProjFit1e2(Tango::Attribute &attr)
+{
+  READ_OUTPUT_SCALAR_ATTR(xproj_1e2, ( pLastAvailableData->config.enable_profile &&
+					pLastAvailableData->xproj_fit_converged ), Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_YProjFit1e2
+// 
+// description : 	Extract real attribute values for YProjFit1e2 acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_YProjFit1e2(Tango::Attribute &attr)
+{
+  READ_OUTPUT_SCALAR_ATTR(yproj_1e2, ( pLastAvailableData->config.enable_profile &&
+					pLastAvailableData->yproj_fit_converged ), Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_LineProfileFit1e2
+// 
+// description : 	Extract real attribute values for LineProfileFit1e2 acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_LineProfileFit1e2(Tango::Attribute &attr)
+{
+  READ_OUTPUT_SCALAR_ATTR(line_profile_1e2, ( pLastAvailableData->config.enable_profile &&
+					pLastAvailableData->line_profile_fit_converged ), Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_GaussianFitMinorAxis1e2
+// 
+// description : 	Extract real attribute values for GaussianFitMinorAxis1e2 acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_GaussianFitMinorAxis1e2(Tango::Attribute &attr)
+{
+  READ_OUTPUT_SCALAR_ATTR(gaussfit_minor_axis_1e2, ( pLastAvailableData->config.enable_2d_gaussian_fit &&
+										pLastAvailableData->gaussfit_minor_converged ), Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_MajorAxis
+// 
+// description : 	Extract real attribute values for MajorAxis acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_MajorAxis(Tango::Attribute &attr)
+{
+  READ_OUTPUT_SPECTRUM_ATTR(gaussfit_major_axis, ( pLastAvailableData->config.enable_2d_gaussian_fit &&
+										pLastAvailableData->gaussfit_converged ), Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_MinorAxis
+// 
+// description : 	Extract real attribute values for MinorAxis acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_MinorAxis(Tango::Attribute &attr)
+{
+  READ_OUTPUT_SPECTRUM_ATTR(gaussfit_minor_axis, ( pLastAvailableData->config.enable_2d_gaussian_fit &&
+										pLastAvailableData->gaussfit_converged ), Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_MajorAxisFitted
+// 
+// description : 	Extract real attribute values for MajorAxisFitted acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_MajorAxisFitted(Tango::Attribute &attr)
+{
+  READ_OUTPUT_SPECTRUM_ATTR(gaussfit_major_axis_fitted, ( pLastAvailableData->config.enable_2d_gaussian_fit &&
+										pLastAvailableData->gaussfit_major_converged ), Tango::DevDouble);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_MinorAxisFitted
+// 
+// description : 	Extract real attribute values for MinorAxisFitted acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_MinorAxisFitted(Tango::Attribute &attr)
+{
+  READ_OUTPUT_SPECTRUM_ATTR(gaussfit_minor_axis_fitted, ( pLastAvailableData->config.enable_2d_gaussian_fit &&
+										pLastAvailableData->gaussfit_minor_converged ), Tango::DevDouble);
+}
+
 //+----------------------------------------------------------------------------
 //
 // method :     ImgBeamAnalyzer::read_RmsX
@@ -1366,7 +2064,7 @@ void ImgBeamAnalyzer::read_attr_hardware(vector<long> &attr_list)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_RmsX(Tango::Attribute &attr)
 {
-  READ_OUTPUT_SCALAR_ATTR(rms_x, enable_image_stats, Tango::DevDouble);
+  READ_OUTPUT_SCALAR_ATTR(rms_x, pLastAvailableData->config.enable_image_stats, Tango::DevDouble);
 }
 
 //+----------------------------------------------------------------------------
@@ -1378,7 +2076,7 @@ void ImgBeamAnalyzer::read_RmsX(Tango::Attribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_RmsY(Tango::Attribute &attr)
 {
-  READ_OUTPUT_SCALAR_ATTR(rms_y, enable_image_stats, Tango::DevDouble);
+  READ_OUTPUT_SCALAR_ATTR(rms_y, pLastAvailableData->config.enable_image_stats, Tango::DevDouble);
 }
 
 //+----------------------------------------------------------------------------
@@ -1390,7 +2088,8 @@ void ImgBeamAnalyzer::read_RmsY(Tango::Attribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_LineProfileHelperImg(Tango::Attribute &attr)
 {
-  READ_OUTPUT_IMAGE_ATTR(line_profile_helper_img, enable_profile, Tango::DevFloat);
+  READ_OUTPUT_IMAGE_ATTR(line_profile_helper_img, ( pLastAvailableData->config.enable_profile &&
+					pLastAvailableData->line_profile_fit_converged ), Tango::DevFloat);
 }
 
 //+----------------------------------------------------------------------------
@@ -1570,7 +2269,7 @@ void ImgBeamAnalyzer::write_ChamberOffsetY(Tango::WAttribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_ChamberCentroidX(Tango::Attribute &attr)
 {
-  READ_OUTPUT_SCALAR_ATTR(chamber_centroid_x, enable_image_stats, Tango::DevDouble);
+  READ_OUTPUT_SCALAR_ATTR(chamber_centroid_x, pLastAvailableData->config.enable_image_stats, Tango::DevDouble);
 }
 
 //+----------------------------------------------------------------------------
@@ -1582,7 +2281,7 @@ void ImgBeamAnalyzer::read_ChamberCentroidX(Tango::Attribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_ChamberCentroidY(Tango::Attribute &attr)
 {
-  READ_OUTPUT_SCALAR_ATTR(chamber_centroid_y, enable_image_stats, Tango::DevDouble);
+  READ_OUTPUT_SCALAR_ATTR(chamber_centroid_y, pLastAvailableData->config.enable_image_stats, Tango::DevDouble);
 }
 
 //+----------------------------------------------------------------------------
@@ -1594,7 +2293,8 @@ void ImgBeamAnalyzer::read_ChamberCentroidY(Tango::Attribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_ChamberXProjFitCenter(Tango::Attribute &attr)
 {
-  READ_OUTPUT_SCALAR_ATTR(chamber_xproj_center, enable_profile, Tango::DevDouble);
+  READ_OUTPUT_SCALAR_ATTR(chamber_xproj_center, ( pLastAvailableData->config.enable_profile &&
+					pLastAvailableData->xproj_fit_converged ), Tango::DevDouble);
 }
 
 //+----------------------------------------------------------------------------
@@ -1606,7 +2306,8 @@ void ImgBeamAnalyzer::read_ChamberXProjFitCenter(Tango::Attribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_ChamberYProjFitCenter(Tango::Attribute &attr)
 {
-  READ_OUTPUT_SCALAR_ATTR(chamber_yproj_center, enable_profile, Tango::DevDouble);
+  READ_OUTPUT_SCALAR_ATTR(chamber_yproj_center, ( pLastAvailableData->config.enable_profile &&
+					pLastAvailableData->yproj_fit_converged ), Tango::DevDouble);
 }
 
 //+----------------------------------------------------------------------------
@@ -1618,7 +2319,8 @@ void ImgBeamAnalyzer::read_ChamberYProjFitCenter(Tango::Attribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_LineProfileFitNbIter(Tango::Attribute &attr)
 {
-  READ_OUTPUT_SCALAR_ATTR(line_profile_nb_iter, enable_profile, Tango::DevLong);
+  READ_OUTPUT_SCALAR_ATTR(line_profile_nb_iter, ( pLastAvailableData->config.enable_profile &&
+					pLastAvailableData->line_profile_fit_converged ), Tango::DevLong);
 }
 
 //+----------------------------------------------------------------------------
@@ -1630,7 +2332,8 @@ void ImgBeamAnalyzer::read_LineProfileFitNbIter(Tango::Attribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_LineProfileFitRelChange(Tango::Attribute &attr)
 {
-  READ_OUTPUT_SCALAR_ATTR(line_profile_eps, enable_profile, Tango::DevDouble);
+  READ_OUTPUT_SCALAR_ATTR(line_profile_eps, ( pLastAvailableData->config.enable_profile &&
+					pLastAvailableData->line_profile_fit_converged ), Tango::DevDouble);
 }
 
 //+----------------------------------------------------------------------------
@@ -1642,7 +2345,8 @@ void ImgBeamAnalyzer::read_LineProfileFitRelChange(Tango::Attribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_LineProfileFitBG(Tango::Attribute &attr)
 {
-  READ_OUTPUT_SCALAR_ATTR(line_profile_bg, enable_profile, Tango::DevDouble);
+  READ_OUTPUT_SCALAR_ATTR(line_profile_bg, ( pLastAvailableData->config.enable_profile &&
+					pLastAvailableData->line_profile_fit_converged ), Tango::DevDouble);
 }
 
 //+----------------------------------------------------------------------------
@@ -1654,7 +2358,8 @@ void ImgBeamAnalyzer::read_LineProfileFitBG(Tango::Attribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_LineProfileFitConverged(Tango::Attribute &attr)
 {
-  READ_OUTPUT_SCALAR_ATTR(line_profile_fit_converged, enable_profile, Tango::DevBoolean);
+  READ_OUTPUT_SCALAR_ATTR(line_profile_fit_converged, ( pLastAvailableData->config.enable_profile &&
+					pLastAvailableData->line_profile_fit_converged ), Tango::DevBoolean);
 }
 
 //+----------------------------------------------------------------------------
@@ -1666,7 +2371,8 @@ void ImgBeamAnalyzer::read_LineProfileFitConverged(Tango::Attribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_LineProfileFitCenter(Tango::Attribute &attr)
 {
-  READ_OUTPUT_SCALAR_ATTR(line_profile_center, enable_profile, Tango::DevDouble);
+  READ_OUTPUT_SCALAR_ATTR(line_profile_center, ( pLastAvailableData->config.enable_profile &&
+					pLastAvailableData->line_profile_fit_converged ), Tango::DevDouble);
 }
 
 //+----------------------------------------------------------------------------
@@ -1678,7 +2384,8 @@ void ImgBeamAnalyzer::read_LineProfileFitCenter(Tango::Attribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_LineProfileFitMag(Tango::Attribute &attr)
 {
-  READ_OUTPUT_SCALAR_ATTR(line_profile_mag, enable_profile, Tango::DevDouble);
+  READ_OUTPUT_SCALAR_ATTR(line_profile_mag, ( pLastAvailableData->config.enable_profile &&
+					pLastAvailableData->line_profile_fit_converged ), Tango::DevDouble);
 }
 
 //+----------------------------------------------------------------------------
@@ -1690,7 +2397,8 @@ void ImgBeamAnalyzer::read_LineProfileFitMag(Tango::Attribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_LineProfileFitSigma(Tango::Attribute &attr)
 {
-  READ_OUTPUT_SCALAR_ATTR(line_profile_sigma, enable_profile, Tango::DevDouble);
+  READ_OUTPUT_SCALAR_ATTR(line_profile_sigma, ( pLastAvailableData->config.enable_profile &&
+					pLastAvailableData->line_profile_fit_converged ), Tango::DevDouble);
 }
 
 //+----------------------------------------------------------------------------
@@ -1702,7 +2410,8 @@ void ImgBeamAnalyzer::read_LineProfileFitSigma(Tango::Attribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_LineProfileFitFWHM(Tango::Attribute &attr)
 {
-  READ_OUTPUT_SCALAR_ATTR(line_profile_fwhm, enable_profile, Tango::DevDouble);
+  READ_OUTPUT_SCALAR_ATTR(line_profile_fwhm, ( pLastAvailableData->config.enable_profile &&
+					pLastAvailableData->line_profile_fit_converged ), Tango::DevDouble);
 }
 
 //+----------------------------------------------------------------------------
@@ -1714,7 +2423,8 @@ void ImgBeamAnalyzer::read_LineProfileFitFWHM(Tango::Attribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_LineProfileFitChi2(Tango::Attribute &attr)
 {
-  READ_OUTPUT_SCALAR_ATTR(line_profile_chi2, enable_profile, Tango::DevDouble);
+  READ_OUTPUT_SCALAR_ATTR(line_profile_chi2, ( pLastAvailableData->config.enable_profile &&
+					pLastAvailableData->line_profile_fit_converged ), Tango::DevDouble);
 }
 
 //+----------------------------------------------------------------------------
@@ -1726,7 +2436,7 @@ void ImgBeamAnalyzer::read_LineProfileFitChi2(Tango::Attribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_LineProfile(Tango::Attribute &attr)
 {
-  READ_OUTPUT_SPECTRUM_ATTR(line_profile, enable_profile, Tango::DevDouble);
+  READ_OUTPUT_SPECTRUM_ATTR(line_profile, pLastAvailableData->config.enable_profile, Tango::DevDouble);
 }
 
 //+----------------------------------------------------------------------------
@@ -1738,7 +2448,8 @@ void ImgBeamAnalyzer::read_LineProfile(Tango::Attribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_LineProfileFitted(Tango::Attribute &attr)
 {
-  READ_OUTPUT_SPECTRUM_ATTR(line_profile_fitted, enable_profile, Tango::DevDouble);
+  READ_OUTPUT_SPECTRUM_ATTR(line_profile_fitted, ( pLastAvailableData->config.enable_profile &&
+					pLastAvailableData->line_profile_fit_converged ), Tango::DevDouble);
 }
 
 //+----------------------------------------------------------------------------
@@ -1750,7 +2461,8 @@ void ImgBeamAnalyzer::read_LineProfileFitted(Tango::Attribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_LineProfileError(Tango::Attribute &attr)
 {
-  READ_OUTPUT_SPECTRUM_ATTR(line_profile_error, enable_profile, Tango::DevDouble);
+  READ_OUTPUT_SPECTRUM_ATTR(line_profile_error, ( pLastAvailableData->config.enable_profile &&
+					pLastAvailableData->line_profile_fit_converged ), Tango::DevDouble);
 }
 
 //+----------------------------------------------------------------------------
@@ -1762,7 +2474,7 @@ void ImgBeamAnalyzer::read_LineProfileError(Tango::Attribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_XProj(Tango::Attribute &attr)
 {
-  READ_OUTPUT_SPECTRUM_ATTR(xproj, enable_profile, Tango::DevDouble);
+  READ_OUTPUT_SPECTRUM_ATTR(xproj, pLastAvailableData->config.enable_profile, Tango::DevDouble);
 }
 
 //+----------------------------------------------------------------------------
@@ -1774,7 +2486,8 @@ void ImgBeamAnalyzer::read_XProj(Tango::Attribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_XProjFitted(Tango::Attribute &attr)
 {
-  READ_OUTPUT_SPECTRUM_ATTR(xproj_fitted, enable_profile, Tango::DevDouble);
+  READ_OUTPUT_SPECTRUM_ATTR(xproj_fitted, ( pLastAvailableData->config.enable_profile &&
+					pLastAvailableData->xproj_fit_converged ), Tango::DevDouble);
 }
 
 //+----------------------------------------------------------------------------
@@ -1786,7 +2499,8 @@ void ImgBeamAnalyzer::read_XProjFitted(Tango::Attribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_XProjError(Tango::Attribute &attr)
 {
-  READ_OUTPUT_SPECTRUM_ATTR(xproj_error, enable_profile, Tango::DevDouble);
+  READ_OUTPUT_SPECTRUM_ATTR(xproj_error, ( pLastAvailableData->config.enable_profile &&
+					pLastAvailableData->xproj_fit_converged ), Tango::DevDouble);
 }
 
 //+----------------------------------------------------------------------------
@@ -1798,7 +2512,7 @@ void ImgBeamAnalyzer::read_XProjError(Tango::Attribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_YProj(Tango::Attribute &attr)
 {
-  READ_OUTPUT_SPECTRUM_ATTR(yproj, enable_profile, Tango::DevDouble);
+  READ_OUTPUT_SPECTRUM_ATTR(yproj, pLastAvailableData->config.enable_profile, Tango::DevDouble);
 }
 
 //+----------------------------------------------------------------------------
@@ -1810,7 +2524,8 @@ void ImgBeamAnalyzer::read_YProj(Tango::Attribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_YProjFitted(Tango::Attribute &attr)
 {
-  READ_OUTPUT_SPECTRUM_ATTR(yproj_fitted, enable_profile, Tango::DevDouble);
+  READ_OUTPUT_SPECTRUM_ATTR(yproj_fitted, ( pLastAvailableData->config.enable_profile &&
+					pLastAvailableData->yproj_fit_converged ), Tango::DevDouble);
 }
 
 //+----------------------------------------------------------------------------
@@ -1822,7 +2537,8 @@ void ImgBeamAnalyzer::read_YProjFitted(Tango::Attribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_YProjError(Tango::Attribute &attr)
 {
-  READ_OUTPUT_SPECTRUM_ATTR(yproj_error, enable_profile, Tango::DevDouble);
+  READ_OUTPUT_SPECTRUM_ATTR(yproj_error, ( pLastAvailableData->config.enable_profile &&
+					pLastAvailableData->yproj_fit_converged ), Tango::DevDouble);
 }
 
 //+----------------------------------------------------------------------------
@@ -1858,7 +2574,8 @@ void ImgBeamAnalyzer::write_BgSubstraction(Tango::WAttribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_XProjFitConverged(Tango::Attribute &attr)
 {
-  READ_OUTPUT_SCALAR_ATTR(xproj_fit_converged, enable_profile, Tango::DevBoolean);
+  READ_OUTPUT_SCALAR_ATTR(xproj_fit_converged, ( pLastAvailableData->config.enable_profile &&
+					pLastAvailableData->xproj_fit_converged ), Tango::DevBoolean);
 }
 
 //+----------------------------------------------------------------------------
@@ -1870,7 +2587,8 @@ void ImgBeamAnalyzer::read_XProjFitConverged(Tango::Attribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_XProjFitCenter(Tango::Attribute &attr)
 {
-  READ_OUTPUT_SCALAR_ATTR(xproj_center, enable_profile, Tango::DevDouble);
+  READ_OUTPUT_SCALAR_ATTR(xproj_center, ( pLastAvailableData->config.enable_profile &&
+					pLastAvailableData->xproj_fit_converged ), Tango::DevDouble);
 }
 
 //+----------------------------------------------------------------------------
@@ -1882,7 +2600,8 @@ void ImgBeamAnalyzer::read_XProjFitCenter(Tango::Attribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_XProjFitMag(Tango::Attribute &attr)
 {
-  READ_OUTPUT_SCALAR_ATTR(xproj_mag, enable_profile, Tango::DevDouble);
+  READ_OUTPUT_SCALAR_ATTR(xproj_mag, ( pLastAvailableData->config.enable_profile &&
+					pLastAvailableData->xproj_fit_converged ), Tango::DevDouble);
 }
 
 //+----------------------------------------------------------------------------
@@ -1894,7 +2613,8 @@ void ImgBeamAnalyzer::read_XProjFitMag(Tango::Attribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_XProjFitSigma(Tango::Attribute &attr)
 {
-  READ_OUTPUT_SCALAR_ATTR(xproj_sigma, enable_profile, Tango::DevDouble);
+  READ_OUTPUT_SCALAR_ATTR(xproj_sigma, ( pLastAvailableData->config.enable_profile &&
+					pLastAvailableData->xproj_fit_converged ), Tango::DevDouble);
 }
 
 //+----------------------------------------------------------------------------
@@ -1906,7 +2626,8 @@ void ImgBeamAnalyzer::read_XProjFitSigma(Tango::Attribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_XProjFitFWHM(Tango::Attribute &attr)
 {
-  READ_OUTPUT_SCALAR_ATTR(xproj_fwhm, enable_profile, Tango::DevDouble);
+  READ_OUTPUT_SCALAR_ATTR(xproj_fwhm, ( pLastAvailableData->config.enable_profile &&
+					pLastAvailableData->xproj_fit_converged ), Tango::DevDouble);
 }
 
 //+----------------------------------------------------------------------------
@@ -1918,7 +2639,8 @@ void ImgBeamAnalyzer::read_XProjFitFWHM(Tango::Attribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_XProjFitBG(Tango::Attribute &attr)
 {
-  READ_OUTPUT_SCALAR_ATTR(xproj_bg, enable_profile, Tango::DevDouble);
+  READ_OUTPUT_SCALAR_ATTR(xproj_bg, ( pLastAvailableData->config.enable_profile &&
+					pLastAvailableData->xproj_fit_converged ), Tango::DevDouble);
 }
 
 //+----------------------------------------------------------------------------
@@ -1930,7 +2652,8 @@ void ImgBeamAnalyzer::read_XProjFitBG(Tango::Attribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_XProjFitChi2(Tango::Attribute &attr)
 {
-  READ_OUTPUT_SCALAR_ATTR(xproj_chi2, enable_profile, Tango::DevDouble);
+  READ_OUTPUT_SCALAR_ATTR(xproj_chi2, ( pLastAvailableData->config.enable_profile &&
+					pLastAvailableData->xproj_fit_converged ), Tango::DevDouble);
 }
 
 //+----------------------------------------------------------------------------
@@ -1942,7 +2665,8 @@ void ImgBeamAnalyzer::read_XProjFitChi2(Tango::Attribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_YProjFitConverged(Tango::Attribute &attr)
 {
-  READ_OUTPUT_SCALAR_ATTR(yproj_fit_converged, enable_profile, Tango::DevBoolean);
+  READ_OUTPUT_SCALAR_ATTR(yproj_fit_converged, ( pLastAvailableData->config.enable_profile &&
+					pLastAvailableData->yproj_fit_converged ), Tango::DevBoolean);
 }
 
 //+----------------------------------------------------------------------------
@@ -1954,7 +2678,8 @@ void ImgBeamAnalyzer::read_YProjFitConverged(Tango::Attribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_YProjFitCenter(Tango::Attribute &attr)
 {
-  READ_OUTPUT_SCALAR_ATTR(yproj_center, enable_profile, Tango::DevDouble);
+  READ_OUTPUT_SCALAR_ATTR(yproj_center, ( pLastAvailableData->config.enable_profile &&
+					pLastAvailableData->yproj_fit_converged ), Tango::DevDouble);
 }
 
 //+----------------------------------------------------------------------------
@@ -1966,7 +2691,8 @@ void ImgBeamAnalyzer::read_YProjFitCenter(Tango::Attribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_YProjFitMag(Tango::Attribute &attr)
 {
-  READ_OUTPUT_SCALAR_ATTR(yproj_mag, enable_profile, Tango::DevDouble);
+  READ_OUTPUT_SCALAR_ATTR(yproj_mag, ( pLastAvailableData->config.enable_profile &&
+					pLastAvailableData->yproj_fit_converged ), Tango::DevDouble);
 }
 
 //+----------------------------------------------------------------------------
@@ -1978,7 +2704,8 @@ void ImgBeamAnalyzer::read_YProjFitMag(Tango::Attribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_YProjFitSigma(Tango::Attribute &attr)
 {
-  READ_OUTPUT_SCALAR_ATTR(yproj_sigma, enable_profile, Tango::DevDouble);
+  READ_OUTPUT_SCALAR_ATTR(yproj_sigma, ( pLastAvailableData->config.enable_profile &&
+					pLastAvailableData->yproj_fit_converged ), Tango::DevDouble);
 }
 
 //+----------------------------------------------------------------------------
@@ -1990,7 +2717,8 @@ void ImgBeamAnalyzer::read_YProjFitSigma(Tango::Attribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_YProjFitFWHM(Tango::Attribute &attr)
 {
-  READ_OUTPUT_SCALAR_ATTR(yproj_fwhm, enable_profile, Tango::DevDouble);
+  READ_OUTPUT_SCALAR_ATTR(yproj_fwhm, ( pLastAvailableData->config.enable_profile &&
+					pLastAvailableData->yproj_fit_converged ), Tango::DevDouble);
 }
 
 //+----------------------------------------------------------------------------
@@ -2002,7 +2730,8 @@ void ImgBeamAnalyzer::read_YProjFitFWHM(Tango::Attribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_YProjFitBG(Tango::Attribute &attr)
 {
-  READ_OUTPUT_SCALAR_ATTR(yproj_bg, enable_profile, Tango::DevDouble);
+  READ_OUTPUT_SCALAR_ATTR(yproj_bg, ( pLastAvailableData->config.enable_profile &&
+					pLastAvailableData->yproj_fit_converged ), Tango::DevDouble);
 }
 
 //+----------------------------------------------------------------------------
@@ -2014,7 +2743,8 @@ void ImgBeamAnalyzer::read_YProjFitBG(Tango::Attribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_YProjFitChi2(Tango::Attribute &attr)
 {
-  READ_OUTPUT_SCALAR_ATTR(yproj_chi2, enable_profile, Tango::DevDouble);
+  READ_OUTPUT_SCALAR_ATTR(yproj_chi2, ( pLastAvailableData->config.enable_profile &&
+					pLastAvailableData->yproj_fit_converged ), Tango::DevDouble);
 }
 
 //+----------------------------------------------------------------------------
@@ -2026,7 +2756,8 @@ void ImgBeamAnalyzer::read_YProjFitChi2(Tango::Attribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_XProjFitNbIter(Tango::Attribute &attr)
 {
-  READ_OUTPUT_SCALAR_ATTR(xproj_nb_iter, enable_profile, Tango::DevLong);
+  READ_OUTPUT_SCALAR_ATTR(xproj_nb_iter, ( pLastAvailableData->config.enable_profile &&
+					pLastAvailableData->xproj_fit_converged ), Tango::DevLong);
 }
 
 //+----------------------------------------------------------------------------
@@ -2038,7 +2769,8 @@ void ImgBeamAnalyzer::read_XProjFitNbIter(Tango::Attribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_XProjFitRelChange(Tango::Attribute &attr)
 {
-  READ_OUTPUT_SCALAR_ATTR(xproj_eps, enable_profile, Tango::DevDouble);
+  READ_OUTPUT_SCALAR_ATTR(xproj_eps, ( pLastAvailableData->config.enable_profile &&
+					pLastAvailableData->xproj_fit_converged ), Tango::DevDouble);
 }
 
 //+----------------------------------------------------------------------------
@@ -2050,7 +2782,8 @@ void ImgBeamAnalyzer::read_XProjFitRelChange(Tango::Attribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_YProjFitNbIter(Tango::Attribute &attr)
 {
-  READ_OUTPUT_SCALAR_ATTR(yproj_nb_iter, enable_profile, Tango::DevLong);
+  READ_OUTPUT_SCALAR_ATTR(yproj_nb_iter, ( pLastAvailableData->config.enable_profile &&
+					pLastAvailableData->yproj_fit_converged ), Tango::DevLong);
 }
 
 //+----------------------------------------------------------------------------
@@ -2062,7 +2795,8 @@ void ImgBeamAnalyzer::read_YProjFitNbIter(Tango::Attribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_YProjFitRelChange(Tango::Attribute &attr)
 {
-  READ_OUTPUT_SCALAR_ATTR(yproj_eps, enable_profile, Tango::DevDouble);
+  READ_OUTPUT_SCALAR_ATTR(yproj_eps, ( pLastAvailableData->config.enable_profile &&
+					pLastAvailableData->yproj_fit_converged ), Tango::DevDouble);
 }
 
 //+----------------------------------------------------------------------------
@@ -2267,7 +3001,7 @@ void ImgBeamAnalyzer::write_HistogramNbBins(Tango::WAttribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_Histogram(Tango::Attribute &attr)
 {
-  READ_OUTPUT_SPECTRUM_ATTR(histogram, enable_histogram, Tango::DevFloat);
+  READ_OUTPUT_SPECTRUM_ATTR(histogram, pLastAvailableData->config.enable_histogram, Tango::DevFloat);
 }
 
 //+----------------------------------------------------------------------------
@@ -2279,7 +3013,8 @@ void ImgBeamAnalyzer::read_Histogram(Tango::Attribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_GaussianFitNbIter(Tango::Attribute &attr)
 {
-  READ_OUTPUT_SCALAR_ATTR(gaussfit_nb_iter, enable_2d_gaussian_fit, Tango::DevLong);
+  READ_OUTPUT_SCALAR_ATTR(gaussfit_nb_iter, ( pLastAvailableData->config.enable_2d_gaussian_fit &&
+										pLastAvailableData->gaussfit_converged ), Tango::DevLong);
 }
 
 //+----------------------------------------------------------------------------
@@ -2291,7 +3026,8 @@ void ImgBeamAnalyzer::read_GaussianFitNbIter(Tango::Attribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_GaussianFitRelChange(Tango::Attribute &attr)
 {
-  READ_OUTPUT_SCALAR_ATTR(gaussfit_eps, enable_2d_gaussian_fit, Tango::DevDouble);
+  READ_OUTPUT_SCALAR_ATTR(gaussfit_eps, ( pLastAvailableData->config.enable_2d_gaussian_fit &&
+										pLastAvailableData->gaussfit_converged ), Tango::DevDouble);
 }
 
 //+----------------------------------------------------------------------------
@@ -2303,7 +3039,7 @@ void ImgBeamAnalyzer::read_GaussianFitRelChange(Tango::Attribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_AutoROIFound(Tango::Attribute &attr)
 {
-  READ_OUTPUT_SCALAR_ATTR(auto_roi_found, enable_auto_roi, Tango::DevBoolean);
+  READ_OUTPUT_SCALAR_ATTR(auto_roi_found, pLastAvailableData->config.enable_auto_roi, Tango::DevBoolean);
 }
 
 //+----------------------------------------------------------------------------
@@ -2315,7 +3051,7 @@ void ImgBeamAnalyzer::read_AutoROIFound(Tango::Attribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_GaussianFitConverged(Tango::Attribute &attr)
 {
-  READ_OUTPUT_SCALAR_ATTR(gaussfit_converged, enable_2d_gaussian_fit, Tango::DevBoolean);
+  READ_OUTPUT_SCALAR_ATTR(gaussfit_converged, ( pLastAvailableData->config.enable_2d_gaussian_fit), Tango::DevBoolean);
 }
 
 //+----------------------------------------------------------------------------
@@ -2495,7 +3231,8 @@ void ImgBeamAnalyzer::write_HorizontalFlip(Tango::WAttribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_GaussianFitMajorAxisFWHM(Tango::Attribute &attr)
 {
-  READ_OUTPUT_SCALAR_ATTR(gaussfit_major_axis_fwhm, enable_2d_gaussian_fit, Tango::DevDouble);
+  READ_OUTPUT_SCALAR_ATTR(gaussfit_major_axis_fwhm, ( pLastAvailableData->config.enable_2d_gaussian_fit &&
+										pLastAvailableData->gaussfit_major_converged ), Tango::DevDouble);
 }
 
 //+----------------------------------------------------------------------------
@@ -2507,7 +3244,8 @@ void ImgBeamAnalyzer::read_GaussianFitMajorAxisFWHM(Tango::Attribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_GaussianFitMinorAxisFWHM(Tango::Attribute &attr)
 {
-  READ_OUTPUT_SCALAR_ATTR(gaussfit_minor_axis_fwhm, enable_2d_gaussian_fit, Tango::DevDouble);
+  READ_OUTPUT_SCALAR_ATTR(gaussfit_minor_axis_fwhm, ( pLastAvailableData->config.enable_2d_gaussian_fit &&
+										pLastAvailableData->gaussfit_minor_converged ), Tango::DevDouble);
 }
 
 //+----------------------------------------------------------------------------
@@ -2639,7 +3377,7 @@ void ImgBeamAnalyzer::read_UserROIHeight(Tango::Attribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_AutoROIOriginX(Tango::Attribute &attr)
 {
-  READ_OUTPUT_SCALAR_ATTR(auto_roi_origin_x, enable_auto_roi, Tango::DevLong);
+  READ_OUTPUT_SCALAR_ATTR(auto_roi_origin_x, pLastAvailableData->config.enable_auto_roi, Tango::DevLong);
 }
 
 //+----------------------------------------------------------------------------
@@ -2651,7 +3389,7 @@ void ImgBeamAnalyzer::read_AutoROIOriginX(Tango::Attribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_AutoROIOriginY(Tango::Attribute &attr)
 {
-  READ_OUTPUT_SCALAR_ATTR(auto_roi_origin_y, enable_auto_roi, Tango::DevLong);
+  READ_OUTPUT_SCALAR_ATTR(auto_roi_origin_y, pLastAvailableData->config.enable_auto_roi, Tango::DevLong);
 }
 
 //+----------------------------------------------------------------------------
@@ -2663,7 +3401,7 @@ void ImgBeamAnalyzer::read_AutoROIOriginY(Tango::Attribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_AutoROIWidth(Tango::Attribute &attr)
 {
-  READ_OUTPUT_SCALAR_ATTR(auto_roi_width, enable_auto_roi, Tango::DevLong);
+  READ_OUTPUT_SCALAR_ATTR(auto_roi_width, pLastAvailableData->config.enable_auto_roi, Tango::DevLong);
 }
 
 //+----------------------------------------------------------------------------
@@ -2675,7 +3413,7 @@ void ImgBeamAnalyzer::read_AutoROIWidth(Tango::Attribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_AutoROIHeight(Tango::Attribute &attr)
 {
-  READ_OUTPUT_SCALAR_ATTR(auto_roi_height, enable_auto_roi, Tango::DevLong);
+  READ_OUTPUT_SCALAR_ATTR(auto_roi_height, pLastAvailableData->config.enable_auto_roi, Tango::DevLong);
 }
 
 //+----------------------------------------------------------------------------
@@ -2688,7 +3426,52 @@ void ImgBeamAnalyzer::read_AutoROIHeight(Tango::Attribute &attr)
 void ImgBeamAnalyzer::read_ROIImage(Tango::Attribute &attr)
 {
 	// Mantis bug 14571 : enable 32 bit data
-  READ_OUTPUT_IMAGE_ATTR_ALWAYSACTIV(roi_image, Tango::DevULong);  // JCP
+ // READ_OUTPUT_IMAGE_ATTR_ALWAYSACTIV(roi_image, Tango::DevULong);  // JCP
+	// start time
+  ENTER_FUNC
+  
+  BIAData* pLastAvailableData  = NULL;
+
+  LOCK_AD
+
+  if (m_AvailableDataList.size() > 0)
+    pLastAvailableData  = m_AvailableDataList.front();
+  if (pLastAvailableData  == NULL
+       || pLastAvailableData ->roi_image.base() == 0 )                   
+  {                                                                          
+	  UNLOCK_AD
+    attr.set_value(&DummyValue<Tango::DevUShort>::dummy, 1, 1);                    
+    attr.set_quality(Tango::ATTR_ALARM);                                     
+  }                                                                          
+  else                                                                       
+  {                                                                          
+#ifdef OUTPUT_DEBUG
+      // ------------------------------------------------------------------------
+      char Res[150];
+      sprintf(Res, "IN>>read_ROIImage(Adress=%p)\r\n", pLastAvailableData ->roi_image.base());
+      OutputDebugString(Res);
+      // ------------------------------------------------------------------------
+#endif //OUTPUT_DEBUG
+
+      attr.set_value(pLastAvailableData ->roi_image.base(),                
+                    static_cast<yat_int32_t>                                  
+                              (pLastAvailableData ->roi_image.width()),  
+                    static_cast<yat_int32_t>                                  
+                            (pLastAvailableData ->roi_image.height()));  
+      ATTRUNLOCK_AD
+      if (pLastAvailableData->alarm == true)                                
+        attr.set_quality(Tango::ATTR_ALARM);                                   
+      else                                                                     
+        attr.set_quality(Tango::ATTR_VALID);                                   
+
+#ifdef OUTPUT_DEBUG
+      // ------------------------------------------------------------------------
+      OutputDebugString("OUT>>read_ROIImage\r\n");
+      // ------------------------------------------------------------------------
+#endif //OUTPUT_DEBUG
+  }
+  // end time
+  LEAVE_FUNC
 }
 
 //+----------------------------------------------------------------------------
@@ -2724,7 +3507,7 @@ void ImgBeamAnalyzer::write_EnableAutoROI(Tango::WAttribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_MaxIntensity(Tango::Attribute &attr)
 {
-  READ_OUTPUT_SCALAR_ATTR(max_intensity, enable_image_stats, Tango::DevDouble);
+  READ_OUTPUT_SCALAR_ATTR(max_intensity, pLastAvailableData->config.enable_image_stats, Tango::DevDouble);
 }
 
 //+----------------------------------------------------------------------------
@@ -2736,7 +3519,7 @@ void ImgBeamAnalyzer::read_MaxIntensity(Tango::Attribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_CentroidX(Tango::Attribute &attr)
 {
-  READ_OUTPUT_SCALAR_ATTR(centroid_x, enable_image_stats, Tango::DevDouble);
+  READ_OUTPUT_SCALAR_ATTR(centroid_x, pLastAvailableData->config.enable_image_stats, Tango::DevDouble);
 }
 
 //+----------------------------------------------------------------------------
@@ -2748,7 +3531,7 @@ void ImgBeamAnalyzer::read_CentroidX(Tango::Attribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_CentroidY(Tango::Attribute &attr)
 {
-  READ_OUTPUT_SCALAR_ATTR(centroid_y, enable_image_stats, Tango::DevDouble);
+  READ_OUTPUT_SCALAR_ATTR(centroid_y, pLastAvailableData->config.enable_image_stats, Tango::DevDouble);
 }
 
 //+----------------------------------------------------------------------------
@@ -2760,7 +3543,7 @@ void ImgBeamAnalyzer::read_CentroidY(Tango::Attribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_CentroidSaturated(Tango::Attribute &attr)
 {
-  READ_OUTPUT_SCALAR_ATTR(centroid_saturated, enable_image_stats, Tango::DevBoolean);
+  READ_OUTPUT_SCALAR_ATTR(centroid_saturated, pLastAvailableData->config.enable_image_stats, Tango::DevBoolean);
 }
 
 //+----------------------------------------------------------------------------
@@ -2816,7 +3599,7 @@ void ImgBeamAnalyzer::write_CentroidSaturationRegionThreshold(Tango::WAttribute 
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_VarianceX(Tango::Attribute &attr)
 {
-  READ_OUTPUT_SCALAR_ATTR(variance_x, enable_image_stats, Tango::DevDouble);
+  READ_OUTPUT_SCALAR_ATTR(variance_x, pLastAvailableData->config.enable_image_stats, Tango::DevDouble);
 }
 
 //+----------------------------------------------------------------------------
@@ -2828,7 +3611,7 @@ void ImgBeamAnalyzer::read_VarianceX(Tango::Attribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_VarianceY(Tango::Attribute &attr)
 {
-  READ_OUTPUT_SCALAR_ATTR(variance_y, enable_image_stats, Tango::DevDouble);
+  READ_OUTPUT_SCALAR_ATTR(variance_y, pLastAvailableData->config.enable_image_stats, Tango::DevDouble);
 }
 
 //+----------------------------------------------------------------------------
@@ -2840,7 +3623,7 @@ void ImgBeamAnalyzer::read_VarianceY(Tango::Attribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_CovarianceXY(Tango::Attribute &attr)
 {
-  READ_OUTPUT_SCALAR_ATTR(covariance_xy, enable_image_stats, Tango::DevDouble);
+  READ_OUTPUT_SCALAR_ATTR(covariance_xy, pLastAvailableData->config.enable_image_stats, Tango::DevDouble);
 }
 
 //+----------------------------------------------------------------------------
@@ -2852,7 +3635,7 @@ void ImgBeamAnalyzer::read_CovarianceXY(Tango::Attribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_CorrelationXY(Tango::Attribute &attr)
 {
-  READ_OUTPUT_SCALAR_ATTR(correlation_xy, enable_image_stats, Tango::DevDouble);
+  READ_OUTPUT_SCALAR_ATTR(correlation_xy, pLastAvailableData->config.enable_image_stats, Tango::DevDouble);
 }
 
 //+----------------------------------------------------------------------------
@@ -2864,7 +3647,7 @@ void ImgBeamAnalyzer::read_CorrelationXY(Tango::Attribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_SkewX(Tango::Attribute &attr)
 {
-  READ_OUTPUT_SCALAR_ATTR(skew_x, enable_image_stats, Tango::DevDouble);
+  READ_OUTPUT_SCALAR_ATTR(skew_x, pLastAvailableData->config.enable_image_stats, Tango::DevDouble);
 }
 
 //+----------------------------------------------------------------------------
@@ -2876,7 +3659,7 @@ void ImgBeamAnalyzer::read_SkewX(Tango::Attribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_SkewY(Tango::Attribute &attr)
 {
-  READ_OUTPUT_SCALAR_ATTR(skew_y, enable_image_stats, Tango::DevDouble);
+  READ_OUTPUT_SCALAR_ATTR(skew_y, pLastAvailableData->config.enable_image_stats, Tango::DevDouble);
 }
 
 //+----------------------------------------------------------------------------
@@ -2888,7 +3671,7 @@ void ImgBeamAnalyzer::read_SkewY(Tango::Attribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_SkewX2Y(Tango::Attribute &attr)
 {
-  READ_OUTPUT_SCALAR_ATTR(skew_x2y, enable_image_stats, Tango::DevDouble);
+  READ_OUTPUT_SCALAR_ATTR(skew_x2y, pLastAvailableData->config.enable_image_stats, Tango::DevDouble);
 }
 
 //+----------------------------------------------------------------------------
@@ -2900,7 +3683,7 @@ void ImgBeamAnalyzer::read_SkewX2Y(Tango::Attribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_SkewXY2(Tango::Attribute &attr)
 {
-  READ_OUTPUT_SCALAR_ATTR(skew_xy2, enable_image_stats, Tango::DevDouble);
+  READ_OUTPUT_SCALAR_ATTR(skew_xy2, pLastAvailableData->config.enable_image_stats, Tango::DevDouble);
 }
 
 //+----------------------------------------------------------------------------
@@ -2912,7 +3695,8 @@ void ImgBeamAnalyzer::read_SkewXY2(Tango::Attribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_GaussianFitCenterX(Tango::Attribute &attr)
 {
-  READ_OUTPUT_SCALAR_ATTR(gaussfit_centroid_x, enable_2d_gaussian_fit, Tango::DevDouble);
+  READ_OUTPUT_SCALAR_ATTR(gaussfit_centroid_x, ( pLastAvailableData->config.enable_2d_gaussian_fit &&
+										pLastAvailableData->gaussfit_converged ), Tango::DevDouble);
 }
 
 //+----------------------------------------------------------------------------
@@ -2924,7 +3708,8 @@ void ImgBeamAnalyzer::read_GaussianFitCenterX(Tango::Attribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_GaussianFitCenterY(Tango::Attribute &attr)
 {
-  READ_OUTPUT_SCALAR_ATTR(gaussfit_centroid_y, enable_2d_gaussian_fit, Tango::DevDouble);
+  READ_OUTPUT_SCALAR_ATTR(gaussfit_centroid_y, ( pLastAvailableData->config.enable_2d_gaussian_fit &&
+										pLastAvailableData->gaussfit_converged ), Tango::DevDouble);
 }
 
 //+----------------------------------------------------------------------------
@@ -2936,7 +3721,8 @@ void ImgBeamAnalyzer::read_GaussianFitCenterY(Tango::Attribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_GaussianFitVarianceX(Tango::Attribute &attr)
 {
-  READ_OUTPUT_SCALAR_ATTR(gaussfit_variance_x, enable_2d_gaussian_fit, Tango::DevDouble);
+  READ_OUTPUT_SCALAR_ATTR(gaussfit_variance_x, ( pLastAvailableData->config.enable_2d_gaussian_fit &&
+										pLastAvailableData->gaussfit_converged ), Tango::DevDouble);
 }
 
 //+----------------------------------------------------------------------------
@@ -2948,7 +3734,8 @@ void ImgBeamAnalyzer::read_GaussianFitVarianceX(Tango::Attribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_GaussianFitVarianceY(Tango::Attribute &attr)
 {
-  READ_OUTPUT_SCALAR_ATTR(gaussfit_variance_y, enable_2d_gaussian_fit, Tango::DevDouble);
+  READ_OUTPUT_SCALAR_ATTR(gaussfit_variance_y, ( pLastAvailableData->config.enable_2d_gaussian_fit &&
+										pLastAvailableData->gaussfit_converged ), Tango::DevDouble);
 }
 
 //+----------------------------------------------------------------------------
@@ -2960,7 +3747,8 @@ void ImgBeamAnalyzer::read_GaussianFitVarianceY(Tango::Attribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_GaussianFitCovarianceXY(Tango::Attribute &attr)
 {
-  READ_OUTPUT_SCALAR_ATTR(gaussfit_covariance_xy, enable_2d_gaussian_fit, Tango::DevDouble);
+  READ_OUTPUT_SCALAR_ATTR(gaussfit_covariance_xy, ( pLastAvailableData->config.enable_2d_gaussian_fit &&
+										pLastAvailableData->gaussfit_converged ), Tango::DevDouble);
 }
 
 //+----------------------------------------------------------------------------
@@ -2986,7 +3774,8 @@ void ImgBeamAnalyzer::write_InputImage(Tango::WAttribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_GaussianFitBG(Tango::Attribute &attr)
 {
-  READ_OUTPUT_SCALAR_ATTR(gaussfit_bg, enable_2d_gaussian_fit, Tango::DevDouble);
+  READ_OUTPUT_SCALAR_ATTR(gaussfit_bg, ( pLastAvailableData->config.enable_2d_gaussian_fit &&
+										pLastAvailableData->gaussfit_converged ), Tango::DevDouble);
 }
 
 //+----------------------------------------------------------------------------
@@ -3118,7 +3907,8 @@ void ImgBeamAnalyzer::write_Fit1DMaxRelChange(Tango::WAttribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_GaussianFitChi2(Tango::Attribute &attr)
 {
-  READ_OUTPUT_SCALAR_ATTR(gaussfit_chi2, enable_2d_gaussian_fit, Tango::DevDouble);
+  READ_OUTPUT_SCALAR_ATTR(gaussfit_chi2, ( pLastAvailableData->config.enable_2d_gaussian_fit &&
+										pLastAvailableData->gaussfit_converged ), Tango::DevDouble);
 }
 
 //+----------------------------------------------------------------------------
@@ -3130,7 +3920,8 @@ void ImgBeamAnalyzer::read_GaussianFitChi2(Tango::Attribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_GaussianFitParameterCovariance(Tango::Attribute &attr)
 {
-  READ_OUTPUT_IMAGE_ATTR( gaussfit_parameters_covariance, enable_2d_gaussian_fit, Tango::DevDouble );
+  READ_OUTPUT_IMAGE_ATTR( gaussfit_parameters_covariance, ( pLastAvailableData->config.enable_2d_gaussian_fit &&
+										pLastAvailableData->gaussfit_converged ), Tango::DevDouble );
 }
 
 //+----------------------------------------------------------------------------
@@ -3142,7 +3933,8 @@ void ImgBeamAnalyzer::read_GaussianFitParameterCovariance(Tango::Attribute &attr
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_GaussianFitMagnitude(Tango::Attribute &attr)
 {
-  READ_OUTPUT_SCALAR_ATTR(gaussfit_magnitude, enable_2d_gaussian_fit, Tango::DevDouble);
+  READ_OUTPUT_SCALAR_ATTR(gaussfit_magnitude, ( pLastAvailableData->config.enable_2d_gaussian_fit &&
+										pLastAvailableData->gaussfit_converged ), Tango::DevDouble);
 }
 
 //+----------------------------------------------------------------------------
@@ -3154,7 +3946,8 @@ void ImgBeamAnalyzer::read_GaussianFitMagnitude(Tango::Attribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_GaussianFitTilt(Tango::Attribute &attr)
 {
-  READ_OUTPUT_SCALAR_ATTR(gaussfit_tilt, enable_2d_gaussian_fit, Tango::DevDouble);
+  READ_OUTPUT_SCALAR_ATTR(gaussfit_tilt, ( pLastAvailableData->config.enable_2d_gaussian_fit &&
+										pLastAvailableData->gaussfit_converged ), Tango::DevDouble);
 }
 
 //+----------------------------------------------------------------------------
@@ -3287,7 +4080,7 @@ void ImgBeamAnalyzer::read_InputImage(Tango::Attribute &attr)
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::read_MeanIntensity(Tango::Attribute &attr)
 {
-  READ_OUTPUT_SCALAR_ATTR(mean_intensity, enable_image_stats, Tango::DevDouble);
+  READ_OUTPUT_SCALAR_ATTR(mean_intensity, pLastAvailableData->config.enable_image_stats, Tango::DevDouble);
 }
 
 
@@ -3406,7 +4199,7 @@ void ImgBeamAnalyzer::process()
   if (this->process_command_allowed_ == false)
   {
     THROW_DEVFAILED("OPERATION_NOT_ALLOWED",
-                    "Device mode must be ONESHOT (configured in a device property) to use the 'Process' command",
+                    "the current configuration does not allow the use of the 'Process' command",
                     "ImgBeamAnalyzer::process");
   }
 
@@ -3638,6 +4431,28 @@ void ImgBeamAnalyzer::update_state()
     this->set_status(status);
   }
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

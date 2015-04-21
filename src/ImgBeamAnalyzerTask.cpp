@@ -313,7 +313,7 @@ void ImgBeamAnalyzerTask::handle_message (yat::Message& _msg)
   WORD Prev = StartMillis;
 	StartMillis = (time.wSecond * 1000) + time.wMilliseconds;	
   OutputDebugString("*************************************************************\r\n");
-  char StartMes[512];
+  char StartMes[150];
 	sprintf(StartMes, "*** Start processing an image (time since last process = %d)***\r\n", StartMillis - Prev);
   OutputDebugString(StartMes);
 // --------------------------------------------------------------------
