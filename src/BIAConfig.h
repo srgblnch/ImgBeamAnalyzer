@@ -34,6 +34,12 @@ struct BIAConfig
     AUTOROI_THRESHOLD
   } AutoROIMethod;
 
+  typedef struct _Size
+  {
+	yat_int32_t x;
+	yat_int32_t y;
+  }Size;
+
   BIAConfig();
 
   bool          enable_image_stats;
@@ -42,6 +48,7 @@ struct BIAConfig
   bool          enable_user_roi;
   bool          enable_auto_roi;
   bool          enable_2d_gaussian_fit;
+  bool          enable_super_gaussian_fit;
   AutoROIMethod auto_roi_method;
   yat_int32_t       auto_roi_threshold;
   double        auto_roi_mag_factor_x;
@@ -79,6 +86,14 @@ struct BIAConfig
   yat_int32_t	centroid_saturation_region_threshold;
 
   bool is_user_roi_empty(void) const;
+
+  double 		xproj_divergence;
+  double 		yproj_divergence;
+
+  double        reductionPercent;
+
+  Size		beforeProcessResize;
+  Size		rOIImageMediumSize;
 
   void validate(void) const
     throw (yat::Exception);
