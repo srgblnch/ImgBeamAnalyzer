@@ -200,6 +200,12 @@ Revision:  - Author: sergiblanch
 <Tr><Td><b>MeanIntensity</b>: <Font Size=-1>the mean intensity inside the ROI</Font></Td>
 <Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
 
+<Tr><Td><b>PeakX</b>: <Font Size=-1>the X coordinate of the peak (Max intensity)</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Tr><Td><b>PeakY</b>: <Font Size=-1>the Y coordinate of the peak (Max intensity)</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
 <Tr><Td><b>CentroidX</b>: <Font Size=-1>the X coordinate of the centroid</Font></Td>
 <Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
 
@@ -242,6 +248,9 @@ Revision:  - Author: sergiblanch
 <Tr><Td><b>XProjFitConverged</b>: <Font Size=-1>true of the projection fitting algorithm has converged</Font></Td>
 <Td><Center><Font Size=-1>DEV_BOOLEAN</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
 
+<Tr><Td><b>XProjFitDivergence</b>: <Font Size=-1>the divergence of the fitted gaussian on X</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ_WRITE</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
 <Tr><Td><b>XProjFitCenter</b>: <Font Size=-1>the X position of the center of the fitted gaussian corresponding to the X projection</Font></Td>
 <Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
 
@@ -254,14 +263,32 @@ Revision:  - Author: sergiblanch
 <Tr><Td><b>XProjFitFWHM</b>: <Font Size=-1>the full width at half maximum of the fitted gaussian corresponding to the X projection, calculated as approximately 2.35 * XProjFitSigma</Font></Td>
 <Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
 
+<Tr><Td><b>XProjFit1e2</b>: <Font Size=-1>the full width at 1/e2 of the fitted gaussian corresponding to the X projection, calculated as approximately 0.8495 * YProjFitFWHM</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
 <Tr><Td><b>XProjFitBG</b>: <Font Size=-1>the background of  fitted gaussian corresponding to the X projection</Font></Td>
 <Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
 
 <Tr><Td><b>XProjFitChi2</b>: <Font Size=-1>the chi-2 of  fitted gaussian corresponding to the X projection</Font></Td>
 <Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
 
+<Tr><Td><b>XProjFitOrder</b>: <Font Size=-1>the order of the fitted gaussian corresponding to the Y projection</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Tr><Td><b>XProjFitFlat</b></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Tr><Td><b>XProjFitNbIter</b>: <Font Size=-1>the number of iterations needed to converge to the fitted profile</Font></Td>
+<Td><Center><Font Size=-1>DEV_LONG</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>Yes</Font></Center></Td></Tr>
+
+<Tr><Td><b>XProjFitRelChange</b>: <Font Size=-1>the relative change in the fit parameters between the two last iterations</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>Yes</Font></Center></Td></Tr>
+
 <Tr><Td><b>YProjFitConverged</b>: <Font Size=-1>true of the projection fitting algorithm has converged</Font></Td>
 <Td><Center><Font Size=-1>DEV_BOOLEAN</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Tr><Td><b>YProjFitDivergence</b>: <Font Size=-1>the divergence of the fitted gaussian on Y</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ_WRITE</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
 
 <Tr><Td><b>YProjFitCenter</b>: <Font Size=-1>the Y position of the center of the fitted gaussian corresponding to the Y projection</Font></Td>
 <Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
@@ -275,11 +302,26 @@ Revision:  - Author: sergiblanch
 <Tr><Td><b>YProjFitFWHM</b>: <Font Size=-1>the full width at half maximum of the fitted gaussian corresponding to the Y projection, calculated approximately as 2.35 * YProjFitSigma</Font></Td>
 <Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
 
+<Tr><Td><b>YProjFit1e2</b>: <Font Size=-1>the full width at 1/e2 of the fitted gaussian corresponding to the Y projection, calculated as approximately 0.8495 * YProjFitFWHM</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
 <Tr><Td><b>YProjFitBG</b>: <Font Size=-1>the background of  fitted gaussian corresponding to the Y projection</Font></Td>
 <Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
 
 <Tr><Td><b>YProjFitChi2</b>: <Font Size=-1>the chi-2 of  fitted gaussian corresponding to the Y projection</Font></Td>
 <Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Tr><Td><b>YProjFitOrder</b>: <Font Size=-1>the order of the fitted gaussian corresponding to the Y projection</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Tr><Td><b>YProjFitFlat</b></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Tr><Td><b>YProjFitNbIter</b>: <Font Size=-1>the number of iterations needed to converge to the fitted profile</Font></Td>
+<Td><Center><Font Size=-1>DEV_LONG</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>Yes</Font></Center></Td></Tr>
+
+<Tr><Td><b>YProjFitRelChange</b>: <Font Size=-1>the relative change in the fit parameters between the two last iterations</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>Yes</Font></Center></Td></Tr>
 
 <Tr><Td><b>LineProfileFitConverged</b>: <Font Size=-1>true of the profile fitting algorithm has converged</Font></Td>
 <Td><Center><Font Size=-1>DEV_BOOLEAN</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
@@ -296,11 +338,26 @@ Revision:  - Author: sergiblanch
 <Tr><Td><b>LineProfileFitFWHM</b>: <Font Size=-1>the full width at half maximum of the fitted gaussian corresponding to the line profile, calculated approximately as 2.35 * LineProfileFitSigma</Font></Td>
 <Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
 
+<Tr><Td><b>LineProfileFit1e2</b>: <Font Size=-1>the full width at 1/e2 of the fitted gaussian corresponding to the line profile, calculated approximately as 0.8495 * LineProfileFitFWHM</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
 <Tr><Td><b>LineProfileFitBG</b>: <Font Size=-1>the background of  fitted gaussian corresponding to the line profile</Font></Td>
 <Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
 
 <Tr><Td><b>LineProfileFitChi2</b>: <Font Size=-1>the chi-2 of  fitted gaussian corresponding to the line profile</Font></Td>
 <Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Tr><Td><b>LineProfileFitOrder</b>: <Font Size=-1>the order of the line profile fitted gaussian</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Tr><Td><b>LineProfileFitNbIter</b>: <Font Size=-1>the number of iterations needed to converge to the fitted profile</Font></Td>
+<Td><Center><Font Size=-1>DEV_LONG</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>Yes</Font></Center></Td></Tr>
+
+<Tr><Td><b>LineProfileFitFlat</b></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Tr><Td><b>LineProfileFitRelChange</b>: <Font Size=-1>the relative change in the fit parameters between the two last iterations</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>Yes</Font></Center></Td></Tr>
 
 <Tr><Td><b>GaussianFitConverged</b>: <Font Size=-1>true of the 2D gaussian fitting algorithm has converged</Font></Td>
 <Td><Center><Font Size=-1>DEV_BOOLEAN</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
@@ -326,7 +383,19 @@ Revision:  - Author: sergiblanch
 <Tr><Td><b>GaussianFitMajorAxisFWHM</b>: <Font Size=-1>the FWHM along the major axis of the fitted gaussian, calculated approximately as 2.35 * sqrt(GaussianFitVarianceX)</Font></Td>
 <Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
 
+<Tr><Td><b>GaussianFitMajorAxis1e2</b>: <Font Size=-1>the 1/e2 width along the major axis of the fitted gaussian, calculated approximately as 0.8495 * GaussianFitMajorAxisFWHM</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Tr><Td><b>GaussianFitMajorAxisOrder</b>: <Font Size=-1>the order of the major axis fitted gaussian</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
 <Tr><Td><b>GaussianFitMinorAxisFWHM</b>: <Font Size=-1>the FWHM along the minor axis of the fitted gaussian, calculated approximately as 2.35 * sqrt(GaussianFitVarianceY)</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Tr><Td><b>GaussianFitMinorAxis1e2</b>: <Font Size=-1>the 1/e2 width along the major axis of the fitted gaussian, calculated approximately as 0.8495 * GaussianFitMinorAxisFWHM</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Tr><Td><b>GaussianFitMinorAxisOrder</b>: <Font Size=-1>the order of the minor axis fitted gaussian</Font></Td>
 <Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
 
 <Tr><Td><b>GaussianFitTilt</b>: <Font Size=-1>the angle made by the major axis of the gaussian and the X axis</Font></Td>
@@ -337,6 +406,66 @@ Revision:  - Author: sergiblanch
 
 <Tr><Td><b>GaussianFitChi2</b>: <Font Size=-1>the chi-2 of the fitted gaussian</Font></Td>
 <Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Tr><Td><b>GaussianFitEllipticity</b>: <Font Size=-1>the ellipticity of the fitted gaussian</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Tr><Td><b>GaussianFitEccentricity</b>: <Font Size=-1>the eccentricity of the fitted gaussian</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Tr><Td><b>GaussianFitMinorAxisCenter</b>: <Font Size=-1>the FWHM along the minor axis of the fitted gaussian, calculated approximately as 2.35 * sqrt(GaussianFitVarianceY)</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Tr><Td><b>GaussianFitMinorAxisMagnitude</b>: <Font Size=-1>the FWHM along the minor axis of the fitted gaussian, calculated approximately as 2.35 * sqrt(GaussianFitVarianceY)</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Tr><Td><b>GaussianFitMinorAxisFlat</b>: <Font Size=-1>the FWHM along the minor axis of the fitted gaussian, calculated approximately as 2.35 * sqrt(GaussianFitVarianceY)</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Tr><Td><b>GaussianFitMajorAxisFlat</b>: <Font Size=-1>the FWHM along the major axis of the fitted gaussian, calculated approximately as 2.35 * sqrt(GaussianFitVarianceY)</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Tr><Td><b>GaussianFitMajorAxisCenter</b>: <Font Size=-1>the FWHM along the minor axis of the fitted gaussian, calculated approximately as 2.35 * sqrt(GaussianFitVarianceY)</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Tr><Td><b>GaussianFitMajorAxisMagnitude</b>: <Font Size=-1>the FWHM along the minor axis of the fitted gaussian, calculated approximately as 2.35 * sqrt(GaussianFitVarianceY)</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Tr><Td><b>GaussianFitFlatX</b></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Tr><Td><b>GaussianFitFlatY</b></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Tr><Td><b>GaussianFitNbIter</b>: <Font Size=-1>the number of iterations needed to converge to the fitted image</Font></Td>
+<Td><Center><Font Size=-1>DEV_LONG</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>Yes</Font></Center></Td></Tr>
+
+<Tr><Td><b>GaussianFitRelChange</b>: <Font Size=-1>the relative change in the fit parameters between the two last iterations</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>Yes</Font></Center></Td></Tr>
+
+<Tr><Td><b>MajorAxisOriginX</b>: <Font Size=-1>the X coordinate of the origin point of the major axis</Font></Td>
+<Td><Center><Font Size=-1>DEV_LONG</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>Yes</Font></Center></Td></Tr>
+
+<Tr><Td><b>MajorAxisOriginY</b>: <Font Size=-1>the Y coordinate of the origin point of the major axis</Font></Td>
+<Td><Center><Font Size=-1>DEV_LONG</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>Yes</Font></Center></Td></Tr>
+
+<Tr><Td><b>MajorAxisEndX</b>: <Font Size=-1>the X coordinate of the end point of the major axis</Font></Td>
+<Td><Center><Font Size=-1>DEV_LONG</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>Yes</Font></Center></Td></Tr>
+
+<Tr><Td><b>MajorAxisEndY</b>: <Font Size=-1>the Y coordinate of the end point of the major axis</Font></Td>
+<Td><Center><Font Size=-1>DEV_LONG</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>Yes</Font></Center></Td></Tr>
+
+<Tr><Td><b>MinorAxisOriginX</b>: <Font Size=-1>the X coordinate of the origin point of the minor axis</Font></Td>
+<Td><Center><Font Size=-1>DEV_LONG</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>Yes</Font></Center></Td></Tr>
+
+<Tr><Td><b>MinorAxisOriginY</b>: <Font Size=-1>the Y coordinate of the origin point of the minor axis</Font></Td>
+<Td><Center><Font Size=-1>DEV_LONG</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>Yes</Font></Center></Td></Tr>
+
+<Tr><Td><b>MinorAxisEndX</b>: <Font Size=-1>the X coordinate of the end point of the minor axis</Font></Td>
+<Td><Center><Font Size=-1>DEV_LONG</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>Yes</Font></Center></Td></Tr>
+
+<Tr><Td><b>MinorAxisEndY</b>: <Font Size=-1>the Y coordinate of the end point of the minor axis</Font></Td>
+<Td><Center><Font Size=-1>DEV_LONG</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>Yes</Font></Center></Td></Tr>
 
 <Tr><Td><b>Fit1DNbIterMax</b>: <Font Size=-1>the maximal number of iteration to converge to a solution</Font></Td>
 <Td><Center><Font Size=-1>DEV_LONG</Font></Center></Td><Td><Center><Font Size=-1>READ_WRITE</Font></Center></Td><Td><Center><Font Size=-1>Yes</Font></Center></Td></Tr>
@@ -350,30 +479,6 @@ Revision:  - Author: sergiblanch
 <Tr><Td><b>Fit2DMaxRelChange</b>: <Font Size=-1>optimization stops when the relative change between 2 iterations falls below this threshold</Font></Td>
 <Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ_WRITE</Font></Center></Td><Td><Center><Font Size=-1>Yes</Font></Center></Td></Tr>
 
-<Tr><Td><b>XProjFitNbIter</b>: <Font Size=-1>the number of iterations needed to converge to the fitted profile</Font></Td>
-<Td><Center><Font Size=-1>DEV_LONG</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>Yes</Font></Center></Td></Tr>
-
-<Tr><Td><b>XProjFitRelChange</b>: <Font Size=-1>the relative change in the fit parameters between the two last iterations</Font></Td>
-<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>Yes</Font></Center></Td></Tr>
-
-<Tr><Td><b>YProjFitNbIter</b>: <Font Size=-1>the number of iterations needed to converge to the fitted profile</Font></Td>
-<Td><Center><Font Size=-1>DEV_LONG</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>Yes</Font></Center></Td></Tr>
-
-<Tr><Td><b>YProjFitRelChange</b>: <Font Size=-1>the relative change in the fit parameters between the two last iterations</Font></Td>
-<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>Yes</Font></Center></Td></Tr>
-
-<Tr><Td><b>LineProfileFitNbIter</b>: <Font Size=-1>the number of iterations needed to converge to the fitted profile</Font></Td>
-<Td><Center><Font Size=-1>DEV_LONG</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>Yes</Font></Center></Td></Tr>
-
-<Tr><Td><b>LineProfileFitRelChange</b>: <Font Size=-1>the relative change in the fit parameters between the two last iterations</Font></Td>
-<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>Yes</Font></Center></Td></Tr>
-
-<Tr><Td><b>GaussianFitNbIter</b>: <Font Size=-1>the number of iterations needed to converge to the fitted image</Font></Td>
-<Td><Center><Font Size=-1>DEV_LONG</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>Yes</Font></Center></Td></Tr>
-
-<Tr><Td><b>GaussianFitRelChange</b>: <Font Size=-1>the relative change in the fit parameters between the two last iterations</Font></Td>
-<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>Yes</Font></Center></Td></Tr>
-
 <Tr><Td><b>RmsX</b>: <Font Size=-1>the variance square root along the X axis</Font></Td>
 <Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
 
@@ -382,6 +487,12 @@ Revision:  - Author: sergiblanch
 
 <Tr><Td><b>ImageCounter</b></Td>
 <Td><Center><Font Size=-1>DEV_ULONG</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Tr><Td><b>ReductionPercent</b></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>READ_WRITE</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Tr><Td><b>DevEncROIImageMedium</b></Td>
+<Td><Center><Font Size=-1>DEV_ENCODED</Font></Center></Td><Td><Center><Font Size=-1>READ</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
 
 </Table>
 </Center>
@@ -424,6 +535,18 @@ Revision:  - Author: sergiblanch
 <Tr><Td><b>Histogram</b></Td>
 <Td><Center><Font Size=-1>DEV_FLOAT</Font></Center></Td><Td><Center><Font Size=-1>131072</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
 
+<Tr><Td><b>MajorAxis</b>: <Font Size=-1>the major axis values</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>131072</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Tr><Td><b>MinorAxis</b>: <Font Size=-1>the minor axis values</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>131072</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Tr><Td><b>MajorAxisFitted</b>: <Font Size=-1>the fitted major axis</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>131072</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
+<Tr><Td><b>MinorAxisFitted</b>: <Font Size=-1>the fitted minor axis</Font></Td>
+<Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>131072</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+
 </Table>
 </Center>
 <Br><Br><Br><Br><Br>
@@ -440,13 +563,16 @@ Revision:  - Author: sergiblanch
 <Td><Center><Font Size=-1>DEV_ULONG</Font></Center></Td><Td><Center><Font Size=-1>131072</Font></Center></Td><Td><Center><Font Size=-1>131072</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
 
 <Tr><Td><b>ROIImage</b>: <Font Size=-1>the effective image on which are done all the calculation</Font></Td>
-<Td><Center><Font Size=-1>DEV_ULONG</Font></Center></Td><Td><Center><Font Size=-1>131072</Font></Center></Td><Td><Center><Font Size=-1>131072</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
+<Td><Center><Font Size=-1>DEV_USHORT</Font></Center></Td><Td><Center><Font Size=-1>131072</Font></Center></Td><Td><Center><Font Size=-1>131072</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
 
 <Tr><Td><b>LineProfileHelperImg</b>: <Font Size=-1>the intermediate image used in the calculation of the Line Profile. this corresponds to the input rectangle defined by origin, end and thickness, affine transformed to fit in a rectangular image. The colums of this image are averaged to give the LineProfile attribute</Font></Td>
 <Td><Center><Font Size=-1>DEV_FLOAT</Font></Center></Td><Td><Center><Font Size=-1>131072</Font></Center></Td><Td><Center><Font Size=-1>131072</Font></Center></Td><Td><Center><Font Size=-1>Yes</Font></Center></Td></Tr>
 
 <Tr><Td><b>GaussianFitParameterCovariance</b>: <Font Size=-1>the covariance matrix of the best fit parameters (7x7). the 7 parameters are ordered as [A, xc, yc, s_xx, s_xy, s_yy, b]</Font></Td>
 <Td><Center><Font Size=-1>DEV_DOUBLE</Font></Center></Td><Td><Center><Font Size=-1>7</Font></Center></Td><Td><Center><Font Size=-1>7</Font></Center></Td><Td><Center><Font Size=-1>Yes</Font></Center></Td></Tr>
+
+<Tr><Td><b>ROIImageMedium</b>: <Font Size=-1>the effective image on which are done all the calculation</Font></Td>
+<Td><Center><Font Size=-1>DEV_USHORT</Font></Center></Td><Td><Center><Font Size=-1>131072</Font></Center></Td><Td><Center><Font Size=-1>131072</Font></Center></Td><Td><Center><Font Size=-1>No</Font></Center></Td></Tr>
 
 </Table>
 </Center>
