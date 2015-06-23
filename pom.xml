@@ -8,7 +8,7 @@
    </parent>
    <groupId>fr.soleil.device</groupId>
    <artifactId>ImgBeamAnalyzer-${aol}-${mode}</artifactId>
-   <version>3.6.0</version>
+   <version>3.6.1-SNAPSHOT</version>
    <packaging>nar</packaging>
    <name>ImgBeamAnalyzer</name>
    <description>ImgBeamAnalyzer device</description>
