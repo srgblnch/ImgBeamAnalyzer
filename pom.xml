@@ -27,7 +27,6 @@
        </dependency>
        <dependency>
            <groupId>fr.soleil.lib</groupId>
-		  <version>2.6.9-SNAPSHOT</version>
            <artifactId>ISL-${aol}-${library}-${mode}</artifactId>
        </dependency>
    </dependencies>
