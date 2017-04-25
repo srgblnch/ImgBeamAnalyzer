@@ -385,7 +385,10 @@ template <> Tango::DevDouble  ImgBeamAnalyzer::DummyValue<Tango::DevDouble> ::du
       }                                                                        \
       this->current_config_ = new_config;                                      \
     }                                                                          \
+    LEAVE_FUNC\
   }                                                                            \
+  
+  
       // try                                                                      \ //FT - PROBLEM-102
       // {                                                                        \
           // DEBUG_STREAM << "memorize_attribute(" << attr.get_name() << "); ";   \
@@ -403,9 +406,6 @@ template <> Tango::DevDouble  ImgBeamAnalyzer::DummyValue<Tango::DevDouble> ::du
                           // "Tango error during memorize attribute",             \
                           // "ImgBeamAnalyzer::write_" #config_member_name);      \
       // }                                                                        \
-    // }                                                                          \
-    LEAVE_FUNC\
-  }
 
 
 
