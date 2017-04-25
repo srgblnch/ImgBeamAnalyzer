@@ -384,24 +384,26 @@ template <> Tango::DevDouble  ImgBeamAnalyzer::DummyValue<Tango::DevDouble> ::du
                         "ImgBeamAnalyzer::write_" #config_member_name);        \
       }                                                                        \
       this->current_config_ = new_config;                                      \
-      try                                                                      \
-      {                                                                        \
-          DEBUG_STREAM << "memorize_attribute(" << attr.get_name() << "); ";   \
-          Tango::Database *db = new Tango::Database();                         \
-          Tango::DbData db_data;                                               \
-          Tango::DbDatum dev_prop(attr.get_name());                            \
-          dev_prop << value;                                                   \
-          db_data.push_back(dev_prop);                                         \
-          db->put_device_property(this->get_name(), db_data);                  \
-      }                                                                        \
-      catch(...)                                                               \
-      {                                                                        \
-          ERROR_STREAM << "Exception! when trying to memorize" << std::endl;   \
-          THROW_DEVFAILED("UNKNOWN_ERROR",                                     \
-                          "Tango error during memorize attribute",             \
-                          "ImgBeamAnalyzer::write_" #config_member_name);      \
-      }                                                                        \
     }                                                                          \
+  }                                                                            \
+      // try                                                                      \ //FT - PROBLEM-102
+      // {                                                                        \
+          // DEBUG_STREAM << "memorize_attribute(" << attr.get_name() << "); ";   \
+          // Tango::Database *db = new Tango::Database();                         \
+          // Tango::DbData db_data;                                               \
+          // Tango::DbDatum dev_prop(attr.get_name());                            \
+          // dev_prop << value;                                                   \
+          // db_data.push_back(dev_prop);                                         \
+          // db->put_device_property(this->get_name(), db_data);                  \
+      // }                                                                        \
+      // catch(...)                                                               \
+      // {                                                                        \
+          // ERROR_STREAM << "Exception! when trying to memorize" << std::endl;   \
+          // THROW_DEVFAILED("UNKNOWN_ERROR",                                     \
+                          // "Tango error during memorize attribute",             \
+                          // "ImgBeamAnalyzer::write_" #config_member_name);      \
+      // }                                                                        \
+    // }                                                                          \
     LEAVE_FUNC\
   }
 
