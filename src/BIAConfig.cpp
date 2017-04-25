@@ -27,22 +27,18 @@ namespace ImgBeamAnalyzer_ns
 {
   const bool    kDEFAULT_ENABLE_IMAGE_STATS = true;
   const bool    kDEFAULT_ENABLE_PROFILE = true;
-  const bool    kDEFAULT_ENABLE_HISTOGRAM = false;//true
-  const bool    kDEFAULT_ENABLE_USER_ROI = false;//true
-  const bool    kDEFAULT_ENABLE_AUTO_ROI = false;//true
-  const bool    kDEFAULT_ENABLE_2D_GAUSSIAN_FIT = false;//TRU
-  const bool    kDEFAULT_ENABLE_SUPER_GAUSSIAN_FIT = false;//true
+  const bool    kDEFAULT_ENABLE_HISTOGRAM = true;
+  const bool    kDEFAULT_ENABLE_USER_ROI = true;
+  const bool    kDEFAULT_ENABLE_AUTO_ROI = true;
+  const bool    kDEFAULT_ENABLE_2D_GAUSSIAN_FIT = false;
   const double  kDEFAULT_AUTOROI_MAGFACTOR = 1.0f;
-  const yat_int32_t kDEFAULT_AUTOROI_THRESHOLD = 0;
+  const yat_int32_t kDEFAULT_AUTOROI_THRESHOLD = 200;
   const yat_int32_t kDEFAULT_COMPUT_PERIOD = 1000;
   const yat_int32_t kDEFAULT_ALARM_ZONE = 10;
-  //const yat_int32_t kDEFAULT_FIT2D_NB_ITER = 30;
-    const yat_int32_t kDEFAULT_FIT2D_NB_ITER = 40;
- // const double  kDEFAULT_FIT2D_MAX_REL_CHANGE = 1.0E-6;
-  const double  kDEFAULT_FIT2D_MAX_REL_CHANGE = 1.0E-3;
-  const yat_int32_t kDEFAULT_FIT1D_NB_ITER = 100;
- // const double  kDEFAULT_FIT1D_MAX_REL_CHANGE = 1.0E-6;
-const double  kDEFAULT_FIT1D_MAX_REL_CHANGE = 1.0E-4;
+  const yat_int32_t kDEFAULT_FIT2D_NB_ITER = 30;
+  const double  kDEFAULT_FIT2D_MAX_REL_CHANGE = 1.0E-6;
+  const yat_int32_t kDEFAULT_FIT1D_NB_ITER = 30;
+  const double  kDEFAULT_FIT1D_MAX_REL_CHANGE = 1.0E-6;
   const double  kDEFAULT_PIXELSIZE_X = 1.0f;
   const double  kDEFAULT_PIXELSIZE_Y = 1.0f;
   const double  kDEFAULT_OPTICAL_MAGNIFICATION = 1.0f;
@@ -62,7 +58,6 @@ const double  kDEFAULT_FIT1D_MAX_REL_CHANGE = 1.0E-4;
   const yat_int32_t kDEFAULT_PROFILE_THICKNESS = 1;
   const yat_int32_t kDEFAULT_CENTROID_SATURATION_REGION_SIDE = 20;
   const yat_int32_t kDEFAULT_CENTROID_SATURATION_REGION_THRESHOLD = 5;
-  const double kREDUCTION_PERCENTAGE = 0.125;
 
   BIAConfig::BIAConfig() :
     enable_image_stats(kDEFAULT_ENABLE_IMAGE_STATS),
@@ -71,7 +66,6 @@ const double  kDEFAULT_FIT1D_MAX_REL_CHANGE = 1.0E-4;
     enable_user_roi(kDEFAULT_ENABLE_USER_ROI),
     enable_auto_roi(kDEFAULT_ENABLE_AUTO_ROI),
     enable_2d_gaussian_fit(kDEFAULT_ENABLE_2D_GAUSSIAN_FIT),
-	enable_super_gaussian_fit(kDEFAULT_ENABLE_SUPER_GAUSSIAN_FIT),
     auto_roi_threshold(kDEFAULT_AUTOROI_THRESHOLD),
     auto_roi_mag_factor_x(kDEFAULT_AUTOROI_MAGFACTOR),
     auto_roi_mag_factor_y(kDEFAULT_AUTOROI_MAGFACTOR),
@@ -105,17 +99,8 @@ const double  kDEFAULT_FIT1D_MAX_REL_CHANGE = 1.0E-4;
     chamber_offset_x(0.0),
     chamber_offset_y(0.0),
     centroid_saturation_region_side(kDEFAULT_CENTROID_SATURATION_REGION_SIDE),
-    centroid_saturation_region_threshold(kDEFAULT_CENTROID_SATURATION_REGION_THRESHOLD),
-	reductionPercent(kREDUCTION_PERCENTAGE),
-	xproj_divergence(0),
-	yproj_divergence(0)
-	
-  {
-	beforeProcessResize.x = 0;
-	beforeProcessResize.y = 0;
-	rOIImageMediumSize.x = 0;
-	rOIImageMediumSize.y = 0;	
-  }
+    centroid_saturation_region_threshold(kDEFAULT_CENTROID_SATURATION_REGION_THRESHOLD)
+  {}
 
   bool BIAConfig::is_user_roi_empty(void) const
   {
@@ -135,7 +120,7 @@ const double  kDEFAULT_FIT1D_MAX_REL_CHANGE = 1.0E-4;
     }
 
     CHECK( this->enable_2d_gaussian_fit == true && this->enable_image_stats == false , "EnableImageStats must be true when Enable2DGaussianFit is true" );
-    CHECK( this->auto_roi_threshold >= (1 << pixel_depth) , "AutoROIThreshold cannot be bigger than the maximum representable with selected pixel depth(BitsPerPixel)" );
+    CHECK( this->auto_roi_threshold >= pow(2,(double)  pixel_depth) , "AutoROIThreshold cannot be bigger than the maximum representable with selected pixel depth(BitsPerPixel)" );
     CHECK( this->auto_roi_mag_factor_x <=  0 , "AutoROIMagFactorX must be stricly positive" );
     CHECK( this->auto_roi_mag_factor_y <=  0 , "AutoROIMagFactorY must be stricly positive" );
     CHECK( this->comput_period         <=  0 , "ComputationPeriod must be stricly positive" );

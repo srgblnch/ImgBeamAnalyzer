@@ -47,7 +47,7 @@ namespace ImgBeamAnalyzer_ns
   class NoDataAvailableNowException : public std::exception
   {
   public:
-	virtual const char * what(void) const throw ();
+    virtual const char * what(void) const throw ()  {  return "No data available now.";}
   };
 
 
@@ -59,9 +59,8 @@ namespace ImgBeamAnalyzer_ns
 
     void process(const isl::Image& image, const BIAConfig& config, BIAData& data) const
       throw (yat::Exception);
-	  
+
   private:
-	  	  
     void preprocess(isl::Image& image, const BIAConfig& config, BIAData& data) const
       throw (isl::Exception);
 
@@ -79,31 +78,16 @@ namespace ImgBeamAnalyzer_ns
 
     void moments(const isl::Image& roi_image, const isl::Rectangle& roi, const BIAConfig& config, BIAData& data) const
       throw (isl::Exception);
-    	  
-	void profiles(const isl::Image& roi_image_f, const isl::Rectangle& roi, const BIAConfig& config, BIAData& data, bool fixed_bg, double bg_value) const
-    throw (isl::Exception);	
-	
+    
+    void profiles(const isl::Image& roi_image_d, const isl::Image& roi_image_f, const isl::Rectangle& roi, const BIAConfig& config, BIAData& data, bool fixed_bg, double bg_value) const
+      throw (isl::Exception);
+
     void saturation(const isl::Image& roi_image, const BIAConfig& config, BIAData& data, const double centroid_x_, const double centroid_y_) const
       throw (isl::Exception);
-	
-    void gaussian_fit_2d( const isl::Image& roi_image_f,const isl::Rectangle& roi, const BIAConfig& config, BIAData& data) const
-	  throw (isl::Exception);
-	  
-	void computeAndFitMajorMinorAxis(const isl::Image& roi_image_f, const isl::Rectangle& roi, const BIAConfig& config, BIAData& data) const
-	  throw (isl::Exception);	
-	
- 	void computeLineProfiles(const isl::Image& roi_image_f, const isl::Point2D<int>& p, const isl::Point2D<int>& q, const isl::Rectangle& roi, const BIAConfig& config, BIAData& data, bool fixed_bg, double bg_value) const
+
+    void gaussian_fit_2d(const isl::Image& roi_image_d, const isl::Rectangle& roi, const BIAConfig& config, BIAData& data) const
       throw (isl::Exception);
-	  
-	void computeXProfiles(const isl::Image& roi_image_f, int y, const isl::Rectangle& roi, const BIAConfig& config, BIAData& data, bool fixed_bg, double bg_value) const
-      throw (isl::Exception);
-	  
-	void computeYProfiles(const isl::Image& roi_image_f, int x, const isl::Rectangle& roi, const BIAConfig& config, BIAData& data, bool fixed_bg, double bg_value) const
-      throw (isl::Exception);
-	   	  
- 	void copyRoiImage( isl::Image& roi_image_d, yat::ImageBuffer<unsigned short>& roi_destination) const
-	  throw (isl::Exception);
- };
+  };
 
 }  // namespace
 
