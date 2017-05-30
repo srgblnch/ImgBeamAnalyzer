@@ -1746,6 +1746,20 @@ bool ImgBeamAnalyzer::is_ImageCounter_allowed(Tango::AttReqType type)
 }
 //+----------------------------------------------------------------------------
 //
+// method : 		ImgBeamAnalyzer::is_SumImagePixels_allowed
+//
+// description : 	Read/Write allowed for ImageCounter attribute.
+//
+//-----------------------------------------------------------------------------
+bool ImgBeamAnalyzer::is_SumImagePixels_allowed(Tango::AttReqType type)
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+	return true;
+}
+//+----------------------------------------------------------------------------
+//
 // method : 		ImgBeamAnalyzer::is_RmsX_allowed
 // 
 // description : 	Read/Write allowed for RmsX attribute.

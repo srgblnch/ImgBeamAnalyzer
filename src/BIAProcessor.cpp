@@ -220,6 +220,8 @@ namespace ImgBeamAnalyzer_ns
       this->gaussian_fit_2d(roi_image_d, roi, config, data);
 
       data.update_alarm();
+      
+      this->sum_image_pixels(roi_image_d, data); // FT-TANGODEVIC-1660
 
       GET_TIME(end_time);
       data.estim_comput_time = ELAPSED_TIME_MS(start_time, end_time);
@@ -1034,7 +1036,19 @@ namespace ImgBeamAnalyzer_ns
       }
     }
   }
-
-
+  
+  void
+  BIAProcessor::sum_image_pixels(const isl::Image& roi_image_d, BIAData& data)const
+    throw (isl::Exception)
+  {
+    double sum_pixels = 0;
+    yat::ImageBuffer<double> tmp_img(roi_image_d.width(), roi_image_d.height());
+    roi_image_d.serialize(tmp_img.base());
+    
+    for(size_t i= 0; i < roi_image_d.width() * roi_image_d.height(); i++ ){
+      sum_pixels += (double)tmp_img[i];
+    }
+    data.sum_image_pixels = sum_pixels;
+  }
 
 } // namespace

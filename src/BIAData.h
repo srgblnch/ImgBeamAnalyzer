@@ -163,6 +163,10 @@ public:
   double               chamber_yproj_center;
 
   bool              alarm;
+  
+  
+  //- FT TANGODEVIC-1660
+  double               sum_image_pixels;
 
 private:
 

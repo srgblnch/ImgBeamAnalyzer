@@ -115,6 +115,7 @@ BIAData::BIAData (void)
     chamber_centroid_y(0.0),
     chamber_xproj_center(0.0),
     chamber_yproj_center(0.0),
+    sum_image_pixels(0.0),
     alarm(false)
 {
   //- noop

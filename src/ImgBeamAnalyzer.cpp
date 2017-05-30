@@ -476,7 +476,7 @@ void ImgBeamAnalyzer::delete_device()
 // method :     ImgBeamAnalyzer::init_device()
 // 
 // description :   will be called at device initialization.
-//²
+//ï¿½
 //-----------------------------------------------------------------------------
 void ImgBeamAnalyzer::init_device()
 {
@@ -1359,6 +1359,19 @@ void ImgBeamAnalyzer::read_attr_hardware(vector<long> &attr_list)
   this->update_state();
 
 }
+//+----------------------------------------------------------------------------
+//
+// method : 		ImgBeamAnalyzer::read_SumImagePixels
+// 
+// description : 	Extract real attribute values for SumImagePixels acquisition result.
+//
+//-----------------------------------------------------------------------------
+void ImgBeamAnalyzer::read_SumImagePixels(Tango::Attribute &attr)
+{
+	DEBUG_STREAM << "ImgBeamAnalyzer::read_SumImagePixels(Tango::Attribute &attr) entering... "<< endl;
+  READ_OUTPUT_SCALAR_ATTR(sum_image_pixels, enable_image_stats, Tango::DevDouble);
+}
+
 //+----------------------------------------------------------------------------
 //
 // method :     ImgBeamAnalyzer::read_RmsX

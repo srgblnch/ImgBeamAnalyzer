@@ -250,6 +250,7 @@ public :
 		Tango::DevDouble	*attr_GaussianFitRelChange_read;
 		Tango::DevDouble	*attr_RmsX_read;
 		Tango::DevDouble	*attr_RmsY_read;
+		Tango::DevDouble	*attr_SumImagePixels_read;
 		Tango::DevDouble	*attr_XProj_read;
 		Tango::DevDouble	*attr_XProjFitted_read;
 		Tango::DevDouble	*attr_XProjError_read;
@@ -1065,6 +1066,10 @@ public :
  */
 	virtual void read_RmsY(Tango::Attribute &attr);
 /**
+ *	Extract real attribute values for SumImagePixels acquisition result.
+ */
+	virtual void read_SumImagePixels(Tango::Attribute &attr);
+/**
  *	Extract real attribute values for ImageCounter acquisition result.
  */
 	virtual void read_ImageCounter(Tango::Attribute &attr);
@@ -1552,6 +1557,10 @@ public :
  *	Read/Write allowed for RmsY attribute.
  */
 	virtual bool is_RmsY_allowed(Tango::AttReqType type);
+/**
+ *	Read/Write allowed for SumImagePixels attribute.
+ */
+	virtual bool is_SumImagePixels_allowed(Tango::AttReqType type);
 /**
  *	Read/Write allowed for ImageCounter attribute.
  */

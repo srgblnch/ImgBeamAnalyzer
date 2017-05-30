@@ -87,6 +87,9 @@ namespace ImgBeamAnalyzer_ns
 
     void gaussian_fit_2d(const isl::Image& roi_image_d, const isl::Rectangle& roi, const BIAConfig& config, BIAData& data) const
       throw (isl::Exception);
+      
+    void sum_image_pixels(const isl::Image& roi_image_d, BIAData& data)const
+      throw (isl::Exception); // FT - TANGODEVIC-1660
   };
 
 }  // namespace

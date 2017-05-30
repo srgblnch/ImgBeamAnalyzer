@@ -1418,6 +1418,15 @@ void ImgBeamAnalyzerClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	rms_y->set_default_properties(rms_y_prop);
 	att_list.push_back(rms_y);
 
+	//	Attribute : SumImagePixels
+	SumImagePixelsAttrib	*sum_image_pixels = new SumImagePixelsAttrib();
+	Tango::UserDefaultAttrProp	sum_image_pixels_prop;
+  	sum_image_pixels_prop.set_unit(" ");
+	sum_image_pixels_prop.set_description("Represents the total sum of the image pixels.\n");
+	sum_image_pixels->set_default_properties(sum_image_pixels_prop);
+	sum_image_pixels->set_disp_level(Tango::EXPERT);
+	att_list.push_back(sum_image_pixels);
+
 	//	Attribute : XProj
 	XProjAttrib	*xproj = new XProjAttrib();
 	Tango::UserDefaultAttrProp	xproj_prop;

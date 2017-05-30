@@ -222,6 +222,18 @@ public:
 	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_XProj_allowed(ty);}
 };
 
+class SumImagePixelsAttrib: public Tango::Attr
+{
+public:
+	SumImagePixelsAttrib():Attr("SumImagePixels", Tango::DEV_DOUBLE, Tango::READ) {};
+	~SumImagePixelsAttrib() {};
+	
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+	{(static_cast<ImgBeamAnalyzer *>(dev))->read_SumImagePixels(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+	{return (static_cast<ImgBeamAnalyzer *>(dev))->is_SumImagePixels_allowed(ty);}
+};
+
 class RmsYAttrib: public Tango::Attr
 {
 public:
