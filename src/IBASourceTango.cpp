@@ -318,6 +318,7 @@ void IBASourceTango::get_image(ImageAndInfo & imginf) throw (yat::Exception)
       }
       catch(isl::Exception & ex)
       {
+        SAFE_DELETE_PTR(image);
         ISL2YATException yat_exc(ex);
         isl::ErrorHandler::reset();
         RETHROW_YAT_ERROR(yat_exc,
@@ -327,6 +328,7 @@ void IBASourceTango::get_image(ImageAndInfo & imginf) throw (yat::Exception)
       }
       catch(...)
       {
+        SAFE_DELETE_PTR(image);
         THROW_YAT_ERROR("UNKNOWN_ERROR",
                         "Unable to convert the UChar image to a UShort image",
                         "ImgBeamAnalyzerTask::get_remote_image");
@@ -379,6 +381,7 @@ void IBASourceTango::get_image(ImageAndInfo & imginf) throw (yat::Exception)
       }
       catch(isl::Exception & ex)
       {
+        SAFE_DELETE_PTR(image);
         ISL2YATException yat_exc(ex);
         isl::ErrorHandler::reset();
         RETHROW_YAT_ERROR(yat_exc,
@@ -388,6 +391,7 @@ void IBASourceTango::get_image(ImageAndInfo & imginf) throw (yat::Exception)
       }
       catch(...)
       {
+        SAFE_DELETE_PTR(image);
         THROW_YAT_ERROR("UNKNOWN_ERROR",
                         "Unable to unserialize image",
                         "ImgBeamAnalyzerTask::get_remote_image");
@@ -439,6 +443,7 @@ void IBASourceTango::get_image(ImageAndInfo & imginf) throw (yat::Exception)
       }
       catch(isl::Exception & ex)
       {
+        SAFE_DELETE_PTR(image);
         ISL2YATException yat_exc(ex);
         isl::ErrorHandler::reset();
         RETHROW_YAT_ERROR(yat_exc,
@@ -448,6 +453,7 @@ void IBASourceTango::get_image(ImageAndInfo & imginf) throw (yat::Exception)
       }
       catch(...)
       {
+        SAFE_DELETE_PTR(image);
         THROW_YAT_ERROR("UNKNOWN_ERROR",
                         "Unable to unserialize image",
                         "ImgBeamAnalyzerTask::get_remote_image");
@@ -500,6 +506,7 @@ void IBASourceTango::get_image(ImageAndInfo & imginf) throw (yat::Exception)
       }
       catch(isl::Exception & ex)
       {
+        SAFE_DELETE_PTR(image);
         ISL2YATException yat_exc(ex);
         isl::ErrorHandler::reset();
         RETHROW_YAT_ERROR(yat_exc,
@@ -509,6 +516,7 @@ void IBASourceTango::get_image(ImageAndInfo & imginf) throw (yat::Exception)
       }
       catch(...)
       {
+        SAFE_DELETE_PTR(image);
         THROW_YAT_ERROR("UNKNOWN_ERROR",
                         "Unable to unserialize image",
                         "ImgBeamAnalyzerTask::get_remote_image");
@@ -560,6 +568,7 @@ void IBASourceTango::get_image(ImageAndInfo & imginf) throw (yat::Exception)
         }
         catch(isl::Exception & ex)
         {
+          SAFE_DELETE_PTR(image);
           ISL2YATException yat_exc(ex);
           isl::ErrorHandler::reset();
           RETHROW_YAT_ERROR(yat_exc,
@@ -569,6 +578,7 @@ void IBASourceTango::get_image(ImageAndInfo & imginf) throw (yat::Exception)
         }
         catch(...)
         {
+          SAFE_DELETE_PTR(image);
           THROW_YAT_ERROR("UNKNOWN_ERROR",
                           "Unable to unserialize image",
                           "ImgBeamAnalyzerTask::get_remote_image");
