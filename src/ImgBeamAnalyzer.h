@@ -51,6 +51,7 @@
 
 //- this will #include <tango.h>
 #include <yat4tango/CommonHeader.h>
+#include <yat4tango/PropertyHelper.h>
 #include "ImgBeamAnalyzerTask.h"
 #include "BIAConfig.h"
 #include "IBASource.h"
@@ -415,7 +416,11 @@ public :
 /**
  *  the initial value of the CentroidSaturationRegionThreshold attribute
  */
-	Tango::DevLong  centroidSaturationRegionThreshold;
+	Tango::DevLong	centroidSaturationRegionThreshold;
+/**
+ *	If true then current data will be deleted when IBA's state turn to FAULT
+ */
+	Tango::DevBoolean	cleanCurrentDataOnError;
 //@}
 
 /**@name Constructors

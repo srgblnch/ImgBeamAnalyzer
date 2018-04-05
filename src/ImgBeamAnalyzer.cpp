@@ -793,6 +793,7 @@ void ImgBeamAnalyzer::get_device_property()
 	dev_prop.push_back(Tango::DbDatum("ChamberOffsetY"));
 	dev_prop.push_back(Tango::DbDatum("CentroidSaturationRegionSide"));
 	dev_prop.push_back(Tango::DbDatum("CentroidSaturationRegionThreshold"));
+	dev_prop.push_back(Tango::DbDatum("CleanCurrentDataOnError"));
 
 	//	Call database and extract values
 	//--------------------------------------------
@@ -1177,8 +1178,24 @@ void ImgBeamAnalyzer::get_device_property()
 	//	And try to extract CentroidSaturationRegionThreshold value from database
 	if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  centroidSaturationRegionThreshold;
 
+	//	Try to initialize CleanCurrentDataOnError from class property
+	cl_prop = ds_class->get_class_property(dev_prop[++i].name);
+	if (cl_prop.is_empty()==false)	cl_prop  >>  cleanCurrentDataOnError;
+	else {
+		//	Try to initialize CleanCurrentDataOnError from default device value
+		def_prop = ds_class->get_default_device_property(dev_prop[i].name);
+		if (def_prop.is_empty()==false)	def_prop  >>  cleanCurrentDataOnError;
+	}
+	//	And try to extract CleanCurrentDataOnError value from database
+	if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  cleanCurrentDataOnError;
+
+
+
   //  End of Automatic code generation
   //------------------------------------------------------------------
+
+
+  yat4tango::PropertyHelper::create_property_if_empty(this, dev_prop, "false", "CleanCurrentDataOnError");
 
   std::transform(mode.begin(), mode.end(), mode.begin(), ::tolower);
   if (mode == "unspecified")
@@ -1342,6 +1359,11 @@ void ImgBeamAnalyzer::read_attr_hardware(vector<long> &attr_list)
       OutputDebugString(Res);
       // ----------------------------------------------------------------------
 #endif  //OUTPUT_DEBUG
+    }
+    else if ((this->get_state() == Tango::FAULT) && cleanCurrentDataOnError){
+      if(m_AvailableDataList.size()>0){
+        m_AvailableDataList.clear();
+      }
     }
 
     UNLOCK_AD
